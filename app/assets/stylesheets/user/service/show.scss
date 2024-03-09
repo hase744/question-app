@@ -1,0 +1,176 @@
+.service_show_zone{
+    overflow: hidden;
+    .service_left_area{
+        float: left;
+        display: inline-block;
+    }
+    .sreview_area{
+    }
+    .service_area{
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 2px lightgray;
+        margin: 5px;
+        .service_flame{
+            margin: 0px 10px;
+            width: calc(100% - 20px);
+            .service_title_area{
+                margin-top: 0px;
+                .service_title{
+                    margin: 0px;
+                    border-bottom: solid 2px lightgray;
+                }
+            }
+            .edit_delete_area{
+                display: inline-block;
+                width: 100%;
+                float: right;
+                a{
+                    float: right;
+                    margin-left: 5px;
+                }
+            }
+            .share_zone{
+                display: inline-block;
+                display: block;
+                width: 100%;
+                height:30px;
+                .share_area{
+                    margin-right: 10px;
+                }
+            }
+            .service_condition_area{
+                margin-top: 10px;
+                @media(max-width:500px){
+                    margin-left: 10px;
+                }
+                @media(min-width:500px){
+                    margin-left: 30px;
+                }
+                tr{
+                    list-style-type: none;
+                    td{
+                        position: relative;
+                        padding-top: 3px;
+                        .service_condition{
+                            left:200px;
+                        }
+                    }
+                    .label_icon{
+                        text-align: center;
+                        .far, .fas{
+                            font-size: 15px;
+                            color: steelblue;
+                        }
+                    }
+                    .condition_name{
+                        font-size: 13px;
+                        color: gray;
+                        padding-bottom: 0px;
+                        border-radius: 5px;
+                        display: inline-block;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .service_image_area{
+                display: inline-block;
+                min-width: 200px;
+                max-width: 700px;
+                margin-left: auto;
+                margin-right: auto;
+                .service_image{
+                    width: 100%;
+                    object-fit: cover;
+                }
+            }
+            .service_detail_area{
+                .service_detail_name{
+                    margin-bottom: 10px;
+                }
+                .service_detail{
+                    margin-top: 0px;
+                    white-space: pre-line;
+                }
+            }
+            .transaction_button_area{
+                margin-top: 30px;
+                text-align: center;
+                height: 50px;
+                .transaction_button{
+                    width: 200px;
+                    display: inline-block;
+                    font-size: 15px;
+                    border-radius: 5px 5px 5px 5px;
+                    color: white;
+                    background-color: orange;
+                    box-shadow: 0 0 2px lightgray;
+                    padding: 5px 10px;
+                    //border-bottom: solid 4px #627295;
+                    text-decoration: none;
+                }
+                .transaction_button:hover{
+                    cursor: pointer;
+                    background-color: #FFC700;
+                    //border-bottom: solid 4px lightgray;
+                }
+                //.transaction_button:active {
+                //    /*ボタンを押したとき*/
+                //    -webkit-transform: translateY(4px);
+                //    transform: translateY(4px);/*下に動く*/
+                //    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);/*影を小さく*/
+                //    border-bottom: none;
+                //  }
+            }
+        }
+        .service_info_menu{
+            display: flex;
+            overflow-x:scroll;
+            white-space: nowrap;
+            //-webkit-overflow-scrolling: touch;
+            overflow-y: hidden;
+            li{
+                margin-bottom: 0px;
+                text-align: center;
+                color: gray;
+                display: inline-block;
+                vertical-align: middle;
+                
+                height: 40px;
+                line-height: 40px;
+                
+                min-width: 100px;
+            }
+            li:hover{
+                cursor: pointer;
+                background-color: gainsboro;
+            }
+            .user_content_link{
+                height: 40px;
+                padding: 13px 17px;
+                text-decoration: none;
+                color: gray;
+            }
+            .user_content_link:hover{
+                cursor: pointer;
+            }
+        }
+    }
+}
+@media(max-width:1000px){
+    .service_show_zone{
+        max-width: 700px;
+        margin-right: auto;
+        margin-left: auto;
+        .service_left_area{
+            width: calc(100%);
+        }
+    }
+}
+@media(min-width:1000px){
+    .service_show_zone{
+        .service_left_area{
+            width: calc(100% - 320px);
+        }
+    }
+}

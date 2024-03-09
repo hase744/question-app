@@ -1,0 +1,33 @@
+.footer_zone{
+    background-color: #404040;
+    width: 100%;
+    margin-top: 10px;
+    height: auto;
+    display: flex;
+    float: left;
+    .footer_flame{
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        height: auto; 
+        width: 100%;
+    }
+    .footer_area{
+        float: left;
+    }
+    .footer_text{
+        color: white;
+        text-decoration: none;
+    }
+    .footer_title{
+        margin: 0px;
+    }
+    .about_path{
+        margin: 5px;
+    }
+}
+.footer_component{
+    display: inline-block;
+    min-width: 200px;
+   float: left;
+}

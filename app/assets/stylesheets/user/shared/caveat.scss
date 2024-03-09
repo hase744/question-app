@@ -1,0 +1,14 @@
+.guide_link{
+    color: gray;
+    box-sizing: content-box;
+    background-color: whitesmoke;
+    border: 3px solid gray;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 5px;
+    display: block;
+    font-size: 20px;
+    .flame{
+        text-decoration: underline;
+    }
+}

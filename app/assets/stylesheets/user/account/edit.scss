@@ -1,0 +1,47 @@
+.account_edit_zone{
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    .account_edit_area{
+        width: calc(100% - 20px);
+        .category_drag_list li {
+            line-height:30px;
+            border:1px solid #cccccc;
+            cursor:pointer;
+          list-style: none;
+          position: relative;
+        }
+        .drag_icon_area{
+          float:right;
+          position: absolute;
+          background:red;
+          top:13px;
+          right:30px;
+        }
+        .drag_icon,
+        .drag_icon:before,
+        .drag_icon:after {
+          content: '';
+          display: block;
+          height: 3px;
+          width: 25px;
+          border-radius: 3px;
+          background: gray;
+          transition: 0.5s;
+          position: absolute;
+        }
+        .drag_icon:before {
+          bottom: 8px;
+        }
+        .drag_icon:after {
+          top: 8px;
+        }
+        
+        .category_drag_list{
+          padding-left:0;
+        }
+        
+    }
+}

@@ -1,0 +1,128 @@
+<%= render "user/shared/error_message", model: @request%>
+<%= render "user/shared/error_message", model: @request_item %>
+<%= render "user/shared/error_message", model: @transaction %>
+<%= render "user/shared/error_message", model: @service%>
+<%= render "user/shared/error_message", model: current_user%>
+<%if @service_exist %>
+  <h2 class="service_new_title"><%=@service.user.name%>さんのサービスを購入</h2>
+  <%= render "user/services/suggestion_cell", service:@service%>
+  <h2 class="service_new_title">依頼内容</h2>
+<% else %>
+  <h2 class="service_new_title">依頼を新規作成</h2>
+<% end %>
+<div class="service_new_zone">
+    <div class="service_new_area input_area">
+    <%= form_with model: @request, url: @path, method:"post" do |f| %>
+        <div class="field_area">
+          <%= f.label :title, class:"field_label"%><br/>
+          <h3 class="request_content"><%=@request.title %></h3>
+        </div>
+      
+        <div class="field_area">
+        <%= f.label :description, class:"field_label"%><br/>
+          <h3 class="request_content"><%=@request.description %></h3>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :category, class:"field_label"%><br/>
+          <h3 class="request_content"><%=@request.category.japanese_name%></h3>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :request_form, class:"field_label"%><br/>
+          <h3 class="request_content"><%=@request.request_form.japanese_name%></h3>
+        </div>
+
+        <div class="video_field_area" id="video_field_area">
+        <%= f.label :file, class:"field_label" %><br />
+            <%if @request.use_youtube%>
+                <div id="youtube_area">
+                  <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            <% end %>
+            <div class="field_area" id="file_field_area">
+                <% if @request.request_form.name == "image"%>
+                  <%= image_tag @request.file.url, class:"image"%>
+                <% end %>
+                <% if @request.request_form.name == "text" && @request.file.url != nil %>
+                  <%= image_tag @request.file.url, class:"image"%>
+                <% end %>
+                <% if @request.request_form.name == "text" && @request.file.url == nil %>
+                  <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+                  <img id="description_image" class="description_image">
+                
+                <% end %>
+                <% if @request.request_form.name == "video"%>
+                  <%if @request.use_youtube%>
+                  <% else %>
+                    <%= video_tag @request.file.url, class:"image",id:"video_display", controls: true, autobuffer: true%>
+                    <%= f.hidden_field :file_duration, id:"file_duration" %>
+                  <% end %>
+                <% end %>
+            </div>
+        </div>
+        <%##= f.file_field  :thumbnail, id:"thumbnail_input" %>
+        <div class="imgArea"></div>
+
+        <div class="field_area">
+          <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
+        </div>
+
+        <% if !@service_exist%>
+        <div class="field_area">
+            <%= f.label :max_price, class:"field_label"%><br/>
+            <h3 class="request_content"><%=@request.max_price%>円</h3>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :suggestion_deadline, class:"field_label"%><br/>
+          <h3 class="request_content"><%=readable_datetime(@request.suggestion_deadline)%></h3>
+        </div>
+        <% else %>
+        <%= f.hidden_field :service_id, value: @service.id %>
+        <% end %>
+
+        <%if !@request_published %>
+          <div class="submit_area">
+            <%= link_to "編集", @edit_path,class:"submit edit_link", id:"edit_link"%>
+          </div></br>
+        <% end %>
+
+        <div class="submit_area">
+          <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+          <%= f.hidden_field :transaction_id %>
+          <%= f.submit @submit_text, class:"submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"}%>
+        </div>
+      <% end %>
+    </div>
+</div>
+<canvas id="canvas"></canvas>
+<%= render "/user/images/description", text:@request.description %>
+</style>
+<script>
+
+window.addEventListener('load', (event) => {
+    if(gon.request_form == "text" && !gon.request_published){
+      create_description_image(); //
+    }
+  })
+
+video_display = document.getElementById("video_display")
+if(video_display != null){
+  video_display.addEventListener('loadeddata', function() {//フォームに値を代入
+  $("#file_duration").val(Math.floor(this.duration))
+  });
+}
+
+//create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
+function reload_description_image(){
+    if($("#desctiption_to_image_text").css("display") == "none"){
+    }else{
+        window.location.reload();
+    }
+}
+if(gon.request_form == "text"){
+    window.setTimeout(reload_description_image, 3000);
+}
+//awaitのためにasync追加
+</script>

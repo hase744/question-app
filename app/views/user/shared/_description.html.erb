@@ -1,0 +1,20 @@
+<div class="description_area">
+    <div class="description_text_area" id="descriptionn_content<%=text.model_name%><%=text.id%>">
+        <p id="description_text<%=text.model_name%><%=text.id%>" class="closing_text"><%=text.description%></p>
+    </div>
+    <div class="change_text open_text" id="open_text<%=text.model_name%><%=text.id%>"></div>
+</div>
+<script>
+var description_text_area = document.getElementById("description_text_area");
+var open_text<%=text.model_name%><%=text.id%> = document.getElementById("open_text<%=text.model_name%><%=text.id%>");
+var description_text<%=text.model_name%><%=text.id%> = document.getElementById("description_text<%=text.model_name%><%=text.id%>");
+
+open_text<%=text.model_name%><%=text.id%>.addEventListener('click', (event) => {
+    open_text<%=text.model_name%><%=text.id%>.classList.toggle("open_text");
+    open_text<%=text.model_name%><%=text.id%>.classList.toggle("close_text");
+    
+    description_text<%=text.model_name%><%=text.id%>.classList.toggle("opening_text");
+    description_text<%=text.model_name%><%=text.id%>.classList.toggle("closing_text");
+    console.log("description")
+});
+</script>

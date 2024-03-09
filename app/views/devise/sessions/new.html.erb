@@ -1,0 +1,32 @@
+<div class="common_register_area">
+  <div class="common_register_flame">
+    <div class="form_container">
+    <h2>ログイン</h2>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="form_group">
+          <%= f.label :email %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form_input", names:"email" %>
+        </div>
+      
+        <div class="form_group">
+          <%= f.label :password %>
+          <%= f.password_field :password, autocomplete: "current-password", class:"form_input", names:"password" %>
+        </div>
+      
+        <% if devise_mapping.rememberable? %>
+          <div class="form_group">
+            <%= f.check_box :remember_me %>
+            <span>ログインを記憶する</span>
+            <%##= f.label :remember_me %>
+          </div>
+        <% end %>
+      
+        <div class="actions submit_area">
+          <%= f.submit "ログイン",class:"submit-btn" %>
+        </div>
+      <% end %>
+      
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

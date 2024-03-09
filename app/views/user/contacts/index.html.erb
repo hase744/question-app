@@ -1,0 +1,52 @@
+<div class="contact_index_zone">
+    <p class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > メッセージ一覧</p>
+    <div class="contact_area opening">
+        <div class="contact_flame">
+            <% @contacts.each do |contact|%>
+                <%= render "user/contacts/cell", contact:contact%>
+            <% end %>
+        </div>
+    </div>
+</div>
+<%=javascript_pack_tag "user/contacts/index"%>
+<script>
+contact_flame = document.getElementsByClassName("contact_flame")
+window.onscroll = function(){
+    //要素全体の高さ　= 要素の表示の高さ + 要素の上からの長さ
+    var docHeight = $(document).innerHeight(), //ドキュメントの高さ
+        windowHeight = $(window).innerHeight(), //ウィンドウの高さ
+        pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+    if(pageBottom <= $(window).scrollTop()) {
+        page = Math.ceil(contact_flame[0].childElementCount/15)+1
+        console.log("取得ページ:" + page)
+        xml_request("/user/contacts/cells", page, contact_flame[0], insert_contact_elements, null)
+    }
+};
+
+var insert_contact_elements = function(json_response, scroll_element){
+    scroll_element.insertAdjacentHTML('beforeend', json_response);
+}
+
+var message_area = document.getElementsByClassName("message_area")
+console.log($(".message_area"))
+console.log(window.innerHeight)
+$(".message_area").height(window.innerHeight)
+
+if(false){
+$('.back_button_area').on('click', function() {
+    console.log("close")
+    $(".message_area").toggleClass("closing")
+    $(".message_area").toggleClass("opening")
+    $(".contact_area").toggleClass("closing")
+    $(".contact_area").toggleClass("opening")
+});
+$('.message_area_receive').on('click', function() {
+    console.log("open")
+    $(".message_area").toggleClass("closing")
+    $(".message_area").toggleClass("opening")
+    $(".contact_area").toggleClass("closing")
+    $(".contact_area").toggleClass("opening")
+});
+}
+</script>
+<%= javascript_pack_tag "shared/xml_request" %>

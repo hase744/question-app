@@ -1,0 +1,24 @@
+<div class="how_to_zone center_zone">
+    <div class="how_sell_area center_area">
+        <h2 class="zone_title">出品するサービスの指針</h2>
+        <div class="component_area" id="pdf_area">
+            <iframe src="/出品するサービスの指針.pdf" width="100%" heighth="100vh" class="pdf"></iframe>
+        </div>
+    </div>
+</div>
+<script>
+var pdf_area = document.getElementById("pdf_area");
+
+function isSmartPhone(){
+  if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+if(isSmartPhone()){
+    pdf_area.innerHTML = '<a href="/出品するサービスの指針.pdf">出品するサービスの指針</a>';
+}
+
+</script>

@@ -1,0 +1,83 @@
+.sidebar_notification_zone{
+    z-index: 2;
+    background-color: green;
+    height: 0px;
+    width: 100%;
+    transition-duration: 4s;
+    display: none;
+    float: right;
+    width:200px;
+    .menu_notification_cells_area{
+        z-index: 2;
+        position: absolute;
+        height: calc(100% - 50px);
+        width:200px;
+        right: 0px;
+        padding:0px 0px;
+        background-color: white;
+        box-shadow: 0px 0px 2px lightgray;
+        overflow: scroll;
+        .menu_notification_cells_flame{
+            position: relative;
+            width:200px;
+            vertical-align: middle;
+            //overflow: scroll;
+            .notification_cell{
+                min-height: 50px;
+                margin-bottom: 10px;
+                .image_area{
+                    display: inline-block;
+                    width: 40px;
+                    float: left;
+                    .image{
+                        height: 30px;
+                        width: 30px;
+                        margin: 5px;
+                        border-radius: 15px;
+                        object-fit: cover;
+                    }
+                }
+                .description_area{
+                    display: inline-block;
+                    width: calc(100% - 40px);
+                    .description{
+                        display: -webkit-box;
+                        margin: 0px;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        -webkit-line-clamp: 3;
+                        font-size: 12px;
+                    }
+                    .datetime{
+                        font-size: 13px;
+                        color: gray;
+                    }
+                }
+            }
+            .notification_cell:hover{
+                background-color: #EEEEEE;
+            }
+        }
+    }
+    .notification_margin{
+        z-index: 2;
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: calc(100% - 200px);
+        opacity: 0.5;
+        background-color: gray;
+        font-size: 30px;
+    }
+}
+.open_notification{
+    display: inline-block;
+}
+@media(min-width:1000px){
+    .notification_margin{
+        display: none;
+        height: 0px;
+        width: 0px;
+        z-index: -10;
+    }
+}

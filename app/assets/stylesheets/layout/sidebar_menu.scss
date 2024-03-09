@@ -1,0 +1,96 @@
+.sidebar_menu_zone{
+    z-index: 2;
+    background-color: blue;
+    height: 0px;
+    width: 100%;
+    transition-duration: 4s;
+    display: none;
+    float: right;
+    width:200px;
+    .sidebar_menu_area{
+        z-index: 2;
+        position: absolute;
+        height: calc(100vh - 50px);
+        width:200px;
+        right: 0px;
+        padding:0px 0px;
+        background-color: white;
+        box-shadow: 0px 0px 2px lightgray;
+        .sidebar_menu_flame{
+            position: relative;
+            height: 100%;
+            width:200px;
+            
+            vertical-align: middle;
+            .sidebar_menu_component{
+                height: 40px;
+                background-color: white;
+                position: relative;
+                width: calc(100%);
+                a{
+                    text-decoration: none;
+                    display: block;
+                    line-height: 40px;
+                    width: 200px;
+                    padding-left: 10px;
+                    color: #555555;
+                }
+                a:hover{
+                    background-color: #EEEEEE;
+                    cursor: pointer;
+                }
+            }
+            .sidebar_menu_profile{
+                
+                height: 70px;
+                a{
+                    line-height: 70px;
+                    background-color: white;
+                    .menu_profile_image{
+                        position: relative;
+                        padding: 10px;
+                        vertical-align: middle;
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 50px;
+                        object-fit: cover;
+                    }
+                }
+            }
+            .sidebar_menu_seller{
+                
+            }
+            .sidebar_menu_message{
+                
+            }
+            .sidebar_menu_request{
+                
+            }
+            .sidebar_menu_sell{
+                
+            }
+           
+            .sidebar_menu_logout{
+                
+            }
+        }
+    }
+    .sidebar_menu_margin{
+        z-index: 2;
+        position: absolute;
+        left: 0;
+        height: 100%;
+        width: calc(100% - 200px);
+        opacity: 0.5;
+        background-color: gray;
+        font-size: 30px;
+    }
+}
+@media(min-width:1000px){
+    .sidebar_menu_margin{
+        display: none;
+        height: 0px;
+        width: 0px;
+        z-index: -10;
+    }
+}

@@ -1,0 +1,15 @@
+<div class="services_index_zone">
+    <div class="main_header">
+        <%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%=Service.model_name.human %>一覧 <%#= paginate @services %>
+    </div>
+    <div class="service_index_flame service_cell_zone">
+        <% @services.each do |service| %>
+                <%= render "sample/services/cell", service: service%>
+        <% end %>
+    </div>
+    <div class="main_bottom">
+        <%#= paginate @services %>
+    </div>
+</div>
+<%=  javascript_pack_tag "user/services/index"%>
+<%=  javascript_pack_tag "user/services/cell"%>

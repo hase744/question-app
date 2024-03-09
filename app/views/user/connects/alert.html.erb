@@ -1,0 +1,7 @@
+<div class="component_area connect_alert_zone">
+    <div class="component_flame">
+        <h2>試行回数が規定値に達したため、<%=readable_datetime(@user.phone_confirmation_enabled_at)%>まで認証できません</h2>
+        <h3>試行回数：<%=@user.total_phone_confirmation_attempts%></h3>
+        <h1><%= from_now(@user.phone_confirmation_enabled_at)%></h1>
+    </div>
+</div>

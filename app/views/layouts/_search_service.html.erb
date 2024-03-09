@@ -1,0 +1,38 @@
+<div class="service_search_flame">
+    <div class="service_search_area">
+        <div class="modal_body">
+        <div class="modal_header">
+            <h4 class="p_tag">詳細な検索</h4>
+        </div>
+        <%= form_with url: user_services_path, class:"detail_search_form ",method:"get", id:"" do |f| %>
+            <div class="text_field_area">
+                <%= f.text_field :word, value:params[:word], class:"text_field "%><span class="fa fa-search"></span>
+            </div>
+            <label class="field_label">料金</label><br />
+            <%= f.number_field :max_price, value:params[:max_price], type:"number",min:"0",placeholder:"Max",step:"100", class:"max_price_field"%>
+            <span>〜</span>
+            <%= f.number_field :mini_price, value:params[:mini_price], type:"number",min:"0",placeholder:"min",step:"100",  class:"mini_price_field"%>
+            <br />
+            
+            <label class="field_label">質問形式</label><br />
+            <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+
+            <label class="field_label">回答形式</label><br />
+            <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+            </br>
+            <div class="category_area">
+                <label class="field_label">カテゴリー</label><br />
+                <%= render "layouts/form_category", f:f%>
+            </div>
+
+            </br>
+            <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>在庫あり</span>
+            </br>
+            </br>
+            <div class="search_button_area">
+                <%= f.submit '検索',class:"search_button", placeholder:"" %>
+            </div>
+        <% end %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+.payment_show_zone{
+    .payment_show_area{
+        text-align: center;
+    }
+    .payment_show_flame{
+        display: inline-block;
+        max-width: 350px;
+        text-align: left;
+        .total_points{
+            margin: 0px;
+            .total_point_label{}
+        }
+        .point_description{
+            margin-top: 0px;
+            color: dimgray;
+        }
+        .point_sum{
+            margin-bottom: 0px;
+        }
+        .refund_label{
+            color: dimgray;
+        }
+    }
+    .submit{
+        text-align: center;
+    }
+    .submit_area{
+        margin-top: 30px;
+        text-align: center;
+        height: 40px;
+        .submit{
+            width: 200px;
+            display: inline-block;
+            font-size: 15px;
+            border-radius: 5px 5px 5px 5px;
+            color: white;
+            background-color: orange;
+            box-shadow: 0 0 2px lightgray;
+            padding: 5px 10px;
+            //border-bottom: solid 4px #627295;
+            text-decoration: none;
+        }
+        .submit:hover{
+            cursor: pointer;
+            background-color: #FFC700;
+            //border-bottom: solid 4px lightgray;
+        }
+        //.suggest_button:active {
+        //    /*ボタンを押したとき*/
+        //    -webkit-transform: translateY(4px);
+        //    transform: translateY(4px);/*下に動く*/
+        //    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);/*影を小さく*/
+        //    border-bottom: none;
+        //  }
+    }
+    .detail_line{
+        margin: 5px;
+        color: dimgray;
+    }
+}

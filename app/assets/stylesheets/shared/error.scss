@@ -1,0 +1,10 @@
+.error_component_area{
+    background-color: pink;
+    border: 3px solid red;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    .error_component_flame{
+        width: calc(100% - 20px);
+    }
+}

@@ -1,0 +1,25 @@
+<div class="how_to_zone center_zone">
+    <div class="how_cancel_area center_area">
+        <h2 class="zone_title">キャンセル方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">②右上からサイドメニューを開く</li>
+                <li class="step">③「取引一覧」を選択</li>
+            </ol>
+            <%#= image_tag "/open_orders_index.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">④「<%= link_to "購入中", user_orders_path(user: "buyer", status:"ongoing")%>」を選択</li>
+                <li class="step">⑤取引の中からキャンセルしたい取引を探し「キャンセル」を選択</li>
+                <li class="step">⑥「依頼をキャンセルしますか？」に「OK」を選択
+                <div class="caution">＊依頼のキャンセルは納期が過ぎても納品がされない場合にしかでません。</div>
+                <div class="caution">＊依頼をキャンセルした場合には、売り手は報酬を受け取れません。また、依頼人の購入時に消費したポイントは戻され購入前に戻ります。</div></li>
+            </ol>
+            <%= image_tag "/how_to_use/order_index_cancel.png", class:"width_100"%>
+        </div>
+    </div>
+</div>

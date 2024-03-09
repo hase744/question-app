@@ -1,0 +1,13 @@
+<%=video_tag @url, controls: true, autobuffer: true, id:"video" %>
+<script>
+//alert("time")
+video = document.getElementById("video")
+var time = video.duration
+//alert(time)
+document.getElementById('video').addEventListener('loadeddata', function() {
+    console.log("loadeddata発生")
+    console.log(this.duration)
+    console.log(this)
+
+});
+</script>

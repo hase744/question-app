@@ -1,0 +1,19 @@
+<p><%=@service.user.name%>さんの依頼にサービスの提案がされました。</p>
+
+<table>
+  <tr>
+    <td>タイトル</td>
+    <td>：<%=@service.title%></td>
+  </tr>
+  <tr>
+    <td>料金</td>
+    <td>：<%=@service.price%>円</td>
+  </tr>
+  <tr>
+    <td>提案者</td>
+    <td>：<%=@service.user.name%></td>
+  </tr>
+</table>
+
+<p><%= link_to @service.title, user_service_url(@service.id) %></p>
+<%= render "email/shared/bottom" %>

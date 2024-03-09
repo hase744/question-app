@@ -1,0 +1,25 @@
+<div class="how_to_zone center_zone">
+    <div class="how_request_area center_area">
+        <h2 class="zone_title">ポイントのチャージ方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">②<%= link_to "クレジットカード登録ページ", new_user_cards_path%>でクレジットカードを登録</li>
+                <li class="step">＊JCBは登録いただけません</li>
+            </ol>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">③右上からサイドメニューを開く</li>
+                <li class="step">④「<%=link_to "マイページ",user_configs_path %>」を選択</li>
+                <li class="step">⑤「<%= link_to "ポイント", user_payments_path%>」を選択</li>
+                <%= image_tag "/how_to_use/payment_new.png", class:"width_100"%>
+                <li class="step">⑥購入するポイントを選択</li>
+                <li class="step">⑦「購入」を選択</li>
+                <li class="step">⑧「購入しますか？」に「OK」を選択</li>
+            </ol>
+        </div>
+    </div>
+</div>

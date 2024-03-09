@@ -1,0 +1,93 @@
+<div class="config_index_zone">
+    <div class="user_top_area">
+        <div class="user_image_area">
+            <%if @user.image.url == nil%>
+                <%=image_tag "/profile.jpg", class:"user_image"%>
+            <% else %>
+                <%=image_tag @user.image.url, class:"user_image"%>
+            <% end %>
+        </div>
+        <div class="user_text_area">
+            <h2 class="user_name"><%= link_to @user.name, user_account_path(@user.id), class:"link" %></h2>
+            <h4 class="total_points_display">
+                <span class="label">保有ポイント</span>
+                <span class="points"><%=current_user.total_points%>p</span>
+            </h4>
+            <%if @balance.present? %>
+                <%if @account.requirements.disabled_reason == "under_review" %>
+                <span class="payment_enabled false">審査中</span>
+                <div class="caveat">＊審査中であっても出品可能です。</div>
+                <!--
+                    <div class="caveat">＊審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください</div>
+                -->
+                <% elsif @account.requirements.disabled_reason == nil %>
+                    <span class="payment_enabled true">審査済</span>
+                <% end %>
+
+                <div class="account_status_area">
+                    <span class="label">口座振り込み</span>
+                    <% if @account.payouts_enabled %>
+                        <span class="enabled able_info">有効</span>
+                    <% else %>
+                        <span class="disabled able_info">無効</span>
+                    <% end %>
+                    <!--
+                    <span class="label">　報酬の受け取り</span>
+                    <% if @account.charges_enabled %>
+                        <span class="enabled able_info">有効</span>
+                    <% else %>
+                        <span class="disabled able_info">無効</span>
+                    <% end %>
+                    -->
+                </div>
+
+            <% else %>
+                <p class="finance_component">回答者情報未登録</p>
+                <%=link_to "新規登録", new_user_connects_path%>
+            <% end %>
+            <h4 class="finance_component week_label">今週の決算</h4>
+            <table class="finance_component">
+                <tr>
+                    <th><span class="finance_label">売 上</span>
+                    </th>
+                    <th>
+                    </th>
+                    <th class="finance_result">¥<%=@profit_sum + @margin_sum%>
+                    </th>
+                </tr>
+                <tr>
+                    <th><span class="finance_label">手数料</span>
+                    </th>
+                    <th>
+                    </th>
+                    <th class="finance_result">-¥<%=@margin_sum%>
+                    </th>
+                </tr>
+                <tr>
+                    <th><span class="finance_label">利 益</span>
+                    </th>
+                    <th>
+                    </th>
+                    <th class="finance_result">¥<%=@balance_amount %>
+                    </th>
+                </tr>
+            </table>
+            <div class="caveat">＊<%=date_of_payment%>振り込み</div>
+        </div>
+    </div>
+    <%= link_to(user_cards_path, class:"link_area config_component_area") do %>
+        <h4 class="far fa-credit-card">&nbsp;クレジットカード情報</h4>
+    <% end %>
+    <%= link_to(edit_user_configs_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-cogs">&nbsp;設定</h4>
+    <% end %>
+    <%= link_to(user_connects_path, class:"link_area config_component_area") do %>
+        <h4 class="far fa-id-card">&nbsp;回答者情報</h4>
+    <% end %>
+    <%= link_to(user_payments_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-coins">&nbsp;ポイント</h4>
+    <% end %>
+    <%= link_to(user_orders_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-exchange-alt">&nbsp;取引一覧</h4>
+    <% end %>
+</div>

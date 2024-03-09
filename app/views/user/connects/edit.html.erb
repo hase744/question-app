@@ -1,0 +1,109 @@
+<h3 class="zone_title"><%= link_to "設定", user_configs_path, class:"main_area_top_link" %> ＞ 回答者情報</h3>
+<div class="common_register_area">
+    <div class="common_register_flame">
+        <%= form_with url: user_connects_path, method:"PUT", model:@user do |form| %>
+            <div class="form_container">
+                <h3 class="field_area_title">身分証</h3></br>
+                <div class="form_group">
+                    <%=form.file_field :certification, class:"form_input", required:true%></br>
+                    <div>以下の内いずれかのカラー写真をアップロードしてください。</div>
+                    <li>パスポート</li>
+                    <li>運転免許証</li>
+                    <li>在留カード・特別永住者証明書</li>
+                    <li>マイナンバーカード (顔写真付き)</li>
+                    <li>住民票</li>
+                </di>
+                <!--nameとすると送信するパラメーターのキーがnameの値になってしまうため、とりあえずnamesにしている-->
+                <h3 class="form_title">本名</h3>
+                <div class="form_group">
+                    <label for="last-name">姓</label></br>
+                    <%=form.text_field :last_name_kanji, class:"form_input", id:"last-name", names:"last-name", placeholder:"漢字", required:true%>
+                    <%=form.text_field :last_name_kana, class:"form_input", id:"last-name", names:"last-name", placeholder:"カナ", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="first-name">名</label></br>
+                    <%=form.text_field :first_name_kanji, class:"form_input", id:"first-name", names:"first-name", placeholder:"漢字", required:true%>
+                    <%=form.text_field :first_name_kana, class:"form_input", id:"first-name", names:"first-name", placeholder:"カナ", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="first-name">性別</label></br>
+                    <%=form.hidden_field :gender, class:"form_input", id:"gender", required:true%>
+                    <%=form.check_box :is_male, class:"checkbox",id:"male_checkbox" %><span>男性</span>
+                    <%=form.check_box :is_female, class:"checkbox",id:"female_checkbox" %><span>女性</span>
+                </div>
+                <h3 class="form_title">住所</h3>
+                <div class="form_group">
+                    <label for="prefecture">都道府県</label></br>
+                    <%=form.text_field :state_kanji, class:"form_input", id:"prefecture", names:"prefecture", placeholder:"漢字", required:true%>
+                    <%=form.text_field :state_kana, class:"form_input", id:"prefecture", names:"prefecture", placeholder:"カナ", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="city">市区町村</label></br>
+                    <%=form.text_field :city_kanji, class:"form_input",id:"city", names:"city", placeholder:"漢字",  required:true%>
+                    <%=form.text_field :city_kana, class:"form_input",id:"city", names:"city", placeholder:"カナ",  required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="town">町域</label></br>
+                    <%=form.text_field :town_kanji, class:"form_input", id:"town", names:"town", placeholder:"漢字", required:true%>
+                    <%=form.text_field :town_kana, class:"form_input", id:"town", names:"town", placeholder:"カナ", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="address">丁目・番地・号</label></br>
+                    <%=form.text_field :line1_kanji, class:"form_input", id:"address", names:"address", placeholder:"例：1-2-3", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="apartment">マンション・アパート名・部屋番号（任意）</label></br>
+                    <%=form.text_field :line2_kanji, class:"form_input", id:"apart", names:"apart", placeholder:"漢字" %>
+                    <%=form.text_field :line2_kana, class:"form_input", id:"apart", names:"apart", placeholder:"カナ" %>
+                </div>
+                <div class="form_group">
+                    <label for="birthdate">生年月日</label></br>
+                    <%=form.date_field :birth_date, class:"form_input", id:"birthdate", names:"birthdate",  required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="zipcode">郵便番号</label></br>
+                    <%=form.text_field :postal_code, class:"form_input",id:"zipcode", names:"zipcode", placeholder:"例：123-4567", maxlength:"8",  required:true%>
+                </div>
+                <h3 class="form_title">振込先情報</h3>
+                <div class="form_group">
+                    <label for="full-name">口座名義</label></br>
+                    <%=form.text_field :account_holder_name, class:"form_input", id:"full-name", names:"full-name", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="bank_number">金融機関コード</label></br>
+                    <%=form.text_field :bank_number, class:"form_input",id:"bank_number", names:"bank_number", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="branch_number">支店番号</label></br>
+                    <%=form.text_field :branch_number, class:"form_input",id:"branch_number", names:"branch_number", required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="account_number">口座番号</label></br>
+                    <%=form.text_field :account_number, class:"form_input",id:"account_number", names:"account_number", required:true%>
+                </div>
+            </div>
+            <div class="submit_area">
+                <%= form.submit '登録',class:"submit-btn", placeholder:"", data:{confirm: "登録しますか？"}  %>
+            </div>
+        <% end %>
+    </div>
+</div>
+<script>
+var maleCheckbox = document.getElementById('male_checkbox');
+var femaleCheckbox = document.getElementById('female_checkbox');
+var genderField = document.getElementById('gender');
+
+maleCheckbox.addEventListener('change', function() {
+  if (this.checked) {
+    femaleCheckbox.checked = false;
+    genderField.value = 'male';
+  }
+});
+
+femaleCheckbox.addEventListener('change', function() {
+  if (this.checked) {
+    maleCheckbox.checked = false;
+    genderField.value = 'female';
+  }
+});
+</script>

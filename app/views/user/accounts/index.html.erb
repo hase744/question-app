@@ -1,0 +1,47 @@
+<div class="searched_user_zone">
+    <%if current_state == "register" %>
+        <%= render "user/shared/state_register_alert" %>
+    <%else%>
+        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home" %> > 回答者一覧<%= paginate @users %></div>
+        <div class="searched_user_area" id="searched_user_area">
+            <div  id="searched_user_area">
+                <% @users.each do |user|%>
+                    <%= render "user/accounts/cell", user:user %>
+                <% end %>
+            </div>
+        </div>
+        <%= paginate @users %>
+    <% end %>
+</div>
+<%= javascript_pack_tag "user/accounts/index"%>
+<script>
+var content = document.getElementById("content")
+var searched_user_area = document.getElementById("searched_user_area")
+var star5_rating = document.getElementsByClassName("star5_rating")
+
+//ドキュメントスタイルの取得
+var sheets = document.styleSheets
+var sheet = sheets[sheets.length - 1];
+
+//content.options[0].selected = false;
+//content.options[3].selected = true;
+$(".search_detail").css("display","none")
+
+//rateを割合に変換してcssに擬似要素として星を挿入
+<% @users.each do |user| %>
+    <%if user.total_reviews > 0 %>
+    let star_rate<%=user.id%> = <%= (user.average_star_rating*20).round(1)%>
+    console.log(star_rate<%=user.id%>)
+    sheets[0].insertRule(
+        `.user<%=user.id%>::after { width: ${star_rate<%=user.id%>}% }`,
+        0
+    );
+    <% end %>
+<% end %>
+
+//console.log(content.options)
+//content.options[0].selected = false;
+//content.options[3].selected = true;
+set_search_detail()
+
+</script>

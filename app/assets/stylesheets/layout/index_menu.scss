@@ -1,0 +1,69 @@
+.index_link_zone{
+    width: 100%;
+    z-index: -0.5;
+    .index_link_area{
+        background-color: white;
+        //position: absolute;
+        //top:50px;
+        width: 100%;
+        box-shadow: 0 0 2px lightgray;
+        .index_link{
+            float: right;
+            display: inline-block;
+            height:100%;
+            text-decoration: none;
+            color: dimgray;
+            //box-shadow: 0 0 2px lightgray;
+            //box-shadow: 4px 0 3px -3px lightgray;
+            //box-shadow: 4px 0 3px -3px lightgray inset;
+            //border-left: 3px solid red;
+            .index_link_text{
+                margin: 0px;
+                padding-top: 7px;
+                text-align: center;
+                margin: 0 auto;
+            }
+        }
+        .index_link:hover{
+            background-color: whitesmoke;
+            border-radius: 5px;
+        }
+        .index_link_component{
+        }
+    }
+}
+.index_link_margin{
+    @media(min-width: 1000px){
+        height: 40px;
+        width: 100%;
+        position: relative;
+        background-color: white;
+    }
+}
+//1000px以下
+@media(max-width:1000px){
+    .index_link_area{
+        height: 30px;
+    }
+    .index_link{
+        width: 70px;
+    }
+    .index_link_text{
+        font-size: 10px;
+    }
+}
+//1000px以上
+@media(min-width:1000px){
+    .index_link_area{
+        height:40px;
+    }
+    .index_link{
+        width: 150px;
+    }
+    .index_link_margin{
+        height: 30px;
+    }
+    .index_link_margin{
+        height: 40px;
+    }
+}

@@ -1,0 +1,120 @@
+
+<div class="display_none" id="display_setting">
+  <div class="answer_zone" id="canvas-box">
+      <h1 class="title_area">コレテク</h1>
+      <div class="answer_area">
+          <div class="message_area" id="message_area">
+          <%=text%>
+          </div>
+      </div>
+  </div>
+</div>
+<style>
+.display_none{
+    /*display: none;*/
+}
+body{
+}
+.answer_zone{
+    margin-left: -10px;
+   padding-bottom: 50px;
+    width: calc(100% + 20px);
+    min-height: 300px;
+    background-color: #FFFF66;
+    text-align: center;
+    padding-right: 50px;
+    padding-left: 50px;
+    width:1000px;
+}
+.title_area{
+    text-shadow: 0 0 10px lightgray;
+}
+.answer_area{
+    border-radius: 100px;
+    min-height: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -20px;
+    //padding-top:100px;
+    //padding-bottom:100px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.message_area{
+    max-width: 100%;
+    margin-bottom: 100px;
+    font-size: 40px;
+    word-break: keep-all;
+    word-wrap: break-word;
+    white-space: pre-line;
+    font-family:"Hannotate SC";
+    //min-height: ;
+}
+h1{
+color: white; 
+}
+</style>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<script>
+var description_image = document.getElementById("description_image")
+var file_input = document.getElementById('file_input');
+
+mini_font_size = 30
+max_font_size = 50
+text_length = $("#message_area").text().length
+console.log(text_length)
+if(text_length < 100){
+  var font_size = mini_font_size + ((max_font_size - mini_font_size)/100)*text_length
+}else{
+  var font_size = 30
+}
+$(".message_area").css("font-size",`${font_size}px`)
+
+
+
+var now = new Date();
+var year = now.getFullYear();
+var month = now.getMonth();
+var date = now.getDate();
+var hour = now.getHours();
+var min = now.getMinutes();
+var sec = now.getSeconds();
+var datetime = `${year}${month}${date}${hour}${min}${sec}`;
+
+function create_description_image(){
+  $("#display_setting").css("display","block")
+  document.getElementById("submit").disabled = true //送信できなくする
+    var formData = new FormData();
+      console.log("text")
+      console.log(html2canvas)
+      html2canvas(document.querySelector("#canvas-box")).then(canvas => { 
+        var imageBlob = canvas.toBlob(function(blob) {
+          console.log(blob)
+          formData.append("request[file]",blob, `picture${datetime}.png`);
+          const pngFile = new File([blob], `description_image${datetime}.png`, {type: "image/png"});
+          const dt = new DataTransfer();
+          dt.items.add(pngFile); //DataTransferにファイルを挿入
+          console.log(file_input)
+          file_input.files = dt.files; //送信フォームにDataTransferを挿入
+          description_image.src = URL.createObjectURL(blob); //画像要素にblobを挿入
+          $("#desctiption_to_image_text").css("display","none")
+          document.getElementById("submit").disabled = false //送信可能にする
+          console.log("変換成功")
+        });
+        //以下はダウンロードさせる場合のコード
+        //var blob = canvas.toBlob(function(){}, "image/png", 0.95);
+        //console.log(toString(blob))
+        //console.log(canvas)
+        //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
+        //downloadEle.href = canvas.toDataURL("image/png");
+        //downloadEle.download = "canvas.png";
+        //downloadEle.click(); //ダウンロードさせる場合
+      });
+    document.getElementById("submit").disabled = false //送信できるようにする
+    $("#display_setting").css("display","none")
+}
+</script>

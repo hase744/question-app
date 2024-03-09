@@ -1,0 +1,56 @@
+
+.new_user{
+    display: inline;
+}
+.follow_field_tag{
+    display: inline;
+}
+
+.follow_message_area{
+    margin-top: 10px;
+    display: inline-block;
+    .message_follow_button_flame{
+        display: inline-block;
+        
+        padding: 2px;
+        border-radius: 20px;
+        font-size: 15px;
+    }
+    .follow_button_flame{
+    }
+    .follow_button{
+        padding: 7px;
+        display: inline;
+        border: none;
+        border: 2px solid red;
+        border-radius: 20px;
+        text-decoration:none;
+    }
+    .follow_button:hover{
+        border: 2px solid pink;
+        color: pink;
+    }
+    .message_button{
+        padding: 7px;
+        display: inline;
+        border: none;
+        border: 2px solid green;
+        border-radius: 20px;
+        text-decoration:none;
+    }
+    .message_button:hover{
+        border: 2px solid lightgreen;
+        color: lightgreen;
+    }
+    .fa-user-plus{
+        color: red;
+        z-index: 2;
+    }
+    .fa-envelope{
+        color: green;
+    }
+    .unfollowed_button{
+        color: white;
+        background-color: red;
+    }
+}

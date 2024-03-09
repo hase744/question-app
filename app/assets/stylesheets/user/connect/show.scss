@@ -1,0 +1,23 @@
+.connect_show_zone{
+    .title_label{
+        margin-bottom: 0px;
+        margin-top: 10px;
+        display: inline-block;
+    }
+    span{
+        display: inline-block;
+        font-weight: bolder;
+    }
+    .payment_enabled{
+        border-radius: 3px;
+        padding: 0px 3px;
+    }
+    .false{
+        background-color: orange;
+        color: saddlebrown;
+    }
+    .true{
+        background-color: lightgreen;
+        color: darkgreen;
+    }
+}

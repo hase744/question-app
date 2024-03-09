@@ -1,0 +1,49 @@
+.transaction_message_cell_area{
+    display: inline-block;
+    width: calc(100% - 10px);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px lightgray;
+    margin: 5px;
+    .image_name_area{
+        height: 50px;
+        .image_area{
+            display: inline-block;
+            width: 50px;
+            height: 100%;
+            float: left;
+            @media(max-width:500px){
+                width: 50px;
+            }
+            @media(min-width:500px){
+                width: 50px;
+            }
+            .user_image{
+                object-fit: cover;
+                height: 40px;
+                width: 40px;
+                margin: 5px;
+                border-radius: 25px;
+            }
+        }
+        .time_name_area{
+            display: inline-block;
+            width: calc(100% - 60px);
+            float: left;
+        }
+        .send_time{
+            color: gray;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .user_name{
+            margin: 0px;
+        }
+    }
+    .message_text_area{
+        .message_text{
+            padding: 5px;
+            white-space: pre-line;
+        }
+    }
+}

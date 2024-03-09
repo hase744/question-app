@@ -1,0 +1,74 @@
+<div id="user_profile" class="user_show_zone">
+<p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%> > <%=@user.name%></p>
+    <div class="user_profile_area">
+        <div class="user_profile_introduction">
+            <div class="user_info_image">
+                <div class="header_image_area">
+                    <% if @user.header_image.url %>
+                        <%=image_tag @user.header_image.url, class:"header_image"%>
+                    <% end %>
+                </div>
+                <div class="user_image_area">
+                    <% if @user.image.url %>
+                        <%=image_tag @user.image.url, class:"user_image"%>
+                    <% else %>
+                        <%=image_tag "/profile.jpg", class:"user_image"%>
+                    <% end %>
+                </div>
+                
+                <div class="user_edit_area user_edit1">
+                    <%= render "user/relationships/follow_message", user: @user, relationship: @relationship%>
+                </div>
+                <div class="user_name_area">
+                    <h2 class="user_name">
+                        <%=@user.name%>
+                        <span class="last_login_area last_login2">
+                            <% if @user.is_seller %>
+                                <span class="last_login_name">最終ログイン</span>
+                            <% end %>
+                            <span><%= from_now(@user.last_login_at)%></span>
+                        </span>
+                    </h2 class="user_name">
+                </div>
+                <% if @user.is_seller %>
+                    <div class="user_basic_info">
+                        <%=render "user/accounts/user_basic_info", user:@user, star_rating: @user.id%>
+                    </div>
+                <% end %>
+               
+            </div>
+            <span></span>
+            <div class="user_intro_area" id="user_intro_area">
+            <!--
+                <div class="youtube_video_area" id="youtube_video_area">
+                    <iframe id="youtube_video" class="youtube_video 16_to_9"src="https://www.youtube.com/embed/-BdsyC6xhCk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                -->
+                <div class="change_text open_text" id="open_text"></div>
+            </div>
+            
+            <%= render "user/shared/description", text:@user %>
+            <div class="user_profile_menu" id="request_ajax_update">
+            <% @bar_elements.each do |element| %>
+                <%if !(!@user.is_seller && element[:for_seller])%>
+                <li class="menu_element"><%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%></li>
+                <% end %>
+            <% end %>
+            </div>
+        </div>
+    </div>
+    
+    <div class="user_detail" id="updated_by_ajax">
+        <%= render partial: "user/accounts/posts", locals: { contents: @posts}%>
+    </div>
+</div>
+<%= javascript_pack_tag javascript_path %>
+<%= javascript_pack_tag "shared/xml_request" %>
+<%= javascript_pack_tag "shared/check_scroll" %>
+<script>
+<% flash.each do |type, message| %>
+    // Bootstrapを導入しているため、`class="alert alert-success"`としています
+      $("#added-message").html('<p class="alert alert-success"><%= type %><%= message %></p>')
+      $("#result").html(users_list)
+<% end %>
+</script>

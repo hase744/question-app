@@ -1,0 +1,13 @@
+<div class="connect_certify_phone_zone component_area">
+    <div class="connect_certify_phone_area component_flame">
+        <%= form_with url: user_connects_path do |form| %>
+            <h3 class="field_area_title">送信された番号を入力</h3></br>
+            <%=form.text_field :phone_confirmation_token, class:"form_input", pattern:"^[0-9-]+$" %></br>
+            <%= link_to "再送信", user_connects_send_token_path %></br>
+            <%= link_to "電話番号再設定", new_user_connects_path %>
+            <div class="submit_area">
+                <%= form.submit '送信',class:"submit", placeholder:"" %>
+            </div>
+        <% end %>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<%if params[:order] == "ASC" || params[:order] == nil%>
+    降順
+    <%= link_to "昇順", user_transaction_path(page:1,order:"ASC"), remote:true%>
+<% elsif params[:order] == "DESC" %>
+    <%= link_to "降順", user_transaction_path(page:1,order:"DESC"), remote:true%>
+    昇順
+<% end %>

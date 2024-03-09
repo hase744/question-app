@@ -1,0 +1,2 @@
+module Sample::AccountsHelper
+end

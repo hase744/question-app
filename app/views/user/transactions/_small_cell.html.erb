@@ -1,0 +1,41 @@
+
+<div class="transaction_small_cell" id="transaction_small_cell">
+<div class="transaction_flame" >
+    <div class="transaction_content">
+        <%= link_to(user_transaction_path(transaction.id), class: 'transaction_link') do %>
+            <h4 class="title  request_title one_line_text"><%=transaction.request.title%></h4>
+            <h4 class="title one_line_text"><span class="title transaction_title ">A.&nbsp;<%=transaction.title%></span></h4>
+            <div class="file_area video_area">
+                <%if transaction.use_youtube%><% %>
+                    <img src="https://img.youtube.com/vi/<%=transaction.youtube_id%>/maxresdefault.jpg" alt="Dinosaur" class="file transaction_file youtube_video">
+                    <!--
+                    <iframe class="file transaction_file youtube_video" src="https://www.youtube.com/embed/<%=transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    -->
+                <%elsif transaction.thumbnail &&  transaction.thumbnail.url%>
+                    <%= image_tag transaction.thumbnail.url, class:"file transaction_file youtube_video "%>
+                <% elsif transaction.file && transaction.file.url %>
+                    <% if transaction.delivery_form == "image" || transaction.delivery_form == "text"%>
+                        <%= image_tag transaction.file.url, class:"file transaction_file youtube_video "%>
+                    <% elsif transaction.delivery_form == "video" %>
+                    <% end %>
+                <% end %>
+            </div>
+            <div class="seller_area" onclick="goVideoShow(<%=transaction.id%>)">
+                <div class="seller_image_and_title">
+                    <div class="seller_image_flame">
+                        <%if transaction.seller.image.present? %>
+                            <%=image_tag transaction.seller.image.url, class:"seller_image"%>
+                        <% else %>
+                            <%=image_tag "/profile.jpg", class:"seller_image"%>
+                        <% end %>
+                    </div>
+                    <div class="name_detail_area">
+                        <p class="seller_name"><%=transaction.seller.name%></p>
+                        <p class="video_detail"><%=transaction.delivered_at.strftime("%m月%d日")%></p>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+    </div>
+</div>
+</div>

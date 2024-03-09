@@ -1,0 +1,26 @@
+<div class="home_show_zone">
+    <h3 class="home_label">サービス <%=link_to "もっと見る", user_services_path, class:"detail_link" %></h3>
+    <div class="home_service_area">
+        <% @services.each do |service| %>
+            <div class="home_service_unit">
+            <%= render "user/services/small_cell", service: service%>
+            </div>
+        <% end %>
+    </div>
+    <h3 class="home_label">回答者<%=link_to "もっと見る", user_accounts_path, class:"detail_link" %></h3>
+        <div class="home_user_area to500">
+            <% @users.each do |user| %>
+                <div class="home_user_unit">
+                <%= render "user/accounts/small_cell", user: user %>
+                </div>
+            <% end %>
+        </div>
+    <div>
+    </div>
+    <h3 class="home_label">回答<%=link_to "もっと見る", user_transactions_path, class:"detail_link" %></h3>
+    <% @transactions.each do |transaction|%>
+        <%= render "user/transactions/small_cell", transaction:transaction %>
+    <% end %>
+    </h2>
+    <%= javascript_pack_tag "user/transactions/index"%>
+</div>

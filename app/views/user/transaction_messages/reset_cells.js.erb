@@ -1,0 +1,5 @@
+console.log("ajax成功")
+var transaction_message_area = document.getElementsByClassName("transaction_message_area")
+transaction_message_area[0].innerHTML = `<%= render partial:  "user/transaction_messages/cells", locals: {transaction_messages:@transaction_messages}%>`;
+$(".loading_animation").css("display","none");
+$("#loaded_transaction_messages_number").html(transaction_message_area[0].childElementCount)

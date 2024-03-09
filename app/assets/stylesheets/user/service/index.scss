@@ -1,0 +1,13 @@
+.services_index_zone{
+    width: 100%;
+    height: 100%;
+}
+.service_cell_zone{
+    width: 100%;
+    height: 100%;
+    .service_cell_area{
+        float: left;
+        display: inline-block;
+        height: 320px;
+    }
+}

@@ -1,0 +1,12 @@
+<span id="star_rating" class="star5_rating user<%=user.id%>" data-rate="4"></span>
+<span class="seller_review <%= user%>"></span>
+<script>
+var sheets = document.styleSheets
+console.log("load")
+    let star_rate<%=user.id%> = <%= user.average_star_rating*20.round(1)%>
+    console.log(star_rate<%=user.id%>)
+    sheets[0].insertRule(
+        `.user<%=user.id%>::after { width: ${star_rate<%=user.id%>}% }`,
+        0
+    );
+</script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="stylesheet_folder/style2.css">
+    <title>サンプル</title>
+</head>
+<body>
+    <div class="answer_zone">
+        <h1 class="title">コレテク</h1>
+        <div class="answer_area">
+            <div class="message_area">
+                <%=@text%>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<style>
+body{
+}
+.answer_zone{
+    
+    margin-top: -22px;
+    margin-left: -10px;
+    padding-top: 20px;
+   padding-bottom: 100px;
+    width: calc(100% + 20px);
+    min-height: 700px;
+    background-color: #FFFF66;
+    text-align: center;
+    padding-right: 100px;
+    padding-left: 100px;
+}
+.title{
+    text-shadow: 0 0 5px lightgray;
+}
+.answer_area{
+    border-radius: 100px;
+    min-height: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top:100px;
+    padding-bottom:100px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+.message_area{
+    max-width: 100%;
+    margin-bottom: 100px;
+    font-size: 20px;
+    word-break: keep-all;
+    white-space: pre-line;
+}
+h1{
+color: white; 
+}
+</style>

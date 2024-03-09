@@ -1,0 +1,55 @@
+<div class="sidebar_menu_zone" id="sidebar_menu_zone">
+    <div class="sidebar_menu_margin" id="sidebar_menu_margin">
+    ＜
+    </div>
+    <div class="sidebar_menu_area side_menu">
+         <div class="sidebar_menu_flame">
+            <div class="sidebar_menu_profile sidebar_menu_component">
+                <%if current_user %>
+                <a href="/user/accounts/<%=current_user.id%>">
+                <% if current_user.image.url %>
+                    <%=image_tag current_user.image.url, class:"menu_profile_image"%>
+                <% else %>
+                    <%=image_tag "/profile.jpg", class:"menu_profile_image"%>
+                <% end %>
+                <span>プロフィール</span>
+                </a>
+                <% end %>
+            </div>
+            <div class="sidebar_menu_seller sidebar_menu_component">
+                <%=link_to " マイページ", user_configs_path, class:"fas fa-user" %>
+            </div>
+            <div class="sidebar_menu_message sidebar_menu_component">
+                <%=link_to " メッセージ", user_contacts_path, class:"fas fa-envelope" %>
+            </div>
+            <div class="sidebar_menu_component">
+                <%=link_to " 取引一覧", user_orders_path,class:"fas fa-exchange-alt" %>
+            </div>
+            <!--
+            <%if current_user.stripe_customer_id%>
+                <div class="sidebar_menu_component">
+                    <%=link_to " 購入履歴", user_histories_path(deal: "purchase"),class:"fas fa-history" %>
+                </div>
+            <% end %>
+            <%if current_user.is_seller%>
+                <div class="sidebar_menu_component">
+                    <%=link_to " 販売履歴", user_histories_path(deal: "sale"),class:"fas fa-history"  %>
+                </div>
+            <% end %>
+            -->
+            <div class=" sidebar_menu_component">
+                <%=link_to " サービスを出品", new_user_service_path, class:"fas fa-store"%>
+            </div>
+            <div class=" sidebar_menu_component">
+                <%=link_to "質問を公開", new_user_request_path, class:"fas fa-comment-dollar"%>
+            </div>
+            <div class=" sidebar_menu_component">
+                <%=link_to " 投稿を作成", new_user_post_path, class:"fas fa-pen"%>
+            </div>
+            <div class="sidebar_menu_logout sidebar_menu_component">
+                <%=link_to " ログアウト", destroy_user_session_path, method: :delete, class:"fas fa-sign-out-alt" %>
+            </div>
+        </div>
+    </div>
+</div>
+<%=  javascript_pack_tag "layout/sidebar_menu" %>

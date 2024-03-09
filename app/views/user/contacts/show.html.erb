@@ -1,0 +1,138 @@
+<div class="contact_show_user_area" id="contact_show_contact_cell_area">
+    <div class="contact_show_contact_cell_area">
+    <% @contacts.each do |contact|%>
+        <%= render "user/contacts/cell", contact:contact %>
+    <% end %>
+    </div>
+</div>
+
+<div class="contact_show_zone">
+    <div class="contact_show_area">
+        <div class="message_header_area">
+            <div class="message_header_flame">
+                <div class="back_button_area">
+                    <%=link_to "", user_contacts_path, class:"back_button fas fa-arrow-left"%>
+                </div>
+                <div class="user_name_area">
+                    <%=link_to @contact.destination.name, user_account_path(@contact.destination.id), class:"user_info"%>
+                </div>
+            </div>
+        </div>
+            <div class="message_show_zone">
+                <div class="message_show_flame" id="message_show_flame">
+                    <% @messages.each do |content|%>
+                        <div id="message_area">
+                        <% if content.sender == current_user%>
+                            <div class="my_contact_show_zone message_area">
+                                <div class="my_message_area">
+                                    <div class="my_message_text"><%=content.body %></div>
+                                </div>
+                                <div class="send_time_area">
+                                    <span class="send_time">
+                                        <%if content.is_read %>
+                                            <%="既読・" %>
+                                        <% end %>
+                                        <%=from_now(content.created_at)%>
+                                    </span>
+                                </div>
+                            </div>
+                        <% else %>
+                            <div class="destination_message_area message_area">
+                                <div class="image_area">
+                                    <% if content.sender.image.url %>
+                                        <%=image_tag content.sender.image.url, class:"user_image"%>
+                                    <% else %>
+                                        <%=image_tag "/profile.jpg", class:"user_image"%>
+                                    <% end %>
+                                </div>
+                                <div class="message_text_area">
+                                    <div class="message_text"><%=content.body %></div>
+                                    <div class="send_time">
+                                        <%=from_now(content.created_at)%>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+                        </div>
+                    <% end %>
+                </div>
+            </div>
+    </div>
+</div> 
+<div class="message_form_area">
+    <div class="message_form_flame">
+        <%= form_with model:@message, url: user_messages_path, class:"message_submit_form",method: "post", remote:true, id:"" do |f| %>
+            <!--
+          <div class="text_field_area">
+          </div>
+          <div class="submit_button_area">
+          </div>
+          -->
+          <%= f.submit "",class:"submit_button", placeholder:"" %>
+          <i class="far fa-paper-plane"></i>
+          <%=f.text_area :body, id:"message_body", class:"text_field", required: true%>
+          <%= f.hidden_field :receiver_id, value: @contact.destination_id %>
+        <% end %>
+    </div>
+</div>
+<script>
+var submit_button = document.getElementsByClassName("submit_button");
+var text_field = document.getElementsByClassName("text_field");
+var message_show_flame = document.getElementsByClassName("message_show_flame");
+var contact_show_contact_cell_area = document.getElementsByClassName("contact_show_contact_cell_area");
+var message_area = document.getElementsByClassName("message_area");
+var submit_button = document.getElementsByClassName("submit_button");
+//var message_area = document.getElementById("message_area")
+var page = 2;
+console.log("高さ")
+document.getElementById("message_show_flame").scrollTop = document.getElementById("message_show_flame").scrollHeight;
+
+submit_button[0].insertAdjacentHTML('afterbegin', '<i class="far fa-paper-plane">aa</i>')
+console.log(contact_show_contact_cell_area)
+
+//content.options[0].selected = false;
+//content.options[3].selected = true;
+$(".search_detail").css("display","none")
+submit_button[0].addEventListener("click",function(){
+    console.log(text_field.value);
+})
+
+contact_show_contact_cell_area[0].onscroll = function(){
+    //要素全体の高さ　= 要素の表示の高さ + 要素の上からの長さ
+    if(this.scrollHeight == (this.offsetHeight + this.scrollTop)) {
+        page = Math.ceil(this.childElementCount/15)+1
+        console.log("取得ページ:" + page)
+        xml_request("/user/contacts/cells", page, this, insert_contact_elements, null)
+    }
+};
+
+var insert_contact_elements = function(json_response, scroll_element){
+    let scroll_height = scroll_element.scrollHeight;//スクロールする要素の高さを取得
+    scroll_top = scroll_element.scrollTop //挿入前のスクロール位置を取得
+    scroll_element.insertAdjacentHTML('beforeend', json_response);
+    scroll_element.scrollTop = scroll_top //挿入前のスクロール位置に移動
+}
+
+
+
+message_show_flame[0].onscroll = function(){
+    if(document.getElementById("message_show_flame").scrollTop == 0) {
+
+        page = Math.ceil(message_show_flame[0].childElementCount/15)+1
+        console.log("取得ページ:" + page)
+        xml_request("/user/messages/<%=@contact.room_id%>", page, message_show_flame[0], insert_elements, "&room_id=<%=@contact.room_id%>")
+
+    }
+};
+
+//受信成功後メッセージを挿入する関数
+var insert_elements = function(response, scroll_element){
+    //let json_response = JSON.parse(response);
+    let scroll_height = scroll_element.scrollHeight;//スクロールする要素の高さを取得
+    message_show_flame[0].insertAdjacentHTML('afterbegin', response);
+    let new_scroll_height = scroll_element.scrollHeight;//要素追加後のスクロールする要素の高さを取得
+    scroll_element.scrollTop  = new_scroll_height - scroll_height; //適切なスクロール位置に移動
+}
+
+</script>
+<%= javascript_pack_tag "shared/xml_request" %>

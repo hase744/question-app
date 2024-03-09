@@ -1,0 +1,24 @@
+<h2 class="service_new_title">新規投稿</h2>
+<%= render "user/shared/error_message", model: @post%>
+<div class="input_new_zone">
+    <div class="input_new_area input_area">
+    <%= form_with model: @post, url:user_posts_path, method:"post" do |f| %>
+      
+        <div class="field_area">
+          <%= f.label :body, class:"field_label" %><%=render "user/shared/total_characters_display"%><br />
+          <%= f.text_area :body, maxlength: @post.body_max_length ,autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+        </div>
+
+        <div class="field_area" id="file_field_area">
+              <%= f.label :file, class:"field_label" %><br />
+              <%= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input"%>
+              <div class="file_discription" id="file_discription"></div>
+              <div class="file_alarm" id="file_alarm"></div>
+            </div>
+
+        <div class="submit_area">
+          <%= f.submit "投稿", class:"submit", id:"submit" %>
+        </div>
+      <% end %>
+    </div>
+</div>

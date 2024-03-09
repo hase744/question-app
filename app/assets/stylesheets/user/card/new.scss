@@ -1,0 +1,24 @@
+.card {
+    border: none;
+    margin-top: 20px;
+  
+    .stripe-input {
+      padding:8px;
+      margin-bottom:5px;
+      border: 1px solid #BBBBBB;
+      border-radius:5px;
+    }
+  
+    #card-number {
+      width: 220px;
+    }
+  
+    #card-expiry {
+      width: 90px;
+    }
+  
+    #card-cvc {
+      width: 70px;
+      margin-bottom: 20px;
+    }
+  }

@@ -1,0 +1,35 @@
+.connect_certify_phone_zone{
+    .connect_certify_phone_area{
+        margin: 0 auto;
+        max-width: 550px;
+    }
+    .field_area_title{
+        margin-bottom: 5px;
+        margin-top: 10px;
+        float:left;
+        display: inline-block;
+        width: 100%;
+    }
+    .field_area_label{
+        @media(min-width: 600px){
+            display: inline-block;
+            min-width: 210px;
+        }
+    }
+    th{
+        float: left;
+        width: 100%;
+        text-align: left;
+        span{
+            text-align: right;
+            float: left;
+            width: 100%;
+        }
+    }
+    table{
+    }
+}
+
+.gray{
+    color: gray;
+}

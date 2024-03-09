@@ -1,0 +1,29 @@
+.abouts_announce_zone{
+    .abouts_announce_area{
+        margin: 0 auto;
+        max-width: 1000px;
+        .abouts_announce_header{
+            margin-bottom: 0px;
+        }
+        .announce_title{
+            display: inline;
+            margin-left: 5px;
+        }
+        .abouts_announce_paginate{
+            padding-top: 10px;
+            float: right;
+        }
+        .announce_cell_area{
+            background-color: white;
+            box-shadow: lightgray 0px 0px 2px;
+            border-radius: 5px;
+            .announce_cell_title{
+                margin: 0px;
+            }
+            .announce_cell_body{
+                margin: 0px;
+                white-space: pre-line;
+            }
+        }
+    }
+}

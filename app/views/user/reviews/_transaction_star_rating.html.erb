@@ -1,0 +1,13 @@
+<span id="star_rating" class="star5_rating user<%=transaction.buyer.id%>" data-rate="4"></span>
+<span class="seller_review <%= transaction%>"></span>
+<script>
+var sheets = document.styleSheets
+console.log("load")
+let star_rate<%=transaction.buyer.id%> = <%= transaction.star_rating*20.round(1)%>
+console.log(star_rate<%=transaction.buyer.id%>)
+sheets[0].insertRule(
+    `.user<%=transaction.buyer.id%>::after { width: ${star_rate<%=transaction.buyer.id%>}% }`,
+    0
+);
+
+</script>

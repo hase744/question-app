@@ -1,0 +1,116 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+      service: 質問受付
+      request: 依頼
+      admin: 管理者
+      admin_user: 管理者
+      post: 投稿
+      potential_seller: 売り手候補
+      media: メディア
+      operation: オペレーション
+    attributes:
+      name: ユーザー
+      user:
+        id: ID
+        first_name: 名
+        family_name: 姓
+        name: ユーザー名
+        description: 紹介文
+        category: 専門分野
+        categories: 専門分野
+        user_image: プロフィール画像
+        header_image: ヘッダー画像
+        is_seller: 回答者
+      service:
+        title: タイトル
+        description: "サービス内容"
+        image: "サービス画像"
+        category: カテゴリー
+        category_id: カテゴリー
+        delivery_form: 回答形式
+        request_form: 質問形式
+        stock_quantity: 供給できるサービスの在庫数
+        close_date: 募集終了日
+        delivery_days: 納品までにかかる最多日数
+        is_published: 公開する
+        price: 料金
+        transaction_message_days: 追加質問受付日数
+        request_max_length: 質問の最大の長さ
+        request_max_minutes: 質問動画の最大時間
+        request_max_characters: 質問文章の最大字数
+      request:
+        title: タイトル
+        description: 質問・相談内容
+        file: 依頼するファイル
+        request_item: 依頼品
+        items: 依頼品
+        file_duration: 再生時間
+        thumbnail: サムネイル
+        category: カテゴリー
+        category_id: カテゴリー
+        delivery_form: 回答形式
+        request_form: 質問形式
+        suggestion_deadline: 募集期限
+        delivery_days: 募集期間
+        max_price: 予算
+        price: 料金
+        use_youtube: アップロード先
+        youtube_id: YouTube動画のID
+      request_item:
+        file: ファイル
+        file_duration: 再生時間
+        duration: 動画時間
+        thumbnail: サムネイル
+        youtube_id: YouTubeのID
+      transaction:
+        title: タイトル
+        description: 説明
+        category: カテゴリー
+        use_youtube: アップロード先
+        youtube_id: YouTube動画のID
+        file: ファイル
+        items: 成果物
+        reqiest_form: 質問形式
+        delivery_form: 回答形式
+        delivery_time: 納品期限
+        review_description: 感想
+        star_rating: 星評価
+        thumbnail: サムネイル
+        is_canceled: キャンセル
+        is_rejected: 依頼拒否
+        reject_reason: お断り理由（依頼者に伝えます）
+      delivery_item:
+        file: ファイル
+        file_duration: 再生時間
+        thumbnail: サムネイル
+        youtube_id: YouTubeのID
+      payment:
+        price: 料金
+        point: ポイント
+      post:
+        body: "本文"
+        file: ファイル
+      admin_user:
+        id: ID
+        name: 名前
+        email: メールアドレス
+        password: パスワード
+        password_confirmation: パスワード（確認用）
+      potential_seller:
+        admin_user: 管理者
+        name: 名前
+        email: メールアドレス
+        media: メディア
+      country:
+        japanese_name: 国名
+        code: 電話番号コード
+  views:
+      price: '料金'
+      pagination:
+        first: '最初'
+        last: '最後'
+        previous: '前'
+        next: '次'
+        truncate: '...'

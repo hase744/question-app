@@ -1,0 +1,83 @@
+<div id="user_profile" class="user_show_zone">
+<p class="main_header one_line_text"><%= link_to "", sample_transactions_path, class:"fas fa-home"%> > <%= link_to "回答者一覧", sample_accounts_path, class:"main_area_top_link"%> > <%=@user.name%></p>
+    <div class="user_profile_area">
+        <div class="user_profile_introduction">
+            <div class="user_info_image">
+                <div class="header_image_area">
+                    <% if @user.header_image.url %>
+                        <%=image_tag @user.header_image.url, class:"header_image"%>
+                    <% end %>
+                </div>
+                <div class="user_image_area">
+                    <% if @user.image.url %>
+                        <%=image_tag @user.image.url, class:"user_image"%>
+                    <% else %>
+                        <%=image_tag "/profile.jpg", class:"user_image"%>
+                    <% end %>
+                </div>
+                
+                <div class="user_edit_area user_edit1">
+                    <%= render "user/relationships/follow_message", user: @user, relationship: @relationship%>
+                </div>
+                <div class="user_name_area">
+                    <h2 class="user_name">
+                        <%=@user.name%>
+                        <span class="last_login_area last_login2">
+                            <% if @user.is_seller %>
+                                <span class="last_login_name">最終ログイン</span>
+                            <% end %>
+                            <span><%= from_now(@user.last_login_at)%></span>
+                        </span>
+                    </h2 class="user_name">
+                </div>
+                <% if @user.is_seller %>
+                    <div class="user_basic_info">
+                        <%=render "user/accounts/user_basic_info", user:@user, star_rating: @user.id%>
+                    </div>
+                <% end %>
+               
+            </div>
+            <span></span>
+            <div class="user_intro_area" id="user_intro_area">
+            <!--
+                <div class="youtube_video_area" id="youtube_video_area">
+                    <iframe id="youtube_video" class="youtube_video 16_to_9"src="https://www.youtube.com/embed/-BdsyC6xhCk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                -->
+                <div class="user_description_area">
+                <p class="user_description closing_text" id="description_text"><%=@user.description%></p>
+                </div>
+                <div class="change_text open_text" id="open_text"></div>
+            </div>
+            
+            <div class="user_profile_menu" id="request_ajax_update">
+                <li class="menu_element"><%= link_to "投稿一覧", sample_account_posts_path(@user.id), remote: true, class:"user_content_link user_posts_link"%></li>
+                <li class="menu_element"><%= link_to "依頼", sample_account_requests_path(@user.id), remote: true, class:"user_content_link user_requests_link"%></li>
+                <li class="menu_element"><%= link_to "お気に入り", sample_account_likes_path(@user.id), remote: true, class:"user_content_link user_likes_link"%></li>
+                <li class="menu_element"><%= link_to "購入履歴", sample_account_purchases_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
+                <%if @user.is_seller%>
+                <li class="menu_element"><%= link_to "販売履歴", sample_account_sales_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
+                <li class="menu_element"><%= link_to "サービス", sample_account_services_path(@user.id), remote: true, class:"user_content_link user_services_link"%></li>
+                <!--
+                <li class="menu_element"><%= link_to "レビュー", sample_account_reviews_path(@user.id), remote: true, class:"user_content_link user_reviews_link"%></li>
+                -->
+                <li class="menu_element"><%= link_to "フォロー", sample_account_followees_path(@user.id), remote: true, class:"user_content_link following_user_link"%></li>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    
+    <div class="user_detail" id="updated_by_ajax">
+        <%#= render partial: "user/accounts/posts", locals: { contents: @posts}%>
+    </div>
+</div>
+<%= javascript_pack_tag "user/accounts/show" %>
+<%= javascript_pack_tag "shared/xml_request" %>
+<%= javascript_pack_tag "shared/check_scroll" %>
+<script>
+<% flash.each do |type, message| %>
+    // Bootstrapを導入しているため、`class="alert alert-success"`としています
+      $("#added-message").html('<p class="alert alert-success"><%= type %><%= message %></p>')
+      $("#result").html(users_list)
+<% end %>
+</script>

@@ -1,0 +1,254 @@
+class User::OrdersController < User::Base
+  before_action :check_login
+  before_action :identify_user, only:[:show, :edit, :update]
+  before_action :identify_seller, only:[:show, :reject]
+  before_action :check_transaction_is_editable, only:[:edit, :update]
+  def index
+    puts params[:user]
+    @transactions = solve_n_plus_1(Transaction.all)
+    @transactions = @transactions.page(params[:page]).per(10)
+    #パラメーターがからの時、ユーザー情報からパラメーターを入れる
+    if !params[:user].present?
+      if current_user.stripe_account_id.present?
+        params[:user] = "seller"
+        params[:status] = "ongoing"
+      else
+        params[:user] = "buyer"
+        params[:status] = "ongoing"
+      end
+    end
+
+    #
+    if params[:user] == "buyer"
+      @transactions = @transactions.where(
+        request:{user:current_user}
+      )
+    else
+      @transactions = @transactions.where(
+        service:{user:current_user}
+      )
+    end
+    
+    if params[:status] == "ongoing"
+      @transactions = @transactions.where(
+        is_rejected: false,
+        is_canceled: false,
+        is_delivered: false
+        )
+    elsif params[:status] == "rejected"
+      @transactions = @transactions.where(
+        is_rejected: true,
+        is_canceled: false,
+        is_delivered: false
+        )
+    elsif params[:status] == "undelivered"
+      @transactions = @transactions.where(
+        is_rejected: false,
+        is_canceled: true,
+        is_delivered: false
+        ).or(@transactions.where(
+          is_rejected: true,
+          is_canceled: false,
+          is_delivered: false
+          )
+        )
+    elsif params[:status] == "rejected"
+      @transactions = @transactions.where(
+        is_rejected: true,
+        is_canceled: false,
+        is_delivered: false
+        )
+    else
+      @transactions = @transactions.where(
+        is_rejected: false,
+        is_canceled: false,
+        is_delivered: true
+        )
+    end
+    @header_list =  [
+      {"label": "購入中", "user": "buyer", "status": "ongoing"},
+      {"label": "購入済", "user": "buyer", "status": "delivered"},
+      {"label": "未購入", "user": "buyer", "status": "undelivered"},
+      {"label": "納品前", "user": "seller", "status": "ongoing"},
+      {"label": "納品済", "user": "seller", "status": "delivered"},
+      {"label": "未納品", "user": "seller", "status": "undelivered"},
+    ]
+    puts  @transactions.count
+  end
+
+  def show
+    @transaction = Transaction.find(params[:id])
+    @transaction.set_item
+
+    if (@transaction.title && @transaction.description) && @transaction.file
+      @disabled = false
+    else
+      @disabled = true
+    end
+    puts @disabled
+    set_show_values
+  end
+
+  def edit
+    @transaction = Transaction.left_joins(:service).find_by(id: params[:id], service: {user: current_user})
+    gon.text_max_length = @transaction.reject_reason_max_length
+  end
+
+  def cancel #依頼人がキャンセルするためのaction
+    @transaction = Transaction.left_joins(:request).find_by(id:params[:id], request:{user: current_user})
+    @request = @transaction.request
+    @service = @transaction.service
+
+    @transaction.assign_attributes(is_canceled: true, canceled_at: DateTime.now)
+    @service.assign_attributes(stock_quantity: @service.stock_quantity+1)
+
+    if all_models_valid?([@transaction, current_user, @service])
+      @transaction.save
+      @service.save
+      current_user.update_total_points
+      flash.notice = "依頼をキャンセルしました"
+      redirect_to user_orders_path(user: "buyer")
+      create_cancel_notification
+      Email::TransactionMailer.cancel(@transaction).deliver_now
+    else
+      detect_models_errors([@transaction, current_user, @service])
+      flash.alert = "キャンセルできませんでした"
+      render "user/shared/error"
+    end
+  end
+
+  def reject #依頼を拒否する
+    @transaction = Transaction.left_joins(:service).find_by(id:params[:id], service: {user: current_user})
+    @service = @transaction.service
+    @request = @transaction.request
+    @buyer = @request.user
+
+    @transaction.assign_attributes(reject_params)
+    @transaction.rejected_at = DateTime.now
+    @service.assign_attributes(stock_quantity: @service.stock_quantity+1)
+
+    if all_models_valid?([@transaction, @buyer, @service, @request])
+      @request.save
+      @buyer.update_total_points
+      @service.update(stock_quantity:@service.stock_quantity+1) #在庫を追加
+      @transaction.save
+      flash.notice = "依頼を断りました"
+      redirect_to user_orders_path
+      puts "notification"
+      puts create_rejection_notification
+      Email::TransactionMailer.rejection(@transaction).deliver_now
+    else
+      gon.text_max_length = @transaction.reject_reason_max_length
+      render "user/orders/edit"
+    end
+  end
+
+  def cancel_payment
+    Stripe::PaymentIntent.cancel(
+      @transaction.stripe_payment_id,
+    )
+  end
+  
+  def create_notification(request, user)
+    Notification.create(
+      user_id: user.id,
+      notifier_id: current_user.id,
+      description: "依頼が中断されました。",
+      action: "show",
+      controller: "requests",
+      id_number: request.id
+      )
+  end
+
+  def create_cancel_notification
+    Notification.create(
+      user_id: @transaction.seller,
+      notifier_id: current_user.id,
+      description: "依頼がキャンセルされました。",
+      action: "show",
+      controller: "requests",
+      id_number: @request.id
+      )
+  end
+
+
+  def create_rejection_notification
+    Notification.create(
+      user_id: @transaction.buyer.id,
+      notifier_id: current_user.id,
+      description: "依頼がお断りされました。",
+      action: "show",
+      controller: "requests",
+      id_number: @request.id
+      )
+  end
+
+  def check_transaction_is_editable
+    @transaction = Transaction.find(params[:id])
+    if !can_edit_transaction
+      puts "その取引は編集できません"
+      flash.notice = "その取引は編集できません"
+      redirect_to user_orders_path
+    end
+  end
+
+  def set_show_values
+    gon.transaction_id = @transaction.id
+    gon.delivery_form = @transaction.delivery_form.name
+    gon.description = @transaction.description
+    if @transaction.item
+      if @transaction.file.url == nil 
+        gon.is_file_nil = true
+      else 
+        gon.is_file_nil = false
+      end
+      if @transaction.description == nil 
+        gon.is_transaction_description_nil = true
+      else 
+        gon.is_transaction_description_nil = false
+      end
+    end
+  end
+
+  private def can_edit_transaction
+    if @transaction.is_canceled
+      puts "中止"
+      false
+    elsif @transaction.is_rejected
+      puts "拒絶"
+      false
+    elsif @transaction.is_delivered
+      puts "完了"
+      false
+    else
+      true
+    end
+  end
+
+  private def identify_user
+    transaction =  Transaction.find(params[:id])
+    if transaction.seller != current_user && transaction.buyer != current_user
+      redirect_to user_orders_path
+    end
+  end
+
+  private def identify_seller
+    transaction =  Transaction.find(params[:id])
+    if transaction.service.user != current_user
+      redirect_to user_orders_path
+    end
+  end
+
+  private def reject_params
+    params.require(:transaction).permit(
+      :is_rejected,
+      :reject_reason
+    )
+  end
+
+  private def transaction_params
+    params.require(:transaction).permit(
+      :is_canceled
+    )
+  end
+end

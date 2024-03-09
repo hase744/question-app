@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seller: one
+  buyer: one
+  price: 1
+  use_youtube: false
+  youtube_id: MyString
+  file: MyString
+  is_confirmed: false
+  title: MyString
+  description: MyText
+  review_rate: 1
+  review_description: MyText
+  reviewed_at: 2022-07-11 20:53:15
+  review_reply: MyText
+  viewed_count: 1
+
+two:
+  seller: two
+  buyer: two
+  price: 1
+  use_youtube: false
+  youtube_id: MyString
+  file: MyString
+  is_confirmed: false
+  title: MyString
+  description: MyText
+  review_rate: 1
+  review_description: MyText
+  reviewed_at: 2022-07-11 20:53:15
+  review_reply: MyText
+  viewed_count: 1
