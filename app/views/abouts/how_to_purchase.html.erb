@@ -1,0 +1,44 @@
+<div class="how_to_zone center_zone">
+    <div class="how_purchase_area center_area">
+        <h2 class="zone_title">購入方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">②<%= link_to "ポイントのページ", new_user_cards_path%>でポイントをチャージ</li>
+                <div class="caution">＊詳しくは<%=link_to "ポイントのチャージ方法", abouts_how_to_purchase_path %>を参照</div>
+            </ol>
+        </div>
+        <div class="component_area">
+            <div>③「<%=link_to "サービスを探す", user_services_path %>」でサービスを探す</div>
+            <div>④購入したいサービスのページで「購入」を選択</div>
+            <%#= image_tag "/services_show.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑤依頼するサービスに必要事項を記入</li>
+                <%= image_tag "/how_to_use/request_new_purchase.png", class:"width_100"%>
+                <h3 class="title_h3"><%=Request.human_attribute_name(:title) %></h3>
+                <span>20字以内で依頼のタイトルを記入してください。</span></br>
+                <h3 class="title_h3"><%=Request.human_attribute_name(:description) %></h3>
+                <span>1000字以内で依頼内容を記入してください。依頼内容がサービス内容に沿っているか注意してください。</span></br>
+                <h3 class="title_h3"><%=Request.human_attribute_name(:use_youtube) %>（質問形式が動画の場合）</h3>
+                <span>YouTubeにアップロードした動画を使う場合にこれを選択してください。</span></br>
+                <h3 class="title_h3"><%=Request.human_attribute_name(:youtube_id) %>（質問形式が動画の場合）</h3>
+                <span>YouTubeにあらかじめ動画をアップロードしてください。ここにはそのIDを記載してください。</span></br>
+                <h3 class="title_h3"><%=Request.human_attribute_name(:file) %>（質問形式が動画、画像の場合）</h3>
+                <span>依頼するファイルをアップロードしてください。</span></br>
+                <li class="step">⑥「プレビュー」を選択</li>
+            </ol>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑦プレビューで依頼する内容が合っているかを確認</li>
+                <li class="step">⑧間違いがなければ「購入」を選択</li>
+                <li class="step">⑨「購入しますか？」に「OK」を選択</li>
+            </ol>
+            <%= image_tag "/how_to_use/request_preview_purchase.png", class:"width_100"%>
+        </div>
+    </div>
+</div>

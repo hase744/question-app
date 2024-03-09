@@ -1,0 +1,51 @@
+<h2 class="account_edit_title">プロフィール編集</h2>
+<%= render "user/shared/error_message", model: @user%>
+<div class="account_edit_zone">
+  <div class="account_edit_area input_area">
+    <%= form_with model: @user, url: user_accounts_path do |f| %>
+        <div class="field_area">
+          <%= f.label :name, class:"field_label"%>（最大<%=@user.name_max_length%>字）<br />
+          <%= f.text_field :name, maxlength:@user.name_max_length, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
+        </div>
+        <div class="field_area">
+          <%= f.label :description, class:"field_label" %><span class="total_characters"></span><br />
+          <%= f.text_area :description, autocomplete: "new-password", class:"input_field text_area" %>
+        </div>
+      
+        <div class="field_area">
+          <%= f.label :categories, class:"field_label" %><br />
+          <%= f.hidden_field :categories, value: @user.categories, id:"category_field"%>
+          <span class="category_display" id="category_display"></span>
+        </div>
+        
+        <ul class="category_drag_list" id="categry_drag_list">
+          <%=f.collection_check_boxes(:category_ids, @categories, :id, :name) do |category| %>
+            <li draggable="true" id="li_<%=category%>">
+              <%= category.check_box class:"category_checkbox", id:category.text do %>
+                <%= category.check_box + category.text %>
+              <% end %>
+              <%=category_e_to_j(category.text)%>
+              <span class="drag_icon_area"><span class="drag_icon"></span></span>
+            </li>
+          <% end %>
+        </ul>
+
+        <div class="field_area">
+          <%= f.label :user_image, class:"field_label" %><br />
+          <%= f.file_field :image, autocomplete: "image", class:"input_field" %>
+        </div>
+        <div class="field_area">
+          <%= f.label :header_image, class:"field_label" %><br />
+          <%= f.file_field :header_image, autocomplete: "image", class:"input_field", id:"thumbnail" %>
+        </div>
+        
+        <div class="submit_area">
+          <%= f.submit "保存", class:"submit" %>
+        </div>
+      <% end %>
+    </div>
+</div>
+<%= javascript_pack_tag "user/accounts/edit"%>
+<%= javascript_pack_tag "shared/count_characters"%>
+<style>
+</style>

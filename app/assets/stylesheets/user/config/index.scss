@@ -1,0 +1,151 @@
+.config_index_zone{
+    width: 100%;
+    .user_top_area{
+        margin: 5px;
+        border-radius: 10px;
+        box-shadow: 0 0 2px lightgray;
+        background-color: white;
+        width: calc(100% - 10px);
+        float: left;
+        .user_image_area{
+            padding: 25px;
+            padding-right: 0px;
+            float: left;
+            display: inline-block;
+            @media(max-width:700px){
+                width: 100px;
+                height: 100px;
+            }
+            @media(min-width:700px){
+                width: 175px;
+                height: 175px;
+            }
+            .user_image{
+                @media(max-width:700px){
+                    width:75px;
+                    height:75px;
+                    border-radius: 75px;
+                }
+                @media(min-width:700px){
+                    width: 150px;
+                    height: 150px;
+                    border-radius: 75px;
+                }
+                object-fit: cover;
+            }
+        }
+        .user_text_area{
+            display: inline-block;
+            float: left;
+            color: gray;
+            @media(max-width:700px){
+                width: calc(100% - 130px);
+            }
+            @media(min-width:700px){
+                width: calc(100% - 205px);
+            }
+            .user_name{
+                margin-top: 10px;
+                margin-bottom: 0px;
+                .link{
+                    color: dimgray;
+                }
+                .fa-angle-right{
+                    font-size: 30px;
+                }
+            }
+            .total_points_display{
+                margin: 0px;
+                //text-decoration: underline;
+                .label{
+                    //text-decoration: underline;
+                }
+                .points{
+                    color: black;
+                    font-size: 20px;
+                    font-weight: lighter;
+                }
+            }
+            .payment_link{
+                color: blue;
+                font-size: 15px;
+            }
+            .payment_enabled{
+                font-size:13px;
+                font-weight: 50;
+                color: gray;
+            }
+            .true{
+                background-color: greenyellow;
+            }
+            .false{
+                background-color: orange;
+            }
+            .account_status_area{
+                font-size:13px;
+                .label{
+                    font-weight: bolder;
+                }
+                .enabled{
+                    background-color: greenyellow;
+                }
+                .disabled{
+                    background-color: red;
+                    color: darkred;
+                }
+                .able_info{
+                    padding: 1.5px;
+                    border-radius: 1.5px;
+                }
+            }
+            .finance_component{
+                margin-top: 0px;
+                margin-bottom: 0px;
+                color: gray;
+                font-weight: lighter;
+                .finance_label{
+                    display: inline-block;
+                    width: 50px;
+                    text-align: center;
+                }
+                .finance_result{
+                    text-align: right;
+                    font-weight: normal;
+                    color: #555555;
+                }
+            }
+            .week_label{
+                margin-bottom: 0px;
+                margin-top: 10px;
+                font-size: 13px;
+            }
+            .caveat{
+                font-size: 10px;
+                color: gray;
+            }
+        }
+    }
+    .config_component_area{
+        color: #555555;
+        font-weight: bold;
+        display: inline-block;
+        @media(max-width:700px){
+            width: calc(100% - 10px);
+        }
+        @media(min-width:700px){
+            width: calc((100% - 40px)/3);
+        }
+        margin: 5px;
+        border-radius: 10px;
+        box-shadow: 0 0 2px lightgray;
+        background-color: white;
+        text-align: center;
+        text-decoration: none;
+        h4{ 
+            font-weight: bold;
+        }
+    }
+    .config_component_area:hover {
+        color: gray;
+    }
+}

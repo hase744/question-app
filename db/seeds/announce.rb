@@ -1,0 +1,1 @@
+Announce.create(title:"サービスのユーザー登録を開始しました。", body:"サービスを作成いたしました。", disclosed_at:DateTime.now)

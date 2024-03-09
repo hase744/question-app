@@ -1,0 +1,21 @@
+.register_label_zone{
+    text-align: center;
+    .register_label_area{
+        background-color: white;
+        box-shadow: 0 0 2px lightgray;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 5px;
+        background-color: white;
+        min-height: 70px;
+        max-width: 130px;
+        width: calc(50vw - 50px);
+        display: inline-block;
+        border-radius: 20px;
+        text-align: center;
+        .label{
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+    }
+}

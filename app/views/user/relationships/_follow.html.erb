@@ -1,0 +1,6 @@
+<div class="follow_message_area">
+    <span class="follow_button_flame" id="follow_button_flame">
+        <%= link_to "フォロー",relationships_path(user.id), class: "fas fa-user-plus follow_button", method: :post, remote:true%>
+    </span>
+</div>
+<%= javascript_pack_tag "user/relationships/follow_message" %>

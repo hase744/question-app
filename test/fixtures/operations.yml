@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  state: MyString
+  start_at: 2022-08-14 22:01:20
+  comment: MyText
+  admin_user: one
+
+two:
+  state: MyString
+  start_at: 2022-08-14 22:01:20
+  comment: MyText
+  admin_user: two

@@ -1,0 +1,19 @@
+<h2 class="order_edit_title">依頼を断る</h2>
+<%= render "user/shared/error_message", model: @transaction%>
+<%= render "user/shared/error_message", model: current_user %>
+<%= render "user/shared/error_message", model: @transaction.item %>
+<div class="order_edit_zone">
+    <div class="order_edit_area input_area">
+    <%= form_with model: @transaction, url:user_reject_order_path(@transaction.id), method:"patch" do |f| %>
+      
+        <div class="field_area">
+          <%= f.label :reject_reason, class:"field_label" %><%=render "user/shared/total_characters_display" %><br />
+          <%= f.text_area :reject_reason, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+          <%= f.hidden_field :is_rejected, value:true %>
+        </div>
+        <div class="submit_area">
+          <%= f.submit "送信", class:"submit", id:"submit", data: {confirm: "依頼を断りますか？"} %>
+        </div>
+      <% end %>
+    </div>
+</div>

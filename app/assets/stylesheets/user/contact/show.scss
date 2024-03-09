@@ -1,0 +1,311 @@
+.contact_show_user_area{
+    width: 50%;
+    position: fixed;
+    bottom: 0px;
+    top: 90px;
+    .contact_show_contact_cell_area{
+        height: 100%;
+        overflow: scroll;
+    }
+    @media(max-width:1000px){
+        width: 100%;
+        top: 80px;
+    }
+    @media(min-width:1000px){
+        width: 500px;
+        top: 90px;
+    }
+    .upper_square{
+        height: 50px;
+        background-color: blue;
+    }
+    .bottom_square{
+        height: calc(100% - 80px);
+        background-color: green;
+    }
+}
+.contact_show_zone{
+    position: fixed;
+    bottom: 0px;
+    background-color: white;
+    //height: calc(100% - 70px);
+    @media(max-width:1000px){
+        right: 0;
+        width: 100%;
+        top: 80px;
+    }
+    @media(min-width:1000px){
+        right: calc((100% - 1000px)/2);
+        width: 500px;
+        top: 90px;
+    }
+}
+.contact_show_area{
+    z-index: 2;
+    top: 0px;
+    width: 100%;
+    min-width: 300px;
+    height: calc(100% - 95px);
+    background-color: white;
+    box-shadow: 0px 0px 2px lightgray;
+        .message_show_zone{
+            width: 100%;
+            height: 100%;
+            .message_show_flame{
+
+                background-color: #FFFF99;
+                box-shadow: 0px 0px 2px 0px lightgray inset;
+                height: 100%;
+                width: calc(100%);
+                overflow: scroll;
+                .my_contact_show_zone{
+                    width: 100%;
+                    margin: 10px;
+                    float: right;
+                    margin-bottom: 0px;
+                    .my_message_text{
+                        border-radius: 10px;
+                        max-width: 80%;
+                        background-color: white;
+                        box-shadow: 0px 0px 2px lightgray;
+                    }
+                    .send_time{
+                        float: right;
+                        color: gray;
+                    }
+                }
+                //メッセージ
+                .my_message_area{
+                    width: 100%;
+                    margin-bottom: 0px;
+                    .my_message_text{
+                        padding: 5px;
+                        border-radius: 10px;
+                        background-color: white;
+                        box-shadow: 0px 0px 2px lightgray;
+                        float: right;
+                        white-space: pre-line;
+                    }
+                }
+                .send_time_area{
+                    width: 100%;
+                    float: right;
+                    .send_time{
+                        float: right;
+                        font-size: 13px;
+                    }
+                }
+                .destination_message_area{
+                    display: inline-block;
+                    width: 100%;
+                    .image_area{
+                        display: inline-block;
+                        width: 60px;
+                        height: 100%;
+                        float: left;
+                        @media(max-width:500px){
+                            width: 30px;
+                        }
+                        @media(min-width:500px){
+                            width: 60px;
+                        }
+                        .user_image{
+                            object-fit: cover;
+                            @media(max-width:500px){
+                                height: 25px;
+                                width: 25px;
+                                margin: 2.5px;
+                                border-radius: 12.5px;
+                            }
+                            @media(min-width:500px){
+                                height: 50px;
+                                width: 50px;
+                                margin: 5px;
+                                border-radius: 25px;
+                            }
+                        }
+                    }
+                    .message_text_area{
+                        @media(max-width:500px){
+                            max-width: calc(80% - 25px);
+                        }
+                        @media(min-width:500px){
+                            max-width: calc(80% - 50px);
+                        }
+                        display: inline-block;
+                        .message_text{
+                            background-color: white;
+                            border-radius: 10px;
+                            box-shadow: 0px 0px 2px lightgray;
+                            padding: 5px;
+                            white-space: pre-line;
+                        }
+                        .send_time{
+                            color: gray;
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+        }
+        
+    //}
+}
+
+
+
+//メッセージタイトル
+.message_header_area{
+    max-width: 1000px;
+    margin: 0 auto;
+
+    .message_header_flame{
+        @media(max-width:1000px){
+            max-width: 1000px;
+            
+        }
+        @media(min-width:1000px){
+            max-width: 500px;
+        };
+        box-shadow: 0px 0px 2px gray;
+        background-color: white;
+        .back_button_area{
+            float: left;
+            border-radius: 25px;
+            display: inline-block;
+            @media(max-height:500px){
+                height: 30px;
+                width: 30px;
+            }
+            @media(min-height:500px){
+                height: 50px;
+                width: 50px;
+            }
+            .back_button{
+                text-decoration: none;
+                border-radius: 25px;
+                @media(max-height:500px){
+                    font-size: 24px;
+                    margin: 3px;
+                }
+                @media(min-height:500px){
+                    font-size: 40px;
+                    margin: 5px;
+                }
+            }
+        }
+        .back_button:hover{
+            background-color: lightgray;
+            cursor: pointer;
+        }
+        .user_name_area{
+            display: inline-block;
+            text-align: center;
+            vertical-align: bottom;
+            @media(max-height:500px){
+                height: 30px;
+                width: calc(100% - 30px);
+                padding-top: 0px;
+            }
+            @media(min-height:500px){
+                height: 40px;
+                width: calc(100% - 50px);
+                padding-top: 10px;
+            }
+            .user_info{
+                margin: 0px;
+                @media(max-height:500px){
+                    font-size: 24px;
+                    margin: 3px;
+                }
+                @media(min-height:500px){
+                    font-size: 24px;
+                }
+            }
+        }
+    }
+}
+
+
+//入力場所
+.message_form_area{
+    
+    height: 45px;
+    max-width: 1000px;
+    position: fixed;
+    bottom: 0px;
+    background-color: white;
+    box-shadow: 0px 0px 2px lightgray;
+    //height: calc(100% - 70px);
+    @media(max-width:1000px){
+        right: 0;
+        width: 100%;
+    }
+    @media(min-width:1000px){
+        right: calc((100% - 1000px)/2);
+        width: 500px;
+    }
+    .message_form_flame{
+        margin: 0 auto;
+        height: 100%;
+        width: calc(100% - 10px);
+        .message_submit_form{
+            width: calc(100% - 0px);
+            position: relative;
+            margin: 5px;
+            .text_field_area{
+                width: 100%;
+            }
+            .text_field{
+                display: inline-block;
+                //なぜかiphone上だとinputタグがの幅が長くなる
+                width: calc(100% - 60px);
+                font-size: 20px;
+                height: 30px;
+                border-radius: 20px;
+                float: right;
+                border: 1.5px solid darkgray;
+                background-color: #f5f5f5;
+                resize: none;
+            }
+            .submit_button_area{
+                text-align: center;
+                margin-top: 10px;
+            }
+            .submit_button{
+                position: absolute;
+                right: 0px;
+                top: 0px;
+                width: 34px;
+                height: 34px;
+                display: inline-block;
+                border-radius: 5px 5px 3px 3px;
+                border: 0px;
+                margin: 0px;
+                float: left;
+                opacity: 0.0;
+                z-index: 1;
+            }
+            .submit_button:hover{
+                cursor: pointer;
+            }
+            .fa-paper-plane{
+                padding-top: 4px;
+                padding-left: 4px;
+                width: 30px;
+                height: 30px;
+                display: inline-block;
+                color: gray;
+                font-size: 25px;
+                float: right;
+            }
+            .fa-paper-plane 
+            .submit_button:hover{
+                cursor: pointer;
+            }
+            .submit_button:hover +.fa-paper-plane{
+                color: black;
+            }
+        }
+    }
+}

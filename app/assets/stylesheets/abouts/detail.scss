@@ -1,0 +1,21 @@
+.about_detail_zone{
+    .pdf{
+        width: 100%;
+    }
+    .video_area{
+        text-align: center;
+        .video{
+            width: 100%;
+            max-width: 1000px;
+        }
+    }
+}
+.transaction_flow{
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+.service_scheme_image{
+    width: 100%;
+    object-fit: cover;
+}

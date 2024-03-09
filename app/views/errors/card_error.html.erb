@@ -1,0 +1,13 @@
+<div class="component_area">
+    <h1>StripeCardError</h1>
+    <p>クレジットカードの認証にエラーが発生しました。</p>
+    <p><%= "Status is: #{@error_log.http_status}"%></p>
+    <p><%= "Type is: #{@error_log.error.type}"%></p>
+    <p><%= "Charge ID is: #{@error_log.error.charge}"%></p>
+    <p><%= "Code is: #{@error_log.error.code}" if @error_log.error.code%></p>
+    <p><%= "Decline code is: #{@error_log.error.decline_code}" if @error_log.error.decline_code%></p>
+    <p><%= "Param is: #{@error_log.error.param}" if @error_log.error.param%></p>
+    <p><%= "Status is: #{@error_log.http_status}"%></p>
+    <p><%= "Message is: #{@error_log.error.message}" if @error_log.error.message%></p>
+    <p>エラーID:<%=@error_log.id%></p>
+</div>

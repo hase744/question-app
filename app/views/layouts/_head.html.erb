@@ -1,0 +1,29 @@
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+    <title>コレテク</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="<%=@twitter_site%>" />
+    <meta name="twitter:creator" content="<%=@twitter_creator%>">
+    <meta property="og:title" content="<%=@og_title%>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%=@og_url%>" />
+    <meta property="og:description" content="<%=@og_description%>" />
+    <meta property="og:site_name" content="<%=@og_site_name%>" />
+    <meta property="og:image" content="<%=@og_image%>" />
+    <meta property=”fb:app_id” content=”896718071686338”>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscroll/2.4.1/jquery.jscroll.js"></script>
+    <%= favicon_link_tag '/favicon.ico' %>
+    
+    <%= include_gon %>
+    <%=javascript_pack_tag "layout/application"%>
+    <%Dir.glob("app/javascript/packs/shared/*.js")  do |path|%>
+      <%= javascript_pack_tag path.slice(21, path.length).to_s%>
+    <%end%>
+</head>

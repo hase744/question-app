@@ -1,0 +1,73 @@
+<h3 class="zone_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞ 回答者情報</h3>
+<div class="connect_show_zone component_zone">
+    <div class="connect_show_area component_area">
+        <% if defined?(@account.individual) && @account.details_submitted %>
+            <%if @account.requirements.disabled_reason == "under_review" %>
+            <span class="payment_enabled false">審査中</span>
+                <div class="caveat">＊審査はStripe及びクレジットカード会社が行います。</div>
+                <div class="caveat">＊審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください。</div></br>
+            <% elsif @account.requirements.disabled_reason == nil %>
+                <span class="payment_enabled true">審査済</span></br>
+            <% end %>
+            <label class="title_label">名前（漢字）</label></br>
+            <span><%=@account.individual["first_name_kanji"]%></span>
+            <span><%=@account.individual["last_name_kanji"]%></span>
+            </br>
+            <label class="title_label">名前（カナ）</label></br>
+            <span><%=@account.individual["first_name_kana"]%></span>
+            <span><%=@account.individual["last_name_kana"]%></span>
+            </br>
+            <label class="title_label">住所（漢字）</label></br>
+            <span><%=@account.individual["address_kanji"]["state"]%></span>
+            <span><%=@account.individual["address_kanji"]["city"]%></span>
+            <span><%=@account.individual["address_kanji"]["town"]%></span>
+            <span><%=@account.individual["address_kanji"]["line1"]%></span>
+            <span><%=@account.individual["address_kanji"]["line2"]%></span>
+            </br>
+            <label class="title_label">住所（カナ）</label></br>
+            <span><%=@account.individual["address_kana"]["state"]%></span>
+            <span><%=@account.individual["address_kana"]["city"]%></span>
+            <span><%=@account.individual["address_kana"]["town"]%></span>
+            <span><%=@account.individual["address_kana"]["line1"]%></span>
+            <span><%=@account.individual["address_kana"]["line2"]%></span>
+            </br>
+            <label class="title_label">郵便番号</label></br>
+            <span><%=@account.individual["address_kanji"]["postal_code"]%></span>
+            </br>
+            <label class="title_label">銀行口座</label></br>
+            <span><%=@account.external_accounts["data"][0]["bank_name"]%></span>
+            <span><%=@account.external_accounts["data"][0]["routing_number"]%></span> -
+            <span><%="＊＊＊"+@account.external_accounts["data"][0]["last4"]%></span></br>
+            <span><%=@account.external_accounts["data"][0]["account_holder_name"] %></span>
+            </br>
+            <label class="title_label">広報サイト</label></br>
+            <span><%=request.url.to_s.gsub(/connects/,"accounts/#{current_user.id}").to_s%></span>
+            </br>
+            <%if !@account.payouts_enabled %>
+                <span><%=link_to "編集", edit_user_connects_path%>
+            <% end %>
+            <%= link_to '削除', user_connects_path, method: :delete, data:{confirm: "削除しますか？"} %>
+        <% elsif current_user.stripe_account_id%>
+            <%if !@account.payouts_enabled %>
+                <label class="title_label">名前（漢字）</label></br>
+                <span>未設定</span></br>
+                <label class="title_label">名前（カナ）</label></br>
+                <span>未設定</span></br>
+                <label class="title_label">住所（漢字）</label></br>
+                <span>未設定</span></br>
+                <label class="title_label">郵便番号</label></br>
+                <span>未設定</span></br>
+                <label class="title_label">銀行口座</label></br>
+                <span>未設定</span></br>
+                <label class="title_label">広報サイト</label></br>
+                <span>未設定</span></br>
+                <%=link_to "編集", edit_user_connects_path%>
+            <% end %>
+            <%= link_to '削除', user_connects_path, method: :delete, data:{confirm: "削除しますか？"} %>
+        <% else %>
+            <h3>出店者情報が登録されていません</h3>
+            </br>
+            <%=link_to "新規登録", new_user_connects_path%>
+        <%end%>
+    </div>
+</div>

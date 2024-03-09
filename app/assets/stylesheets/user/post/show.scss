@@ -1,0 +1,68 @@
+.post_show_zone{
+    .post_area{
+        display: inline-block;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 0 2px lightgray;
+        margin: 5px;
+        float: left;
+        .post_flame{
+            margin: 10px;
+            width: calc(100% - 20px);
+            .user_image_name{
+                width: 100%;
+                height: 50px;
+                .user_image_area{
+                    float: left;
+                    display: inline-block;
+                    height: 50px;
+                    width: 50px;
+                    .user_image{
+                        height: 50px;
+                        width: 50px;
+                        float: left;
+                        border-radius: 25px;
+                        object-fit: cover;
+                    }
+                }
+                .user_date_time{
+                    display: inline-block;
+                    padding: 0px 10px;
+                    .user_name{
+                        margin: 0px;
+                    }
+                    .post_date_time{
+                        color: gray;
+                    }
+                }
+            }
+            .post_text_area{
+                margin-top: 10px;
+            }
+            .user_description_area{
+                width: 100%;
+            }
+        }
+        .post_file{
+            height: 100%;
+            width: 100%;
+        }
+    }
+}
+@media(max-width:1000px){
+    .post_show_zone{
+        max-width: 700px;
+        margin-right: auto;
+        margin-left: auto;
+        .post_area{
+            width: calc(100% - 10px);
+        }
+    }
+}
+@media(min-width:1000px){
+    .post_show_zone{
+        .post_area{
+            width: calc(100% - 320px);
+        }
+    }
+}

@@ -1,0 +1,49 @@
+  <div class="common_register_area">
+    <div class="common_register_flame">
+    <div class="form_container">
+    <h2>新規登録</h2>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+      
+        <div class="form_group">
+          <%= f.label :name %><span>（15字以内）</span></br>
+          <%= f.text_field :name, class: "form-control",value:"", class:"form_input" %>
+        </div>
+      
+        <div class="form_group">
+          <%= f.label :email %></br>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form_input" %>
+        </div>
+        
+        <div class="form_group">
+          <%= f.label :password %>
+          <% if @minimum_password_length %>
+          <em>(<%= @minimum_password_length %> characters minimum)</em>
+          <% end %></br>
+          <%= f.password_field :password, autocomplete: "new-password", class:"form_input" %>
+        </div>
+      
+        <div class="form_group">
+          <%= f.label :password_confirmation %></br>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form_input" %>
+        </div>
+      
+        <input type="checkbox" class="checkbox">
+        <span><%= link_to "利用規約", abouts_term_of_service_path, target: :_blank %>に同意します。</span>
+        </br>
+        <div class="actions"></br>
+          <%= f.submit "登録", disabled:"true", class:"submit-btn submit" %>
+        </div>
+      
+      
+      <% end %>
+      
+      <%= render "devise/shared/links" %>
+      </div>
+    </div>
+  </div>
+<script>
+$(".checkbox").click(function() {
+  $(".submit").prop("disabled", $(this).prop("checked")==false);
+})
+</script>

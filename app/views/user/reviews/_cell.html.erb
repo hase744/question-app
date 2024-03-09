@@ -1,0 +1,42 @@
+<div class="review_cell_zone">
+    <div class="review_cell_flame">
+        <div class="image_area">
+            <% if transaction.buyer.image_url %>
+                <%=image_tag transaction.buyer.image_url, class:"image"%>
+            <% else %>
+                <%=image_tag "/profile.jpg", class:"image"%>
+            <% end %>
+        </div>
+        <div class="review_content">
+            <div class="star_rating">
+                <%= render "user/reviews/transaction_star_rating", transaction:transaction%>
+            </div>
+            <div class="review_user">
+            <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id) %>
+            </div>
+            <div class="review_text">
+                <div class="description_area">
+                    <div class="description_text_area" id="descriptionn_content<%=transaction.id%>">
+                        <p id="review_text<%=transaction.id%>" class="closing_text"><%=transaction.review_description%></p>
+                    </div>
+                    <div class="change_text open_text" id="open_review_text<%=transaction.id%>"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+var description_text_area = document.getElementById("description_text_area");
+var open_review_text<%=transaction.id%> = document.getElementById("open_review_text<%=transaction.id%>");
+var review_text<%=transaction.id%> = document.getElementById("review_text<%=transaction.id%>");
+
+open_review_text<%=transaction.id%>.addEventListener('click', (event) => {
+    open_review_text<%=transaction.id%>.classList.toggle("open_review_text");
+    open_review_text<%=transaction.id%>.classList.toggle("close_text");
+    
+    review_text<%=transaction.id%>.classList.toggle("opening_text");
+    review_text<%=transaction.id%>.classList.toggle("closing_text");
+    console.log("description")
+});
+</script>

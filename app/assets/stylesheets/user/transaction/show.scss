@@ -1,0 +1,364 @@
+@import "variables";
+.transaction_show_zone{
+    .transaction_show_left_side{
+        display: inline-block;
+        width: 100%;
+        .title_component{
+            margin: 0px;
+            margin-left: 5px;
+        }
+        .transaction_area{
+            width: calc(100%);
+            .datetime{
+                color: dimgray;
+                font-size: 13px;
+            }
+            .buyer_area{
+                height: 30px;
+                margin-right: 10px;
+                color: black;
+                .buyer_image{
+                    display: inline-block;
+                    margin: 5px;
+                    margin-left: 0px;
+                    height: 20px;
+                    width: 20px;
+                    border-radius: 20px;
+                    float: left;
+                    object-fit: cover;
+                }
+                .buyer_name_area{
+                    display: inline-block;
+                    height: 30px;
+                    position: relative;
+                    width: calc(100% - 60px);
+                    padding-top: 3px;
+                    .buyer_name{
+                            color: dimgray;
+                        margin: 0px;
+                    }
+                }
+                .buyer_name_area:hover .buyer_name{
+                    //text-decoration: underline;
+                        color: gray;
+                        color: lightgray;
+                }
+            }
+            hr{
+                background-color: whitesmoke;
+                width:calc(100%);
+                size: 300;
+                height: 2px;
+                border: none;
+                margin: 0px;
+            }
+            .transaction_flame{
+                padding: 5px;
+                margin: 5px;
+                height: auto;
+                border-radius: 10px;
+                background-color: white;
+                box-shadow: 0 0 2px lightgray;
+                width: calc(100% - 20px);
+                .title{
+                    margin-top: 5px;
+                    margin-bottom: 0px;
+                }
+                .request_area{
+                    .description_area{
+                        color: rgb(70, 70, 70);
+                        white-space: pre-line;
+                    }
+                }
+                .request_title{
+                    //color: steelblue;
+                    //color: rgb(40, 40, 40);
+                    //text-decoration: none;
+                }
+                .transaction_title{
+                    color: indianred;
+                    //color: rgb(40, 40, 40);
+                    font-size:23px;
+                    //margin-bottom: 10px;
+                }
+                .item_file_flame{
+                    background-color: #fc0d1b;
+                    border-radius: 10px 10px 0px 0px;
+                    width: 100%;
+                }
+
+                .item_file{
+                    height: 100%;
+                    width: 100%;
+                }
+                .image{
+                    width: 100%;
+                }
+                .item_link{
+                    width: 100%;
+                }
+                .text_image{
+                    width: 100%;
+                    height: 100px;
+                    object-fit: cover;
+                    opacity: 0.5;
+                }
+                .like_share_area{
+                    overflow: hidden;
+                    height: 50px;
+                }
+                .like_area{
+                    display: inline-block;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    float: left;
+                    .like_flame{
+                        color: gray;
+                        font-weight: lighter;
+                        margin-bottom: 0px;
+                        height: 20px;
+                    }
+                    .like_button{
+                        display:inline-block;
+                        margin-right: 10px;
+                        text-align: center;
+                        border: 1px solid lightgray;
+                        border-radius: 5px;
+                        padding: 5px 10px;
+                        font-size: 13px;
+                        
+                        font-weight: lighter;
+                        cursor: pointer;
+                        text-decoration: none;
+                        color: blue;
+                        border-radius: 5px;
+                    }
+                    .liked_button{
+                        color: red;
+                    }
+                    h4{
+                        
+                    }
+                }
+                .share_button_area{
+                    float: right;
+                }
+                .seller_area{
+                    display: inline-block;
+                    width: calc(100% - 110px);
+                    color: black;
+                }
+                .follow_message_area{
+                    float: right;
+                }
+                border-radius: 10px;
+
+                .service_menu_bar{
+                    display: flex;
+                    overflow-x:scroll;
+                    white-space: nowrap;
+                    //-webkit-overflow-scrolling: touch;
+                    overflow-y: hidden;
+                    li{
+                        margin-bottom: 0px;
+                        text-align: center;
+                        color: gray;
+                        display: inline-block;
+                        vertical-align: middle;
+                        
+                        height: 40px;
+                        line-height: 40px;
+                        
+                        min-width: 100px;
+                    }
+                    li:hover{
+                        cursor: pointer;
+                        background-color: gainsboro;
+                    }
+                    .user_item_link{
+                        height: 40px;
+                        padding: 13px 17px;
+                        text-decoration: none;
+                        color: gray;
+                    }
+                    .user_item_link:hover{
+                        cursor: pointer;
+                    }
+                }
+
+                .service_link_area{
+                    display: inline-block;
+                    div{
+                        //font-size: 10px;
+                        color: gray;
+                    }
+                }
+                .service_link_area{
+                    display: block;
+                    height: 100%;
+                    overflow: hidden;
+                }
+                .service_link{
+                    color: blue;
+                    height: 100%;
+                }
+                .service_label{
+                    color: gray;
+                    //background-color: whitesmoke;
+                }
+                .serice_link_component{
+                    float:right;
+                }
+            }
+        }
+        .review_name{
+            margin-right: 5px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            text-align: center;
+        }
+    }
+    .seller_info{
+        height: 50px;
+        margin-right: 10px;
+        .seller_image{
+            display: inline-block;
+            margin: 5px;
+            height: 40px;
+            width: 40px;
+            border-radius: 20px;
+            float: left;
+            object-fit: cover;
+        }
+        .seller_name_area{
+            display: inline-block;
+            height: 50px;
+            position: relative;
+            width: calc(100% - 60px);
+            padding-top: 5px;
+            .seller_name{
+                color: dimgray;
+                margin: 0px;
+            }
+            .datetime{
+                color: dimgray;
+                font-size: 13px;
+            }
+        }
+    }
+    .seller_info:hover .seller_name {
+        //text-decoration: underline;
+        color: gray;
+    }
+    .seller_info:hover .datetime{
+        //text-decoration: underline;
+        color: gray;
+    }
+    
+    
+    
+    .transaction_show_right_side{
+        .title{
+            margin:5px 0px ;
+        }
+        display: inline-block;
+        width: 100%;
+    }
+}
+@media(max-width: 1000px){
+    .transaction_show_zone{
+        .transaction_flame{
+            width: calc(100%);
+            height: auto;
+            .item_file{
+                height: auto;
+            }
+        }
+    }
+}
+@media(min-width: 1000px){
+    .transaction_show_zone{
+        .transaction_show_left_side{
+            width: calc(100% - 400px);
+            float: left;
+        }
+        .transaction_show_right_side{
+            width: 390px;
+        }
+    }
+}
+.sub {
+    display: inline-block;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    background: #fc0d1b;
+    color: #fff;
+    border-radius: 3px;
+    item: "\f164";
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+
+.transaction_message_flame{
+}
+
+.my_transaction_message_area{
+    width: 100%;
+    margin-bottom: 0px;
+    .my_message_text{
+        padding: 5px;
+        border-radius: 10px;
+        background-color: white;
+        box-shadow: 0px 0px 2px lightgray;
+        float: right;
+        white-space: pre-line;
+    }
+}
+.send_time_area{
+    width: 100%;
+    float: right;
+    .send_time{
+        float: right;
+        font-size: 13px;
+    }
+}
+.transaction_message_form_area{
+    .title{
+        margin: 0px;
+    }
+    .text_field{
+        width: calc(100% - 5px);
+        min-width: calc(100% - 5px);
+        max-width: calc(100% - 5px);
+        height: 100px;
+    }
+    .transaction_message_submit_area{
+        text-align: center;
+    }
+    .transaction_message_submit{
+        height: 30px;
+        width: 200px;
+        font-size: 15px;
+        border-radius: 3px;
+        border: 1px solid gray;
+        background-color: orange;
+        color: white;
+    }
+    .transaction_message_submit:hover{
+        cursor: pointer;
+    }
+}
+.total_transaction_message{
+    text-align: center;
+    color: gray;
+}
+.get_transaction_message_button_button{
+    color: blue;
+    @media(min-width:1000px){
+        display: none;
+    }
+}
+.get_transaction_message_button_button:hover{
+    cursor: pointer;
+}

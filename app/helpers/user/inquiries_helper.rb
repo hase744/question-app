@@ -1,0 +1,2 @@
+module User::InquiriesHelper
+end

@@ -1,0 +1,168 @@
+@import "variables";
+.main_area{
+    @media(max-width:1000px){
+        padding-left: 0px;
+        width: 100%;
+        padding-top: 80px;
+        margin: 0%;
+    }
+    @media(min-width:1000px){
+        position: relative;
+        width: 1000px;
+        //height: 100%;
+        float: left;
+        margin: 0 0 0 calc(50% - 500px);
+        padding-top: 90px;
+        //background-color: #ffffcc;
+    }
+    max-width: 1000px;
+    overflow-x:hidden; //スマホで開いた時に横にぐらつくのを防ぐだめ
+}
+
+.header{
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    height: 50px;
+}
+
+.main_header{
+    margin: 0px;
+    margin-top: 10px;
+    margin-left: 5px;
+}
+.bottom{
+    display: none;
+}
+
+body{
+    font-family: "Helvetica Neue" ,Arial ,"Hiragino Kaku Gothic ProN" ,"Hiragino Sans" ,Meiryo ,sans-serif;
+    position: relative;
+    height: 100%;
+    padding: -2px;
+    position: absolute;
+    top:-8px;
+    left: -8px;
+    width: calc(100% + 0px);
+    height: calc(100% + 0px);
+    background-color: $background-color;
+    }
+
+.visibility_none{
+    visibility: hidden;
+}
+.fa-home{
+    color: blue;
+    text-decoration: none;
+}
+.main_area_top_link{
+    color: blue;
+    text-decoration: none;
+}
+.main_header{
+    a{
+        color: blue;
+    }
+}
+.main_bottom{
+    a{
+        color: blue;
+    }
+}
+.normal_layout{
+    @media(max-width:1000px){
+        .main_area{
+            margin:0%;
+            padding-left: 0px;
+            width: 100%;
+        }
+        .search_detail_margin{
+            display: none;
+        }
+    }
+    @media(min-width:1000px){
+        .main_area{
+            margin: 0 0 0 calc(50% - 500px);
+            width: 1000px;
+        }
+        .sidebar_menu_margin{
+            display: none;
+        }
+    }
+}
+.small_layout{
+    @media(max-width:500px){
+        .main_area{
+            margin:0%;
+            padding-left: 0px;
+            width: 100%;
+        }
+        .search_detail_margin{
+            display: none;
+        }
+    }
+    @media(min-width:500px){
+        .main_area{
+            margin: 0 0 0 calc(50% - 250px);
+            width: 500px;
+        }
+        .sidebar_menu_margin{
+            display: none;
+        }
+    }
+}
+.about_layout{
+    .main_area{
+        @media(min-width:1000px){
+            max-width: none;
+            width: 100%;
+            margin: 0px;
+            //background-color: #ffffcc;
+        }
+    }
+}
+.search_layout{
+    @media(min-width:1000px){
+        .main_area{
+                width: calc(80% - 240px);
+                margin: 0 0 0px calc(10% + 240px);
+        }
+        .search_detail_margin{
+            display: inline-block;
+            width: 10%;
+        }
+        .sidebar_menu_margin{
+            display: none;
+        }
+    }
+}
+.transaction_index_layout{
+    .main_area{
+        @media(min-width:1000px){
+            margin: 0 0 0 240px;
+            max-width: none;
+            width: calc(100% - 240px);
+            //background-color: #ffffcc;
+        }
+    }
+}
+
+input{
+    font-size: 16px;
+}
+a{
+    color: blue;
+    text-decoration: none;
+}
+a:hover{
+    color: blue;
+    text-decoration: underline;
+}
+textarea{
+    font-size: 16px;
+}
+
+$main-color: #3D85C6;
+$text_yellow: rgb(200, 200, 0);

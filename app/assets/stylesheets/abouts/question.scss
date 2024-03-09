@@ -1,0 +1,35 @@
+.qa-area{
+    margin: 0 auto;
+    max-width: 1000px;
+    h1 {
+       margin-top: 30px;
+    }
+    .qu_title_area{
+        //text-align: center;
+    }
+    .qa-flame{
+        position: relative;
+        top: -20px;
+        padding-bottom: 50px;
+
+        margin: auto;
+        background-color: white;
+        box-shadow: 0 0 2px lightgray;
+        border-radius: 30px;
+        .qa-content{
+            position: relative;
+            top: 30px;
+            padding-right: 20px;
+            .question{
+                margin-bottom: 5px;
+            }
+            .answer{
+                margin-top: 3px;
+                margin-left: 20px;
+            }
+        }
+    }
+}
+.about_question_flame{
+
+}

@@ -1,0 +1,29 @@
+.star5_rating{
+            float: none;
+        }
+        .user_info_area{
+            height: 20px;
+            margin-bottom: 7px;
+            max-width: 300px;
+            .user_info_name{
+                float: left;
+                color: gray;
+            }
+            .user_info{
+                margin-left: 100px;
+            }
+        }
+.user_info_table{
+    border: none;
+    min-width: 220px;
+    td{
+        border: none;
+    }
+    .user_info_name{
+        color: gray;
+        float: left;
+    }
+    .user_info{
+        float: right;
+    }
+}

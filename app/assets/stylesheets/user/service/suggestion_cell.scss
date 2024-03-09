@@ -1,0 +1,156 @@
+
+.suggestion_area:hover{
+    //background-color: whitesmoke;
+}
+.suggestion_area{
+    .service_link_area{
+        //text-decoration: none;
+        color: blue;
+    }
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    margin: 5px;
+    border-radius: 10px;
+    position: relative;
+    .user_image_name_area{
+        display: inline-block;
+        width: calc(100%);
+       // width: 60px;
+        display: inline-block;
+        //float: left;
+        .user_image{
+            width: 30px;
+            height: 30px;
+            border-radius: 30px;
+            margin-top: 5px;
+            margin-left: 5px;
+            margin-right: 5px;
+            float: left;
+            object-fit: cover;
+        }
+        .user_name_area{
+            width: calc(100% - 40px);
+            height: 40px;
+            display: inline-block;
+            float: left;
+            color: dimgray;
+            .user_name{
+                color: gray;
+            }
+            .user_name:hover{
+                color: darkgray;
+            }
+        }
+    }
+    .service_info_area{
+        width: calc(100%);
+        display: inline-block;
+    }
+    .service_title{
+        margin-bottom: 0px;
+        margin-top: 20px;
+        padding-left: 10px;
+        display: -webkit-box;
+        margin: 0px;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        -webkit-line-clamp: 1;
+        text-decoration: underline;
+        color: blue
+    }
+    .service_image_area{
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        .service_image{
+            object-fit: cover;
+            height: 100%;
+            float: right;
+            max-width: calc(300px);
+        }
+    }
+
+    .service_user_condition_image{
+        float: left;
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        .service_condition_user{
+            float: left;
+        }
+        .service_condition_area{
+            margin-bottom: 10px;
+            font-size: 12px;
+            .service_condition_icon{
+                text-align: center;
+            }
+            .far, .fas{
+                font-size: 12px;
+                color: steelblue;
+            }
+            .condition_name{
+                color: gray;
+                text-decoration: underline;
+                width: 200px;
+            }
+            .service_condition{
+                margin-left: 10px;
+            }
+        }
+    }
+    .service_title_description_area{
+        width: 100%;
+        display: inline-block;
+        margin-bottom: 0px;
+        .service_description_title{
+            font-weight: bolder;
+        }
+        .service_description{
+            margin-bottom: 0px;
+            display: inline-block;
+            max-height: 50px;
+            white-space: pre-line;
+            width: 100%;
+            margin: 0px;
+            display: -webkit-box;
+            margin: 0px;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 2;
+            word-break: break-word;
+            word-break: break-all;
+        }
+        /* その上で、下記のいずれかを指定する。overflow-wrapと併せて指定しましょう */
+        word-break: break-word;
+        word-break: break-all;
+    }
+
+    @media(max-width: 500px){//500px以下
+        .service_info_area{
+            height: auto;
+        }
+        .service_image_area{
+            width: 100%;
+            position: none;
+            position: sticky;
+        }
+        .service_user_condition_image{
+            width: 100%;
+            float: none;
+            .service_image{
+                float: none;
+                width: 100%;
+            }
+        }
+        .service_image_area{
+            max-width:none;
+            .service_image{
+                max-height: 150px;
+                max-width: none;
+            }
+        }
+    }
+}
+

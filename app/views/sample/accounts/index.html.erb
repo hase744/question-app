@@ -1,0 +1,104 @@
+<div class="searched_user_zone">
+    <div class="main_header"><%= link_to "", sample_transactions_path, class:"fas fa-home" %> > 回答者一覧<%#= paginate @users %></div>
+    <div class="searched_user_area">
+        <% @users.each do |user|%>
+            <%= link_to(sample_account_path(user.id), class: 'user_link') do %>
+            <div class="each_searched_user_zone">
+                <div class="searched_user_flame">
+                    <div class="searched_user_area">
+                        <div class="user_image_flame">
+                            <% if user.image.url %>
+                            <%=image_tag user.image.url, class:"user_image"%>
+                            <% else %>
+                            <%=image_tag user_image_default, class:"user_image"%>
+                            <% end %>
+                            <div class="last_login">
+                                <p>最終ログイン</p>
+                                <p><%=from_now(user.last_login_at)%></p>
+                            </div>
+                        </div>
+                        
+                        <div class="user_name_area">
+                            <span class="user_name" id="searched_user_area"><%=user.name%></span>
+                            <span class="day_form_logout">最終ログイン：<%=from_now(user.last_login_at)%></span>
+                        </div>
+                        
+                        <div class="introduction user_description_area">
+                            <p class="user_description"><%= user.description%></p>
+                        </div>
+                        <div class="user_record_area">
+                            <div class="category user_record">
+                                <span class="record_name">専門分野</span>　
+                                <span class="user_category">
+                                    <% user.categories.each do |c|%>
+                                        <%=c.japanese_name%>
+                                    <% end %>
+                                </span>
+                            </div>
+                            <div class="review user_record">
+                                <span class="record_name">レビュー</span>　
+                                <%if user.total_reviews >= minimum_total_reviews%>
+                                <span id="star_rating" class="star5_rating user<%=user.id%>" data-rate="4"></span>
+                                <span class="user_review <%= user%>"><%=user.average_star_rating.round(1)%></span>
+                                <%else%>
+                                <span>ーーーーー</span>
+                                <%end%>
+                            </div>
+                            <div class="sale_record user_record">
+                                <span class="record_name">販売実績</span>　
+                                <span class="user_sale"><%=user.total_sales_numbers%>件</span>
+                            </div>
+                            <div class="average_price user_record">
+                                <span class="record_name">最低単価</span>　
+                                <% if user.mini_price%>
+                                <span class="user_id"><%=user.mini_price%>円/件</span>
+                                <% else %>
+                                <span class="user_id"></span>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% end %>
+        <% end %>
+    </div>
+    <%#= paginate @users %>
+</div>
+<script>
+var content = document.getElementById("content")
+var searched_user_area = document.getElementById("searched_user_area")
+var star5_rating = document.getElementsByClassName("star5_rating")
+
+//ドキュメントスタイルの取得
+var sheets = document.styleSheets
+var sheet = sheets[sheets.length - 1];
+
+//content.options[0].selected = false;
+//content.options[3].selected = true;
+$(".search_detail").css("display","none")
+
+//rateを割合に変換してcssに擬似要素として星を挿入
+<% @users.each do |user| %>
+    <%if user.total_reviews > 0 %>
+    let star_rate<%=user.id%> = <%= (user.average_star_rating*20).round(1)%>
+    console.log(star_rate<%=user.id%>)
+    sheets[0].insertRule(
+        `.user<%=user.id%>::after { width: ${star_rate<%=user.id%>}% }`,
+        0
+    );
+    <% end %>
+<% end %>
+
+//console.log(content.options)
+//content.options[0].selected = false;
+//content.options[3].selected = true;
+set_search_detail()
+window.addEventListener('resize', set_search_detail);
+
+console.log(searched_user_area.clientWidth)
+
+function resize_user_area(){
+    if(searched_user_area.clientWidth){}
+}
+</script>

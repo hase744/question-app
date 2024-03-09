@@ -1,0 +1,41 @@
+.contact_index_zone{
+    width: calc(100% );
+    height: 100%;
+    position: relative;
+    .contact_area{
+        width: 100%;
+        .contact_flame{
+            width: calc(100%);
+            .message_title{
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            .message_title_area{
+                text-align: center;
+            }
+        }
+    }
+}
+@media(max-width:1000px){
+    .contact_index_zone{
+        .contact_area{
+        }
+        .message_area{
+        }
+    }
+}
+@media(min-width:1000px){
+    .contact_index_zone{
+        .contact_area{
+        }
+        .message_area{
+        }
+    }
+}
+
+.closing{
+    display: none;
+}
+.opening{
+    display: inline-block;
+}

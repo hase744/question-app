@@ -1,0 +1,19 @@
+<div class="center_area_max500">
+  <h2 class="input_new_title">退会したアカウントを再登録</h2>
+  <div class="input_new_zone">
+    <div class="input_area">
+      <%= form_with model: @user, url: user_reregister_account_path, method:"post" do |f|  %>
+        <div class="field">
+          <%= f.label :email %><br />
+          <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+        </div>
+        
+        <div class="actions">
+          <%= f.submit "再登録", class:"submit" %>
+        </div>
+      
+      
+      <% end %>
+    </div>
+  </div>
+</div>

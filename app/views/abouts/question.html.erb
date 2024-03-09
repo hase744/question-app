@@ -1,0 +1,17 @@
+<div class="abouts_question_zone about_zone">
+    <div class="about_flame about_question_flame">
+        <div class="qa-area">
+            <div class="qu_title_area">
+                <h1>Q&A</h1>
+            </div>
+            <div class="qa-flame">
+                <% @question_answer.each do |qa|%>
+                    <div class="qa-content">
+                        <h3 class="question">Q.<%=qa.question%></h3>
+                        <p class="answer"><%=qa.answer%></p>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>

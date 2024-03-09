@@ -1,0 +1,177 @@
+@import "variables";
+.component_area{
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    .component_flame{
+        width: calc(100% - 20px);
+    }
+}
+.zone_title{
+    margin-left: 10px;
+    margin-bottom: 0px;
+}
+.title_label{
+    margin-bottom: 20px;
+}
+.title_h3{
+    margin-bottom: 0px;
+}
+.form_label{
+    padding-bottom: 20px;
+}
+.form_input{
+    display: inline-block;
+    margin-bottom: 10px;
+}
+.display_none{
+    display: none;
+}
+
+.display_block{
+    display: block;
+}
+
+.margin0px{
+    margin: 0px;
+}
+
+.information_component{
+    margin-bottom: 20px;
+}
+
+.break_word{
+    white-space: pre-line;
+}
+
+.submit_area{
+    text-align: center;
+    margin-top: 10px;
+    padding: 0px;
+    margin: 0px;
+    .submit{
+        -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
+        display: inline-block;
+        height: 30px;
+        width: 200px;
+        font-size: 15px;
+        border-radius: 3px;
+        border: 1px solid gray;
+        background-color: orange;
+        color: white;
+        text-decoration: none;
+        vertical-align: top;
+    }
+    .submit:hover{
+        cursor: pointer;
+    }
+}
+.visibility_hidden{
+    visibility: hidden;
+}
+.font-size_0{
+    font-size: 0px;
+}
+.inline-block{
+    display: inline-block;
+}
+.one_line_text{
+    margin-bottom: 0px;
+    margin-top: 20px;
+    display: -webkit-box;
+    margin: 0px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+}
+.two_line_text{
+    margin-bottom: 0px;
+    margin-top: 20px;
+    display: -webkit-box;
+    margin: 0px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+}
+.width_100{
+    width: 100%;
+    height: auto;
+}
+.center_area{
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.share_zone{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    .share_area{
+        margin-top: 0px;
+        .twitter_share{
+            color: white;
+            background-color: #00aced ;
+            border-radius: 30px;
+            //display: inline-block;
+            //height: 30px;
+            //width: 30px;
+            //text-align: center;
+            //vertical-align: middle;
+            margin-top: 10px;
+            padding: 3px 10px;
+        }
+        .fa-twitter{
+            margin-top: 5px;
+            //font-size: 20px;
+            font-size: 13px;
+        }
+
+        .facebook_share{
+            color: white;
+            background-color: #315096 ;
+            border-radius: 30px;
+            //display: inline-block;
+            //height: 30px;
+            //width: 30px;
+            //text-align: center;
+            //vertical-align: middle;
+            margin-top: 10px;
+            padding: 3px 10px;
+        }
+        .fa-facebook-f{
+            margin-top: 5px;
+            //font-size: 20px;
+            font-size: 13px;
+            padding-right: 5px;
+        }
+    }
+}
+.center_area_max500{
+    max-width: 500px;
+    margin: 0 auto;
+    
+}
+
+.common_label_area{
+    margin-left: 5px;
+    .common_label{
+        margin: 0px;
+        display: inline-block;
+        //background-color: orange;
+        //border-radius: 5px;
+        padding-left: 7px;
+        margin-top: 5px;
+        color: dimgray;
+        font-size: 17px;
+        //text-decoration: underline;
+        border-left: 4px solid $text_yellow;
+    }
+    //英語の場合フォントの大きさを変える
+    .common_label:lang(en) {
+        font-size:20px;
+    }
+}
+.h3_description{
+    margin-top: 0px;
+}

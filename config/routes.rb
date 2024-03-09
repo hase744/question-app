@@ -1,0 +1,144 @@
+Rails.application.routes.draw do
+  namespace :user do
+    get 'videos/show'
+  end
+  namespace :sample do
+    get 'accounts/index'
+    get 'accounts/show'
+  end
+  namespace :sample do
+    get 'requests/index'
+    get 'requests/show'
+  end
+  namespace :sample do
+    get 'services/index'
+    get 'services/show'
+  end
+  namespace :user do
+    get 'alerts/index'
+  end
+  namespace :user do
+    get 'notices/index'
+  end
+  namespace :user do
+    resource :inquiries, only: [:new, :create]
+    get 'inquiries/new'
+    get 'inquiries/create'
+  end
+  get 'new/create'
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
+
+  root :to => 'abouts#index'
+  resources :abouts, only:  [:index]
+  get "abouts/question"
+  get "abouts/inquiry"
+  get "abouts/detail"
+  get "abouts/how"
+  get "abouts/announce"
+  get "abouts/how_to_sell", as: "abouts_how_to_sell"
+  get "abouts/how_to_purchase", as: "abouts_how_to_purchase"
+  get "abouts/how_to_deliver", as: "abouts_how_to_deliver"
+  get "abouts/how_to_reject", as: "abouts_how_to_reject"
+  get "abouts/how_to_cancel", as: "abouts_how_to_cancel"
+  get "abouts/how_to_request", as: "abouts_how_to_request"
+  get "abouts/how_to_charge", as: "abouts_how_to_charge"
+  get "abouts/service_guide", as: "abouts_service_guide"
+  get "abouts/term_of_service", as: "abouts_term_of_service"
+  get "abouts/privacy_policy", as: "abouts_privacy_policy"
+  get "abouts/tokushou", as: "abouts_tokushou"
+  #get "abouts/how_to_sell", as: "abouts_how_to_sell"
+namespace :user do
+  
+    get "requests/:id/preview", to: "requests#preview", as: "request_preview"
+    post "requests/publish/:id", to: "requests#publish", as: "request_publish"
+    post "requests/purchase/:id", to: "requests#purchase", as: "request_purchase"
+    post "transactions/like/:id", to:"transactions#like", as: "transactions_like"
+    put "transactions/deliver/:id",  to:"transactions#deliver", as:"deliver_transaction"
+    get "notifications/notification_bar", to: "notifications#notification_bar"
+    get "notifications/notification_cells", to: "notifications#notification_cells"
+    get "notifications/get_data"
+
+
+    root to: 'transactions#index'
+    get "configs/personal_config"
+    get "configs/personal_config"
+    get "configs/withdrawal", to:"configs#withdrawal", as:"configs_withdrawal"
+    get 'connects/certify_phone', to: "connects#certify_phone", as:"get_certify_phone"
+    get 'connects/alert', to: "connects#alert"
+    get 'connects/send_token', to: "connects#send_token"
+    post 'connects/certify_phone', to: "connects#certify_phone", as:"post_certify_phone"
+    get 'connects/form', to: "connects#form"
+    get 'images/answer'
+    get 'accounts/likes/:id', to:"accounts#likes", as:"account_likes"
+    get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"
+    get 'accounts/requests/:id', to:"accounts#requests", as:"account_requests"
+    get 'accounts/followees/:id', to:"accounts#followees", as:"account_followees"
+    get 'accounts/registered_users/:id', to:"accounts#registered_users", as:"registered_users"
+    get 'accounts/purchases/:id', to:"accounts#purchases", as:"account_purchases"
+    get 'accounts/sales/:id', to:"accounts#sales", as:"account_sales"
+    get 'accounts/services/:id', to:"accounts#services", as:"account_services"
+    get 'accounts/posts/:id', to:"accounts#posts", as:"account_posts"
+    get 'contacts/cells', to:"contacts#cells", as:"contacts_cells"
+    get 'accounts/revive', to:"accounts#revive", as: "revive_account"
+    get 'accounts/renew', to:"accounts#renew", as: "renew_account"
+    post 'accounts/reregister', to:"accounts#reregister", as: "reregister_account"
+    delete 'cards/delete', to:"cards#delete", as:"cards_delete"
+    
+
+    get "transaction_messages/cells", to: "transaction_messages#cells", as:"transaction_messages_cells"
+    get "transaction_messages/reset_cells", to: "transaction_messages#reset_cells", as:"transaction_messages_reset_cells"
+    patch 'transactions/create_description_image/:id', to:'transactions#create_description_image', as:'create_description_image'
+
+    get "services/requests/:id", to: "services#requests", as:"service_requests"
+    get "services/reviews/:id", to: "services#reviews", as:"service_reviews"
+    get "services/transactions/:id", to: "services#transactions", as:"service_transactions"
+    put "orders/:id", to: "orders#cancel", as:"cancel_order"
+    patch "orders/:id", to: "orders#reject", as:"reject_order"
+    
+    
+    resource :connects, only: [:index, :new, :show, :create, :edit, :update, :destroy]
+    resource :cards, only: [:index, :new, :show, :create, :edit, :update, :destroy]
+    resource :configs, only: [ :index, :show, :edit, :update, :destroy]
+    resource :alerts, only: [:show]
+    resource :accounts, only: [:edit, :update]
+    resources :reviews, only: [:update]
+    resources :orders, only:[:index, :show, :edit]
+    resources :messages, only: [:create, :show]
+    resources :transaction_messages, only: [:create, :show]
+    resources :contacts, only: [ :index, :show, :create]
+    resources :posts, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
+    resources :images, only: [ :show]
+    resources :relationships, only: [ :update]
+    resources :services, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
+    resources :requests, only: [ :index, :show, :new, :edit, :create, :update, :destroy]
+    resources :rooms, only: [:create]
+    resources :accounts, only: [ :index, :show]
+    resources :transactions, only: [ :index, :show, :edit, :update]
+    resources :notifications, only: [ :index, :show]
+    resources :histories, only: [ :index ,:new, :create]
+    resource :payments, only: [:show, :create]
+    resource :videos, only: [:show]
+    resource :homes, only: [:show]
+  end
+  
+  namespace :sample do
+    resources  :accounts, only: [:index, :show]
+    resources  :transactions, only: [:index, :show]
+    resources  :services, only: [:index, :show]
+    resources  :requests, only: [:index, :show]
+
+    get 'accounts/likes/:id', to:"accounts#likes", as:"account_likes"
+    get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"
+    get 'accounts/requests/:id', to:"accounts#requests", as:"account_requests"
+    get 'accounts/followees/:id', to:"accounts#followees", as:"account_followees"
+    get 'accounts/registered_users/:id', to:"accounts#registered_users", as:"registered_users"
+    get 'accounts/purchases/:id', to:"accounts#purchases", as:"account_purchases"
+    get 'accounts/sales/:id', to:"accounts#sales", as:"account_sales"
+    get 'accounts/services/:id', to:"accounts#services", as:"account_services"
+    get 'accounts/posts/:id', to:"accounts#posts", as:"account_posts"
+  end
+  devise_for :users
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  get '*a', :to => 'application#rescue404'
+end

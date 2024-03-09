@@ -1,0 +1,34 @@
+<div class="post_show_zone">
+    <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "投稿一覧", user_account_path(@post.user.id), class:"main_area_top_link" %> > <%=@post.body%></p>
+    <div class="post_area">
+        <div class="post_flame">
+            <div class="user_image_name">
+                <div class="user_image_area">
+                    <% if @post.user.image.url %>
+                        <%=image_tag @post.user.image.url, class:"user_image"%>
+                    <% else %>
+                        <%=image_tag "/profile.jpg", class:"user_image"%>
+                    <% end %>
+                </div>
+                <div class="user_date_time">
+                    <h4 class="user_name"><%= link_to @post.user.name, user_account_path(@post.user.id)%></h4>
+                    <span class="post_date_time"><%= from_now(@post.created_at)%></span>
+                </div>
+            </div>
+            <div class="post_text_area">
+                <div class="user_description_area">
+                    <%= @post.body%>
+                </div>
+                <div class="post_file_area">
+                    <% if @post.file.url%>
+                        <%=image_tag @post.file.url, class:"post_file"%>
+                    <% end %>
+                </div>
+            </div>
+            <% if @post.user == current_user%>
+                <%= link_to "削除", user_post_path(@post.id), method: :delete, data: {confirm: "削除しますか？"}%>
+            <% end %>
+        </div>
+    </div>
+    <%= render "user/accounts/profile", user: @post.user, relationship:@relationship%>
+</div>

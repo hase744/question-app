@@ -1,0 +1,50 @@
+<div class="payment_show_zone">
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞ ポイント</h3>
+    <div class="component_area payment_show_area">
+        <div class="payment_show_flame">
+            <h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
+            <h3 class="point_description">１p = １円</h3>
+            <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form", onSubmit:"return check()"  do |f|%>
+                <label>購入するポイント</label></br>
+                <%=f.select :price, @hash, id:"payment_price"%></br>
+                <%=f.hidden_field :point, id:"payment_point"%></br>
+                <%= f.hidden_field :action_name, value:@action_name %>
+                <%= f.hidden_field :controller_name, value:@controller_name %>
+                <%= f.hidden_field :id_number, value:@id_number %>
+                <%= f.hidden_field :service_id, value:@service_id %>
+                <h3 class="point_sum">合計：<span id="price_display"><%=@default_point%></span>円</h3>
+                <div class="refund_label">＊返金不可</div>
+                <div class="submit_area">
+                    <%= f.submit "購入", class:"submit", id:"submit", onSubmit:"return submitCheck()", data: {confirm: "購入しますか？"} %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+    <% @payments.each do |p|%>
+        <div class="component_area">
+            <div>
+            <%=readable_datetime(p.created_at) %>
+            </div>
+            <h4 class="detail_line">&nbsp;購入ポイント：<%=p.point%>p</h4>
+            <h4 class="detail_line">&nbsp;支払い金額　：<%=p.price%>円</h4>
+        </div>
+    <% end %>
+</div>
+<script>
+//↓なぜか機能しない
+function submitCheck(){
+    if(window.confirm(`${$("#payment_price").val()}pを${$("#payment_price").val()}円で購入しますか？`)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//購入するポイントがが変更された
+$("#payment_price").change(function(){
+    console.log($(this).val())
+    $("#price_display").html(`${$(this).val()}`)
+    $("#payment_point").val(`${$(this).val()}`)
+    console.log($("#payment_point").val(`${$(this).val()}`))
+})
+</script>

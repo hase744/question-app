@@ -1,0 +1,146 @@
+<div class="request_area">
+        <div class="request_flame">
+            <div class="request_title">
+                <h2>
+                    <%=request.title%>
+                </h2>
+            </div>
+            <%if request.suggestion_deadline < DateTime.now%>
+                <div><span class="out_dated">期限が過ぎています</span></div>
+            <% end %>
+            <%if request.is_rejected %>
+                <div><span class="out_dated">依頼が拒否されました</span></div>
+            <% end %>
+            <%if Transaction.find_by(request_id: request.id) %>
+                <%if Transaction.find_by(request_id: request.id).is_canceled %>
+                    <div><span class="out_dated">依頼が中断されました</span></div>
+                <% end %>
+            <% end %>
+            <% if @request.user == current_user && !Transaction.exists?(request_id:params[:id]) %>
+                <div class="edit_delete_area">
+                    <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "依頼を削除しますか？。"} %>
+                </div>
+            <% end %>
+            <table class="request_condition_area">
+                <tr>
+                    <td>
+                        <span class="fas fa-yen-sign"></span>
+                        <% if request.service_id == nil %>
+                            <span class="condition_name ">予算</span>
+                        <% else %>
+                            <span class="condition_name ">依頼料</span>
+                        <% end %>
+                        </td>
+                        <td>
+                        <span class="request_condition"><%=request.max_price%>円</span>
+                    </td>
+                </tr>
+                <% if request.service_id == nil %>
+                <tr>
+                    <td>
+                        <span class="far fa-calendar-alt"></span>
+                        <span class="condition_name ">期限</span>
+                    </td>
+                    <td>
+                        <span class="request_condition">約<%=from_now(request.suggestion_deadline)%></span>
+                    </td>
+                </tr>
+                <% end %>
+                <tr>
+                    <td>
+                        <span class="fas fa-file-download"></span>
+                        <span class="condition_name ">質問形式</span>
+                    </td>
+                    <td>
+                        <span class="request_condition"><%=request.request_form.japanese_name%></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="fas fa-file-upload"></span>
+                        <span class="condition_name ">回答形式</span>
+                    </td>
+                    <td>
+                        <span class="request_condition"><%=request.delivery_form.japanese_name%></span>
+                    </td>
+                </tr>
+                <% if request.service_id == nil %>
+                <tr>
+                    <td>
+                        <span class="far fa-hand-paper"></span>
+                        <span class="condition_name ">提案数</span>
+                    </td>
+                    <td>
+                        <span class="request_condition"><%=request.total_services%>件</span>
+                    </td>
+                </tr>
+                <% end %>
+                <tr>
+                    <td>
+                        <span class="fas fa-sitemap"></span>
+                        <span class="condition_name ">カテゴリー</span>
+                    </td>
+                    <td>
+                        <span class="request_condition"><%=request.category.japanese_name%></span>
+                    </td>
+                </tr>
+            </table>
+            <div class="request_detail">
+                <h4>依頼の内容</h4>
+                <div class="request_detail_content" id="request_detail_content">
+                    <p id="request_detail_text" class="request_detail_text"><%=request.description%></p>
+                </div>
+            </div>
+            <div class="item_area">
+                <%if request.use_youtube%>
+                    <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <% elsif request.file.url != nil %>
+                    <% if request.request_form.name == "image" || request.request_form.name == "text"%>
+                        <%= image_tag request.file.url, class:"image"%>
+                    <% elsif request.request_form.name == "video" %>
+                        <%= video_tag request.file.url, class:"image", controls: true, autobuffer: true%>
+                    <% end %>
+                <% end %>
+            </div>
+            <%if user_signed_in? %>
+                <% if request.service_id == nil && request.user != current_user %>
+                    <div class="suggest_button_area">
+                        <%=link_to "提案する", new_user_service_path(request_id:request.id), class:"suggest_button"%>
+                    </div>
+                <% end %>
+            <% end %>
+
+            <%if user_signed_in? && Service.find(request.service_id) %>
+                <% if Service.find(request.service_id).user == current_user || (!!Transaction.find_by(request_id:request.id).is_rejected || !Transaction.find_by(request_id:request.id).is_canceled) %>
+                    <div class="suggest_button_area">
+                        <%=link_to "依頼に対応する", user_order_path(Transaction.find_by(request_id:request.id)), class:"suggest_button"%>
+                    </div>
+                <% end %>
+            <% end %>
+        </div>
+        <% if !Transaction.find_by(request_id:request.id).is_rejected && request.user == current_user %>
+            <h3 class="reject_title zone_title">依頼が断られた理由</h3>
+            <div class="component_area">
+                <%=request.reject_reason%>
+                <div>
+                <% seller = Transaction.find_by(request: request).seller%>
+                <%=link_to seller.name, user_account_path(seller.id)%>
+                </div>
+            </div>
+        <% end %>
+        <% if Service.where(request_id: request.id).count > 0 %>
+            <h2 class="suggest_title">提案</h2>
+        <% end %>
+        <% Service.where(request_id: request.id).each do |service| %>
+            <%= render "user/services/suggestion_cell", service:service %>
+            <%#= render "user/services/cell", service:service%>
+        <% end %>
+        <% if request.service_id %>
+            <h2 class="suggest_title">購入したサービス</h2>
+            <%= render "user/services/suggestion_cell", service:Service.find(request.service_id) %>
+        <% end %>
+        <% if Transaction.exists?(request_id: request.id, is_delivered:true) %>
+            <h2 class="suggest_title">納品</h2>
+            <%= render "user/transactions/cell", content:Transaction.find_by(request_id: request.id, is_delivered:true) %>
+        <% end %>
+</div>

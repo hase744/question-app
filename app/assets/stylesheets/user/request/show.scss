@@ -1,0 +1,162 @@
+.request_show_zone{
+    overflow: hidden;
+    .request_area{
+        display: inline-block;
+        @media(min-width: 1000px){
+            width: calc(100% - 320px);
+            float: left;
+        }
+        .request_flame{
+            background-color: white;
+            box-shadow: 0 0 2px lightgray;
+            margin: 5px;
+            border-radius: 10px;
+            padding:1px 5px 1px 5px;
+            .request_alert{
+                background-color: red;
+            }
+            .request_title_area{
+                
+                .request_title{
+                    margin-top: 5px;
+                    margin-bottom: 5px;
+                    border-bottom: solid 2px lightgray;
+                }
+            }
+            .edit_delete_area{
+                display: inline-block;
+                height: 20px;
+                width: 100%;
+                .button{
+                    float: right;
+                    margin-left: 10px;
+                }
+            }
+            /*
+            .request_condition_area{
+                
+                border-radius: 5px;
+                padding: 10px;
+                .request_condition{
+                    margin-top: 5px;
+                    margin-bottom: 0px;
+                    border-bottom:solid 1px lightgray;
+                }
+            }
+            */
+            .request_condition_area{
+                @media(max-width:500px){
+                    margin-left: 10px;
+                }
+                @media(min-width:500px){
+                    margin-left: 30px;
+                }
+                .label_icon{
+                    text-align: center;
+                }
+                tr{
+                    list-style-type: none;
+                    td{
+                        position: relative;
+                        .request_condition{
+                        }
+                        .far, .fas{
+                            font-size: 15px;
+                            color: steelblue;
+                        }
+                        .fa-sitemap, .fa-warehouse{
+                            margin-right: 0px;
+                            margin-left: 0px;
+                        }
+                    }
+                    .condition_name{
+                        color: gray;
+                        padding-bottom: 0px;
+                        border-radius: 5px;
+                        font-size: 13px;
+                        display: inline-block;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            .request_detail{
+                h4{
+                    margin-bottom: 0px;
+                }
+                .request_detail_content{
+                    margin-top: 5px;
+                    .request_detail_text{
+                        margin-top: 10px;
+                        white-space: pre-line;
+                    }
+                }
+            }
+            .youtube_video{
+                width: 100%;
+                
+            }
+    
+            .image{
+                width: 100%;
+                object-fit: cover;
+            }
+
+            .suggest_button_area{
+                margin-top: 30px;
+                text-align: center;
+                height: 70px;
+                .suggest_button{
+                    width: 200px;
+                    display: inline-block;
+                    font-size: 15px;
+                    border-radius: 5px 5px 5px 5px;
+                    color: white;
+                    background-color: orange;
+                    box-shadow: 0 0 2px lightgray;
+                    padding: 5px 10px;
+                    //border-bottom: solid 4px #627295;
+                    text-decoration: none;
+                }
+                .suggest_button:hover{
+                    cursor: pointer;
+                    background-color: #FFC700;
+                    //border-bottom: solid 4px lightgray;
+                }
+                //.suggest_button:active {
+                //    /*ボタンを押したとき*/
+                //    -webkit-transform: translateY(4px);
+                //    transform: translateY(4px);/*下に動く*/
+                //    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);/*影を小さく*/
+                //    border-bottom: none;
+                //  }
+            }
+        }
+        //.suggest_title{
+        //    margin-bottom: 0px;
+        //}
+        .service_link_area{
+            text-decoration: none;
+            color: black;
+        }
+    }
+}
+@media(max-width: 1000px){
+    .request_show_zone{
+        max-width: 700px;
+        margin-right: auto;
+        margin-left: auto;
+        .request_area{
+            width: calc(100%);
+        }
+    }
+}
+@media(min-width: 1000px){
+    .request_show_zone{
+        .request_area{
+            width: calc(100% - 320px);
+
+            float: left;
+        }
+        
+    }
+}

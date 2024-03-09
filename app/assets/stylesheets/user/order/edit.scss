@@ -1,0 +1,14 @@
+.order_edit_title{
+    margin-left: 10px;
+    margin-bottom: 0px;
+}
+.order_edit_zone{
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    .order_edit_area{
+        width: calc(100% - 20px);
+    }
+}

@@ -1,0 +1,4 @@
+<%=@transaction_message.body%>
+<p><%= link_to @transaction_message.deal.title, user_transaction_url(@transaction_message.deal.id) %></p>
+<div><%=@transaction_message.sender.name%></div>
+<%=render "email/shared/bottom" %>

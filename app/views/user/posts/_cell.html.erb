@@ -1,0 +1,27 @@
+<div class="post_cell_zone">
+    <div class="user_image_area">
+        <% if post.user.image.url %>
+            <%=image_tag post.user.image.url, class:"user_image"%>
+        <% else %>
+            <%=image_tag "/profile.jpg", class:"user_image"%>
+        <% end %>
+    </div>
+    <div class="post_text_area">
+        <%=link_to post.user.name, user_account_path(post.user.id), class:"post_user_name"%>
+        <span class="date_time_area">
+            ・
+            <%= from_now(post.created_at)%>
+        </span>
+        <%= link_to(user_post_path(post.id), class: 'post_link') do %>
+        <div class="user_description_area"><%= post.body%></div>
+        <% if post.file.url %>
+        <div class="post_file_area">
+            <%=image_tag post.file.url, class:"post_file", post: post%>
+        </div>
+        <% end %>
+        <% end %>
+        <% if post.user == current_user%>
+        <%= link_to "削除", user_post_path(post.id), method: :delete, data: {confirm: "削除しますか？"}%>
+        <% end %>
+    </div>
+</div>

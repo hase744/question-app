@@ -1,0 +1,35 @@
+.description_area{
+  .description_text_area{
+    border: 1px solid white;
+    height: auto;
+    padding: 0 10px;
+    transition: .5s;
+    p{
+        display: -webkit-box;
+        margin: 0px;
+        -webkit-box-orient: vertical;
+        white-space: pre-line;
+        overflow: hidden;
+    }
+    .opening_text{
+        -webkit-line-clamp: auto; 
+    }
+    .closing_text{
+        -webkit-line-clamp: 1; 
+    }
+  }
+  .change_text{
+    color: gray;
+    text-align: center;
+      cursor: pointer;
+  }
+  .open_text:after{
+    content: "全文を表示";
+    
+  }
+  .close_text:after{
+    content: "一部を表示";
+    
+  }
+    
+}

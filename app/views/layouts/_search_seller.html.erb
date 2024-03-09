@@ -1,0 +1,29 @@
+<div class="seller_search_flame">
+    <div class="seller_search_area">
+        <div class="modal_body">
+        <div class="modal_header">
+            <h4 class="p_tag">詳細な検索条件</h4>
+        </div>
+        <%= form_with url: user_accounts_path, class:"detail_search_form ",method:"get", id:"" do |f| %>
+            <div class="text_field_area">
+            <%= f.text_field :name, value: params[:name], class:"text_field"%><span class="fa fa-search"></span>
+            </div>
+            <!--
+            <p>最終ログインからの経過日数</p>
+            <%= f.number_field :elapsed_days, value: params[:elapsed_days], type:"number",min:"0",placeholder:"日数",step:"1", class:"max_price_field"%>日以内
+            -->
+            <p>販売実績数</p>
+            <%= f.number_field :total_sales_numbers, value:params[:total_sales_numbers], class:"total_sales_numbers", minn:"0", placeholder:"件数", step:"1"%>件以上
+            <p>カテゴリー</p>
+            </br>
+            <div>
+            <%= render "layouts/form_category", f:f%>
+            </div>
+            </br>
+            <div class="search_button_area">
+            <%= f.submit '検索',class:"search_button", placeholder:"" %>
+            </div>
+        <% end %>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+.profile_post_area{
+    height: auto;
+    width: auto;
+    background-color: red;
+    padding:10px 5% ;
+    border-bottom: 1px solid gray;
+    .post_flame{
+        .post_content_flame{
+            height: auto;
+            width: auto;
+            background-color: blue;
+            .video-content{
+                width: 100%;
+                height: calc(100% / 16 * 9);
+            }
+        }
+        .post_date{
+            text-align: right;
+            color: lightgray;
+        }
+    }
+}

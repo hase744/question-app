@@ -1,0 +1,12 @@
+<div class="request_index_zone">
+    <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > 依頼一覧 <%#= paginate @requests %></div>
+    <div class="request_index_flame request_cell_flame">
+        <% @requests.each do |request|%>
+            <%= render "sample/requests/cell", request:request%>
+        <% end %>
+    </div>
+<div class="main_bottom"><%#= paginate @requests %></div>
+<script>
+//content.options[0].selected = false;
+//content.options[1].selected = true;
+</script>

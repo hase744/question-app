@@ -1,0 +1,8 @@
+<p><%= @user.name %>様</p>
+
+<p>アカウント再開のリクエスト</p>
+
+<p><%= link_to 'Change my password', user_revive_account_url(reset_password_token: @token) %></p>
+
+<p>もし、そのようなリクエストを送信されていませんでしたら、本メールを無視してください</p>
+<p>Your password won't change until you access the link above and create a new one.</p>

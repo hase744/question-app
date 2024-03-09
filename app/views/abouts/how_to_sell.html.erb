@@ -1,0 +1,56 @@
+<div class="how_to_zone center_zone">
+    <div class="how_sell_area center_area">
+        <h2 class="zone_title">出品方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+            <div>②<%= link_to "回答者情報", user_connects_path%>で回答者として登録</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">③右上からサイドメニューを開く</li>
+                <li class="step">④「<%= link_to "サービスを出品", new_user_service_path %>」を選択</li>
+            </ol>
+            <!--
+            <%= image_tag "/how_to_use/service_new_link.png", class:"width_100"%>
+            -->
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑤出品するサービスに必要事項を記入</li>
+            </ol>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:title) %></h3>
+            <span>20字以内でサービスのタイトルを記入してください。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:description) %></h3>
+            <span>1000字以内でサービスの内容を記入してください。どのようなサービスを提供するのかが分かりやすい説明にしてください。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:image) %></h3>
+            <span>サービスの選択画面で表示されます。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:category) %></h3>
+            <span>現在<%=@categories%>の中からのみ選択できます。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:request_form) %></h3>
+            <span><%=@forms%>の中から選択できます。文章の場合は依頼する内容が文章のみです。画像の場合は依頼する際に画像のアップロードが必須となります。動画の場合は依頼する際に動画のアップロードが必須となります。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_form) %></h3>
+            <span><%=@forms%>の中から選択できます。文章の場合は納品する内容が文章のみです。画像の場合は納品する際に画像のアップロードが必須となります。動画の場合は納品する際に動画のアップロードが必須となります。</span></br>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:transaction_message_days) %></h3>
+            <span>納品後に追加で質問を受け付けられる日数を選択してください。０日の場合、追加質問を受付が不可となります。追加質問への回答は義務ではありませんが、追加の質問、回答は公開されます。
+            </span>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:stock_quantity) %></h3>
+            <span>供給できるサービスの在庫を記入してください。</span>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:price) %></h3>
+            <span>サービスの料金を入力してください。0円以上10000円以下の範囲で100円ごとに設定できます。</span>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_days) %></h3>
+            <span>日単位で設定可能です。この日数が経過しても納品がされない場合は依頼人がキャンセルできるようになります。</span>
+            <h3 class="title_h3"><%=Service.human_attribute_name(:is_published) %></h3>
+            <span>出品する場合はここのチェック項目は必ずつけてください。</span>
+            </br>
+            </br>
+            <ol class="step_area">
+                <li class="step">⑥「出品」を選択</li>
+                <li class="step">⑦「出品しますか？」に「OK」を選択</li>
+            </ol>
+            <%= image_tag "/how_to_use/service_new.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            出品するサービスの内容に悩まれている方は<%= link_to "出品するサービスの指針", abouts_service_guide_path %>をご参照ください。推奨されるサービスの内容を具体的に説明しております。
+        </div>
+    </div>
+</div>

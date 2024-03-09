@@ -1,0 +1,11 @@
+<div class="order_header_area">
+    <h3 class="order_header_title">
+        <% @header_list.each do |element| %>
+            <%if  params[:user] == element[:user] && params[:status] == element[:status] %>
+                <span class="current_condition"><%= element[:label]%></span>　
+            <% else %>
+                <%=link_to element[:label], user_orders_path(user: element[:user], status: element[:status]), class:"link" %>　
+            <% end %>
+        <% end %>
+    </h3>
+</div>

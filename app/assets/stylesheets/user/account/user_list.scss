@@ -1,0 +1,40 @@
+.user_list{
+    width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: white;
+        margin: 5px;
+        width: calc(100% - 10px);
+    height: 80px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px lightgray;
+    .user_list_flame{
+        position: relative;
+        margin-top: auto;
+        margin-bottom: auto;
+        .user_list_image_flame{
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            height: 50px;
+            width: 50px;
+            display: inline-block;
+            
+            .user_list_image{
+                height: 50px;
+                width: 50px;
+                border-radius: 50px;
+            }
+        }
+        .user_list_name{
+            position: absolute;
+            left: 70px;
+            top: 10px;
+            height: 60px;
+            width: 100px;
+            margin-bottom: 10px;
+            
+            display: inline-block;
+        }
+    }
+}

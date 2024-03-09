@@ -1,0 +1,1 @@
+Relationship.create!(followee:User.second, follower_id: User.first.id)

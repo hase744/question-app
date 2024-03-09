@@ -1,0 +1,13 @@
+<div class="abouts_announce_zone">
+    <div class="abouts_announce_area">
+        <div class="abouts_announce_header"><h2 class="announce_title">お知らせ</h2>
+        <span class="abouts_announce_paginate"><%= paginate @announces %></span></div>
+        <% @announces.each do |announce| %>
+            <div class="announce_cell_area component_area">
+            <h3 class="announce_cell_title"><%=announce.title%></h3>
+            <p class="announce_cell_body"><%=announce.body%></p>
+            <div><%=  readable_datetime(announce.disclosed_at)%></div>
+            </div>
+        <% end %>
+    </div>
+</div>

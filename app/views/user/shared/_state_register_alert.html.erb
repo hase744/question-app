@@ -1,0 +1,13 @@
+<div class="component_area">
+    <h2>現在は登録、出品のみ可能です</br>
+    <%=link_to "新規登録", new_user_registration_path %>
+    <%=link_to "ログイン", new_user_session_path %>
+    </h2>
+    <h1>開始日時：
+    <%if first_running_operation %>
+        <%= readable_datetime(first_running_operation.start_at) %>
+    <% else %>
+    未定
+    <% end %>
+    </h1>
+</div>

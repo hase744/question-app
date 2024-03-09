@@ -1,0 +1,33 @@
+.about_bottom_zone{
+    background-color: #404040;
+    width: 100%;
+    margin-top: 10px;
+    height: auto;
+    display: flex;
+    float: left;
+    .about_bottom_flame{
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        height: auto; 
+        width: 100%;
+    }
+    .about_bottom_area{
+        float: left;
+    }
+    .about_bottom_text{
+        color: white;
+        text-decoration: none;
+    }
+    .about_bottom_title{
+        margin: 0px;
+    }
+    .about_path{
+        margin: 5px;
+    }
+}
+.about_bottom_component{
+    display: inline-block;
+    min-width: 200px;
+   float: left;
+}

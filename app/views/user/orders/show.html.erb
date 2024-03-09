@@ -1,0 +1,82 @@
+<div class="order_show_zone">
+    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> ＞ 依頼の回答</p>
+    <%= render "user/shared/error_message", model: @transaction%>
+    <div class="order_show_flame component_area">
+        <%  if @transaction.is_canceled || @transaction.is_rejected%>
+        <h3>取引は中止されました。</h3>
+        <% elsif @transaction.is_delivered %>
+        <h3>納品済み</h3>
+        <% else %>
+        <h3 class="links"><%=link_to "編集", edit_user_transaction_path(@transaction.id) %> <%=link_to "拒否", edit_user_order_path(@transaction.id), class:"button" %></h3></br>
+        <% end %>
+        <div class="information_component">
+            <label>タイトル</label></br>
+            <%if @transaction.title %>
+                <h3 class="margin0px"><%=@transaction.title %></h3>
+            <%else%>
+                <h3 class="margin0px">未記入</h3>
+            <% end %>
+        </div>
+        <div  class="information_component">
+            </label class="title_label">本文</label></br>
+            <% if @transaction.description %>
+                <h3 class="margin0px break_word"><%=@transaction.description %></h3>
+            <% else %>
+                <h3 class="margin0px break_word">未記入</h3>
+            <% end %>
+        </div>
+        <div  class="information_component">
+            </label class="title_label">ファイル</label></br>
+            <% if @transaction.item %>
+              <%if @transaction.use_youtube%>
+                  <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              <% elsif @transaction.file.url != nil %>
+                  <% if @transaction.service.delivery_form.name == "image"%>
+                      <%= image_tag @transaction.file.url, class:"image"%>
+                  <% elsif @transaction.service.delivery_form.name == "video" %>
+                      <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                  <% end %>
+              <% end %>
+            <% end %>
+            <% if @transaction.delivery_form.name == "text" && @transaction.description %>
+              <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+              <img id="description_image" class="description_image">
+            <% end %>
+        </div>
+        <div  class="information_component">
+          <% if @transaction.item %>
+            <%if @transaction.thumbnail.url && @transaction.delivery_form.name == "video"%>
+              </label class="title_label">サムネイル</label></br>
+              <%= image_tag @transaction.thumbnail.url, class:"image"%>
+            <% end %>
+          <% end %>
+          </div>
+        <% if can_deliver(@transaction)%>
+            <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
+                <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
+                <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+                <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"}, disabled:@disabled %>
+            <% end %>
+        <% end %>
+    </div>
+</div>
+<%= render "/user/images/description", text:@transaction.description %>
+<script>
+window.addEventListener('load', (event) => {
+    if(gon.delivery_form == "text" && gon.description != null){
+        create_description_image(); //
+    }
+})
+
+//create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
+function reload_description_image(){
+    if($("#desctiption_to_image_text").css("display") == "none"){
+    }else{
+        window.location.reload();
+    }
+}
+if( gon.description != null){
+    window.setTimeout(reload_description_image, 3000);
+}
+</script>
+<%= javascript_pack_tag "shared/reload_page"%>

@@ -1,0 +1,1 @@
+Country.create(name:"japan", japanese_name:"日本", code:"81")

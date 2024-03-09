@@ -1,0 +1,37 @@
+<table class="user_info_table">
+    <tr>
+      <td class="user_info_name">レビュー</td>
+      <td>
+        <span class="user_info">
+        <% if user.total_reviews < minimum_total_reviews%>
+        <span>ーーーーー</span>
+        <% else %>
+        <%= render "user/reviews/star_rating", user: user,star_rating: star_rating%>
+        <span class="seller_review <%= user%>"><%=user.average_star_rating.round(1)%>(<%=user.total_reviews.round(1)%>)</span>
+        <% end %>
+        </span>
+      </td>
+    </tr>
+    <tr> 
+      <td class="user_info_name">専門分野</td>
+      <td>
+        <span class="user_info">
+          <% user.categories.each do |c|%>
+              <%=c.japanese_name%>
+          <% end %>
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td class="user_info_name">最低単価</td>
+      <td>
+        <span class="user_info"><%=user.mini_price%>円</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="user_info_name">販売実績</td>
+      <td>
+        <span class="user_info"><%=user.total_sales_numbers%>件</span>
+      </td>
+    </tr>
+</table>

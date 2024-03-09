@@ -1,0 +1,62 @@
+.common_register_area{
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    border-radius: 10px;
+    padding: 2.5px;
+    margin: 5px;
+    .common_register_flame{
+        width: calc(100% - 5px);
+        margin: 0 auto;
+        max-width: 550px;
+        //background-color: red;
+        .form_container {
+          max-width: 400px;
+          margin: 0 auto;
+          padding-bottom: 10px;
+          //background-color:blue;
+        }
+        .form_group {
+          margin-bottom: 20px;
+          //background-color:green;
+        }
+        h1, h2, h3, h4, h5{
+            margin-bottom: 5px;
+            margin-top: 10px;
+            float:left;
+            display: inline-block;
+            width: 100%;
+        }
+        .form_group label {
+          //display: block;
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+        .form_group .form_input {
+          width: calc(100% - 30px);
+          padding: 10px;
+          font-size: 16px;
+          border-radius: 5px;
+          border: 1px solid #ccc;
+        }
+        input[type=checkbox] {
+          width: 10px;
+          transform: scale(1.5);
+        }
+        .submit-btn {
+            -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
+          display: block;
+          width: 100%;
+          padding: 10px;
+          font-size: 16px;
+          text-align: center;
+          background-color: orange;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+        .submit-btn:hover {
+          background-color: darkgoldenrod;
+        }
+    }
+}

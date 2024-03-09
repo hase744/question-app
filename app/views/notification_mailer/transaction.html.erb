@@ -1,0 +1,30 @@
+<p>いつもご利用いただきありがとうございます。</p>
+
+<p>下記の取引について納品が完了したことを、ご報告いたします。</p>
+
+<table>
+  <tr>
+    <td>商品ID</td>
+    <td>：<%=@transaction.stripe_payment_id%></td>
+  </tr>
+  <tr>
+    <td>商品名</td>
+    <td>：<%=@transaction.service.title%></td>
+  </tr>
+  <tr>
+    <td>料金</td>
+    <td>：<%=@transaction.price%>円</td>
+  </tr>
+  <tr>
+    <td>回答者</td>
+    <td>：<%=@transaction.seller.name%></td>
+  </tr>
+  <tr>
+    <td>購入者</td>
+    <td>：<%=@transaction.buyer.name%></td>
+  </tr>
+</table>
+
+<p>ーーーーーーーーーーー</p>
+<h3>コレテク運営</h3>
+<p>ーーーーーーーーーーー</p>

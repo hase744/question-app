@@ -1,0 +1,34 @@
+
+<%= link_to(user_account_path(user.id), class: 'user_link') do %>
+    <div class="user_cell_zone">
+        <div class="user_cell_flame">
+            <div class="user_cell_area">
+                <div class="user_image_flame">
+                    <% if user.image.url %>
+                    <%=image_tag user.image.url, class:"user_image"%>
+                    <% else %>
+                    <%=image_tag user_image_default, class:"user_image"%>
+                    <% end %>
+                    <div class="last_login">
+                        <% user.categories.each do |c|%>
+                            <%=c.japanese_name%>
+                        <% end %>
+                    </div>
+                </div>
+
+                <div class="user_name_area">
+                    <span class="user_name" id="user_cell_area"><%=user.name%></span>
+                    <span class="day_form_logout">
+                    <% user.categories.each do |c|%>
+                        <%=c.japanese_name%>
+                    <% end %>
+                    </span>
+                </div>
+
+                <div class="introduction user_description_area">
+                    <p class="user_description"><%= user.description%></p>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>

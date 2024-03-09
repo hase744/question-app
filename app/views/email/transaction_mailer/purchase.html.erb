@@ -1,0 +1,27 @@
+<p>以下の取引が成立しました。</p>
+
+<table>
+  <tr>
+    <td>商品ID</td>
+    <td>：<%=@transaction.stripe_payment_id%></td>
+  </tr>
+  <tr>
+    <td>商品名</td>
+    <td>：<%=@transaction.service.title%></td>
+  </tr>
+  <tr>
+    <td>料金</td>
+    <td>：<%=@transaction.price%>円</td>
+  </tr>
+  <tr>
+    <td>回答者</td>
+    <td>：<%=@transaction.seller.name%></td>
+  </tr>
+  <tr>
+    <td>購入者</td>
+    <td>：<%=@transaction.buyer.name%></td>
+  </tr>
+</table>
+
+<%= link_to @transaction.request.title, user_request_url(@transaction.request.id) %>
+<%= render "email/shared/bottom" %>

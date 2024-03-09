@@ -1,0 +1,24 @@
+<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞ クレジットカード情報</h3>
+<div class="input_new_zone">
+    <div class="input_area">
+        <%if @card %>
+            <p>
+                <% if @card.brand == "Visa" %>
+                    <span class="fab fa-cc-visa"></span>
+                <% elsif @card.brand == "Master"%>
+                    <span class="fab fa-cc-mastercard"></span>
+                <% elsif @card.brand == "JCB"%>
+                <% end %>
+                **** **** **** <%=@card["last4"]%> <%=@card.exp_month%>/<%= @card.exp_year.to_s[2, 2]%>
+            </p>
+            <%= link_to "クレジットカード情報を更新", edit_user_cards_path %></br>
+            <%= link_to "クレジットカード情報を削除", user_cards_path, method:"delete",data: { confirm: "カード情報を削除しますか？" } %>
+        <% elsif @error %>
+                <p>カード情報が見つかりませんでした。カード情報を削除し、再び登録してください。</p>
+                <%= link_to "クレジットカード情報を削除", user_cards_delete_path(current_user.id), method:"delete",data: { confirm: "カード情報を削除しますか？" } %>
+        <%else%>
+        <p>クレジットカードが登録されていません。</p>
+        <%= link_to "クレジットカードを登録", new_user_cards_path %>
+        <%end%>
+    </div>
+</div>

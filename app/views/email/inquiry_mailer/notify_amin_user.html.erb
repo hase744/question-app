@@ -1,0 +1,18 @@
+<p><%=@inquiry.body%></p>
+<table>
+    <%if @inquiry.user.present? %>
+    <tr>
+        <td>ユーザー</td>
+        <td>
+            <%=@inquiry.user.name%>
+        </td>
+    </tr>
+    <% else %>
+    <tr>
+        <td>eメール</td>
+        <td>
+            <%=@inquiry.email%>
+        </td>
+    </tr>
+    <% end %>
+</table>

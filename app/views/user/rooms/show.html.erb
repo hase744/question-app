@@ -1,0 +1,61 @@
+<div class="room_show_zone window_height">
+    <div class="room_show_area">
+        <div class="message_header">
+            <div class="back_button_area">
+                <%=link_to "", user_rooms_path, class:"back_button fas fa-arrow-left"%>
+            </div>
+            <div class="user_name_area">
+            <%=link_to @user.name, user_path(@user.id), class:"user_info"%>
+            </div>
+        </div>
+        <div class="message_content_area" id="message_content_area">
+            <div class="message_show_zone">
+                <div class="message_show_flame">
+                    <% @messages.each do |content|%>
+                        <%  if content.sender.id == 1%>
+                        <div class="my_message_area">
+                            <div class="my_message_text">
+                                <%=content.text %>
+                            </div>
+                        </div>
+                        <div class="send_time_area">
+                            <span class="send_time"><%=from_now(content.created_at)%></span>
+                        </div>
+                        <% else %>
+                        <div class="destination_message_area">
+                            <div class="image_area">
+                            <%=image_tag content.receiver.image_url, class:"user_image"%>
+                            </div>
+                            <div class="message_text_area">
+                                <div class="message_text"><%=content.text %>あああああああああああああああああああああああああ</div>
+                                <div class="send_time">
+                                    <%=from_now(content.created_at)%>
+                                </div>
+                            </div>
+                        </div>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+
+        <%= form_with url: requests_path, class:"message_submit_form",method: "get", id:"" do |f| %>
+            <div class="text_field_area">
+                <%= f.text_area :name, class:"text_field"%>
+            </div>
+            <div class="submit_button_area">
+                <%= f.submit '送信',class:"submit_button", placeholder:"" %>
+            </div>
+        <% end %>
+    </div>
+</div>
+<script>
+console.log("<%=@messages.first.text%>")
+$(".room_show_zone").height(window.innerHeight)
+$(".header").css("display","none")
+$(".room_show_zone").height(window.innerHeight)
+//$(".image_area").height($(".destination_message_area").height())
+console.log(window.innerHeight)
+console.log($(".user_info_area").width())
+console.log($(".user_info").width())
+</script>

@@ -1,0 +1,42 @@
+<div class="inquiry_zone center_area">
+    <h3 class="zone_title ">お問い合わせ</h3>
+    <div class="inquiry_area component_area">
+    <%= form_with model: @inquiry, url: :user_inquiries do |f| %>
+        <div class="field_area">
+            <% if user_signed_in? %>
+                <label class="field_label">お名前</label>：<%= current_user.name %>
+            <% else %>
+                <label class="field_label">お名前</label><br />
+                <%= f.text_field :name, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
+            <% end %>
+        </div>
+        <div class="field_area">
+            
+            <% if user_signed_in? %>
+                <label class="field_label">Eメールアドレス</label>：<%= current_user.email %>
+            <% else %>
+                <label class="field_label">Eメールアドレス</label><br />
+                <%= f.text_field :email, autofocus: true, autocomplete: "email", class:"input_field string_field" %>
+            <% end %>
+        </div>
+        <div class="field_area">
+            <label class="field_label">お問い合わせ内容</label><br />
+            <%= f.text_area :body, class:"input_field string_field input_text_field" %>
+        </div>
+        <div class="submit_area">
+            <%= f.submit "送信", class:"submit" %>
+        </div>
+    <% end %>
+    </div>
+
+    <%if user_signed_in?%>
+        <%= paginate @inquiries  %>
+        <% @inquiries.each do |inquiry| %>
+            <div class="inquiry_area component_area">
+            <%=inquiry.user.name%></br>
+            <%=inquiry.body%></br>
+            <%= readable_datetime(inquiry.created_at) %>
+            </div>
+        <% end %>
+    <% end %>
+</div>

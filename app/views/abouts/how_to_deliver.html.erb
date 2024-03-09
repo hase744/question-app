@@ -1,0 +1,53 @@
+<div class="how_to_zone center_zone">
+    <div class="how_deliver_area center_area">
+        <h2 class="zone_title">納品方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">②右上からサイドメニューを開く</li>
+                <li class="step">③「<%= link_to "取引中の依頼", user_orders_path%>」を選択</li>
+            </ol>
+            <%#= image_tag "/open_orders_index.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">④「<%= link_to "納品前", user_orders_path(user: "seller", status:"ongoing")%>」を選択</li>
+                <li class="step">⑤対応したい取引を探して「依頼に対応」を選択</li>
+            </ol>
+            <%= image_tag "/how_to_use/order_index_select.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <span>⑥「編集」を選択</span>
+            <%= image_tag "/how_to_use/order_show_edit.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑦納品するにあたって必要事項を記入</li>
+            </ol>
+            <%#= image_tag "/transactions_edit.png", class:"width_100"%>
+            <h3 class="title_h3">タイトル</h3>
+            <span>20字以内で依頼のタイトルを記入してください。</span></br>
+            <h3 class="title_h3">本文</h3>
+            <span>1000字以内で依頼内容を記入してください。内容がサービス内容に沿っているか注意してください。</span></br>
+            <h3 class="title_h3">ファイル（回答形式が動画、画像の場合）</h3>
+            <span>必要に応じて納品するファイルをアップロードしてください。</span></br>
+            <h3 class="title_h3">YouTubeにアップロードした動画を使う（回答形式が動画の場合）</h3>
+            <span>YouTubeにアップロードした動画を使う場合にこれを選択してください。</span></br>
+            <h3 class="title_h3">YouTube動画のID（回答形式が動画の場合）</h3>
+            <span>YouTubeにあらかじめ動画をアップロードしてください。そしてそのURLを記載してください。</span></br>
+            <ol class="step_area">
+                <li class="step">⑧「保存」を選択</li>
+            </ol>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑨プレビューで納品する内容に間違いがないかを確認</li>
+                <li class="step">⑩間違いがなければ「納品」を選択</li>
+                <li class="step">⑪「取引を完了しますか？」に「OK」を選択</li>
+            </ol>
+            <%= image_tag "/how_to_use/order_show_deliver.png", class:"width_100"%>
+        </div>
+    </div>
+</div>

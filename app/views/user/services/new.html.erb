@@ -1,0 +1,115 @@
+<%if @request.present? %>
+  <%= render "user/requests/cell", request: @service.request%>
+  <h2 class="service_new_title"><%=@request.user.name%>さんにサービスを提案</h2>
+<% else %>
+  <h2 class="service_new_title">サービスを新規出品</h2>
+<% end %>
+<%= render "user/shared/caveat",path: abouts_service_guide_path,label:"出品可能なサービスについて" %>
+<%= render "user/shared/caveat",path: abouts_how_to_sell_path,label:"サービスの各項目の詳細について" %>
+<%= render "user/shared/error_message", model: @service%>
+<%= render "user/shared/error_message", model: @transaction%>
+<div class="service_new_zone">
+    <div class="service_new_area input_area">
+    <%= form_with model: @service, url:[ :user, @service] do |f| %>
+        <div class="field_area">
+          <%= f.label :title, class:"field_label"%>（最大<%=@service.title_max_length%>字）<br />
+          <%= f.text_field :title, maxlength:@service.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
+        </div>
+        
+        <div class="field_area">
+          <%= f.label :image, class:"field_label" %><br />
+          <%= f.file_field :image, autocomplete: "image", class:"input_field" %>
+        </div>
+      
+          <div class="field_area">
+            <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display"%><br />
+            <%= f.text_area :description, maxlength:@service.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+          </div>
+
+        <div class="field_area">
+          <%= f.label :category, class:"field_label" %><br />
+          <%if @request.present? %>
+            <h3 class="request_content"><%=@request.category.japanese_name%></h3>
+            <%= f.hidden_field :category, value: @request.category %>
+          <% else %>
+            <%= f.select :category_id, category_select_hash, autocomplete: "select_input", class:"input_field" ,required: true%>
+          <% end %>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :request_form, class:"field_label" %><br />
+          <%if @request.present? %>
+            <h3 class="request_content"><%=@request.request_form.japanese_name%></h3>
+          <% else %>
+            <%= f.select :request_form_id,  forms_japanese_hash, autocomplete: "select_input", class:"input_field request_form_field" %>
+          <% end %>
+        </div>
+
+        <%if !@request.present? %>
+          <div class="field_area length_field_area text_field_area">
+            <label>依頼文章の最大文字数（<%=@service.mini_request_max_characters%>〜<%=@service.max_request_max_characters%>字）</label><br />
+            <%= f.number_field :request_max_characters, type:"number", placeholder:"字数", min:"0", step:"100",required: true, class:"length_field text_field"%>
+          </div>
+
+          <div class="field_area length_field_area video_field_area">
+            <label><%= Service.human_attribute_name(:request_max_minutes)%>（<%=@service.mini_request_max_minutes%>〜<%=@service.max_request_max_minutes%>分）</label><br />
+            <%= f.number_field :request_max_minutes, type:"number", placeholder:"分数", min:"0", step:"1", class:"length_field video_field"%>
+          </div>
+        <% end %>
+
+        <div class="field_area">
+          <%= f.label :delivery_form, class:"field_label" %><br />
+          <%if @request%>
+            <%= f.select :delivery_form_id, forms_japanese_hash(@request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
+          <%else%>
+            <%= f.select :delivery_form_id, forms_japanese_hash, autocomplete: "select_input", class:"input_field" %>
+          <% end %>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :transaction_message_days, class:"field_label"%>（最大<%=@service.max_transaction_message_days%>日）<br/>
+          <%= f.number_field :transaction_message_days, type:"number", min:@service.minimum_transaction_message_days, max:@service.max_transaction_message_days, placeholder:"在庫数", step:"1",  class:"transaction_message_days_field" ,required: true%>
+          <div class="transaction_message_alert" style="color:red;font-size:13px">＊追加質問を受け付けない</div>
+        </div>
+
+        <%if !@request.present? %>
+          <div class="field_area">
+            <%= f.label :stock_quantity, class:"field_label"%>（最大<%=@service.stock_quantity_max_number%>個）<br/>
+            <%= f.number_field :stock_quantity, type:"number", min:@service.stock_quantity_minimum_number, max:@service.stock_quantity_max_number, placeholder:"在庫数", step:"1",  class:"stock_quantity_field" ,required: true%>
+          </div>
+        <% end %>
+
+        <div class="field_area">
+          <%= f.label :price, class:"field_label"%>（<%=@service.price_minimum_number%>〜<%=@service.price_max_number%>円）<br/>
+          <%if @request.present? %>
+            <%= f.number_field :price, type:"number", min:100, placeholder:"円（100円単位）", step:100, value:@request.max_price,  class:" price_field" ,required: true%>
+          <% else %>
+            <%= f.number_field :price, type:"number", min:100, placeholder:"円（100円単位）", step:100,  class:" price_field" ,required: true%>
+          <% end %>
+        </div>
+
+        <div class="field_area">
+          <%= f.label :delivery_days, class:"field_label"%>（1〜<%=@service.delivery_days_max_number%>日）<br/>
+          <%= f.number_field :delivery_days, type:"number", min:"0", placeholder:"日数", step:"1",  class:"delivery_days_field" ,required: true%>
+          <div>＊購入からこの日数を過ぎても納品されなかった場合、依頼人がキャンセル可能になります。</div>
+        </div>
+
+        <%if !@request.present? %>
+        <div class="field_area">
+        <%= f.check_box :is_published, class:"", checked:true%>
+          <%= f.label :is_published, class:"field_label"%>
+        </div>
+        <%end%>
+
+        <%if @request.present? %>
+          <%= f.hidden_field :request_id, value: @request.id%>
+        <% end %>
+
+        <div class="submit_area">
+          <%= f.submit @submit_text, class:"submit", data: {confirm: "#{@submit_text}しますか？"}  %>
+        </div>
+      <% end %>
+    </div>
+</div>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+<%=javascript_pack_tag "user/services/controll_form" %>

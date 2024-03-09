@@ -1,0 +1,24 @@
+<%begin%>
+    <% contents.each do |n|%>
+        <%= link_to(user_notification_path(n.id), class: 'message_show_button') do %>
+            <div class="notification_cell">
+                <div class="image_area">
+                    <%if n.notifier_id && n.notifier.image_url%>
+                        <%=image_tag n.notifier.image_url, class:"image"%>
+                    <% else %>
+                        <%=image_tag "/profile.jpg", class:"image"%>
+                    <% end %>
+                </div>
+                <div class="description_area">
+                    <span class="description">
+                    <%= n.description%>
+                    </span>
+                    <span class="datetime"><%=from_now(n.created_at)%></span>
+                </div>
+            </div>
+        <% end %>
+    <% end %>
+<% rescue => e%>
+    取得に失敗しました
+    <%= e%>
+<% end %>

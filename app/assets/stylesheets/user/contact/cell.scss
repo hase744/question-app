@@ -1,0 +1,37 @@
+.contact_cell_area{
+    background-color: white;
+    margin: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 2px lightgray;
+    width: calc(100% - 10px);
+    .user_image_area{
+        display: inline-block;
+        float: left;
+        height: 60px;
+        width: 60px;
+        .user_image{
+            height: 50px;
+            width: 50px;
+            border-radius: 25px;
+            margin: 5px;
+            object-fit: cover;
+        }
+    }
+    .contact_info_area{
+        display: inline-block;
+        width: calc(100% - 70px);
+        height: 70px;
+        .last_message_area{
+            display: -webkit-box;
+            margin: 0px;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;}
+    }
+    .user_name_area{
+        color: black;
+    }
+    .last_message_area{
+        color: gray;
+    }
+}

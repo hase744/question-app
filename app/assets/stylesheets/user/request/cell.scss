@@ -1,0 +1,96 @@
+.request_cell_area{
+    margin: 5px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 2px lightgray;
+    padding: 5px;
+    .request_link{    
+        text-decoration: none;
+        color: blue;
+    }
+    .request_link:hover{
+        text-decoration: underline;
+    }
+    .request_cell_flame{
+        .request_title{
+            
+            margin: 0px 5px 5px 0px;
+            border-bottom:1px solid lightgray;
+            h2{
+                margin: 0px;
+                
+            }
+            .user_image{
+                height: 15px;
+                width: 15px;
+                border-radius: 8px;
+            }
+            span{
+                text-align: right;
+                font-size:15px;
+                font-weight: normal;
+            }
+        }
+        .request_user_area{
+            text-align: right;
+            margin: 0px;
+            .user_image{
+                height: 15px;
+                width: 15px;
+                border-radius: 8px;
+            }
+        }
+        .item_area{
+            display: inline-block;
+            float: left;
+            .youtube_video{
+                width: 100%;
+            }
+            .image{
+                width: 100%;
+                object-fit: cover;
+            }
+        }
+        .request_condition_area{
+            display: inline-block;
+            margin: 3px;
+            .request_condition_title{
+                
+                background-color: #EEEEEE;
+            }
+            .request_condition{
+                font-size: 20px;
+                margin: 0px;
+            }
+        }
+        
+    }
+}
+@media(max-width:500px){
+    .request_cell_area{
+        .request_cell_flame{
+            .item_area{
+                width: calc(100% - 10px);
+                .image{
+                    height: 100%;
+                    max-height: 200px;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+@media(min-width:500px){
+    .request_cell_area{
+        .request_cell_flame{
+            .item_area{
+                width: calc(50% - 10px);
+                width: calc(150px * 16 / 9);
+                .image{
+                    height: 150px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

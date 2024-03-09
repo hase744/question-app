@@ -1,0 +1,21 @@
+<% contacts.each do |contact|%>
+    <div class="contact_cell_area" id="contact_cell_area">
+        <%= link_to(user_contact_path(contact.id), class: 'message_show_button') do %>
+            <div class="user_image_area">
+                <% if contact.destination.image.url %>
+                    <%=image_tag contact.destination.image.url, class:"user_image"%>
+                <% else %>
+                    <%=image_tag "/profile.jpg", class:"user_image"%>
+                <% end %>
+            </div>
+            <div class="contact_info_area">
+                <div class="user_name_area">
+                    <%=contact.destination.name%>・<%=from_now(contact.room.updated_at)%>
+                </div>
+                <div class="last_message_area">
+                    <%=contact.room.last_message%>
+                </div>
+            </div>
+        <% end %>
+    </div>
+<% end %>

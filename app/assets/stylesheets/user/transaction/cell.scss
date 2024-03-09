@@ -1,0 +1,65 @@
+.transaction_cell_area{
+    margin-top: 5px;
+    margin: 5px 5px 5px 5px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+
+        
+    .transaction_cell_flame{
+        width:100%;
+        height:100px;
+        border-radius: 10px;
+        .youtube_video_area{
+            float: left;
+            display: inline-block;
+            height: 100px;
+            width: calc(100px / 9 * 16);
+            border-radius: 10px 0px 0px 10px;
+        }
+        .transaction_file{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px 0px 0px 10px;
+        }
+        .transaction_link{
+            text-decoration: none;
+        }
+        .video_text_area{
+            height: 100px;
+            display: inline-block;
+            background-color: white;
+            border-radius: 10px;
+            width: calc(100% - 100px / 9 * 16);
+            h4{
+                margin-top: 0px;
+                margin-bottom: 0px;
+                padding-left: 5px;
+                font-weight: normal;
+            }
+            .request_title{
+                color: steelblue;
+            }
+            hr{
+                size:10px;
+                width:10px;
+                color: darkgray;
+                display: inline-block;
+            }
+            .transaction_title{
+                color: indianred;
+                text-decoration: underline;
+                font-size:20px;
+            }
+            h5{
+                margin-top: 3px;
+                margin-bottom: 0px;
+                padding-left: 5px;
+                color: gray;
+                font-weight: lighter;
+            }
+        }
+    }
+}
+

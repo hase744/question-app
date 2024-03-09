@@ -1,0 +1,5 @@
+<p><%=@message.sender.name%>さん
+</br><%=@message.body%></p>
+
+<p><%= link_to "メーセージに移動" , user_contact_url(@contact.id) %></p>
+<%= render "email/shared/bottom" %>

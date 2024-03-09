@@ -1,0 +1,8 @@
+<div class="alert_show_zone">
+    <div class="component_area">
+        <h2>アカウントが停止されています</h2>
+        <p>意義の申し出がある場合は運営まで連絡して下さい。</p>
+        <h2><%=@message%></h2>
+        <%=link_to " ログアウト", destroy_user_session_path, method: :delete, class:"" %>
+    </div>
+</div>

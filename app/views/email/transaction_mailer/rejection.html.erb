@@ -1,0 +1,37 @@
+<%if @transaction.is_canceled %>
+<p>以下の依頼がお断りされました。</p>
+<% elsif @transaction.is_rejected%>
+<p>以下の取引が中断されました。</p>
+<% end %>
+
+<table>
+  <tr>
+    <td>取引ID</td>
+    <td>：<%=@transaction.id%></td>
+  </tr>
+  <tr>
+    <td>依頼</td>
+    <td>：<%= link_to @transaction.request.title, user_request_url(@transaction.request.id) %></td>
+  </tr>
+  <tr>
+    <td>サービス</td>
+    <td>：<%= link_to @transaction.service.title, user_service_url(@transaction.service.id) %></td>
+  </tr>
+  <tr>
+    <td>料金</td>
+    <td>：<%=@transaction.price%>円</td>
+  </tr>
+  <tr>
+    <td>回答者</td>
+    <td>：<%=@transaction.seller.name%></td>
+  </tr>
+  <tr>
+    <td>購入者</td>
+    <td>：<%=@transaction.buyer.name%></td>
+  </tr>
+</table>
+
+<p>お断り理由</p>
+<div><%=@transaction.reject_reason%></div>
+
+<%=render "email/shared/bottom" %>

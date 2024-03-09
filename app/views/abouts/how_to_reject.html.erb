@@ -1,0 +1,31 @@
+<div class="how_to_zone center_zone">
+    <div class="how_reject_area center_area">
+        <h2 class="zone_title">断る方法</h2>
+        <div class="component_area">
+            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">②右上からサイドメニューを開く</li>
+                <li class="step">③「取引一覧」を選択</li>
+            </ol>
+            <%#= image_tag "/open_orders_index.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">④「<%= link_to "納品前", user_orders_path(user:"seller", status:"ongoing")%>」を選択</li>
+                <li class="step">⑤断りたい依頼の「依頼を断る」を選択</li>
+            </ol>
+            <%= image_tag "/how_to_use/order_index_reject.png", class:"width_100"%>
+        </div>
+        <div class="component_area">
+            <ol class="step_area">
+                <li class="step">⑥断る理由を記入し、「送信」を選択</li>
+                <li class="step">⑦「依頼を断りますか？」に「OK」を選択</li>
+                <div class="caution">＊依頼を断った場合には、売り手は報酬を受け取れません。</div>
+                <div class="caution">＊依頼人の購入時に消費したポイントは返金され、購入前に戻ります。</div>
+            </ol>
+            <%#= image_tag "/reject_order.png", class:"width_100"%>
+        </div>
+    </div>
+</div>
