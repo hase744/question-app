@@ -53,6 +53,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :stripe_customer_id
       t.string :stripe_connected_id
 
+      t.integer :country_id
       t.string :phone_number
       t.string :phone_confirmation_token
       t.datetime :phone_confirmation_sent_at

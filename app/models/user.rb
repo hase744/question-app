@@ -6,7 +6,6 @@ class User < ApplicationRecord
   mount_uploader :image, ImageUploader
   mount_uploader :header_image, ImageUploader
   belongs_to :state, class_name: "UserState", foreign_key: "state_id"
-  belongs_to :country, optional: true
 
   has_many :access_logs, class_name: "AccessLog", foreign_key: :user_id, dependent: :destroy
   has_many :contacts, class_name: "Contact", foreign_key: :user_id, dependent: :destroy
@@ -38,6 +37,7 @@ class User < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}
   validate :validate_is_published
   validate :validate_is_seller
+  
   before_validation :set_default_values
   after_commit :create_user_state_hitrory
 
@@ -65,6 +65,11 @@ class User < ApplicationRecord
   attr_accessor :is_male
   attr_accessor :gender
   attr_accessor :is_dammy
+  enum country_id: Country.all.map{|c| c.name.to_sym}
+
+  def country
+    Country.find_by(name: country_id)
+  end
 
   #validates :postal_code, format: { with: /\A(?:\d{4}-\d{3}|\d{7})\z/, message: "is not valid. Please enter a valid postal code." }
 
