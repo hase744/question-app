@@ -458,11 +458,9 @@ class User::ConnectsController < User::Base
   end
 
   private def define_countryies
-    @countries = Country.all
-    @countries_form = {}
-    @countries.each do |c|
-      @countries_form["#{c.japanese_name} +#{c.code}"] = c.id
-    end
+    @countries_form = Country.all.map { |c| 
+      ["#{c.japanese_name} +#{c.code}", c.name] 
+    }.to_h
   end
 
   private def check_ongoing_transaction

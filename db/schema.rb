@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_02_085606) do
+ActiveRecord::Schema.define(version: 2023_06_25_121617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,14 +100,6 @@ ActiveRecord::Schema.define(version: 2023_07_02_085606) do
     t.index ["new_message_exists"], name: "index_contacts_on_new_message_exists"
     t.index ["room_id"], name: "index_contacts_on_room_id"
     t.index ["user_id"], name: "index_contacts_on_user_id"
-  end
-
-  create_table "countries", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.string "code"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "delivery_items", force: :cascade do |t|
@@ -595,6 +587,7 @@ ActiveRecord::Schema.define(version: 2023_07_02_085606) do
     t.string "stripe_card_id"
     t.string "stripe_customer_id"
     t.string "stripe_connected_id"
+    t.integer "country_id"
     t.string "phone_number"
     t.string "phone_confirmation_token"
     t.datetime "phone_confirmation_sent_at"
@@ -616,10 +609,8 @@ ActiveRecord::Schema.define(version: 2023_07_02_085606) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "is_deleted", default: false
-    t.bigint "country_id"
     t.index ["average_star_rating"], name: "index_users_on_average_star_rating"
     t.index ["cancellation_rate"], name: "index_users_on_cancellation_rate"
-    t.index ["country_id"], name: "index_users_on_country_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["is_published"], name: "index_users_on_is_published"
     t.index ["is_seller"], name: "index_users_on_is_seller"
@@ -693,6 +684,5 @@ ActiveRecord::Schema.define(version: 2023_07_02_085606) do
   add_foreign_key "user_categories", "users"
   add_foreign_key "user_state_histories", "user_states", column: "state_id"
   add_foreign_key "user_state_histories", "users"
-  add_foreign_key "users", "countries"
   add_foreign_key "users", "user_states", column: "state_id"
 end
