@@ -5,7 +5,6 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :confirmable
   mount_uploader :image, ImageUploader
   mount_uploader :header_image, ImageUploader
-  belongs_to :state, class_name: "UserState", foreign_key: "state_id"
 
   has_many :access_logs, class_name: "AccessLog", foreign_key: :user_id, dependent: :destroy
   has_many :contacts, class_name: "Contact", foreign_key: :user_id, dependent: :destroy
@@ -66,52 +65,23 @@ class User < ApplicationRecord
   attr_accessor :gender
   attr_accessor :is_dammy
   enum country_id: Country.all.map{|c| c.name.to_sym}
+  enum state: CommonConcern.user_states
 
   def country
-    Country.find_by(name: country_id)
+    Country.find_by(name: self.country_id)
   end
 
   #validates :postal_code, format: { with: /\A(?:\d{4}-\d{3}|\d{7})\z/, message: "is not valid. Please enter a valid postal code." }
 
   def set_default_values
-    if self.name == nil
-      self.name = "user name"
-    end
-
-    if self.state_id == nil
-      self.state = UserState.find_by(name:"normal")
-    end
-
-    if will_save_change_to_state_id?
-      if self.status == "suspended"
-        self.is_suspended = true
-      else
-        self.is_suspended = false
-      end
-
-      if self.status == "deleted"
-        self.is_deleted = true
-      else
-        self.is_deleted = false
-      end
-
-      #UserStateHistory.create(user:self, state: self.state)
-    end
+    self.name  ||= "user name"
+    self.state ||= :running
   end
 
   def create_user_state_hitrory
     if saved_change_to_attribute?(:state)
       UserStateHistory.create(user: self, state: self.state, description: self.admin_description)
     end
-  end
-
-  def status
-    file = File.open("user_states.json","r")
-    state_hash = nil
-    file.each do |text|
-        state_hash = JSON.parse(text.to_s)
-    end
-    state_hash[self.state_id.to_s]
   end
 
   def update_total_points
@@ -128,7 +98,7 @@ class User < ApplicationRecord
       request:{
         is_published:true
       }
-      )
+    )
     #total_transactions.each do |transaction|
     #  total_charged_points -= transaction.price
     #end
@@ -182,23 +152,39 @@ class User < ApplicationRecord
   end
 
   def is_stripe_customer_valid?
-      if self.stripe_customer_id.present? && self.stripe_card_id.present?
-          begin
-              stripe_account =  Stripe::Customer.retrieve_source(
-                  self.stripe_customer_id,
-                  self.stripe_card_id,
-                )
-              if ["pass","unavailable"].include?(stripe_account.cvc_check)
-                  true
-              else
-                  false
-              end
-          rescue
-              false
-          end
+    if self.stripe_customer_id.nil? || self.stripe_card_id.nil?
+      return false
+    end
+    begin
+      stripe_account =  Stripe::Customer.retrieve_source(
+        self.stripe_customer_id,
+        self.stripe_card_id,
+      )
+      if ["pass","unavailable"].include?(stripe_account.cvc_check)
+        true
       else
-          false
+        false
       end
+    rescue
+      false
+    end
+    #if self.stripe_customer_id.present? && self.stripe_card_id.present?
+    #    begin
+    #        stripe_account =  Stripe::Customer.retrieve_source(
+    #            self.stripe_customer_id,
+    #            self.stripe_card_id,
+    #          )
+    #        if ["pass","unavailable"].include?(stripe_account.cvc_check)
+    #            true
+    #        else
+    #            false
+    #        end
+    #    rescue
+    #        false
+    #    end
+    #else
+    #    false
+    #end
   end
 
   def can_respond_order(request)
@@ -240,10 +226,6 @@ class User < ApplicationRecord
     end
     return exist
   end
-  #def state
-  #  user_status = UserStatus.where("user_id = ? && start_at <= ?",self.id, DateTime.now).order(start_at: "ASC").last
-  #  user_status.state if user_status.present?
-  #end
 
   def validate_is_published
     if  !self.is_published

@@ -72,7 +72,8 @@ class ApplicationController < ActionController::Base
     def check_user_state
         if user_signed_in?
             allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
-            if current_user.status == "suspended" && !allowed_controllers.include?(controller_name)
+            puts current_user.is_suspended
+            if current_user.is_suspended && !allowed_controllers.include?(controller_name)
                 redirect_to user_alerts_path
             end
 

@@ -1,5 +1,5 @@
 class Operation < ApplicationRecord
   belongs_to :admin_user
-  belongs_to :state
+  enum state: CommonConcern.operation_states
   after_commit :update_operation_config
 end

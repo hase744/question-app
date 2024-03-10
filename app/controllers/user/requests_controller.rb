@@ -73,14 +73,6 @@ class User::RequestsController < User::Base
       if user_signed_in?
         @relationship = Relationship.find_by(followee: @request.user, follower_id: current_user.id)
       end
-      
-      if !@request.user.is_published
-        flash.notice = "アカウントが非公開です。"
-        redirect_to user_requests_path
-      elsif @request.user.is_deleted
-        flash.notice = "アカウントが存在しません。"
-        redirect_to user_requests_path
-      end
 
       @request.update(total_views:@request.total_views + 1)
     end
@@ -452,42 +444,9 @@ class User::RequestsController < User::Base
 
 
   private def check_service_buyable
-    if @service
-      if !is_service_buyable
-        redirect_to user_service_path(@service.id)
-        #redirect_back(fallback_location: root_path)
-      end
-    end
-  end
-
-  private def is_service_buyable
-    if  @service.stock_quantity < 1
-      flash.notice = "売り切れのため購入できませんでした。"
-      false
-    elsif !@service.is_published
-      flash.notice = "サービスが非公開です。"
-      false
-    elsif !@service.user.is_published
-      flash.notice = "ユーザーが非公開です。"
-      false
-    elsif @service.user.is_deleted
-      flash.notice = "アカウントが存在しません。"
-      false
-    elsif !@service.user.is_stripe_account_valid?
-      flash.notice = "回答者の決済が承認されていません。"
-      false
-    elsif @service.user.state.name != "normal"
-      flash.notice = "回答者のアカウントが凍結されています。"
-      false
-    elsif @service.request
-      if @service.request.user == current_user
-        true
-      else
-        flash.notice = "そのサービスは購入できません。"
-        false
-      end
-    else
-      true
+    flash.notice = @service&.get_unbuyable_message(current_user)
+    if flash.notice.present?
+      redirect_to user_service_path(@service.id)
     end
   end
 

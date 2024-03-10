@@ -195,14 +195,13 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   end
 
   create_table "operations", force: :cascade do |t|
-    t.bigint "state_id"
+    t.integer "state"
     t.datetime "start_at", null: false
     t.text "comment"
     t.bigint "admin_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_operations_on_admin_user_id"
-    t.index ["state_id"], name: "index_operations_on_state_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -424,14 +423,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["user_id"], name: "index_services_on_user_id"
   end
 
-  create_table "states", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.string "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "transaction_categories", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.bigint "transaction_id", null: false
@@ -539,21 +530,12 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   end
 
   create_table "user_state_histories", force: :cascade do |t|
-    t.bigint "state_id", null: false
+    t.integer "state"
     t.bigint "user_id", null: false
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["state_id"], name: "index_user_state_histories_on_state_id"
     t.index ["user_id"], name: "index_user_state_histories_on_user_id"
-  end
-
-  create_table "user_states", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.string "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -566,7 +548,7 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.bigint "state_id", null: false
+    t.integer "state", null: false
     t.string "name"
     t.string "image"
     t.string "header_image"
@@ -619,7 +601,7 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["mini_price"], name: "index_users_on_mini_price"
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["state_id"], name: "index_users_on_state_id"
+    t.index ["state"], name: "index_users_on_state"
     t.index ["total_followers"], name: "index_users_on_total_followers"
     t.index ["total_notifications"], name: "index_users_on_total_notifications"
     t.index ["total_points"], name: "index_users_on_total_points"
@@ -645,7 +627,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "notifier_id"
   add_foreign_key "operations", "admin_users"
-  add_foreign_key "operations", "states"
   add_foreign_key "payments", "users"
   add_foreign_key "posts", "users"
   add_foreign_key "potential_sellers", "admin_users", column: "inviter_id"
@@ -682,7 +663,5 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   add_foreign_key "transactions", "users", column: "seller_id"
   add_foreign_key "user_categories", "categories"
   add_foreign_key "user_categories", "users"
-  add_foreign_key "user_state_histories", "user_states", column: "state_id"
   add_foreign_key "user_state_histories", "users"
-  add_foreign_key "users", "user_states", column: "state_id"
 end

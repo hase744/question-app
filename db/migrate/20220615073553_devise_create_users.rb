@@ -27,14 +27,13 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.datetime :confirmation_sent_at
       t.string   :unconfirmed_email # Only if using reconfirmable
 
-      t.references :state, null: false, index:true, foreign_key: { to_table: :user_states }
+      t.integer :state, null: false, index:true
       t.string :name
       t.string :image
       t.string :header_image
       t.boolean :is_seller, default: false, index:true
       t.boolean :is_published, default: true, index:true
       
-      t.boolean :is_suspended, default: false, index:true
       t.text :admin_description
       #t.string :categories
       t.text :track_record

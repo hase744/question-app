@@ -3,7 +3,7 @@ module OperationConfig
     extend ActiveSupport::Concern
     def latest_state
         operation = Operation.where("start_at <= ?", DateTime.now).last
-        operation.state.name
+        operation.state
     end
 
     def update_operation_config
