@@ -42,10 +42,11 @@ request = Request.create!(
     use_youtube = true
     description = "ここにサービス内容の説明を表示させる。"
 
+    puts "ファイル生成"
     file_path = Rails.root.join('public', 'answer.png')
     file = File.open(file_path, 'rb')
-    file = CarrierWave::SanitizedFile.new(tempfile: file)
     use_youtube = false
+    puts "ファイル完了"
     request = Request.create!(
         user:User.where(is_seller:false)[n % User.where(is_seller:false).count - 1],
         title:"ここにタイトルが表示される。",
@@ -66,8 +67,8 @@ request = Request.create!(
     )
     request.items.create(
         #youtube_id: youtube_ids[n%3],
-        file:file,
-        thumbnail:file
+        #file:file,
+        #thumbnail:file
     )
     request.update(is_published:true)
     #request.request_categories.create(category:  Category.find_by(name: categories[n%3]))

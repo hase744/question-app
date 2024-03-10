@@ -1,5 +1,5 @@
 class UserStateHistory < ApplicationRecord
-  belongs_to :state, class_name: "UserState"
+  enum state: CommonConcern.user_states
   belongs_to :user
 
   #after_commit :edit_user_state

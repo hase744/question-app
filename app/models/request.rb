@@ -37,7 +37,7 @@ class Request < ApplicationRecord
   validate :validate_delivery_days
   validate :validate_suggestion_deadline
   validate :validate_is_published
-  #validate :validate_request_item #itemのdurationを取得できないため使用中断
+  validate :validate_request_item #itemのdurationを取得できないため使用中断
 
   after_initialize do
     if self.service_id

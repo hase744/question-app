@@ -93,6 +93,26 @@ class Service < ApplicationRecord
         end
     end
 
+    def get_unbuyable_message(user)
+        if  self.stock_quantity < 1
+          "売り切れのため購入できません。"
+        elsif !self.is_published
+          "サービスが非公開です。"
+        elsif !self.user.is_published
+          "ユーザーが非公開です。"
+        elsif self.user.is_deleted
+          "アカウントが存在しません。"
+        elsif !self.user.is_stripe_account_valid?
+          "回答者の決済が承認されていません。"
+        elsif !self.user.is_normal
+          "回答者のアカウントに問題が発生しました。"
+        elsif self.request && self.request.user != user
+            "そのサービスは購入できません。"
+        else
+            nil
+        end
+    end
+
     def category
         self.categories.first
     end
