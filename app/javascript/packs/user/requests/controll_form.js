@@ -33,7 +33,7 @@ var file_field_area = document.getElementById("file_field_area");
 var youtube_id_field_area = document.getElementById("youtube_id_field_area");
 var youtube_id_field =  document.getElementById("youtube_id_field");
 var youtube_video = document.getElementById("youtube_video");
-var request_form_field = document.getElementById("request_request_form_id");//なぜかIDがrequest_request_formになる
+var request_form_field = document.getElementById("request_request_form_name");//なぜかIDがrequest_request_formになる
 
 //youtubeのIDによってuse_youtubeのチェックボックスのチェックを反映させる
 youtube_check_box.checked = $("#youtube_id_field").val() != "" && $("#youtube_id_field").val() != null
@@ -41,7 +41,7 @@ set_file_form();
 set_youtube_form();
 
 //完全に新しい依頼を作成
-$("#request_request_form_id").change(function(){
+$("#request_request_form_name").change(function(){
   gon.request_form = ["text","image","video"][this.value - 1];
   console.log(this.value);
   set_file_form();

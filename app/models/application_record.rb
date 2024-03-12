@@ -1,5 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
   require_relative "country.rb"
+  require_relative "form.rb"
   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   self.abstract_class = true
   include CommonMethods
@@ -8,8 +9,19 @@ class ApplicationRecord < ActiveRecord::Base
   include OperationConfig
   include Variables
   include CommonConcern
-
-  def form_array
-    ["video","image","text"]
+  include TemplateConcern
+  def self.acceptable_video_extensions
+    extensions = FileUploader.new.extension_allowlist - ImageUploader.new.extension_allowlist
+    extensions = extensions.map{|extension|
+      "video/#{extension}"
+    }.join(',')
   end
+  
+  def self.acceptable_image_extensions
+    extensions =  ImageUploader.new.extension_allowlist
+    extensions = extensions.map{|extension|
+      "image/#{extension}"
+    }.join(',')
+  end
+  
 end

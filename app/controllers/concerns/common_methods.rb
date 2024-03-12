@@ -21,11 +21,11 @@ module CommonMethods
         when User.to_s then
             relation.includes(:categories, :user_categories)
         when Request.to_s then
-            relation.includes(:user, :services, :request_categories, :categories, :request_form, :delivery_form, :items)
+            relation.includes(:user, :services, :request_categories, :categories, :items)
         when Service.to_s then
-            relation.includes(:user, :requests, :categories, :service_categories, :request_form, :delivery_form, :transactions)
+            relation.includes(:user, :requests, :categories, :service_categories, :transactions)
         when Transaction.to_s then
-            relation.includes(:seller, :buyer, :request, :service, :items, :request_form, :delivery_form)
+            relation.includes(:seller, :buyer, :request, :service, :items)
         end
     end
     

@@ -43,8 +43,8 @@ forms_array = ["text","image","video"]
 function check_service_request_form(){//依頼形式によって表示される最大の長さのフォームが変化する
     $(".length_field_area").css("display","none")
     console.log("フィールド")
-    console.log(forms_array[$("#service_request_form_id").val() -1])
-    switch(forms_array[$("#service_request_form_id").val() -1]){
+    console.log(forms_array[$("#service_request_form_name").val() -1])
+    switch(forms_array[$("#service_request_form_name").val() -1]){
         case "text":
             console.log("文章")
             $(".text_field_area").css("display","block");
@@ -62,13 +62,13 @@ function check_service_request_form(){//依頼形式によって表示される�
     }
 }
 
-$('#service_request_form_id').change(function(){
+$('#service_request_form_name').change(function(){
     check_service_request_form();
 });
 
 check_service_request_form();
 
-$('#service_request_form_id').change(function(){
+$('#service_request_form_name').change(function(){
     check_service_request_form();
 });
 

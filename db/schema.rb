@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_25_121617) do
+ActiveRecord::Schema.define(version: 2023_05_12_130419) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,16 +126,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_error_logs_on_user_id"
-  end
-
-  create_table "forms", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.text "description"
-    t.datetime "start_at"
-    t.datetime "end_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "inquiries", force: :cascade do |t|
@@ -301,8 +291,8 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
 
   create_table "requests", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "request_form_id", null: false
-    t.bigint "delivery_form_id", null: false
+    t.integer "request_form_name", null: false
+    t.integer "delivery_form_name", null: false
     t.string "title"
     t.text "description"
     t.integer "max_price"
@@ -321,7 +311,7 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.datetime "published_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["delivery_form_id"], name: "index_requests_on_delivery_form_id"
+    t.index ["delivery_form_name"], name: "index_requests_on_delivery_form_name"
     t.index ["description_total_characters"], name: "index_requests_on_description_total_characters"
     t.index ["file_duration"], name: "index_requests_on_file_duration"
     t.index ["is_inclusive"], name: "index_requests_on_is_inclusive"
@@ -329,7 +319,7 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["max_price"], name: "index_requests_on_max_price"
     t.index ["mini_price"], name: "index_requests_on_mini_price"
     t.index ["published_at"], name: "index_requests_on_published_at"
-    t.index ["request_form_id"], name: "index_requests_on_request_form_id"
+    t.index ["request_form_name"], name: "index_requests_on_request_form_name"
     t.index ["suggestion_deadline"], name: "index_requests_on_suggestion_deadline"
     t.index ["title"], name: "index_requests_on_title"
     t.index ["total_files"], name: "index_requests_on_total_files"
@@ -377,8 +367,8 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
 
   create_table "services", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.bigint "request_form_id"
-    t.bigint "delivery_form_id"
+    t.integer "request_form_name"
+    t.integer "delivery_form_name"
     t.boolean "is_inclusive"
     t.string "title"
     t.text "description"
@@ -405,11 +395,11 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["average_star_rating"], name: "index_services_on_average_star_rating"
     t.index ["cancellation_rate"], name: "index_services_on_cancellation_rate"
     t.index ["delivery_days"], name: "index_services_on_delivery_days"
-    t.index ["delivery_form_id"], name: "index_services_on_delivery_form_id"
+    t.index ["delivery_form_name"], name: "index_services_on_delivery_form_name"
     t.index ["is_inclusive"], name: "index_services_on_is_inclusive"
     t.index ["is_published"], name: "index_services_on_is_published"
     t.index ["rejection_rate"], name: "index_services_on_rejection_rate"
-    t.index ["request_form_id"], name: "index_services_on_request_form_id"
+    t.index ["request_form_name"], name: "index_services_on_request_form_name"
     t.index ["request_max_characters"], name: "index_services_on_request_max_characters"
     t.index ["request_max_duration"], name: "index_services_on_request_max_duration"
     t.index ["request_max_files"], name: "index_services_on_request_max_files"
@@ -461,8 +451,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.bigint "buyer_id"
     t.bigint "service_id", null: false
     t.bigint "request_id", null: false
-    t.bigint "request_form_id"
-    t.bigint "delivery_form_id"
     t.datetime "delivery_time"
     t.integer "price"
     t.text "service_title"
@@ -500,7 +488,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["canceled_at"], name: "index_transactions_on_canceled_at"
     t.index ["contracted_at"], name: "index_transactions_on_contracted_at"
     t.index ["delivered_at"], name: "index_transactions_on_delivered_at"
-    t.index ["delivery_form_id"], name: "index_transactions_on_delivery_form_id"
     t.index ["is_contracted"], name: "index_transactions_on_is_contracted"
     t.index ["is_delivered"], name: "index_transactions_on_is_delivered"
     t.index ["is_rejected"], name: "index_transactions_on_is_rejected"
@@ -509,7 +496,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.index ["price"], name: "index_transactions_on_price"
     t.index ["profit"], name: "index_transactions_on_profit"
     t.index ["rejected_at"], name: "index_transactions_on_rejected_at"
-    t.index ["request_form_id"], name: "index_transactions_on_request_form_id"
     t.index ["request_id"], name: "index_transactions_on_request_id"
     t.index ["seller_id"], name: "index_transactions_on_seller_id"
     t.index ["service_id"], name: "index_transactions_on_service_id"
@@ -554,7 +540,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.string "header_image"
     t.boolean "is_seller", default: false
     t.boolean "is_published", default: true
-    t.boolean "is_suspended", default: false
     t.text "admin_description"
     t.text "track_record"
     t.text "description"
@@ -590,13 +575,11 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
     t.integer "mini_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "is_deleted", default: false
     t.index ["average_star_rating"], name: "index_users_on_average_star_rating"
     t.index ["cancellation_rate"], name: "index_users_on_cancellation_rate"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["is_published"], name: "index_users_on_is_published"
     t.index ["is_seller"], name: "index_users_on_is_seller"
-    t.index ["is_suspended"], name: "index_users_on_is_suspended"
     t.index ["last_login_at"], name: "index_users_on_last_login_at"
     t.index ["mini_price"], name: "index_users_on_mini_price"
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
@@ -639,14 +622,10 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   add_foreign_key "request_categories", "categories"
   add_foreign_key "request_categories", "requests"
   add_foreign_key "request_items", "requests"
-  add_foreign_key "requests", "forms", column: "delivery_form_id"
-  add_foreign_key "requests", "forms", column: "request_form_id"
   add_foreign_key "requests", "users"
   add_foreign_key "service_categories", "categories"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
-  add_foreign_key "services", "forms", column: "delivery_form_id"
-  add_foreign_key "services", "forms", column: "request_form_id"
   add_foreign_key "services", "users"
   add_foreign_key "transaction_categories", "categories"
   add_foreign_key "transaction_categories", "transactions"
@@ -655,8 +634,6 @@ ActiveRecord::Schema.define(version: 2023_06_25_121617) do
   add_foreign_key "transaction_messages", "transactions"
   add_foreign_key "transaction_messages", "users", column: "receiver_id"
   add_foreign_key "transaction_messages", "users", column: "sender_id"
-  add_foreign_key "transactions", "forms", column: "delivery_form_id"
-  add_foreign_key "transactions", "forms", column: "request_form_id"
   add_foreign_key "transactions", "requests"
   add_foreign_key "transactions", "services"
   add_foreign_key "transactions", "users", column: "buyer_id"

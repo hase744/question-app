@@ -4,8 +4,6 @@ class Request < ApplicationRecord
   belongs_to :user
   belongs_to :service, optional: true
   belongs_to :deal, class_name: 'Transaction', optional: true, foreign_key: :transaction_id
-  belongs_to :request_form, class_name: 'Form', foreign_key: :request_form_id
-  belongs_to :delivery_form, class_name: 'Form', foreign_key: :delivery_form_id
   has_many :transactions
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
@@ -37,7 +35,26 @@ class Request < ApplicationRecord
   validate :validate_delivery_days
   validate :validate_suggestion_deadline
   validate :validate_is_published
-  validate :validate_request_item #itemのdurationを取得できないため使用中断
+  #validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
+  enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+  enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+
+  scope :solve_n_plus_1, -> {
+    includes(:user, :services, :request_categories, :categories, :items)
+  }
+
+  scope :is_suggestable, -> {
+    solve_n_plus_1
+    .left_joins(:request_categories, :user)
+    .where(
+      is_published: true, 
+      is_inclusive: true, 
+      user:{
+        is_published: true, 
+        state: 'normal'
+      }
+    )
+  }
 
   after_initialize do
     if self.service_id
@@ -54,13 +71,30 @@ class Request < ApplicationRecord
       self.delivery_days ||= ((self.suggestion_deadline - Time.current)/60/60/24).round(0)
     end
 
+    if self.delivery_days
+      self.suggestion_deadline ||= DateTime.now + delivery_days.to_i.day
+    end
+
     if original_request_exists?
       self.delivery_days = nil
     end
+
+    self.request_form_name ||= Form.all.first.name
+    self.delivery_form_name ||= Form.all.first.name
+    set_request_content
+    puts "イニっとアイテム : #{self.items&.first&.valid?}"
   end
 
   def category
     self.categories.first
+  end
+
+  def request_form
+    Form.find_by(name: self.request_form_name)
+  end
+
+  def delivery_form
+      Form.find_by(name: self.delivery_form_name)
   end
 
   def set_publish
@@ -71,6 +105,7 @@ class Request < ApplicationRecord
   end
 
   def set_default_values
+    puts "セットアイテム : #{self.items&.first&.valid?}"
     if self.service
       #self.request_form = self.service.request_form
       #self.delivery_form = self.service.delivery_form
@@ -115,8 +150,8 @@ class Request < ApplicationRecord
     end
 
     if self.service
-      self.request_form = self.service.request_form
-      self.delivery_form = self.service.delivery_form
+      self.request_form_name = self.service.request_form_name
+      self.delivery_form_name = self.service.delivery_form_name
       self.category_id = self.service.category.id
       self.suggestion_deadline = nil
     end
@@ -217,6 +252,7 @@ class Request < ApplicationRecord
         puts self.items.first.file_duration
         if !self.items.first.valid?
           self.items.first.save
+          puts "だめ #{self.items.first.valid?}"
           errors.add(:items, "が不適切です")
         end
       else
@@ -245,6 +281,7 @@ class Request < ApplicationRecord
 
   def validate_delivery_days
     if self.delivery_days
+      puts "エラー"
       errors.add(:delivery_days, "は30日以内に設定して下さい") if self.delivery_days.to_i > 30
       errors.add(:delivery_days, "は1日以上に設定して下さい") if self.delivery_days.to_i < 1
     end
@@ -259,6 +296,14 @@ class Request < ApplicationRecord
       self.service.request.present?
     else
       false
+    end
+  end
+
+  def video_display_style
+    if self.service&.request_form == 'video'
+      'block'
+    else
+      'none'
     end
   end
 

@@ -67,6 +67,20 @@ class User < ApplicationRecord
   enum country_id: Country.all.map{|c| c.name.to_sym}
   enum state: CommonConcern.user_states
 
+  scope :solve_n_plus_1, -> {
+    includes(:categories, :user_categories)
+  }
+  
+  scope :is_sellable, -> {
+    left_joins(:user_categories)
+    .solve_n_plus_1
+    .where(
+      is_published: true, 
+      is_seller: true,
+      state: 'normal'
+      )
+  }
+
   def country
     Country.find_by(name: self.country_id)
   end
@@ -75,7 +89,7 @@ class User < ApplicationRecord
 
   def set_default_values
     self.name  ||= "user name"
-    self.state ||= :running
+    self.state ||= :normal
   end
 
   def create_user_state_hitrory

@@ -22,8 +22,6 @@ service = Service.first
         use_youtube:true,
         youtube_id: youtube_ids[n % youtube_ids.length],
         transaction_message_days: service.transaction_message_days,
-        request_form: Form.find_by(name:"video"),
-        delivery_form: Form.find_by(name:"video"),
         star_rating: n%6,
         review_description: "レビュー内容をここに表示",
         reviewed_at: DateTime.now - n,

@@ -3,26 +3,7 @@ module FormConfig
     include ConfigMethods
     #formの{日本語名：ID}をformのnameを引数にして返す
     def forms_japanese_hash(form=nil)#引数のformは最初にhashの順番で最初に入れるもの
-        hash = config_value(sort:"form", key:"japanese:id")
-        change_at = config_value(sort:"form", key:"change_at")
-        if change_at.present? && change_at < DateTime.now
-            update_form_config
-        end
-
-        if !hash.present?
-            update_form_config
-            hash = config_value(sort:"form", key:"japanese:id")
-        end
-
-        if form.present? 
-            form_japanese = Form.find_by(name:form).japanese_name #先頭にしたいformの日本語名を取得
-            first_hash = hash.slice(form_japanese) #先頭にしたいformのハッシュ
-            if first_hash.present?
-                hash.delete(form_japanese)#先頭にしたいformのハッシュを全体から削除
-                hash = first_hash.merge(hash)#先頭にしたいformのハッシュを先頭に追加
-            end
-        end
-        return hash
+        Form.all.map{|f| [f.japanese_name, f.name]}.to_h
     end
 
     def update_form_config

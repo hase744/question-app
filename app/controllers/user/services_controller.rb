@@ -11,21 +11,19 @@ class User::ServicesController < User::Base
   after_action :update_total_views, only:[:show]
   def index
     @services = Service
-    @services = @services.left_joins(:categories, :user, :request_form, :delivery_form, :service_categories)
-    @services = solve_n_plus_1(@services)
-    @services = @services.where(is_inclusive: true, is_published:true, user: {is_published: true, is_suspended:false, is_deleted:false, is_seller:true})
-    @services = @services.where("title LIKE?", "%#{params[:word]}%")
+      .is_seeable
+      .where("title LIKE?", "%#{params[:word]}%")
 
     if params[:categories].present?
       @services = @services.where(service_categories: {category_id: params[:categories].split(",").map(&:to_i)})
     end
 
     if params[:request_form].present?
-      @services = @services.where(request_form_id: params[:request_form])
+      @services = @services.where(request_form_name: params[:request_form])
     end
 
     if params[:delivery_form].present?
-      @services = @services.where(delivery_form_id: params[:delivery_form])
+      @services = @services.where(delivery_form_name: params[:delivery_form])
     end
 
     if params[:is_available] == "1"
@@ -71,12 +69,12 @@ class User::ServicesController < User::Base
     else
       @service = Service.new()
     end
-    set_new_values
+    set_form_values
   end
 
   def edit
     @service = Service.find_by(id: params[:id], user:current_user)
-    set_edit_values
+    set_form_values
   end
 
   def create
@@ -105,7 +103,7 @@ class User::ServicesController < User::Base
         redirect_to user_service_path(@service.id)
       else
         @request = @service.request
-        set_new_values
+        set_form_values
         render action: "new"
         flash.alert = "サービスを提案できませんでした。"
       end
@@ -118,7 +116,7 @@ class User::ServicesController < User::Base
         redirect_to user_service_path(Service.last.id)
       else
         @request = @service.request
-        set_new_values
+        set_form_values
         render action: "new"
         flash.alert = "サービスを出品できませんでした。"
       end
@@ -136,7 +134,6 @@ class User::ServicesController < User::Base
         redirect_to user_service_path(params[:id])
       end
     else
-      set_edit_values
       render action: "edit"
     end
   end
@@ -181,30 +178,13 @@ class User::ServicesController < User::Base
     render partial: "user/services/reviews", locals: { contents: @transactions }
   end
 
-  private def set_new_values
+  private def set_form_values
     if @request.present?
       @service.delivery_days = (@request.suggestion_deadline.to_datetime - DateTime.now).to_i
       @submit_text = "提案"
     else
       @submit_text = "出品"
     end
-    gon.price_minimum_number = @service.price_minimum_number
-    gon.price_max_number = @service.price_max_number
-    gon.stock_quantity_minimum_number = @service.stock_quantity_minimum_number
-    gon.stock_quantity_max_number = @service.stock_quantity_max_number
-    gon.delivery_days_minimum_number = @service.delivery_days_minimum_number
-    gon.delivery_days_max_number = @service.delivery_days_max_number
-    gon.text_max_length = @service.description_max_length
-  end
-
-  private def set_edit_values
-    gon.price_minimum_number = @service.price_minimum_number
-    gon.price_max_number = @service.price_max_number
-    gon.stock_quantity_minimum_number = @service.stock_quantity_minimum_number
-    gon.stock_quantity_max_number = @service.stock_quantity_max_number
-    gon.delivery_days_minimum_number = @service.delivery_days_minimum_number
-    gon.delivery_days_max_number = @service.delivery_days_max_number
-    gon.text_max_length = @service.description_max_length
   end
 
   private def check_published
@@ -314,8 +294,8 @@ class User::ServicesController < User::Base
       :delivery_days,
       :request_max_minutes,
       :request_max_characters,
-      :request_form_id,
-      :delivery_form_id,
+      :request_form_name,
+      :delivery_form_name,
       :request_id,
       :is_published
     )
@@ -332,8 +312,8 @@ class User::ServicesController < User::Base
       :stock_quantity,
       :close_date,
       :delivery_days,
-      :request_form_id,
-      :delivery_form_id,
+      :request_form_name,
+      :delivery_form_name,
       :request_id,
       :request_max_minutes,
       :request_max_characters,
