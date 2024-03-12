@@ -9,8 +9,6 @@ class Service < ApplicationRecord
 
     #belongs_to :request, optional: true
     belongs_to :user
-    belongs_to :request_form, class_name: 'Form', foreign_key: :request_form_id
-    belongs_to :delivery_form, class_name: 'Form', foreign_key: :delivery_form_id
     before_validation :set_default_values
     before_validation :update_renewed_at
     after_save :create_service_category
@@ -33,9 +31,25 @@ class Service < ApplicationRecord
     validate :validate_request_max_length
     validate :validatable_category
     validate :validate_request_max_duration
+    enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+    enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+
+    scope :solve_n_plus_1, -> {includes(:user, :requests, :categories, :service_categories, :transactions)}
+    scope :is_seeable, -> { 
+        left_joins(:categories, :user, :service_categories)
+        .solve_n_plus_1
+        .where(
+        is_inclusive: true,
+        is_published:true,
+        user: {
+            is_published: true, 
+            state: 'normal',
+            is_seller:true,
+        }
+    )}
     
     after_initialize do
-        if self.request_form_id == 3
+        if self.request_form_name == 'video'
             self.request_max_minutes = self.request_max_minutes.to_i if self.request_max_minutes
             if self.request_max_duration.present? && !self.request_max_minutes.present? #最大時間がある かつ、最大分が空
                 self.request_max_minutes ||= self.request_max_duration/60
@@ -44,6 +58,15 @@ class Service < ApplicationRecord
                 self.request_max_duration ||= self.request_max_minutes*60
             end
         end
+        set_service_content
+    end
+
+    def request_form
+        Form.find_by(name: self.request_form_name)
+    end
+
+    def delivery_form
+        Form.find_by(name: self.delivery_form_name)
     end
 
     def update_renewed_at
@@ -51,8 +74,8 @@ class Service < ApplicationRecord
             "title", 
             "description", 
             "price",
-            "request_form_id", 
-            "delivery_form_id", 
+            "request_form_name", 
+            "delivery_form_name", 
             "delivery_days", 
             "request_max_characters",
             "request_max_duration",
@@ -119,7 +142,7 @@ class Service < ApplicationRecord
 
     def set_default_values
         puts "依頼形式"
-        puts self.request_form_id
+        puts self.request_form_name
         if self.request_id
             self.request = Request.find(self.request_id.to_i)
         end
@@ -131,7 +154,7 @@ class Service < ApplicationRecord
             self.request_max_characters = nil
             self.request_max_duration = nil
         else
-            if self.request_form_id == 3 && self.is_inclusive
+            if self.request_form_name == 'video' && self.is_inclusive
                 self.request_max_duration = request_max_minutes.to_i*60
             end
         end
@@ -166,20 +189,12 @@ class Service < ApplicationRecord
     end
 
     def validate_price
-        if self.price % 100 != 0
-            errors.add(:price, "は100円ごとです")
-        end
-        if self.price <= 0
+        if self.price.nil?
             errors.add(:price)
-        end
-    end
-
-    def validate_form
-        form_array = ["text", "image", "video"]
-        if !form_array.include?(request_form)
-            errors.add(:request_form, "フォームが適切ではありません")
-        elsif !form_array.include?(delivery_form)
-            errors.add(:delivery_form, "フォームが適切ではありません")
+        elsif self.price % 100 != 0
+            errors.add(:price, "は100円ごとにしか設定できません")
+        elsif self.price <= 0
+            errors.add(:price)
         end
     end
 

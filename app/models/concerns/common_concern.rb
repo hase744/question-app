@@ -17,7 +17,7 @@ module CommonConcern
     rescue
         false
     end
-  end  
+  end
   def get_invalid_models(models)
     invalid_models = []
     begin
@@ -49,7 +49,7 @@ module CommonConcern
     rescue
     end
   end
-  
+
   def self.user_states
     [:normal, :suspended, :register, :browse, :deleted]
   end
@@ -76,5 +76,9 @@ module CommonConcern
 
   def is_browse
     self.state == "browse"
+  end
+
+  def is_deleted
+    self.state == "deleted"
   end
 end

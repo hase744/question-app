@@ -5,9 +5,7 @@ class User::AccountsController < User::Base
   after_action :create_access_log
   def index
     @users = User.all
-    @users = solve_n_plus_1(@users)
-    @users = @users.left_joins(:user_categories)
-    @users = @users.where(is_published:true, is_seller:true, is_suspended:false, is_deleted:false)
+    @users = @users.is_sellable
     @users = @users.where("name LIKE?", "%#{params[:name]}%")
     @users = @users.order(total_sales_numbers: :desc)
 

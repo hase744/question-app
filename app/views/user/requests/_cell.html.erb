@@ -39,7 +39,7 @@
             <p class="request_condition"><span class="request_condition_title">期限</span>　　　<%=from_now(request.suggestion_deadline)%></p>
             <p class="request_condition"><span class="request_condition_title">分野</span>　　　<%=request.category.japanese_name%></p>
             <p class="request_condition"><span class="request_condition_title">提案数</span>　　<%=request.total_services%>件</p>
-            <p class="request_condition"><span class="request_condition_title">回答形式</span>　<%=forms_japanese_hash.key(request.delivery_form_id)%></p>
+            <p class="request_condition"><span class="request_condition_title">回答形式</span>　<%=forms_japanese_hash.key(request.delivery_form_name)%></p>
             <p class="request_condition"><span class="request_condition_title"></span></p>
         </div>
         <%= render "/user/shared/description", text:request%>

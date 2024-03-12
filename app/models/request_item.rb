@@ -46,15 +46,14 @@ class RequestItem < ApplicationRecord
         self.service = transaction.service
       end
 
-      puts "依頼"
-      puts request.service_id
       if request.service_id #依頼をcreateの時
         self.service = Service.find(request.service_id)
       end
   
       case request_form.name
       when "text" then
-        self.thumbnail = self.file
+        #self.thumbnail = self.file
+        self.file ||= '/corretech_icon.png'
         self.youtube_id = nil
       when "image" then
         self.thumbnail = self.file
@@ -95,8 +94,6 @@ class RequestItem < ApplicationRecord
     end
 
     def validatable_duration
-      puts "DURATION"
-      puts self.duration
       if self.request_form.name == "video"
         if self.service.present? && self.service.request_max_duration
           if !self.duration.present?

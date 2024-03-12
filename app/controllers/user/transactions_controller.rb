@@ -65,7 +65,8 @@ class User::TransactionsController < User::Base
     @transaction_message = TransactionMessage.new()
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
-    @transactions = Transaction.left_joins(:transaction_categories).includes(:seller, :service, :delivery_form, :request_form, :request, :items, :categories).where(is_delivered:true, transaction_categories:{category: @transaction.category})
+    #@transactions = solve_n_plus_1(@transactions)
+    @transactions = Transaction.left_joins(:transaction_categories).includes(:seller, :service, :request, :items, :categories).where(is_delivered:true, transaction_categories:{category: @transaction.category})
     transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)
     @transactions = @transactions.where(id: @transaction.id..).order(created_at: "ASC").limit(10)
     if @transactions.count < transactions.count

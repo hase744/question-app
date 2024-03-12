@@ -1,0 +1,18 @@
+$("#request_use_youtube").change(function() {
+  var selectedValue = $(this).val();
+  $(".youtube_field_area, .video_field_area").hide();
+  if (selectedValue == "1") {
+    $(".youtube_field_area").show();
+  } else if (selectedValue == "0") {
+    $(".video_field_area").show();
+  }
+});
+
+
+$(document).ready(function() {
+  $('#youtube_id_field').on('input', function() {
+    var youtubeId = $(this).val();
+    var newSrc = 'https://www.youtube.com/embed/' + youtubeId;
+    $('#youtube_video').attr('src', newSrc);
+  });
+});

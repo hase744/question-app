@@ -12,26 +12,21 @@ class User::RequestsController < User::Base
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
   def index
-    users = User.where(is_published: true, is_suspended:false, is_deleted:false)
     @requests = Request
-    @requests = @requests.left_joins(:request_categories, :user)
-    @requests = solve_n_plus_1(@requests)
-    @requests = @requests.where(is_published: true, is_inclusive:true, user:{is_published: true, is_suspended:false, is_deleted:false})
-    @requests = @requests.where("title LIKE?", "%#{params[:word]}%")
-    @requests = @requests.order(id: :DESC)
-    #アカウントが非公開でないか
-    #@requests = @requests.where(user:{is_published: true})
+      .is_suggestable
+      .where("title LIKE?", "%#{params[:word]}%")
+      .order(id: :DESC)
 
     if params[:categories].present?
       @requests = @requests.where(request_categories: {category_id: params[:categories].split(",").map(&:to_i)})
     end
 
     if params[:request_form].present?
-      @requests = @requests.where(request_form_id: params[:request_form])
+      @requests = @requests.where(request_form_name: params[:request_form])
     end
 
     if params[:delivery_form].present?
-      @requests = @requests.where(delivery_form_id: params[:delivery_form])
+      @requests = @requests.where(delivery_form_name: params[:delivery_form])
     end
 
     if params[:suggestion_deadline].present?
@@ -83,13 +78,11 @@ class User::RequestsController < User::Base
       @request = Request.new(request_params)
       @request.set_item_values
     else
-      @request = Request.new(service_id:params[:service_id], request_form_id:1)
+      @request = Request.new(service_id:params[:service_id])
     end
-    set_new_values
   end
 
   def edit
-    set_edit_values
     @request.set_item_values
   end
 
@@ -130,7 +123,6 @@ class User::RequestsController < User::Base
       if @request.service
         @service = @request.service
       end
-      set_edit_values
       render "user/requests/edit"
     end
   end
@@ -226,12 +218,10 @@ class User::RequestsController < User::Base
         if @transaction.save
           redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
         else
-          set_new_values
           detect_models_errors([@transaction, current_user, @request, @service])
           render "user/requests/new"
         end
       else
-        set_new_values
         detect_models_errors([@transaction, current_user, @request, @service])
         render "user/requests/new"
       end
@@ -240,7 +230,6 @@ class User::RequestsController < User::Base
       if @request.save 
         redirect_to user_request_preview_path(@request.id)
       else
-        set_new_values
         render "user/requests/new"
       end
     end
@@ -260,54 +249,6 @@ class User::RequestsController < User::Base
       flash.notice = "削除できませんでした。"
       redirect_to user_request_path(params[:id])
     end
-  end
-
-  def set_new_values
-    @service_exist = false
-    if @service.present?
-      @request.service = @service
-      @service_exist = true
-      if @service.request
-        @original_request = @service.request
-      end
-      @request_max_characters = @service.request_max_characters
-    else
-      @request_max_characters = @request.description_max_length
-    end
-    gon.text_max_length = @request_max_characters
-    gon.service_exist = @service_exist
-    gon.request_form = @request.request_form.name if @request.request_form
-    gon.request_file = nil
-    if @service.present?
-      gon.request_form = @service.request_form.name
-      if @service.request
-        gon.request_file = @service.request.file
-       end 
-    end
-    gon.video_extensions = FileUploader.new.extension_allowlist - ImageUploader.new.extension_allowlist
-    gon.image_extensions = ImageUploader.new.extension_allowlist
-  end
-
-  def set_edit_values
-    
-    #@service_exist = falseなので意味ない
-    @transactions = @request.transactions
-    if @transactions.present?
-      @transaction = @transactions.first
-      @service = @transaction.service
-      @service_exist = true
-      @request_max_characters = @service.request_max_characters
-    else
-      @request_max_characters = @request.description_max_length
-    end
-    
-    gon.request_max_length = @request_max_characters
-    gon.service_exist = @service_exist
-    gon.request_form = @request.request_form.name
-    gon.request_file = nil
-    gon.video_extensions = FileUploader.new.extension_allowlist - ImageUploader.new.extension_allowlist
-    gon.image_extensions = ImageUploader.new.extension_allowlist
-    gon.text_max_length = @request_max_characters
   end
   
   def set_preview_values
@@ -532,8 +473,8 @@ class User::RequestsController < User::Base
       :file_duration,
       :thumbnail,
       :category_id,
-      :request_form_id,
-      :delivery_form_id,
+      :request_form_name,
+      :delivery_form_name,
       :service_id,
       :suggestion_deadline,
       :delivery_days

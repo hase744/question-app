@@ -34,6 +34,7 @@
         </div>
 
         <div class="video_field_area" id="video_field_area">
+        <% if @request.request_form.name != "image" %>
         <%= f.label :file, class:"field_label" %><br />
             <%if @request.use_youtube%>
                 <div id="youtube_area">
@@ -44,25 +45,9 @@
                 <% if @request.request_form.name == "image"%>
                   <%= image_tag @request.file.url, class:"image"%>
                 <% end %>
-                <% if @request.request_form.name == "text" && @request.file.url != nil %>
-                  <%= image_tag @request.file.url, class:"image"%>
-                <% end %>
-                <% if @request.request_form.name == "text" && @request.file.url == nil %>
-                  <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
-                  <img id="description_image" class="description_image">
-                
-                <% end %>
-                <% if @request.request_form.name == "video"%>
-                  <%if @request.use_youtube%>
-                  <% else %>
-                    <%= video_tag @request.file.url, class:"image",id:"video_display", controls: true, autobuffer: true%>
-                    <%= f.hidden_field :file_duration, id:"file_duration" %>
-                  <% end %>
-                <% end %>
             </div>
         </div>
-        <%##= f.file_field  :thumbnail, id:"thumbnail_input" %>
-        <div class="imgArea"></div>
+        <% end %>
 
         <div class="field_area">
           <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
@@ -96,33 +81,3 @@
       <% end %>
     </div>
 </div>
-<canvas id="canvas"></canvas>
-<%= render "/user/images/description", text:@request.description %>
-</style>
-<script>
-
-window.addEventListener('load', (event) => {
-    if(gon.request_form == "text" && !gon.request_published){
-      create_description_image(); //
-    }
-  })
-
-video_display = document.getElementById("video_display")
-if(video_display != null){
-  video_display.addEventListener('loadeddata', function() {//フォームに値を代入
-  $("#file_duration").val(Math.floor(this.duration))
-  });
-}
-
-//create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
-function reload_description_image(){
-    if($("#desctiption_to_image_text").css("display") == "none"){
-    }else{
-        window.location.reload();
-    }
-}
-if(gon.request_form == "text"){
-    window.setTimeout(reload_description_image, 3000);
-}
-//awaitのためにasync追加
-</script>

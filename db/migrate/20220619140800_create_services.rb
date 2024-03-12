@@ -2,8 +2,8 @@ class CreateServices < ActiveRecord::Migration[6.1]
   def change
     create_table :services do |t|
       t.references :user, null: false, index:true, foreign_key: true
-      t.references :request_form, index:true, foreign_key: { to_table: :forms }
-      t.references :delivery_form, index:true, foreign_key: { to_table: :forms }
+      t.integer :request_form_name, index:true
+      t.integer :delivery_form_name, index:true
       #t.references :category, index:true
       #t.references :request, index:true
       t.boolean :is_inclusive, index:true

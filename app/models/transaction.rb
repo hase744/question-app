@@ -6,8 +6,6 @@ class Transaction < ApplicationRecord
   belongs_to :buyer, class_name: "User", foreign_key: :buyer_id
   belongs_to :request, class_name: "Request", foreign_key: :request_id
   belongs_to :service, class_name: "Service", foreign_key: :service_id
-  belongs_to :request_form, class_name: 'Form', foreign_key: :request_form_id
-  belongs_to :delivery_form, class_name: 'Form', foreign_key: :delivery_form_id
 
   has_many :transaction_messages, foreign_key: :transaction_id, dependent: :destroy
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
@@ -16,6 +14,8 @@ class Transaction < ApplicationRecord
   has_many :categories,through: :transaction_categories, dependent: :destroy
 
   delegate :user, to: :service
+  delegate :request_form_name, to: :service
+  delegate :delivery_form_name, to: :service
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
   validates :star_rating, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, :allow_blank => true}
@@ -56,6 +56,14 @@ class Transaction < ApplicationRecord
     end
   end
   
+  def request_form
+    Form.find_by(name: self.request_form_name)
+  end
+
+  def delivery_form
+    Form.find_by(name: self.delivery_form_name)
+  end
+
   def set_publish
     self.assign_attributes(is_published:true, published_at:DateTime.now)
   end
@@ -88,8 +96,8 @@ class Transaction < ApplicationRecord
       else
         self.request.service = self.service
         self.request.set_service_values
-        self.request.request_form = self.service.request_form
-        self.request.delivery_form = self.service.delivery_form
+        self.request.request_form_name = self.service.request_form_name
+        self.request.delivery_form_name = self.service.delivery_form_name
         self.request.max_price = self.service.price
         self.request.category_id = self.service.category_id
         self.request.suggestion_deadline = DateTime.now + self.service.delivery_days.to_i
@@ -106,8 +114,6 @@ class Transaction < ApplicationRecord
     
     self.service_title = self.service.title
     self.service_descriprion = self.service.description
-    self.request_form = self.service.request_form
-    self.delivery_form = self.service.delivery_form
     self.seller = self.service.user
     self.buyer = self.request.user
   end

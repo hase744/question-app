@@ -3,8 +3,8 @@ class CreateRequests < ActiveRecord::Migration[6.1]
     create_table :requests do |t|
       t.references :user, null: false, index:true, foreign_key: true
       #t.references :service, index:true
-      t.references :request_form, null: false, index:true, foreign_key: { to_table: :forms }
-      t.references :delivery_form, null: false, index:true, foreign_key: { to_table: :forms }
+      t.integer :request_form_name, null: false, index:true
+      t.integer :delivery_form_name, null: false, index:true
       #t.references :category, index:true
       t.string :title, index:true
       t.text :description

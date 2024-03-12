@@ -56,7 +56,7 @@ ja:
         delivery_days: 募集期間
         max_price: 予算
         price: 料金
-        use_youtube: アップロード先
+        use_youtube: アップロード方法
         youtube_id: YouTube動画のID
       request_item:
         file: ファイル
@@ -68,7 +68,7 @@ ja:
         title: タイトル
         description: 説明
         category: カテゴリー
-        use_youtube: アップロード先
+        use_youtube: アップロード方法
         youtube_id: YouTube動画のID
         file: ファイル
         items: 成果物
