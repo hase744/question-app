@@ -1,11 +1,9 @@
-<%if model %>
-  <%if model.errors.full_messages.count > 0 %>
-      <div class="error_component_area">
-        <% model.errors.full_messages.each do |msg| %>
-          <div class="alert alert-danger">
-          <i class='fas fa-exclamation-triangle'></i><%= msg %>
-          </div>
-        <% end %>
-      </div>
-  <% end %>
+<%if model && model&.errors&.full_messages&.count > 0 %>
+    <div class="error_component_area">
+      <% model.errors.full_messages.each do |msg| %>
+        <div class="alert alert-danger">
+        <i class='fas fa-exclamation-triangle'></i><%= msg %>
+        </div>
+      <% end %>
+    </div>
 <% end %>

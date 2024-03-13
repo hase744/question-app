@@ -1,0 +1,58 @@
+<div class="display_none" id="display_setting">
+  <div class="answer_zone" id="canvas-box">
+      <h1 class="title_area">コレテク</h1>
+      <div class="answer_area">
+          <div class="message_area" id="message_area">
+          <%=text%>
+          </div>
+      </div>
+  </div>
+</div>
+<style>
+.display_none{
+    /*display: none;*/
+}
+h1{
+    font-size:<%= font_size*2 %>px;
+}
+.answer_zone{
+    margin-left: <%= -criteria_width*0.01 %>px;
+   padding-bottom: <%= criteria_width*0.05 %>px;
+    width: calc(100% + <%= criteria_width*0.01 %>px);
+    min-height: <%= criteria_width*0.3 %>px;
+    background-color: #FFFF66;
+    text-align: center;
+    padding-right: <%= criteria_width*0.05 %>px;
+    padding-left: <%= criteria_width*0.05 %>px;
+    width:<%= criteria_width %>px;
+}
+.title_area{
+    text-shadow: 0 0 <%= criteria_width*0.01 %>px lightgray;
+}
+.answer_area{
+    border-radius: <%= criteria_width*0.1 %>px;
+    min-height: <%= criteria_width*0.6 %>px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: <%= -criteria_width*0.02 %>px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.message_area{
+    max-width: 100%;
+    margin-bottom: <%= criteria_width*0.1 %>px;
+    font-size: <%= criteria_width*0.04 %>px;
+    word-break: keep-all;
+    word-wrap: break-word;
+    white-space: pre-line;
+    font-family:"Hannotate SC";
+    font-size:<%= font_size %>px;
+}
+h1{
+color: white; 
+}
+</style>

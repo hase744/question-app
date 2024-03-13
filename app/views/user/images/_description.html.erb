@@ -16,27 +16,26 @@
 body{
 }
 .answer_zone{
-    margin-left: -10px;
-   padding-bottom: 50px;
-    width: calc(100% + 20px);
-    min-height: 300px;
+    //margin-left: <%= -image_width*0.01%>px;
+    padding-bottom: <%= image_width*0.05%>px;
+    width: calc(100% + <%= image_width*0.02%>px);
+    min-height: <%= image_width*0.3%>px;
     background-color: #FFFF66;
     text-align: center;
-    padding-right: 50px;
-    padding-left: 50px;
-    width:1000px;
+    padding-right: <%= image_width*0.05%>px;
+    padding-left: <%= image_width*0.05%>px;
+    width: <%= image_width %>px;
 }
 .title_area{
-    text-shadow: 0 0 10px lightgray;
+    font-size: <%= image_width*0.03 %>px;
+    text-shadow: 0 0 <%= image_width*0.01 %>px lightgray;
 }
 .answer_area{
-    border-radius: 100px;
-    min-height: 600px;
+    border-radius: <%= image_width*0.02%>px;
+    min-height: <%= image_width*0.6%>px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: -20px;
-    //padding-top:100px;
-    //padding-bottom:100px;
+    margin-top: -<%= image_width*0.02%>px;
     background-color: white;
     display: flex;
     justify-content: center;
@@ -46,13 +45,17 @@ body{
 }
 .message_area{
     max-width: 100%;
-    margin-bottom: 100px;
-    font-size: 40px;
-    word-break: keep-all;
-    word-wrap: break-word;
+    margin-top: <%= image_width*0.05%>px;
+    margin-bottom: <%= image_width*0.05%>px;
+    letter-spacing: <%= image_width*0.005%>px;
+    font-size: <%= image_width*0.04%>px;
+    //word-wrap: break-word;
+    //overflow-wrap: break-word;
     white-space: pre-line;
-    font-family:"Hannotate SC";
-    //min-height: ;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: "Azuki";
+    line-height: <%= image_width*0.06%>px;
 }
 h1{
 color: white; 
@@ -60,21 +63,52 @@ color: white;
 </style>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 <script>
-var description_image = document.getElementById("description_image")
+var description_image = document.getElementById("description_image");
 var file_input = document.getElementById('file_input');
+var textContent = "<%=text.gsub(/\r\n/,'KAIGYOSTR')%>";
+console.log(textContent)
+textContent = textContent.replace(/\s/g, "");
 
-mini_font_size = 30
-max_font_size = 50
-text_length = $("#message_area").text().length
-console.log(text_length)
-if(text_length < 100){
-  var font_size = mini_font_size + ((max_font_size - mini_font_size)/100)*text_length
-}else{
-  var font_size = 30
+
+console.log(textContent)
+textContent = textContent.replace(/KAIGYOSTR/g, '</br>');
+
+//句読点ごとに配列に分割する
+punctuations = ['、','。','，','．','！','？','!','?'];
+strMark = '<replace string>'
+punctuations.forEach(function(element){
+  var pattern = new RegExp('[' + element + ']', 'g');
+  textContent = textContent.replace(pattern, `${element}${strMark}`);
+});
+console.log(textContent)
+console.log(strMark)
+
+sentences = textContent.split(strMark);
+
+//だいたい25字になるように配列を結合
+var newSentences = [];
+var sentenceUnit = '';
+for(i=0; i<sentences.length; i++){
+  newLastSentence = newSentences.slice(-1)[0] + sentences[i];
+  if(newLastSentence.length > 22 || newSentences.length == 0){
+    newSentences.push(sentences[i]);
+  }else{
+    newSentences[newSentences.length-1] += sentences[i];
+  }
 }
-$(".message_area").css("font-size",`${font_size}px`)
+var newTextContent = newSentences.join('</br>')
+$("#message_area").html(newTextContent);
 
-
+mini_font_size = <%= image_width*0.03 %>;
+max_font_size = <%= image_width*0.05 %>;
+text_length = $("#message_area").text().length;
+console.log(text_length);
+if(text_length < 100){
+  var font_size = mini_font_size + ((max_font_size - mini_font_size)/100)*text_length;
+}else{
+  var font_size = mini_font_size;
+}
+$(".message_area").css("font-size",`${font_size}px`);
 
 var now = new Date();
 var year = now.getFullYear();
@@ -85,6 +119,7 @@ var min = now.getMinutes();
 var sec = now.getSeconds();
 var datetime = `${year}${month}${date}${hour}${min}${sec}`;
 
+extension = 'jpg'
 function create_description_image(){
   $("#display_setting").css("display","block")
   document.getElementById("submit").disabled = true //送信できなくする
@@ -94,25 +129,24 @@ function create_description_image(){
       html2canvas(document.querySelector("#canvas-box")).then(canvas => { 
         var imageBlob = canvas.toBlob(function(blob) {
           console.log(blob)
-          formData.append("request[file]",blob, `picture${datetime}.png`);
-          const pngFile = new File([blob], `description_image${datetime}.png`, {type: "image/png"});
+          formData.append("request[file]",blob, `picture${datetime}.${extension}`);
+          const file = new File([blob], `description_image${datetime}.${extension}`, {type: `image/${extension}`});
           const dt = new DataTransfer();
-          dt.items.add(pngFile); //DataTransferにファイルを挿入
+          dt.items.add(file); //DataTransferにファイルを挿入
           console.log(file_input)
           file_input.files = dt.files; //送信フォームにDataTransferを挿入
           description_image.src = URL.createObjectURL(blob); //画像要素にblobを挿入
           $("#desctiption_to_image_text").css("display","none")
           document.getElementById("submit").disabled = false //送信可能にする
-          console.log("変換成功")
         });
         //以下はダウンロードさせる場合のコード
-        //var blob = canvas.toBlob(function(){}, "image/png", 0.95);
-        //console.log(toString(blob))
-        //console.log(canvas)
-        //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
-        //downloadEle.href = canvas.toDataURL("image/png");
-        //downloadEle.download = "canvas.png";
-        //downloadEle.click(); //ダウンロードさせる場合
+        var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
+        console.log(toString(blob))
+        console.log(canvas)
+        let downloadEle = document.createElement("a"); //ダウンロードする要素作成
+        downloadEle.href = canvas.toDataURL(`image/${extension}`);
+        downloadEle.download = `canvas.${extension}`;
+        downloadEle.click(); //ダウンロードさせる場合
       });
     document.getElementById("submit").disabled = false //送信できるようにする
     $("#display_setting").css("display","none")

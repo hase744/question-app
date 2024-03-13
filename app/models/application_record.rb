@@ -24,4 +24,7 @@ class ApplicationRecord < ActiveRecord::Base
     }.join(',')
   end
   
+  def image_with_default
+    self.file&.url.present? ? self.file.url : '/corretech_icon.png'
+  end
 end
