@@ -50,7 +50,7 @@
             <%= render "user/shared/description", text:@user %>
             <div class="user_profile_menu" id="request_ajax_update">
             <% @bar_elements.each do |element| %>
-                <%if !(!@user.is_seller && element[:for_seller])%>
+                <%if !(!@user.is_seller)%>
                 <li class="menu_element"><%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%></li>
                 <% end %>
             <% end %>

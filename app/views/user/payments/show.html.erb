@@ -1,12 +1,14 @@
 <div class="payment_show_zone">
     <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞ ポイント</h3>
     <div class="component_area payment_show_area">
-        <div class="payment_show_flame">
+        <div class="payment_show_flame input_area">
             <h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
             <h3 class="point_description">１p = １円</h3>
             <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form", onSubmit:"return check()"  do |f|%>
                 <label>購入するポイント</label></br>
-                <%=f.select :price, @hash, id:"payment_price"%></br>
+                <div class="input_field select_area">
+                    <%=f.select :price, options_for_select((100.. Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}p", num] }), id:"payment_price"%>
+                </div>
                 <%=f.hidden_field :point, id:"payment_point"%></br>
                 <%= f.hidden_field :action_name, value:@action_name %>
                 <%= f.hidden_field :controller_name, value:@controller_name %>

@@ -52,7 +52,6 @@
                 <% if @request.request_form_name == "text"%>
                   <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
                   <img id="description_image" class="description_image">
-                
                 <% end %>
                 <% if @request.request_form_name == "video"%>
                   <%if @request.use_youtube%>
@@ -91,7 +90,7 @@
         <% end %>
 
         <div class="submit_area">
-          <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+          <%= f.file_field  :image, id:"file_input", class:"display_none" %>
           <%= f.hidden_field :transaction_id %>
           <%= f.submit @submit_text, class:"submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"}%>
         </div>

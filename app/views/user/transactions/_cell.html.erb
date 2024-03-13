@@ -8,9 +8,9 @@
                 <!--
                 <iframe class="transaction_file"src="https://www.youtube.com/embed/<%=content.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 -->
-            <% elsif content.file && content.file.url %>
+            <% elsif content.request_form_name == "text" %>
                 <% if content.delivery_form.name == "image" || content.delivery_form.name == "text"%>
-                        <%= image_tag content.file.url, class:"transaction_file "%>
+                        <%= image_tag content.request.image_with_default, class:"transaction_file "%>
                 <% elsif content.delivery_form.name == "video" %>
                     <%= image_tag content.thumbnail.url, class:"transaction_file content_file", controls: true, autobuffer: true%>
                 <% end %>

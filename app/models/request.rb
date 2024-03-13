@@ -1,6 +1,7 @@
 class Request < ApplicationRecord
   #include ActiveModel::Model
   #extend CarrierWave::Mount
+  mount_uploader :image, ImageUploader
   belongs_to :user
   belongs_to :service, optional: true
   belongs_to :deal, class_name: 'Transaction', optional: true, foreign_key: :transaction_id
@@ -34,7 +35,7 @@ class Request < ApplicationRecord
   validate :validate_description
   validate :validate_delivery_days
   validate :validate_suggestion_deadline
-  validate :validate_is_published
+  #validate :validate_is_published
   #validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
@@ -142,6 +143,14 @@ class Request < ApplicationRecord
     if self.delivery_days
       self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
     end
+  end
+
+  def save_file_content(file_content)
+    puts file_content == nil
+    self.image = CarrierWave::Uploader::Base.new
+    self.image.cache!(CarrierWave::SanitizedFile.new(StringIO.new(file_content)))
+    self.image.retrieve_from_cache!(self.image.cache_name)
+    self.save
   end
 
   def set_service_values
@@ -281,7 +290,6 @@ class Request < ApplicationRecord
 
   def validate_delivery_days
     if self.delivery_days
-      puts "エラー"
       errors.add(:delivery_days, "は30日以内に設定して下さい") if self.delivery_days.to_i > 30
       errors.add(:delivery_days, "は1日以上に設定して下さい") if self.delivery_days.to_i < 1
     end

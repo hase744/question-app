@@ -27,11 +27,11 @@ ActiveAdmin.register Operation do
   end
   form do |f|
     f.inputs do
-      f.input :state_id, as: :select, collection: {
-        '稼働': State.find_by(name:"running").id, 
-        '停止': State.find_by(name:"suspended").id, 
-        'ユーザー登録のみ': State.find_by(name:"register").id, 
-        "閲覧のみ": State.find_by(name:"browse").id
+      f.input :state, as: :select, collection: {
+        '稼働': 'running', 
+        '停止': 'suspended', 
+        'ユーザー登録のみ': "register", 
+        "閲覧のみ": "browse"
       }
       f.input :start_at, as: :datetime_picker
       f.input :comment
