@@ -15,6 +15,7 @@ class RequestItem < ApplicationRecord
     validate :validatable_duration
   
     after_initialize do
+      puts "ここ！"
       if self.youtube_id.present?
         self.use_youtube = true
       else
@@ -52,8 +53,6 @@ class RequestItem < ApplicationRecord
   
       case request_form.name
       when "text" then
-        #self.thumbnail = self.file
-        self.file ||= '/corretech_icon.png'
         self.youtube_id = nil
       when "image" then
         self.thumbnail = self.file
@@ -196,5 +195,4 @@ class RequestItem < ApplicationRecord
     private def is_youtube_id_valid?
       self.youtube_id_valid
     end
-
 end

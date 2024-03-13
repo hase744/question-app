@@ -1,4 +1,10 @@
 @import "variables";
+@font-face {
+    font-family: "Azuki";
+    src: asset-url('/fonts/azuki.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
 .main_area{
     @media(max-width:1000px){
         padding-left: 0px;

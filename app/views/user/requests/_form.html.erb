@@ -109,4 +109,5 @@
 <script>
 <%= render 'user/requests/javascript/extension_controller.js.erb' %>
 <%= render 'user/requests/javascript/youtube_form_controller.js.erb' %>
+<%= render 'user/javascript/character_counter.js.erb', text_max_length: request.description_max_length %>
 </script>

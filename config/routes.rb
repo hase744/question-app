@@ -108,7 +108,6 @@ namespace :user do
     resources :transaction_messages, only: [:create, :show]
     resources :contacts, only: [ :index, :show, :create]
     resources :posts, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
-    resources :images, only: [ :show]
     resources :relationships, only: [ :update]
     resources :services, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
     resources :requests, only: [ :index, :show, :new, :edit, :create, :update, :destroy]
@@ -120,6 +119,7 @@ namespace :user do
     resource :payments, only: [:show, :create]
     resource :videos, only: [:show]
     resource :homes, only: [:show]
+    resource :images, only: [ :show]
   end
   
   namespace :sample do

@@ -114,12 +114,15 @@ class User::RequestsController < User::Base
     end
 
     if save_request_and_item
+      puts "保存"
+      puts @request.description
       if @transactions.present?
         redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
       else
         redirect_to user_request_preview_path(@request.id)
       end
     else
+      puts "保存失敗"
       if @request.service
         @service = @request.service
       end
@@ -145,18 +148,10 @@ class User::RequestsController < User::Base
 
   def publish
     if @request.request_form.name == "text" && !@request.is_published
-      @request.file = params[:request][:file]
-      if @request.items
-        @request_item = @request.items.first
-        @request_item.update(file: params[:request][:file])
-      else
-        @request_item = @request.items.create(file: params[:request][:file])
-      end
+      @request.items.create(file: params[:request][:file])
     end
-    
     @request.set_publish
-    puts "公開済み？"
-    puts @request.published_at
+    
     if @transaction #サービスの購入である
       #@request.service = @service
       create_contract
@@ -206,7 +201,7 @@ class User::RequestsController < User::Base
 
   def create
     @request = Request.new(request_params)
-    @request_item = @request.items.new(request_item_params)
+    #@request_item = @request.items.new(request_item_params)
     @request.user = current_user
     if @request.service_id
       @request.is_inclusive = false
@@ -227,7 +222,7 @@ class User::RequestsController < User::Base
       end
     else
       @request.is_inclusive = true
-      if @request.save 
+      if @request.save!
         redirect_to user_request_preview_path(@request.id)
       else
         render "user/requests/new"

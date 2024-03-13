@@ -50,6 +50,20 @@ module CommonConcern
     end
   end
 
+  def file_html_path
+    file_array = self.file.path.split('/')
+    file_array = file_array.take(file_array.length - 1)
+    file_path = file_array.join('/')
+    file_key = "#{file_path}/index.html"
+  end
+
+  def file_html_path
+    file_array = self.file.path.split('/')
+    file_array = file_array.take(file_array.length - 1)
+    file_path = file_array.join('/')
+    file_key = "#{file_path}/index.html"
+  end
+
   def self.user_states
     [:normal, :suspended, :register, :browse, :deleted]
   end

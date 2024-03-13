@@ -263,7 +263,7 @@ class Request < ApplicationRecord
 
   def validate_is_published
     if  self.is_published && !self.items.present?
-      errors.add(:requested_item)
+      errors.add(:items)
     end
   end
   
@@ -296,6 +296,14 @@ class Request < ApplicationRecord
       self.service.request.present?
     else
       false
+    end
+  end
+
+  def video_display_style
+    if self.service&.request_form == 'video'
+      'block'
+    else
+      'none'
     end
   end
 
