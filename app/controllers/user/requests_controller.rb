@@ -147,9 +147,7 @@ class User::RequestsController < User::Base
   end
 
   def publish
-    if @request.request_form.name == "text" && !@request.is_published
-      @request.items.create(file: params[:request][:file])
-    end
+    @request.image = params[:request][:image]
     @request.set_publish
     
     if @transaction #サービスの購入である
@@ -464,7 +462,7 @@ class User::RequestsController < User::Base
       :use_youtube,
       :youtube_id,
       :max_price,
-      :file,
+      :image,
       :file_duration,
       :thumbnail,
       :category_id,

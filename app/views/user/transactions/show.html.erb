@@ -59,7 +59,7 @@
                 </div>
                 <h2 class="title transaction_title"><%=@transaction.title%></h2>
                 <hr>
-                <div class="description_area"><%= @transaction.request.description%></div>
+                <div class="description_area"><%= @transaction.description%></div>
                     <%if @transaction.use_youtube%><% %>
                         <div class="item_file_flame 16_to_9" id="item_file_flame">
                             <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

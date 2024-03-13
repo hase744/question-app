@@ -6,6 +6,9 @@
             <h4 class="title  request_title one_line_text"><%=transaction.request.title%></h4>
             <h4 class="title one_line_text"><span class="title transaction_title ">A.&nbsp;<%=transaction.title%></span></h4>
             <div class="file_area video_area">
+                <% if transaction.request_form.name == "text" %>
+                    <%= image_tag transaction.request.image_with_default, class:"file transaction_file youtube_video "%>
+                <% end %>
                 <%if transaction.use_youtube%><% %>
                     <img src="https://img.youtube.com/vi/<%=transaction.youtube_id%>/maxresdefault.jpg" alt="Dinosaur" class="file transaction_file youtube_video">
                     <!--

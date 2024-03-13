@@ -295,6 +295,7 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.integer "delivery_form_name", null: false
     t.string "title"
     t.text "description"
+    t.string "image"
     t.integer "max_price"
     t.integer "mini_price"
     t.boolean "is_inclusive"
