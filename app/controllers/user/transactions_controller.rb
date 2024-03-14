@@ -129,9 +129,7 @@ class User::TransactionsController < User::Base
     @transaction.assign_attributes(deliver_params)
     @transaction.delivered_at = DateTime.now
 
-    if @transaction.delivery_form.name == "text"
-      @delivery_item = @transaction.items.new(transaction_item_params)
-    else
+    if @transaction.delivery_form.name != "text"
       @delivery_item = @transaction.items.first
     end
     

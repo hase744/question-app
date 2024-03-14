@@ -3,13 +3,15 @@ namespace :sample do
   task create_users: :environment do
     file_path = Rails.root.join('public','sample', 'users.json')
     users = JSON.parse(File.read(file_path))
-    10.times do |n|
+    Parallel.each(0..9) do |n|
       begin
       image_path = Rails.root.join('public','sample', "#{users[n]['name']}.jpg")
+      header_image_path = Rails.root.join('public','sample', "header_image (#{n}).jpg")
       user = User.create!(
           email: "seller#{n}@exmaple.com",
           name: users[n]['name'],
           image: File.open(image_path),
+          header_image: File.open(header_image_path),
           password: "password",
           confirmed_at: Time.now,
           is_seller: true,
@@ -43,8 +45,8 @@ namespace :sample do
     10.times do |n|
       service = Service.create!(
         user: User.find_by(email: "seller#{n}@exmaple.com"),
-        title: services[0]['title'],
-        description: services[0]['description'],
+        title: services[n]['title'],
+        description: services[n]['description'],
         price: (n+1)*100,
         category_id: Category.find(n%Category.count+1).id,
         stock_quantity: n + 1,

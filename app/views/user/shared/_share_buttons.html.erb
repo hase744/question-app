@@ -1,0 +1,16 @@
+<div id="twitter_share_button_area">
+<!--
+    <a href="javascript:void(0);" target="_blank" class="twitter_share share_button" id="twitter_share_button">Xで回答をシェア</a>
+    <a href="javascript:void(0);" onclick="window.open('${shareUrl}', 'mywindow4', 'width=400, height=300, menubar=no, toolbar=no, scrollbars=yes');" target="_blank" class="twitter_share share_button">Facebookで回答をシェア</a>
+-->
+</div>
+<div id="facebook_share_button_area">
+<!--
+    <a href="javascript:void(0);" target="_blank" class="twitter_share share_button" id="twitter_share_button">Xで回答をシェア</a>
+    <a href="javascript:void(0);" onclick="window.open('${shareUrl}', 'mywindow4', 'width=400, height=300, menubar=no, toolbar=no, scrollbars=yes');" target="_blank" class="twitter_share share_button">Facebookで回答をシェア</a>
+-->
+</div>
+<script>
+<%= render "user/shared/javascript/share_twitter.js.erb", text:text.strip %>
+<%= render "user/shared/javascript/share_facebook.js.erb", text:text.strip %>
+</script>

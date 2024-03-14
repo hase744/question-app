@@ -1,7 +1,6 @@
 class ApplicationRecord < ActiveRecord::Base
   require_relative "country.rb"
   require_relative "form.rb"
-  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   self.abstract_class = true
   include CommonMethods
   include CategoryConfig
@@ -22,9 +21,5 @@ class ApplicationRecord < ActiveRecord::Base
     extensions = extensions.map{|extension|
       "image/#{extension}"
     }.join(',')
-  end
-  
-  def image_with_default
-    self.image&.url.present? ? self.image.url : '/corretech_icon.png'
   end
 end

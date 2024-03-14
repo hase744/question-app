@@ -51,7 +51,7 @@
           </div>
 
           <% if Form.find_by(name: 'video').present? %>
-          <div class="field_area length_field_area video_field_area">
+          <div class="field_area length_field_area video_field_area", style="display: <%=service.video_display_style=%>">
             <label><%= Service.human_attribute_name(:request_max_minutes)%>（<%=service.mini_request_max_minutes%>〜<%=service.max_request_max_minutes%>分）</label><br />
             <div class="input_field text_field select_area">
               <%= f.select 'request_max_minutes', options_for_select((service.mini_request_max_minutes..service.max_request_max_minutes).step(1).map { |num| ["#{num}分", num] }, selected: service.request_max_minutes), include_blank: true,  class:"" ,required: true %>

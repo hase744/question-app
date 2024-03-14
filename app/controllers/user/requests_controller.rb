@@ -13,7 +13,7 @@ class User::RequestsController < User::Base
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
   def index
     @requests = Request
-      .is_suggestable
+      .suggestable
       .where("title LIKE?", "%#{params[:word]}%")
       .order(id: :DESC)
 

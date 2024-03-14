@@ -11,7 +11,7 @@ class User::ServicesController < User::Base
   after_action :update_total_views, only:[:show]
   def index
     @services = Service
-      .is_seeable
+      .seeable
       .where("title LIKE?", "%#{params[:word]}%")
 
     if params[:categories].present?
@@ -74,7 +74,8 @@ class User::ServicesController < User::Base
 
   def edit
     @service = Service.find_by(id: params[:id], user:current_user)
-    set_form_values
+    @service.category_id = @service.category.id
+    @submit_text = '更新'
   end
 
   def create

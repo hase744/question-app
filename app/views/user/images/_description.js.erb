@@ -1,0 +1,92 @@
+var description_image = document.getElementById("description_image");
+var file_input = document.getElementById('file_input');
+console.log(file_input)
+var textContent = "<%=text.gsub(/\r\n/,'KAIGYOSTR')%>";
+console.log(textContent)
+textContent = textContent.replace(/\s/g, "");
+
+
+console.log(textContent)
+textContent = textContent.replace(/KAIGYOSTR/g, '</br>');
+textContent += "<div style='text-align: right;'>by <%=user_name%></div>"
+//句読点ごとに配列に分割する
+punctuations = ['、','。','，','．','！','？','!','?'];
+strMark = '<replace string>'
+punctuations.forEach(function(element){
+  var pattern = new RegExp('[' + element + ']', 'g');
+  textContent = textContent.replace(pattern, `${element}${strMark}`);
+});
+console.log(textContent)
+console.log(strMark)
+
+sentences = textContent.split(strMark);
+
+//だいたい25字になるように配列を結合
+var newSentences = [];
+var sentenceUnit = '';
+for(i=0; i<sentences.length; i++){
+  newLastSentence = newSentences.slice(-1)[0] + sentences[i];
+  if(newLastSentence.length > 22 || newSentences.length == 0){
+    newSentences.push(sentences[i]);
+  }else{
+    newSentences[newSentences.length-1] += sentences[i];
+  }
+}
+console.log(newSentences)
+//配列の中で文字列が</br>で始まる場合削除
+newSentences = newSentences.map(str => str.startsWith('</br>') ? str.slice(5) : str);
+var newTextContent = newSentences.join('</br>')
+textContent = textContent.replace(/KAIGYOSTR/g, '</br>');
+$("#message_area").html(newTextContent);
+mini_font_size = <%= image_width*0.03 %>;
+max_font_size = <%= image_width*0.05 %>;
+text_length = $("#message_area").text().length;
+console.log(text_length);
+if(text_length < 100){
+  var font_size = mini_font_size + ((max_font_size - mini_font_size)/100)*text_length;
+}else{
+  var font_size = mini_font_size;
+}
+$(".message_area").css("font-size",`${font_size}px`);
+
+var now = new Date();
+var year = now.getFullYear();
+var month = now.getMonth();
+var date = now.getDate();
+var hour = now.getHours();
+var min = now.getMinutes();
+var sec = now.getSeconds();
+var datetime = `${year}${month}${date}${hour}${min}${sec}`;
+
+extension = 'jpg'
+function create_description_image(){
+  $("#display_setting").css("display","block")
+  document.getElementById("submit").disabled = true //送信できなくする
+    var formData = new FormData();
+      console.log("text")
+      console.log(html2canvas)
+      html2canvas(document.querySelector("#canvas-box")).then(canvas => { 
+        var imageBlob = canvas.toBlob(function(blob) {
+          console.log(blob)
+          formData.append("request[file]",blob, `picture${datetime}.${extension}`);
+          const file = new File([blob], `description_image${datetime}.${extension}`, {type: `image/${extension}`});
+          const dt = new DataTransfer();
+          dt.items.add(file); //DataTransferにファイルを挿入
+          console.log(file_input)
+          file_input.files = dt.files; //送信フォームにDataTransferを挿入
+          description_image.src = URL.createObjectURL(blob); //画像要素にblobを挿入
+          $("#desctiption_to_image_text").css("display","none")
+          document.getElementById("submit").disabled = false //送信可能にする
+        });
+        //以下はダウンロードさせる場合のコード
+        var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
+        //console.log(toString(blob))
+        //console.log(canvas)
+        //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
+        //downloadEle.href = canvas.toDataURL(`image/${extension}`);
+        //downloadEle.download = `canvas.${extension}`;
+        //downloadEle.click(); //ダウンロードさせる場合
+      });
+    document.getElementById("submit").disabled = false //送信できるようにする
+    $("#display_setting").css("display","none")
+}

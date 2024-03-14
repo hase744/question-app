@@ -16,7 +16,7 @@
                         <%transaction.request.set_item_values%>
                         <%if transaction.request.use_youtube%>
                             <iframe class="youtube_video" src="https://www.youtube.com/embed/<%=transaction.request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        <% elsif transaction.request.file != nil %>
+                        <% else %>
                             <% if transaction.request.request_form.name == "image" || transaction.request.request_form.name == "text"%>
                                 <%= image_tag transaction.request.image_with_default, class:"image"%>
                             <% elsif transaction.request.request_form.name == "video" %>

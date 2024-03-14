@@ -10,6 +10,8 @@ class Request < ApplicationRecord
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
   has_many :categories,through: :request_categories, dependent: :destroy
+  has_one :request_category
+  has_one :category, through: :request_category
 
   before_validation :set_default_values
   after_save :create_request_category
@@ -44,7 +46,7 @@ class Request < ApplicationRecord
     includes(:user, :services, :request_categories, :categories, :items)
   }
 
-  scope :is_suggestable, -> {
+  scope :suggestable, -> {
     solve_n_plus_1
     .left_joins(:request_categories, :user)
     .where(
@@ -83,7 +85,6 @@ class Request < ApplicationRecord
     self.request_form_name ||= Form.all.first.name
     self.delivery_form_name ||= Form.all.first.name
     set_request_content
-    puts "イニっとアイテム : #{self.items&.first&.valid?}"
   end
 
   def category
@@ -251,14 +252,9 @@ class Request < ApplicationRecord
   end
 
   def validate_request_item
-    puts "変化"
-    puts self.will_save_change_to_is_published?
-    puts will_save_change_to_is_published?
     if self.is_published && will_save_change_to_is_published?
       if self.items
-        puts "時間"
         self.items.first.file_duration = self.file_duration
-        puts self.items.first.file_duration
         if !self.items.first.valid?
           self.items.first.save
           puts "だめ #{self.items.first.valid?}"
@@ -304,14 +300,6 @@ class Request < ApplicationRecord
       self.service.request.present?
     else
       false
-    end
-  end
-
-  def video_display_style
-    if self.service&.request_form == 'video'
-      'block'
-    else
-      'none'
     end
   end
 

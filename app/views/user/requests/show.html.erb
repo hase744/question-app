@@ -1,8 +1,8 @@
 <div class="request_show_zone">
     <% if @request.is_inclusive %>
-        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "依頼一覧", user_requests_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
+        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_requests_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
     <% else %>
-        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "依頼一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
+        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
     <% end %>
     <div class="request_area">
         <div class="request_flame">

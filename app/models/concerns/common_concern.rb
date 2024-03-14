@@ -1,21 +1,19 @@
 module CommonConcern
   extend ActiveSupport::Concern
   def all_models_valid?(models)
-    models_valid = true
     begin
       if models.instance_of?(Array) #配列である
         models.each do |model|
-          if model.invalid? #保存不可
-            models_valid = false
-            break
+          if model.present? && model.invalid? #保存不可
+            return false
           end
         end
       else
-        models_valid = false if models.invalid? #保存不可
+        return false if models.invalid? #保存不可
       end
-      models_valid
+      return true
     rescue
-        false
+      return false
     end
   end
   def get_invalid_models(models)
