@@ -1,5 +1,5 @@
 <div class="home_show_zone">
-    <h3 class="home_label">サービス <%=link_to "もっと見る", user_services_path, class:"detail_link" %></h3>
+    <%= render "user/shared/label_with_link", label: "相談サービス", link: user_services_path %>
     <div class="home_service_area">
         <% @services.each do |service| %>
             <div class="home_service_unit">
@@ -7,7 +7,7 @@
             </div>
         <% end %>
     </div>
-    <h3 class="home_label">回答者<%=link_to "もっと見る", user_accounts_path, class:"detail_link" %></h3>
+    <%= render "user/shared/label_with_link", label: "回答者", link:  user_accounts_path %>
         <div class="home_user_area to500">
             <% @users.each do |user| %>
                 <div class="home_user_unit">
@@ -17,7 +17,7 @@
         </div>
     <div>
     </div>
-    <h3 class="home_label">回答<%=link_to "もっと見る", user_transactions_path, class:"detail_link" %></h3>
+    <%= render "user/shared/label_with_link", label: "回答", link:  user_transactions_path %>
     <% @transactions.each do |transaction|%>
         <%= render "user/transactions/small_cell", transaction:transaction %>
     <% end %>

@@ -4,17 +4,16 @@ class User::OrdersController < User::Base
   before_action :identify_seller, only:[:show, :reject]
   before_action :check_transaction_is_editable, only:[:edit, :update]
   def index
-    puts params[:user]
     @transactions = solve_n_plus_1(Transaction.all)
     @transactions = @transactions.page(params[:page]).per(10)
-    #パラメーターがからの時、ユーザー情報からパラメーターを入れる
+    #パラメーターが空の時、ユーザー情報からデフォルトとしてパラメーターを設定
     if !params[:user].present?
       if current_user.stripe_account_id.present?
         params[:user] = "seller"
-        params[:status] = "ongoing"
+        params[:scope] = "ongoing"
       else
         params[:user] = "buyer"
-        params[:status] = "ongoing"
+        params[:scope] = "ongoing"
       end
     end
 
@@ -29,58 +28,22 @@ class User::OrdersController < User::Base
       )
     end
     
-    if params[:status] == "ongoing"
-      @transactions = @transactions.where(
-        is_rejected: false,
-        is_canceled: false,
-        is_delivered: false
-        )
-    elsif params[:status] == "rejected"
-      @transactions = @transactions.where(
-        is_rejected: true,
-        is_canceled: false,
-        is_delivered: false
-        )
-    elsif params[:status] == "undelivered"
-      @transactions = @transactions.where(
-        is_rejected: false,
-        is_canceled: true,
-        is_delivered: false
-        ).or(@transactions.where(
-          is_rejected: true,
-          is_canceled: false,
-          is_delivered: false
-          )
-        )
-    elsif params[:status] == "rejected"
-      @transactions = @transactions.where(
-        is_rejected: true,
-        is_canceled: false,
-        is_delivered: false
-        )
+    if params[:scope] == "ongoing"
+      @transactions = @transactions.ongoing
+    elsif params[:scope] == "rejected"
+      @transactions = @transactions.rejected
+    elsif params[:scope] == "undelivered"
+      @transactions = @transactions.undelivered
     else
-      @transactions = @transactions.where(
-        is_rejected: false,
-        is_canceled: false,
-        is_delivered: true
-        )
+      @transactions = @transactions.delivered
     end
-    @header_list =  [
-      {"label": "購入中", "user": "buyer", "status": "ongoing"},
-      {"label": "購入済", "user": "buyer", "status": "delivered"},
-      {"label": "未購入", "user": "buyer", "status": "undelivered"},
-      {"label": "納品前", "user": "seller", "status": "ongoing"},
-      {"label": "納品済", "user": "seller", "status": "delivered"},
-      {"label": "未納品", "user": "seller", "status": "undelivered"},
-    ]
-    puts  @transactions.count
   end
 
   def show
     @transaction = Transaction.find(params[:id])
     @transaction.set_item
 
-    if (@transaction.title && @transaction.description) && @transaction.file
+    if @transaction.title && @transaction.description
       @disabled = false
     else
       @disabled = true

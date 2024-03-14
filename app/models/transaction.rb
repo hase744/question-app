@@ -46,6 +46,42 @@ class Transaction < ApplicationRecord
   after_initialize do
   end
 
+  scope :ongoing, -> {
+    self.where(
+      is_rejected: false,
+      is_canceled: false,
+      is_delivered: false
+    )
+  }
+
+  scope :rejected, -> {
+    self.where(
+      is_rejected: true,
+      is_canceled: false,
+      is_delivered: false
+    )
+  }
+
+  scope :undelivered, -> {
+    self.where(
+      is_rejected: false,
+      is_canceled: true,
+      is_delivered: false
+    ).or(self.where(
+      is_rejected: true,
+      is_canceled: false,
+      is_delivered: false
+      )
+    )
+  }
+
+  scope :delivered, -> {
+    self.where(
+      is_rejected: false,
+      is_canceled: false,
+      is_delivered: true
+      )
+  }
   def set_item
     self.item = self.items.first
     if self.item.present?

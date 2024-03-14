@@ -2,7 +2,7 @@
     <%if current_state == "register" %>
         <%= render "user/shared/state_register_alert" %>
     <%else%>
-        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > 依頼一覧 <%= paginate @requests %></div>
+        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > 質問一覧 <%= paginate @requests %></div>
         <div class="request_index_flame request_cell_flame">
             <% @requests.each do |request|%>
                 <%= render "user/requests/cell", request:request%>

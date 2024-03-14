@@ -1,9 +1,7 @@
 <div class="transaction_show_zone">
     <p class="items_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home" %> > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link"%> > <%=@transaction.category.japanese_name%></p>
     <div class="transaction_show_left_side">
-    <div class="common_label_area">
-        <h2 class="common_label" lang="en">Question</h2>
-    </div>
+    <%= render 'user/shared/common_label', text: 'Question', language: 'en'%>
         <div class="transaction_area">
             <div class="transaction_flame" id="transaction_flame">
                 <div class="request_area">
@@ -34,13 +32,12 @@
                             <%= video_tag @transaction.request.file.url, poster:@transaction.request.thumbnail.url, class:"image item_file", controls: true, autobuffer: true%>
                         <% end %>
                     <% end %>
+                    <%= render 'user/shared/adjustable_image', request: @transaction.request%>
                     <%##= render "/user/shared/description", text:@transaction.request%>
                 </div>
             </div>
         </div>
-        <div class="common_label_area">
-            <h2 class="common_label" lang="en">Answer</h2>
-        </div>
+        <%= render 'user/shared/common_label', text: 'Answer', language: 'en'%>
         <div class="transaction_area">
             <div class="transaction_flame" id="transaction_flame">
                 <div class="seller_info">
@@ -92,10 +89,12 @@
                             <% end %>
                         </div>
                     </div>
+                    <!--
                     <span class="share_button_area">
-                    <%= render "/user/shared/share_twitter"%>
+                        <%= render "/user/shared/share_twitter"%>
                     </span>
-                </div>
+                    -->
+                </div></br>
                 <!--
                 <div>
                     <hr>
@@ -134,15 +133,17 @@
                 </div>
                 -->
                 <div class="service_link_area">
+                    <label class'sercice_label'>質問受付</label>
+                    <div>
                     <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
+                    </div>
                 </div>
+                <%= render "/user/shared/share_buttons", text: @transaction.description %>
             </div>
         </div>
         <div class="transaction_detail_area">
         </div>
-        <div class="common_label_area">
-            <h2 class="common_label">レビュー</h2>
-        </div>
+        <%= render 'user/shared/common_label', text: 'レビュー', language: 'ja'%>
         <%if @transaction.star_rating %>
             <%= render "user/reviews/cell", transaction: @transaction %>
         <% elsif @transaction.buyer == current_user %>
@@ -174,6 +175,7 @@
             </div>
         </div>
         <% end %>
+        <%= render 'user/shared/common_label', text: '続き', language: 'ja'%>
         <div class="sort_area">
             <%if params[:transaction_message_order] == "ASC" || params[:transaction_message_order] == nil%>
             並び：<%= link_to "降順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"DESC", transaction_id:@transaction.id), remote:true, class:"sort_button desc_button", onclick:"change_sort()"%>
@@ -220,15 +222,9 @@
             </div>
         <% end %>
     </div>
-        
-        
-        
-        
     </div>
     <div class="transaction_show_right_side">
-    <div class="common_label_area">
-        <h2 class="common_label">その他の回答</h2>
-    </div>
+    <%= render 'user/shared/common_label', text: 'その他の回答', language: 'ja'%>
         <% @transactions.each do |content| %>
             <%= render "user/transactions/cell", content: content %>
         <% end %>

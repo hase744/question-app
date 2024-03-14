@@ -148,7 +148,7 @@
             </div>
             <% if !@service.request.present?%>
             <div class="service_info_menu" id="request_ajax_update">
-                <li class="menu_element"><%= link_to "販売実績", user_service_transactions_path(@service.id), remote: true, class:"user_content_link user_transactions_link"%></li>
+                <li class="menu_element"><%= link_to "回答", user_service_transactions_path(@service.id), remote: true, class:"user_content_link user_transactions_link"%></li>
                 <li class="menu_element"><%= link_to "依頼", user_service_requests_path(@service.id), remote: true, class:"user_content_link user_requests_link"%></li>
                 <li class="menu_element"><%= link_to "レビュー", user_service_reviews_path(@service.id), remote: true, class:"user_content_link user_reviews_link"%></li>
             </div>

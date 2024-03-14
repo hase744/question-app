@@ -1,0 +1,50 @@
+.display_none{
+    /*display: none;*/
+}
+body{
+}
+.answer_zone{
+    //margin-left: <%= -image_width*0.01%>px;
+    padding-bottom: <%= image_width*0.05%>px;
+    min-height: <%= image_width*0.3%>px;
+    background-color: #FFFF66;
+    text-align: center;
+    padding-right: <%= image_width*0.05%>px;
+    padding-left: <%= image_width*0.05%>px;
+    width: <%= image_width %>px;
+}
+.title_area{
+    font-size: <%= image_width*0.03 %>px;
+    text-shadow: 0 0 <%= image_width*0.01 %>px lightgray;
+}
+.answer_area{
+    border-radius: <%= image_width*0.02%>px;
+    min-height: <%= image_width*0.6%>px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -<%= image_width*0.02%>px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+.message_area{
+    max-width: 100%;
+    margin-top: <%= image_width*0.05%>px;
+    margin-bottom: <%= image_width*0.05%>px;
+    letter-spacing: <%= image_width*0.005%>px;
+    font-size: <%= image_width*0.04 %>px;
+    //word-wrap: break-word;
+    //overflow-wrap: break-word;
+    white-space: pre-line;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: "Azuki";
+    font-weight: bold;
+    line-height: <%= image_width*0.06%>px;
+}
+h1{
+color: white; 
+}

@@ -26,19 +26,21 @@
             <% end %>
         </div>
         <div  class="information_component">
-            </label class="title_label">ファイル</label></br>
-            <% if @transaction.item %>
-              <%if @transaction.use_youtube%>
-                  <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-              <% elsif @transaction.file.url != nil %>
-                  <% if @transaction.service.delivery_form.name == "image"%>
-                      <%= image_tag @transaction.file.url, class:"image"%>
-                  <% elsif @transaction.service.delivery_form.name == "video" %>
-                      <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+            <%if @transaction.delivery_form_name != "text"%>
+                </label class="title_label">ファイル</label></br>
+                <% if @transaction.item %>
+                  <%if @transaction.use_youtube%>
+                      <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                  <% elsif @transaction.file.url != nil %>
+                      <% if @transaction.service.delivery_form.name == "image"%>
+                          <%= image_tag @transaction.file.url, class:"image"%>
+                      <% elsif @transaction.service.delivery_form.name == "video" %>
+                          <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                      <% end %>
                   <% end %>
-              <% end %>
+                <% end %>
             <% end %>
-            <% if @transaction.delivery_form.name == "text" && @transaction.description %>
+            <% if false %>
               <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
               <img id="description_image" class="description_image">
             <% end %>
@@ -54,29 +56,11 @@
         <% if can_deliver(@transaction)%>
             <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
                 <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
-                <%= f.file_field  :file, id:"file_input", class:"display_none" %>
-                <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"}, disabled:@disabled %>
+                <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
+                <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
             <% end %>
         <% end %>
     </div>
 </div>
-<%= render "/user/images/description", text:@transaction.description %>
-<script>
-window.addEventListener('load', (event) => {
-    if(gon.delivery_form == "text" && gon.description != null){
-        create_description_image(); //
-    }
-})
-
-//create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
-function reload_description_image(){
-    if($("#desctiption_to_image_text").css("display") == "none"){
-    }else{
-        window.location.reload();
-    }
-}
-if( gon.description != null){
-    window.setTimeout(reload_description_image, 3000);
-}
-</script>
+<%#= render "/user/images/description", text:@transaction.description %>
 <%= javascript_pack_tag "shared/reload_page"%>

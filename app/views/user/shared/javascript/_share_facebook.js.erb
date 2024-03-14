@@ -1,0 +1,11 @@
+var shareUrl  = 'http://www.facebook.com/share.php?u=';
+<%if Rails.env == "development"%>
+shareUrl += encodeURIComponent("https://hase744.github.io/ogp_test/?id=corretech_icon");
+<% else %>
+shareUrl += encodeURIComponent(location.href);
+<% end %><%=%>
+console.log(location.href)
+
+var shareArea = document.getElementById('facebook_share_button_area');
+var shareLink = `<a href="javascript:void(0);" onclick="window.open('${shareUrl}', 'mywindow4', 'width=400, height=300, menubar=no, toolbar=no, scrollbars=yes');" target="_blank" class="twitter_share share_button">Facebookで回答をシェア</a>`;
+shareArea.innerHTML = shareLink;

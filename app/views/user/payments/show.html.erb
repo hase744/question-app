@@ -4,7 +4,7 @@
         <div class="payment_show_flame input_area">
             <h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
             <h3 class="point_description">１p = １円</h3>
-            <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form", onSubmit:"return check()"  do |f|%>
+            <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form",class:'field_area', onSubmit:"return check()"  do |f|%>
                 <label>購入するポイント</label></br>
                 <div class="input_field select_area">
                     <%=f.select :price, options_for_select((100.. Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}p", num] }), id:"payment_price"%>
