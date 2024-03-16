@@ -23,39 +23,41 @@
                                 <%= video_tag transaction.request.file.url, poster:transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                             <% end %>
                         <% end %>
+                        <% if transaction.is_delivered %>
+                            <span class="alert green">納品済み</span>
+                        <% else %>
+                            <span class="alert orange">納品前</span>
+                        <% end %>
                     </div>
                     <div class="text_area">
                         <%= link_to(user_request_path(transaction.request_id), class: 'request_link over_500') do %>
                             <h2 class="request_title item one_line_text"><%=transaction.request.title%></h2>
                         <% end %>
                         <div class="one_line_text">
-                            <% if transaction.is_delivered %>
-                                <div class="one_line_text">
-                                    <span class="alert green">納品済み</span>　<%= link_to transaction.title, user_transaction_path(transaction.id)  %>
-                                </div>
-                            <% else %>
-                            <div class="one_line_text">
-                                <span class="alert orange">納品前</span>
-                            </div>
-                            <% end %>
+                            <label>サービス</label>　<span><%=link_to transaction.service.title, user_service_path(transaction.service.id), class:"service_link" %></span>
                         </div>
                         <div class="one_line_text">
-                            <label>料金</label>&nbsp;<span><%=transaction.price%>円</span>　
                             <%if current_user == transaction.seller%>
-                                <label>依頼主</label>&nbsp;<span>
+                                <label>質問者</label>　&nbsp;&nbsp;&nbsp;<span>
                                 <%=link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class:"service_link" %>
 
                             <% else %>
-                                <label>販売主</label>&nbsp;<span>
+                                <label>回答者</label>&nbsp;<span>
                                 <%=link_to transaction.seller.name, user_account_path(transaction.seller.id), class:"service_link" %>
                                 </span>
                             <% end %>
                         </div>
                         <div class="one_line_text">
-                            <label>納期</label>　　　<span><%=from_now(transaction.delivery_time)%>（<%=transaction.delivery_time.strftime("%Y/%m/%d %H:%m")%>）</span>
+                            <div class="one_line_text">
+                                <% if transaction.is_delivered %>
+                                        <label>回答</label>&nbsp;　　&nbsp;&nbsp;&nbsp;<%= link_to transaction.title, user_transaction_path(transaction.id)  %>
+                                <% else %>
+                                    <label>納期</label>　　　<span><%=from_now(transaction.delivery_time)%>（<%=transaction.delivery_time.strftime("%Y/%m/%d %H:%m")%>）</span>
+                                <% end %>
+                            </div>
                         </div>
                         <div class="one_line_text">
-                            <label>サービス</label>　<span><%=link_to transaction.service.title, user_service_path(transaction.service.id), class:"service_link" %></span>
+                            <label>料金</label>　　　&nbsp;<span><%=transaction.price%>円</span>　
                         </div>
                     </div>
                 </div>

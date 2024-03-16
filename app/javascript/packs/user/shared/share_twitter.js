@@ -5,7 +5,7 @@ var count = count_text(text)
 
 console.log((count + 22) + "/280")
 var share_text = ""
-var add_text = "...続きはコレテク"
+var add_text = "...続きはこちら"
 console.log(count_text(add_text))
 var count = 22
 var to_280_text = ""//280文字目までの文字列

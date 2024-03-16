@@ -58,10 +58,10 @@
                 <% end %>
                 <tr>
                     <td class="label_icon">
-                    <span class="fas fa-file-download"></span>
+                    <span class="fas fa-chalkboard-teacher"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">質問形式</span>
+                        <span class="condition_name "><%=Transaction.human_attribute_name(:request_form) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.request_form.japanese_name%></span>
@@ -69,10 +69,10 @@
                 </tr>
                 <tr>
                     <td class="label_icon">
-                    <span class="fas fa-file-upload"></span>
+                    <span class="fas fa-chalkboard-teacher"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">回答形式</span>
+                        <span class="condition_name "><%=Transaction.human_attribute_name(:delivery_form) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.delivery_form.japanese_name%></span>

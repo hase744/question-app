@@ -1,34 +1,16 @@
-var text = '<%= text %>'
-console.log(text)
-var count = count_text(text)
+const text = '<%= text %>';
+const max_length = 280;
+var urlWithSpace = 22 + 2;//urlの前後にスペースが入るため-2 
+var share_text = "";
+var add_text = "...続きはこちら";
 
-
-console.log((count + 22) + "/280")
-var share_text = ""
-var add_text = "...続きはコレテク"
-console.log(count_text(add_text))
-var count = 22
-var to_280_text = ""//280文字目までの文字列
-
-for(var i=0; i<text.length; i++) {
-    var character = text.charAt(i)
-    
-    if(isCJK(character)){
-      count +=2;
-    } else {
-      count++;
-    }
-    //280より多い
-    if(count > 280){
-        share_text = to_280_text + add_text
-    //280〜280
-    }else if(count> (280 - count_text(add_text))){
-        share_text += text.charAt(i)
-    //280以下
-    }else{
-        to_280_text += text.charAt(i)
-        share_text += text.charAt(i)
-    }
+if(count_text(text) > max_length){
+  //最後の文字の追加でオーバーにならないようにするため-1
+  for(var i=0; count_text(share_text) < max_length - urlWithSpace - 1; i++) {
+    share_text = text.substring(0, i+1) + add_text;
+  }
+}else{
+  share_text = text;
 }
 
 var shareUrl  = 'https://twitter.com/intent/tweet';
@@ -39,7 +21,6 @@ shareUrl += '&url='+encodeURIComponent("https://hase744.github.io/ogp_test/?id=c
 shareUrl += '&url='+encodeURIComponent(location.href);
 <% end %><%=%>
 console.log(location.href.length)
-
 var shareArea = document.getElementById('twitter_share_button_area');
 var shareLink = `<a href="javascript:void(0);" target="_blank" class="twitter_share share_button" id="twitter_share_button"  onclick="window.open('${shareUrl}', 'mywindow4', 'width=400, height=300, menubar=no, toolbar=no, scrollbars=yes');">Xで回答をシェア</a>`;
 console.log(shareArea);
@@ -61,7 +42,6 @@ function isCJK(c){ // c: character to check
          (unicode>=0x3131 && unicode<=0xd79d)    // Hangul Full
        )
          return true;
-
     return false;
   }
 

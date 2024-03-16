@@ -2,11 +2,11 @@
 <table class="service_review_table">
     <tr class="service_info">
         <td class="info_icon_area">
-        <span class="fas fa-file-download"></span>
+        <span class="fas fa-chalkboard-teacher"></span>
         </td>
         <td class="info_name_area">
             <span class="info_name">
-                <span class="condition_name">回答形式</span>
+                <span class="condition_name"><%=Transaction.human_attribute_name(:delivery_form) %></span>
                 <spam class="coron"><span>
             </span>
         </td>
@@ -16,11 +16,11 @@
     </tr>
     <tr class="service_info">
         <td class="info_icon_area">
-        <span class="fas fa-file-upload"></span>
+        <span class="fas fa-chalkboard-teacher"></span>
         </td>
         <td class="info_name_area">
             <span class="info_name">
-                <span class="condition_name">質問形式</span>
+                <span class="condition_name"><%=Transaction.human_attribute_name(:request_form) %></span>
                 <spam class="coron"><span>
             </span>
         </td>

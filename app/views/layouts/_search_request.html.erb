@@ -13,10 +13,10 @@
             <span>〜</span>
                 <%= f.number_field :mini_price, value:params[:mini_price], type:"number",min:"0",placeholder:"min",step:"100",  class:"mini_price_field"%>
 
-            <label class="field_label">質問形式</label><br/>
+            <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
             <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
 
-            <label class="field_label">回答形式</label><br/>
+            <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
             <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
             </br>
 

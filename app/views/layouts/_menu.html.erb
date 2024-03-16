@@ -64,13 +64,13 @@
             </span>
 
             <span id="price_field_area" class="request_search_field service_search_field">
-                <label class="field_label">質問形式</label><br/>
+                <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
                 <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
                 </br></br>
             </span>
 
             <span id="price_field_area" class="request_search_field service_search_field">
-                <label class="field_label">回答形式</label><br/>
+                <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
                 <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
                 </br></br>
             </span>
