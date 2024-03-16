@@ -16,6 +16,7 @@ module CommonConcern
       return false
     end
   end
+  
   def get_invalid_models(models)
     invalid_models = []
     begin
@@ -33,6 +34,7 @@ module CommonConcern
         alse
     end
   end
+  
   def detect_models_errors(models)
     begin
       if models.instance_of?(Array) #配列である

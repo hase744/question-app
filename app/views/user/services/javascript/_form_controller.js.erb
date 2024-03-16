@@ -15,7 +15,7 @@ $("form").submit(function(event) {
   }
 });
 
-//追加質問受付日数が0日の時＊追加質問を受け付けないと表示させる
+//追加相談室日数が0日の時＊追加質問を受け付けないと表示させる
 $("#service_transaction_message_days").on("change", function() {
   if ($(this).val() === "0") {
     $(".transaction_message_alert").show();

@@ -1,14 +1,16 @@
 <div class="request_image_area container">
-  <%= image_tag request.image.url, class:"request_image", id:"request_image"%>
   <div class="button_area">
-    <button class="btn" id='btn' onclick="revealImage()">全体を表示</button>
+    <button class="btn dli-chevron-down dli-chevron" id='btn' onclick="revealImage()"></button>
   </div>
+  <%= image_tag request.image.url, class:"request_image", id:"request_image"%>
 </div>
 <script>
 function revealImage() {
   $('.request_image_area').toggleClass('reveal');
-  $('.request_image_area button').text('全体を表示');
-  $('.reveal button').text('一部だけ表示');
+  //$('.request_image_area button').text('全体を表示');
+  //$('.reveal button').text('一部だけ表示');
+  $('.btn').toggleClass('dli-chevron-up');
+  $('.btn').toggleClass('dli-chevron-down');
 }
 </script>
 <style>
@@ -34,14 +36,30 @@ function revealImage() {
 }
 .btn {
   position: absolute;
-  top: -40px;
-  right: 0;
+  z-index: 1;
+  top: 0px;
   left: 0;
-  padding: 10px 20px;
   color: grey;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
   background-color: transparent;
+}
+.dli-chevron-up {
+  transform: translateX(50%) translateY(100%) rotate(-45deg);
+}
+.dli-chevron{
+  display: inline-block;
+  vertical-align: middle;
+  color: #333;
+  line-height: 1;
+  width: 1em;
+  height: 1.2em;
+  border: 0.3em solid currentColor;
+  border-left: 0;
+  border-bottom: 0;
+  box-sizing: border-box;
+}
+.dli-chevron-down {
+  transform: translateX(50%) translateY(100%) rotate(135deg);
 }
 </style>

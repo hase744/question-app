@@ -46,6 +46,7 @@
                     display: inline-block;
                     float: left;
                     width: 200px;
+                    position:relative;
                     @media(max-width:500px){
                         width: 100%;
                     }
@@ -54,18 +55,10 @@
                         width: 100%;
                         object-fit: cover;
                     }
-                }
-                .text_area{
-                    @media(max-width:500px){
-                        border-bottom: solid 1px lightgray;
-                    }
-                    .one_line_text{
-                        width: auto;
-                        @media(max-width:500px){
-                            width: 100%;
-                        }
-                    }
                     .alert{
+                        position: absolute;
+                        right: 5px;
+                        bottom: 5px;
                         padding: 1.5px;
                         border-radius: 1.5px;
                         border-radius: 2px;
@@ -77,6 +70,17 @@
                     }
                     .orange{
                         background-color: orange;
+                    }
+                }
+                .text_area{
+                    @media(max-width:500px){
+                        border-bottom: solid 1px lightgray;
+                    }
+                    .one_line_text{
+                        width: auto;
+                        @media(max-width:500px){
+                            width: 100%;
+                        }
                     }
                 }
                 .request_link{

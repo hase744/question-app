@@ -2,7 +2,7 @@ ja:
   activerecord:
     models:
       user: ユーザー
-      service: 質問受付
+      service: 相談室
       request: 依頼
       admin: 管理者
       admin_user: 管理者
@@ -36,10 +36,10 @@ ja:
         delivery_days: 納品までにかかる最多日数
         is_published: 公開する
         price: 料金
-        transaction_message_days: 追加質問受付日数
+        transaction_message_days: 追加相談室日数
         request_max_length: 質問の最大の長さ
         request_max_minutes: 質問動画の最大時間
-        request_max_characters: 質問文章の最大字数
+        request_max_characters: 質問の最大字数
       request:
         title: タイトル
         description: 質問・相談内容
@@ -72,7 +72,7 @@ ja:
         youtube_id: YouTube動画のID
         file: ファイル
         items: 成果物
-        reqiest_form: 質問形式
+        request_form: 質問形式
         delivery_form: 回答形式
         delivery_time: 納品期限
         review_description: 感想

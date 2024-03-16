@@ -48,10 +48,10 @@
                         </tr>
                         <tr>
                             <td class="service_condition_icon">
-                                <span class="fas fa-file-upload"></span>
+                                <span class="fas fa-chalkboard-teacher"></span>
                             </td>
                             <td>
-                                <span class="condition_name ">回答形式</span>
+                                <span class="condition_name "><%=Transaction.human_attribute_name(:delivery_form) %></span>
                             </td>
                             <td>
                                 <span class="service_condition"><%=service.delivery_form.japanese_name%></span>
@@ -59,10 +59,10 @@
                         </tr>
                         <tr>
                             <td class="service_condition_icon">
-                                <span class="fas fa-file-download"></span>
+                                <span class="fas fa-question"></span>
                             </td>
                             <td>
-                                <span class="condition_name">質問形式</span>
+                                <span class="condition_name"><%=Transaction.human_attribute_name(:request_form) %></span>
                                 </td>
                             <td>
                                 <span class="service_condition"><%=service.request_form.japanese_name%></span>
@@ -72,7 +72,7 @@
                         <%if !service.request.present?%>
                         <tr>
                             <td class="service_condition_icon">
-                                <span class="far fa-file-word"></span>
+                                <span class="fas fa-pen"></span>
                             </td>
                             <td>
                                 <span class="condition_name"><%= Service.human_attribute_name(:request_max_characters)%></span>
@@ -99,7 +99,7 @@
                         <%if service.stock_quantity != nil %>
                         <tr>
                             <td class="service_condition_icon">
-                                <span class="fas fa-warehouse"></span>
+                                <span class="fas fa-boxes"></span>
                             </td>
                             <td>
                                 <span class="condition_name">残り</span>

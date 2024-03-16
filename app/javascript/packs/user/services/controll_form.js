@@ -73,7 +73,7 @@ $('#service_request_form_name').change(function(){
 });
 
 
-//追加質問受付日数が0の時、＊追加質問を受付ないと表示させる
+//追加相談室日数が0の時、＊追加質問を受付ないと表示させる
 $(".transaction_message_days_field").change(function(){
     set_transaction_message_alert(this);
 })

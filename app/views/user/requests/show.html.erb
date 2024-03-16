@@ -38,7 +38,7 @@
                     <span class="fas fa-yen-sign"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">予算</span>
+                        <span class="condition_name "><%= Request.human_attribute_name(:max_price)%></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.max_price%>円</span>
@@ -51,7 +51,7 @@
                     <span class="far fa-calendar-alt"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">期限</span>
+                        <span class="condition_name "><%= Request.human_attribute_name(:suggestion_deadline) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=from_now(@request.suggestion_deadline)%>（<%=@request.suggestion_deadline.strftime("%Y %m/%d %H:%m")%>まで）</span>
@@ -60,10 +60,10 @@
                 <% end %>
                 <tr>
                     <td class="label_icon">
-                    <span class="fas fa-file-download"></span>
+                    <span class="fas fa-question"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">質問形式</span>
+                        <span class="condition_name "><%= Request.human_attribute_name(:request_form) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.request_form.japanese_name%></span>
@@ -71,10 +71,10 @@
                 </tr>
                 <tr>
                     <td class="label_icon">
-                    <span class="fas fa-file-upload"></span>
+                    <span class="fas fa-chalkboard-teacher"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">回答形式</span>
+                        <span class="condition_name "><%= Request.human_attribute_name(:delivery_form) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.delivery_form.japanese_name%></span>
@@ -89,7 +89,7 @@
                         <span class="condition_name ">提案数</span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=Service.left_joins(:transactions).where(transactions:{request:@request, is_suggestion:true }).count%>件</span>
+                        <span class="request_condition"><%=Transaction.where(request:@request, is_suggestion:true).count%>件</span>
                     </td>
                 </tr>
                 <% end %>
@@ -98,7 +98,7 @@
                     <span class="fas fa-sitemap"></span>
                     </td>
                     <td class="condition_label">
-                        <span class="condition_name ">カテゴリー</span>
+                        <span class="condition_name "><%= Request.human_attribute_name(:category) %></span>
                     </td>
                     <td>
                         <span class="request_condition"><%=@request.category.japanese_name%></span>
