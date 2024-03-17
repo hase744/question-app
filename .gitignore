@@ -22,7 +22,7 @@
 /storage/*
 !/storage/.keep
 
-/public
+#/public
 /public/assets
 .byebug_history
 
