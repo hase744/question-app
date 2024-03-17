@@ -97,7 +97,7 @@ class User::AccountsController < User::Base
     @services = Service.all
     @services = solve_n_plus_1(@services)
     @services = @services.where(user: User.find(params[:id]))
-    if signed_in?
+    if user_signed_in?
       if current_user.id == params[:id].to_i
       else
        @services = @services.where(is_published:true, is_inclusive: true)

@@ -71,9 +71,7 @@ function create_description_image(){
           document.getElementById("submit").disabled = false; //送信可能にする
         });
         //以下はダウンロードさせる場合のコード
-        var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
-        //console.log(toString(blob));
-        //console.log(canvas);
+        //var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
         //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
         //downloadEle.href = canvas.toDataURL(`image/${extension}`);
         //downloadEle.download = `canvas.${extension}`;
