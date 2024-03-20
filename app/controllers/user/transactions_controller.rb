@@ -10,13 +10,7 @@ class User::TransactionsController < User::Base
     @transactions = Transaction.left_joins(:transaction_categories)
     @transactions = solve_n_plus_1(@transactions)
     @transactions = @transactions.where(is_delivered:true).order(id: :DESC)
-    if params[:category]
-      if params[:category] == "consult"
-        @transactions = @transactions.all
-      else
-        @transactions = @transactions.where(transaction_categories:{category: Category.find_by(name:params[:category])})
-      end
-    end
+    @transactions = @transactions.filter_categories(params)
     @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
     @transactions = @transactions.page(params[:page]).per(30)
     @transactions.each do |t|

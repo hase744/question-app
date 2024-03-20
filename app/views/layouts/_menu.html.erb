@@ -1,4 +1,4 @@
-<div class="menu_bar closing_menu_bar">
+<div class="menu_bar">
         <%= link_to(user_transactions_path, class: 'app_link app_name_area menu_component') do %>
             <span class="app_design">コ</span>
             <span class="app_name">corretech</span>
@@ -29,19 +29,19 @@
         <span class="fas fa-search search_glass_image"></span>
     </div>
     <%= form_with url: user_transactions_path, class:"form menu_search_form", id:"menu_search_form", name:"menu_search_form" ,method:"get" do |f| %>
-        <div class="search_bar search closing_search">
-            <div class="searchForm inner_search_bar search_component search closing_search">
-                <div class="close_search search closing_search"><div><span class="close_icon"></span></div></div>
-                    <%= f.select :content, {'回答': "transaction", '質問': "request", 'サービス': "service",'回答者　　': "seller"}, { class: 'form-control closing_search search' , required: true }, class: 'form-control closing_search search',id:"form_select" %>
-                    <%= f.text_field :word, class:"search_component search closing_search search_input"%>
-                    <div class="searchForm-submit search_component search closing_search">
+        <div class="search_bar search">
+            <div class="searchForm inner_search_bar search_component search">
+                <div class="close_search search"><div><span class="close_icon"></span></div></div>
+                    <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
+                    <%= f.text_field :word, class:"search_component search search_input"%>
+                    <div class="searchForm-submit search_component search">
                     <div class="search_glass"></div>
                         <%= f.submit '', class:"menu_submit_button" %>
                     </div>
                     <%= f.text_field :name, class:"search-detail-json"%>
             </div>
         </div>
-        <div class="wide_detail_search search closing_search">
+        <div class="wide_detail_search search search_forms">
             <span id="price_field_area" class="request_search_field service_search_field">
                 <p class="service_search_field">価格</p>
                 <p class="request_search_field">予算</p>
@@ -56,8 +56,7 @@
                 </br></br>
             </span>
 
-
-            <span id="sales_results_field_area" class="seller_search_field">
+            <span id="sales_results_field_area" class="account_search_field">
                 <p>回答</p>
                 <%= f.number_field :total_sales_numbers, class:"sales_results", minn:"0", placeholder:"件数", step:"1"%>
                 </br></br>
@@ -75,7 +74,7 @@
                 </br></br>
             </span>
             
-            <span id="category_field_area" class="request_search_field service_search_field seller_search_field transaction_search_field">
+            <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
                 <p>カテゴリー</p>
                 <div>
                 <%= render "layouts/form_category", f:f%>
@@ -116,23 +115,22 @@
 </div>
 <div id="search_detail_margin" class="search_detail_margin">
 </div>
-<div id="request_search_zone" class="request_search_zone search_detail request_search_field">
-    <%= render "layouts/search_request"%>
-</div>
-<div id="category_menu_area" class="category_menu_area content_and_category search_detail transaction_search_field">
-    <%= render "layouts/category"%>
-</div>
-<div id="seller_search_zone" class="seller_search_zone search_detail seller_search_field">
-    <%= render "layouts/search_seller"%>
-</div>
-<div id="service_search_zone" class="service_search_zone search_detail service_search_field">
-    <%= render "layouts/search_service"%>
+<div class="search_forms">
+    <div id="request_search_zone" class="request_search_zone search_detail request_search_field">
+        <%= render "layouts/search_request"%>
+    </div>
+    <div id="category_menu_area" class="content_and_category search_detail transaction_search_field">
+        <%= render "layouts/search_transaction"%>
+    </div>
+    <div id="seller_search_zone" class="seller_search_zone search_detail account_search_field">
+        <%= render "layouts/search_seller"%>
+    </div>
+    <div id="service_search_zone" class="service_search_zone search_detail service_search_field">
+        <%= render "layouts/search_service"%>
+    </div>
 </div>
 
-
-
-<%= javascript_pack_tag 'layout/menu' %>
-<%= javascript_pack_tag "layout/form_category"%>
 <script>
-var user_signed_in = <%=user_signed_in?%>
+<%= render "layouts/javascript/menu.js.erb" %>
 </script>
+<%= javascript_pack_tag "layout/form_category"%>

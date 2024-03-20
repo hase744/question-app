@@ -8,11 +8,11 @@ class ApplicationController < ActionController::Base
     include FormConfig
     include Variables
     include ErrorHandlers if Rails.env.production?
+    include ViewConcern
     layout :layout_by_resource
     protect_from_forgery with: :exception
     before_action :configure_permitted_parameters, if: :devise_controller?
     before_action :get_path
-    before_action :check_meta_tag
     before_action :set_view_value
     before_action :check_user_state
     Stripe.api_key = ENV['STRIPE_SECRET_KEY']
@@ -42,17 +42,6 @@ class ApplicationController < ActionController::Base
         else
           'application'
         end
-    end
-
-    def check_meta_tag
-        @twitter_title = "コレテク　~ノウハウを売買するQAサイト~"
-        @twitter_site = "@3UJVrqxCS0V4bin"
-        @twitter_creator = "@3UJVrqxCS0V4bin"
-        @og_title = "コレテク　~ノウハウを売買するQAサイト~"
-        @og_url = "https://corre-tech.com"
-        @og_description = "コレテクとはQ＆Aサイトとフリマサイトがお融合したサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
-        @og_site_name = "コレテク"
-        @og_image  = "https://corre-tech.com/corretech_large_icon.jpg"
     end
 
     def set_view_value
