@@ -8,7 +8,6 @@ class User::AccountsController < User::Base
     @users = @users.is_sellable
     @users = @users.where("name LIKE?", "%#{params[:name]}%")
     @users = @users.order(total_sales_numbers: :desc)
-
     if params[:categories].present?
       @users = @users.where(user_categories: {category_id: params[:categories].split(",").map(&:to_i)})
     end

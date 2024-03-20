@@ -5,7 +5,9 @@ class Category < ApplicationRecord
     has_one :service_category
     has_one :service, through: :service_category
     has_many :request_categories
+    has_many :requests, through: :request_categories
     has_many :transaction_categories
+    has_many :deals, through: :transaction_categories
     has_many :child_categories, class_name: "Category", foreign_key: :parent_category_id, dependent: :destroy
     after_commit :update_category_config
 end
