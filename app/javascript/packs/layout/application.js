@@ -52,22 +52,6 @@ resize_contents = function(){
   //$(".window_height").height(window.innerHeight)
   $(".16_to_9").width("100%")
   $(".16_to_9").height($(".16_to_9").width()*9/16)
-  console.log(window.innerWidth)
-    //サーチバーが開きっぱなしでwindowを1000px以上広げた時閉じる
-    if(window.innerWidth > 1000 && $(".opening_search").length > 0){
-      console.log("サーチバーを閉じる");
-      //sidebar_menu_zone.classList.toggle("opening_search");
-        $(".search").each(function(index, element){
-          element.classList.toggle('closing_search');
-          element.classList.toggle('opening_search');
-          console.log(element)
-        });
-        $(".menu_bar").each(function(index, element){
-          element.classList.toggle('closing_menu_bar');
-          element.classList.toggle('opening_menu_bar');
-          console.log(element)
-        });
-    }
 
   }
 })();

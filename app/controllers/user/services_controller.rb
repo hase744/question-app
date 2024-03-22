@@ -50,7 +50,7 @@ class User::ServicesController < User::Base
     end
     gon.env = Rails.env
     if @service.image.url
-      @og_image = @service.image.url
+      $og_image = @service.image.url
     end
     gon.service_id = @service.id
     @og_title = @service.title

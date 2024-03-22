@@ -41,7 +41,7 @@ class Sample::TransactionsController < Sample::Base
     end
 
     def show
-        @og_image  = "https://corretech0625.s3.amazonaws.com/uploads/request/file/1/description_image202301222712.png"
+        $og_image  = "https://corretech0625.s3.amazonaws.com/uploads/request/file/1/description_image202301222712.png"
         case params[:request_form]
         when "video" then
           video_form = Form.find_by(name:"video")
