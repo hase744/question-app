@@ -35,9 +35,9 @@ class User::TransactionsController < User::Base
     if @transaction.file && @transaction.file.url
       if @transaction.request_form.name == "text"
         @transaction.request.set_item_values
-        @og_image = @transaction.request.file.url
+        $og_image = @transaction.request.file.url
       elsif @transaction.service.image
-        @og_image = @transaction.service.image.url
+        $og_image = @transaction.service.image.url
       end
       gon.env = Rails.env
     end
@@ -178,9 +178,9 @@ class User::TransactionsController < User::Base
     @transaction = Transaction.find(params[:id])
     if @transaction.file.url
       if @transaction.request_form.name == "text"
-        @og_image = @transaction.request.file.url
+        $og_image = @transaction.request.file.url
       elsif @transaction.service.image
-        @og_image = @transaction.service.image.url
+        $og_image = @transaction.service.image.url
       end
       gon.env = Rails.env
     end

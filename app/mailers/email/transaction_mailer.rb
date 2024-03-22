@@ -1,6 +1,6 @@
 class Email::TransactionMailer < ApplicationMailer
     def notify_message(transaction_message)
-        @url = "https://corre-tech.com/"
+        @url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/"
         @transaction_message = transaction_message
 
         if @transaction_message.deal.seller == @transaction_message.sender 
