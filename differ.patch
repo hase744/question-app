@@ -1,0 +1,824 @@
+diff --git a/.DS_Store b/.DS_Store
+index 742afbf..a514310 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index ba2d3cd..f084af3 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -1,204 +1,218 @@
+ class ApplicationController < ActionController::Base
+-    class Forbidden < ActionController::ActionControllerError; end
+-    class IpAdressRejected < ActionController::ActionControllerError; end
+-    include CommonConcern
+-    include CommonMethods
+-    include OperationConfig
+-    include CategoryConfig
+-    include FormConfig
+-    include Variables
+-    include ErrorHandlers if Rails.env.production?
+-    include ViewConcern
+-    layout :layout_by_resource
+-    protect_from_forgery with: :exception
+-    before_action :configure_permitted_parameters, if: :devise_controller?
+-    before_action :get_path
+-    before_action :set_view_value
+-    before_action :check_user_state
+-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
++  class Forbidden < ActionController::ActionControllerError; end
++  class IpAdressRejected < ActionController::ActionControllerError; end
++  include CommonConcern
++  include CommonMethods
++  include OperationConfig
++  include CategoryConfig
++  include FormConfig
++  include Variables
++  include ErrorHandlers if Rails.env.production?
++  include ViewConcern
++  layout :layout_by_resource
++  protect_from_forgery with: :exception
++  before_action :configure_permitted_parameters, if: :devise_controller?
++  before_action :get_path
++  before_action :set_view_value
++  before_action :check_user_state
++  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+ 
+-    def create_error_log(e)
+-        @error_log = ErrorLog.new(
+-            error_class: e.class,
+-            error_message: e.message,
+-            error_backtrace: e.backtrace,
+-            request_method: request.method,
+-            request_controller: controller_name, 
+-            request_action: action_name, 
+-            request_id_number: params[:id], 
+-            request_parameter: params, 
+-            )
+-        if user_signed_in?
+-            @error_log.user = current_user
+-        end
+-        if @error_log.save
+-            @error_log
+-        end
+-    end
++  def create_error_log(e)
++    @error_log = ErrorLog.new(
++      error_class: e.class,
++      error_message: e.message,
++      error_backtrace: e.backtrace,
++      request_method: request.method,
++      request_controller: controller_name, 
++      request_action: action_name, 
++      request_id_number: params[:id], 
++      request_parameter: params, 
++      )
++    if user_signed_in?
++      @error_log.user = current_user
++    end
++    if @error_log.save
++      @error_log
++    end
++  end
+ 
+-    def layout_by_resource
+-        if devise_controller?
+-          'small'
+-        else
+-          'application'
+-        end
++  def layout_by_resource
++    if devise_controller?
++      'small'
++    else
++      'application'
+     end
++  end
+ 
+-    def set_view_value
+-        gon.category_tree = category_tree
+-        gon.parent_categories = category_tree.keys
+-        gon.child_categories = category_tree.keys
+-        gon.category_child_to_parent = category_child_to_parent
+-        gon.category_e_to_id = category_e_to_id
+-        gon.layout = "normal"
+-        gon.is_loaded = true
+-        gon.user_signed_in = user_signed_in?
+-        gon.tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+-    end
++  def set_view_value
++    gon.category_tree = category_tree
++    gon.parent_categories = category_tree.keys
++    gon.child_categories = category_tree.keys
++    gon.category_child_to_parent = category_child_to_parent
++    gon.category_e_to_id = category_e_to_id
++    gon.layout = "normal"
++    gon.is_loaded = true
++    gon.user_signed_in = user_signed_in?
++    gon.tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
++  end
+ 
+-    require 'nkf'
++  require 'nkf'
+ 
+-    def check_user_state
+-        if user_signed_in?
+-            allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
+-            puts current_user.is_suspended
+-            if current_user.is_suspended && !allowed_controllers.include?(controller_name)
+-                redirect_to user_alerts_path
+-            end
++  def check_user_state
++    if user_signed_in?
++      allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
++      puts current_user.is_suspended
++      if current_user.is_suspended && !allowed_controllers.include?(controller_name)
++        redirect_to user_alerts_path
++      end
+ 
+-            if current_user.is_deleted
+-                reset_session
+-                flash.alert = "既に退会済みです"
+-            end
+-        end
++      if current_user.is_deleted
++        reset_session
++        flash.alert = "既に退会済みです"
++      end
+     end
++  end
+ 
+-    def revive
+-        user = Usse.find_by(reset_password_token: params[:reset_password_token])
+-    
+-        if user.present? && user.is_deleted
+-          user.update(is_deleted:false)
+-          redirect_to new_user_session_path
+-        end
+-    end
++  def revive
++    user = Usse.find_by(reset_password_token: params[:reset_password_token])
++  
++    if user.present? && user.is_deleted
++      user.update(is_deleted:false)
++      redirect_to new_user_session_path
++    end
++  end
+ 
+-    def after_sign_in_path_for(resource)
+-        puts request.path_info
+-        if request.path_info == "/admin/login" 
+-            admin_dashboard_path
+-        else
+-            user_account_path(current_user.id) # ログイン後に遷移するpathを設定
+-        end
+-    end
++  def after_sign_in_path_for(resource)
++    puts request.path_info
++    puts "パラメータ"
++    puts session[:path_params]
++    if request.path_info == "/admin/login" 
++      admin_dashboard_path
++    elsif session[:path_params].present?
++      if session[:path_params]['service_id']
++        return url_for(
++          controller: session[:path_params]['controller'],
++          action: session[:path_params]['action'],
++          service_id: session[:path_params]['service_id'],
++          )
++      end
++        url_for(
++          controller: session[:path_params]['controller'],
++          action: session[:path_params]['action'],
++        )
++    else
++      user_account_path(current_user.id) # ログイン後に遷移するpathを設定
++    end
++  end
+ 
+-    def after_sign_out_path_for(resource)
+-        user_transactions_path # ログアウト後に遷移するpathを設定
+-    end
++  def after_sign_out_path_for(resource)
++    user_transactions_path # ログアウト後に遷移するpathを設定
++  end
+ 
+-    def from_now(datetime)
+-        if datetime == nil
+-            "--:--"
+-        else
+-            past_time = datetime - DateTime.now#現在から何秒後
+-            if 0 < past_time
+-                word = "後"
+-            else
+-                word = "前"
+-            end
+-    
+-            difference = past_time.abs #絶対値
+-            minute = difference/60
+-            hour = minute/60
+-            day = hour/24
+-            week = day/7
+-            month = week/4
+-            year = day/365
+-            
+-            if (minute).to_i < 60#60分未満
+-                "#{minute.to_i }分"
+-            elsif hour.to_i < 24 #24時間未満
+-                "#{hour.to_i }時間"
+-            elsif day.to_i < 7 #７日未満
+-                "#{day.to_i}日"
+-            elsif week.to_i < 4 #4週間未満
+-                "#{week.to_i }週間"
+-            elsif  month.to_i < 12 #12ヶ月未満s
+-                "#{month.to_i }ヶ月"
+-            else
+-                "#{year.to_i}年"
+-            end
+-        end
+-    end
++  def from_now(datetime)
++    if datetime == nil
++      "--:--"
++    else
++      past_time = datetime - DateTime.now#現在から何秒後
++      if 0 < past_time
++        word = "後"
++      else
++        word = "前"
++      end
++  
++      difference = past_time.abs #絶対値
++      minute = difference/60
++      hour = minute/60
++      day = hour/24
++      week = day/7
++      month = week/4
++      year = day/365
++      
++      if (minute).to_i < 60#60分未満
++        "#{minute.to_i }分"
++      elsif hour.to_i < 24 #24時間未満
++        "#{hour.to_i }時間"
++      elsif day.to_i < 7 #７日未満
++        "#{day.to_i}日"
++      elsif week.to_i < 4 #4週間未満
++        "#{week.to_i }週間"
++      elsif  month.to_i < 12 #12ヶ月未満s
++        "#{month.to_i }ヶ月"
++      else
++        "#{year.to_i}年"
++      end
++    end
++  end
+ 
+-    def convert_path(controller, action, id)
+-        paths = {"rooms" => {"show" => room_path(id)}}
+-        paths[controller][action]
+-    end
+-    
+-    def half_size_kana(word)
+-        NKF.nkf('-w -Z4 -x', word.tr('あ-ん', 'ア-ン'))
+-    end
++  def convert_path(controller, action, id)
++    paths = {"rooms" => {"show" => room_path(id)}}
++    paths[controller][action]
++  end
++  
++  def half_size_kana(word)
++    NKF.nkf('-w -Z4 -x', word.tr('あ-ん', 'ア-ン'))
++  end
+ 
+-    def half_size_number(word)
+-        word.tr('０-９ａ-ｚＡ-Ｚ','0-9a-zA-Z')
+-    end
++  def half_size_number(word)
++    word.tr('０-９ａ-ｚＡ-Ｚ','0-9a-zA-Z')
++  end
+ 
+-    def image_extension
+-        []
+-    end
++  def image_extension
++    []
++  end
+ 
+-    def get_path
+-        puts "パス情報"
+-        puts controller_name
+-        puts action_name
+-        puts request.method
+-        puts controller_path
+-        puts admin_user_signed_in?
+-        if user_signed_in?
+-            current_user.update(last_login_at: DateTime.now)
+-        end
+-        if controller_name == "abouts"
+-            @index_link = true
+-        elsif controller_name == "transactions" || action_name == "index"
+-            @index_link = true
+-        else
+-            @index_link = false
+-        end
+-    end
++  def get_path
++    puts "パス情報"
++    puts controller_name
++    puts action_name
++    puts request.method
++    puts controller_path
++    puts admin_user_signed_in?
++    if user_signed_in?
++      current_user.update(last_login_at: DateTime.now)
++    end
++    if controller_name == "abouts"
++      @index_link = true
++    elsif controller_name == "transactions" || action_name == "index"
++      @index_link = true
++    else
++      @index_link = false
++    end
++  end
+ 
+-    def for_admin_user
+-        if admin_user_signed_in? 
+-            true
+-        elsif controller_name == "dashboard" 
+-            true
+-        elsif controller_name == "sessions"
+-            true
+-        else
+-            false
+-        end
+-    end
+-    
+-    def message_receivable(user)
+-        if user_signed_in?
+-            if Relationship.exists?(followee:user, follower:current_user, is_blocked:true)
+-                false
+-            elsif user.can_receive_message
+-                true
+-            elsif Contact.exists?(user:user, destination: current_user)
+-                true
+-            end
+-        elsif user.can_receive_message
+-            true
+-        else
+-            false
+-        end
+-    end
+-    #ユーザー登録の時に名前を登録できるようにする。
+-    protected
+-    def configure_permitted_parameters
+-        added_attrs = [ :email, :name, :password, :password_confirmation ]
+-        devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
+-        devise_parameter_sanitizer.permit :account_update, keys: added_attrs
+-        devise_parameter_sanitizer.permit :sign_in, keys: added_attrs
+-    end
++  def for_admin_user
++    if admin_user_signed_in? 
++      true
++    elsif controller_name == "dashboard" 
++      true
++    elsif controller_name == "sessions"
++      true
++    else
++      false
++    end
++  end
++  
++  def message_receivable(user)
++    if user_signed_in?
++      if Relationship.exists?(followee:user, follower:current_user, is_blocked:true)
++        false
++      elsif user.can_receive_message
++        true
++      elsif Contact.exists?(user:user, destination: current_user)
++        true
++      end
++    elsif user.can_receive_message
++      true
++    else
++      false
++    end
++  end
++  #ユーザー登録の時に名前を登録できるようにする。
++  protected
++  def configure_permitted_parameters
++    added_attrs = [ :email, :name, :password, :password_confirmation ]
++    devise_parameter_sanitizer.permit :sign_up, keys: added_attrs
++    devise_parameter_sanitizer.permit :account_update, keys: added_attrs
++    devise_parameter_sanitizer.permit :sign_in, keys: added_attrs
++  end
+ end
+diff --git a/app/controllers/user/base.rb b/app/controllers/user/base.rb
+index f48925b..c235aa3 100644
+--- a/app/controllers/user/base.rb
++++ b/app/controllers/user/base.rb
+@@ -1,199 +1,199 @@
+ class User::Base < ApplicationController
+-    before_action :check_operation_state
+-    before_action :check_error
+-    before_action :check_deleted_account
+-    after_action :create_access_log
+-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+-    def create_access_log
+-        if user_signed_in?
+-            puts "元のIPアドレス"
+-            puts @remote_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
+-            AccessLog.create(
+-                user: current_user, 
+-                ip_adress: request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip,
+-                method: request.method,
+-                action: action_name, 
+-                controller: controller_name, 
+-                id_number: params[:id], 
+-                parameter: params
+-                )
+-            if AccessLog.count > 100000
+-                AccessLog.where(user: current_user).order(created_at: "DESC").last.destroy
+-            end
+-        end
++  before_action :check_operation_state
++  before_action :check_error
++  before_action :check_deleted_account
++  after_action :create_access_log
++  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
++  def create_access_log
++    if user_signed_in?
++      puts "元のIPアドレス"
++      puts @remote_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
++      AccessLog.create(
++        user: current_user, 
++        ip_adress: request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip,
++        method: request.method,
++        action: action_name, 
++        controller: controller_name, 
++        id_number: params[:id], 
++        parameter: params
++        )
++      if AccessLog.count > 100000
++        AccessLog.where(user: current_user).order(created_at: "DESC").last.destroy
++      end
+     end
++  end
+ 
+-    def check_stripe_customer
+-        if !current_user.is_stripe_customer_valid?
+-            flash.notice = "クレジットカードを登録してください。"
+-            redirect_to user_cards_path
+-        end
++  def check_stripe_customer
++    if !current_user.is_stripe_customer_valid?
++      flash.notice = "クレジットカードを登録してください。"
++      redirect_to user_cards_path
+     end
++  end
+ 
+-    #def check_user_status
+-    #    if user_signed_in?
+-    #        user_status = UserStatus.where("user_id = ? && start_at <= ?",current_user.id, DateTime.now).order(start_at: "ASC").last
+-    #        if user_status.present?
+-    #            allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
+-    #            if user_status.state == "suspended" && !allowed_controllers.include?(controller_name)
+-    #                redirect_to user_alerts_path
+-    #            end
+-    #        end
+-    #    end
+-    #end
+-
+-    def check_error
+-        if params[:error] != nil && params[:error] != ""
+-          @error = params[:error]
+-        end
+-    end
++  #def check_user_status
++  #    if user_signed_in?
++  #        user_status = UserStatus.where("user_id = ? && start_at <= ?",current_user.id, DateTime.now).order(start_at: "ASC").last
++  #        if user_status.present?
++  #            allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
++  #            if user_status.state == "suspended" && !allowed_controllers.include?(controller_name)
++  #                redirect_to user_alerts_path
++  #            end
++  #        end
++  #    end
++  #end
+ 
++  def check_error
++      if params[:error] != nil && params[:error] != ""
++        @error = params[:error]
++      end
++  end
+ 
+-    def check_deleted_account
+-        puts "アカウント状況"
+-        puts controller_name
+-        puts action_name
+-        if controller_name == "devise" && action_name == "registrations"
+-            puts "新規登録"
+-        end
+-    end
++  def check_deleted_account
++      puts "アカウント状況"
++      puts controller_name
++      puts action_name
++      if controller_name == "devise" && action_name == "registrations"
++          puts "新規登録"
++      end
++  end
+     
+-    def check_operation_state
+-        state = current_state
+-        puts "オペレーション"
+-        puts state
+-        if admin_user_signed_in? || for_admin_user
+-            puts current_admin_user.email
++  def check_operation_state
++    state = current_state
++    puts "オペレーション"
++    puts state
++    if admin_user_signed_in? || for_admin_user
++      puts current_admin_user.email
++    else
++      if state
++        puts "システム状況" + state
++        puts controller_name
++        case state
++        when "register" then
++          puts "登録のみ"
++          if state_register
++          else
++            flash.notice = "現在その機能はご利用いただけません。"
++            puts "アクセス失敗"
++            redirect_to_previous_path
++          end
++        when "suspended" then
++          puts "システム停止"
++          if state_suspended
++          else
++            flash.notice = "現在システムは停止しています。"
++            redirect_to_previous_path
++          end
++        when "browse" then
++          puts "閲覧のみ"
++          if state_browse then
++          else
++            flash.notice = "現在その機能はご利用いただけません。"
++            redirect_to_previous_path
++          end
++        when "running" then
++          puts "稼働"
+         else
+-            if state
+-                puts "システム状況" + state
+-                puts controller_name
+-                case state
+-                when "register" then
+-                    puts "登録のみ"
+-                    if state_register
+-                    else
+-                        flash.notice = "現在その機能はご利用いただけません。"
+-                        puts "アクセス失敗"
+-                        redirect_to_previous_path
+-                    end
+-                when "suspended" then
+-                    puts "システム停止"
+-                    if state_suspended
+-                    else
+-                        flash.notice = "現在システムは停止しています。"
+-                        redirect_to_previous_path
+-                    end
+-                when "browse" then
+-                    puts "閲覧のみ"
+-                    if state_browse then
+-                    else
+-                        flash.notice = "現在その機能はご利用いただけません。"
+-                        redirect_to_previous_path
+-                    end
+-                when "running" then
+-                    puts "稼働"
+-                else
+-                    puts "その他"
+-                end
+-                
+-            end
++          puts "その他"
+         end
++        
++      end
+     end
++  end
+     
+-    def redirect_to_previous_path
+-        #if request.referer
+-        #    redirect_to request.referer
+-        #else
+-        #    redirect_to abouts_path
+-        #end
+-        redirect_to abouts_path
+-    end
++  def redirect_to_previous_path
++    #if request.referer
++    #   redirect_to request.referer
++    #else
++    #   redirect_to abouts_path
++    #end
++    redirect_to abouts_path
++  end
+ 
+-    def state_suspended
+-        if [
+-            "abouts",
+-            "admin",
+-            "active_admins",
+-            "sessions",
+-            "dashboard",
+-            "alerts"
+-            ].include?(controller_name)
+-            true
+-        else
+-            false
+-        end
++  def state_suspended
++    if [
++      "abouts",
++      "admin",
++      "active_admins",
++      "sessions",
++      "dashboard",
++      "alerts"
++      ].include?(controller_name)
++      true
++    else
++      false
+     end
+-    
+-    def state_browse
+-        if [
+-            "create",
+-            "delete",
+-            "destroy",
+-            "edit",
+-            "new",
+-            "update",
+-            "inquiries",
+-        ].include?(action_name)
+-            false
+-        else
+-            true
+-        end
++  end
++  
++  def state_browse
++    if [
++      "create",
++      "delete",
++      "destroy",
++      "edit",
++      "new",
++      "update",
++      "inquiries",
++    ].include?(action_name)
++      false
++    else
++      true
+     end
++  end
+ 
+-    def state_register
+-        if controller_name == "services" && action_name == "show" #自分のサービスページを閲覧
+-            if user_signed_in? && Service.find(params[:id]).user == current_user
+-                true
+-            else
+-                false
+-            end
+-        elsif controller_name == "requsts" && action_name == "show" #自分の依頼ページを閲覧
+-            if user_signed_in? && Request.find(params[:id]).user == current_user
+-                true
+-            else
+-                false
+-            end
+-        elsif [
+-            "services",
+-            "requests",
+-            "accounts",
+-            "abouts",
+-            "admin",
+-            "active_admins",
+-            "cards",
+-            "configs",
+-            "confirmations",
+-            "connects",
+-            "dashboard",
+-            "inquiries",
+-            "images",
+-            "notifications",
+-            "omniauth_callbacks",
+-            "payments",
+-            "passwrords",
+-            "posts",
+-            "registrations",
+-            "sessions",
+-            "transactions",
+-            "unlocks",
+-            "inquiries",
+-            "alerts"
+-            ].include?(controller_name)
+-            true
+-        else
+-            #if controller_path.include?("admin")
+-            #    true
+-            #else
+-            #    false
+-            #end
+-            false
+-        end
++  def state_register
++    if controller_name == "services" && action_name == "show" #自分のサービスページを閲覧
++      if user_signed_in? && Service.find(params[:id]).user == current_user
++        true
++      else
++        false
++      end
++    elsif controller_name == "requsts" && action_name == "show" #自分の依頼ページを閲覧
++      if user_signed_in? && Request.find(params[:id]).user == current_user
++        true
++      else
++        false
++      end
++    elsif [
++      "services",
++      "requests",
++      "accounts",
++      "abouts",
++      "admin",
++      "active_admins",
++      "cards",
++      "configs",
++      "confirmations",
++      "connects",
++      "dashboard",
++      "inquiries",
++      "images",
++      "notifications",
++      "omniauth_callbacks",
++      "payments",
++      "passwrords",
++      "posts",
++      "registrations",
++      "sessions",
++      "transactions",
++      "unlocks",
++      "inquiries",
++      "alerts"
++      ].include?(controller_name)
++      true
++    else
++      #if controller_path.include?("admin")
++      #   true
++      #else
++      #   false
++      #end
++      false
+     end
++  end
+ 
+-    private def check_login
+-        if !user_signed_in?
+-          redirect_to new_user_session_path
+-        end
+-      end
++  private def check_login
++    if !user_signed_in?
++      session[:path_params] = params
++      redirect_to new_user_session_path
++    end
++  end
+ end
+\ No newline at end of file
+diff --git a/app/views/abouts/index.html.erb b/app/views/abouts/index.html.erb
+index d5a41cc..1c68c40 100644
+--- a/app/views/abouts/index.html.erb
++++ b/app/views/abouts/index.html.erb
+@@ -18,8 +18,8 @@
+                 
+                 <span class="app_name">コレテク</span>
+                 <div class="sign_in_up_area">
+-                <%= link_to "登録", new_user_registration_path, class:"sign_up_link sign_link"%>
+-                    <%= link_to "ログイン", new_user_session_path, class:"sign_in_link sign_link"%>
++                    <%= link_to "質問をする", new_user_request_path, class:"sign_up_link sign_link"%>
++                    <%= link_to "相談に乗る", new_user_service_path, class:"sign_in_link sign_link"%>
+                 </div>
+             </div>
+             <div class="image_flame">
+diff --git a/app/views/user/accounts/show.html.erb b/app/views/user/accounts/show.html.erb
+index 5e1483a..366a1df 100644
+--- a/app/views/user/accounts/show.html.erb
++++ b/app/views/user/accounts/show.html.erb
+@@ -50,7 +50,7 @@
+             <%= render "user/shared/description", text:@user %>
+             <div class="user_profile_menu" id="request_ajax_update">
+             <% @bar_elements.each do |element| %>
+-                <%if !(!@user.is_seller)%>
++                <%if !(!@user.is_seller && element[:for_seller]) %>
+                 <li class="menu_element"><%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%></li>
+                 <% end %>
+             <% end %>
