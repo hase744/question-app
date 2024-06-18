@@ -2,8 +2,9 @@
     display: inline-block;
     width: calc(100% - 10px);
     background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 0px 2px lightgray;
+    border-radius: 2.5px;
+    //box-shadow: 0px 0px 2px lightgray;
+    box-shadow: 1px 1px 3px gray;
     margin: 5px;
     .image_name_area{
         height: 50px;
@@ -29,15 +30,17 @@
         .time_name_area{
             display: inline-block;
             width: calc(100% - 60px);
-            float: left;
+            //float: left;
+            padding-top: 3px;
         }
         .send_time{
             color: gray;
             font-size: 13px;
-            display: inline-block;
+            //display: inline-block;
         }
         .user_name{
             margin: 0px;
+            font-size: 13px;
         }
     }
     .message_text_area{

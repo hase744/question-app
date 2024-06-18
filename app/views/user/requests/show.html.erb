@@ -171,7 +171,7 @@
             <div class="common_label_area">
                 <h3 class="suggest_title common_label">回答</h3>
             </div>
-            <%= render "user/transactions/cell", content:Transaction.find_by(request_id: @request.id, is_delivered:true) %>
+            <%= render "user/transactions/cell", transaction:Transaction.find_by(request_id: @request.id, is_delivered:true) %>
         <% end %>
 </div>
     <%= render "user/accounts/profile", user: @request.user, relationship:@relationship %>

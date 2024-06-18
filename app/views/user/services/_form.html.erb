@@ -44,7 +44,7 @@
 
         <%if !request.present? %>
           <div class="field_area length_field_area text_field_area">
-            <label>依頼文章の最大文字数</label>（<%=service.mini_request_max_characters%>〜<%=service.max_request_max_characters%>字）<br />
+            <label>質問の最大文字数</label>（<%=service.mini_request_max_characters%>〜<%=service.max_request_max_characters%>字）<br />
             <div class="input_field text_field select_area">
               <%= f.select 'request_max_characters', options_for_select((service.mini_request_max_characters..service.max_request_max_characters).step(100).map { |num| ["#{num}字", num] }, selected: service.request_max_characters), include_blank: true,  class:"" ,required: true %>
             </div>

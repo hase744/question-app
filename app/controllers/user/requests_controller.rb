@@ -1,5 +1,4 @@
 class User::RequestsController < User::Base
-  layout "search_layout", only: :index
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish ] #ログイン済みである
   before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
   before_action :define_transaction, only:[:purchase, :publish, :preview , :update, :publish, :purchase]
@@ -11,6 +10,19 @@ class User::RequestsController < User::Base
   before_action :check_original_request, only:[:new, :create] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "responsive_layout"
+    when "index"
+      "search_layout"
+    else
+      "small"
+    end
+  end
+
   def index
     @requests = Request
       .suggestable

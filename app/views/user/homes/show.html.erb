@@ -1,5 +1,5 @@
 <div class="home_show_zone">
-    <%= render "user/shared/label_with_link", label: "相談サービス", link: user_services_path %>
+    <%= render "user/shared/label_with_link", label: "相談室", link: user_services_path %>
     <div class="home_service_area">
         <% @services.each do |service| %>
             <div class="home_service_unit">
@@ -17,10 +17,70 @@
         </div>
     <div>
     </div>
-    <%= render "user/shared/label_with_link", label: "回答", link:  user_transactions_path %>
-    <% @transactions.each do |transaction|%>
-        <%= render "user/transactions/small_cell", transaction:transaction %>
-    <% end %>
-    </h2>
+    <div class="transaction_and_label">
+        <div class="label_and_more">
+            <%= render "user/shared/label_with_link", label: "質問", link:  user_transactions_path %>
+        </div>
+        <div class="label_and_categories">
+            <div class="label_area">
+                <%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
+            </div>
+            <div class="category_label_area">
+                <label id="category_button">
+                カテゴリ一覧&nbsp;<span class="fas fa-angle-down">&nbsp;</span>
+                </label>
+                <div id="category_list" class="category_list hidden">
+                    <ul>
+                    <% Category.all.each do |category|%>
+                        <div>
+                        <li><%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%></li>
+                        </div>
+                    <% end %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <script>
+            var category_button = document.getElementById('category_button');
+            var category_list = document.getElementById('category_list');
+
+            function showCategory_list() {
+                category_list.classList.remove('hidden');
+            }
+
+            function hideCategory_list() {
+                category_list.classList.add('hidden');
+            }
+
+            function toggleHidden() {
+                category_list.classList.toggle('hidden');
+            }
+
+            category_button.addEventListener('click', function() {
+                category_list.classList.toggle('hidden');
+            });
+
+            category_button.addEventListener('mouseover', showCategory_list);
+            category_button.addEventListener('mouseout', hideCategory_list);
+
+            category_list.addEventListener('mouseover', showCategory_list);
+            category_list.addEventListener('mouseout', hideCategory_list);
+        </script>
+        <div class="transaction_group">
+            <% @transactions.each do |transaction|%>
+                <%= render "user/transactions/cell", transaction:transaction %>
+            <% end %>
+        </div>
+    </div>
+    <div class="category_area">
+        <div class="category_flame">
+        <label>カテゴリ一覧</label>
+            <% Category.all.each do |category|%>
+                <div>
+                <%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%>
+                </div>
+            <% end %>
+        </div>
+    </div>
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>

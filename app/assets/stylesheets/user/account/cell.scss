@@ -20,9 +20,9 @@
     .user_cell_flame{
         position: relative;
             background-color: white;
-            border-radius: 10px;
+            border-radius: 5px;
             margin: 5px;
-            box-shadow: 0 0 2px lightgray;
+            border: 1px solid lightgray;
         .user_cell_area{
             padding: 5px;
             .user_name{
@@ -236,6 +236,10 @@
             .user_record_area{
                 .record_name{
                     background-color: #EEEEEE;
+                    font-size: 15px;
+                    padding: 1px;
+                    border-radius: 2px;
+                    color: #444444;
                 }
             }
             .user_record_margin{

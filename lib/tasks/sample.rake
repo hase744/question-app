@@ -53,6 +53,7 @@ namespace :sample do
       file_path = Rails.root.join('public', 'sample', category.name, 'services.json')
       services = JSON.parse(File.read(file_path))
       10.times do |n|
+        service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
         service = Service.create_or_find_by!(
           user: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
           title: services[n]['title'],
@@ -67,7 +68,8 @@ namespace :sample do
           request_max_characters: (n+1)*200,
           request_max_minutes: n,
           request_max_files: 0,
-          is_inclusive: true
+          is_inclusive: true,
+          image: File.open(service_image_path)
         )
       end
     end
@@ -114,6 +116,7 @@ namespace :sample do
       file_path = Rails.root.join('public', 'sample', category.name, 'services.json')
       services = JSON.parse(File.read(file_path))
       Parallel.each(0..9) do |n|
+      #for n in 0..9
         image_path = Rails.root.join('public', 'sample', category.name, "canvas (#{n}).jpg")
         buyers = User.where(is_seller: false)
         sellers = User.where(is_seller: true)
@@ -170,6 +173,20 @@ namespace :sample do
           reviewed_at: DateTime.now - n,
           is_published:false
         )
+        for i in 0..5
+          transaction_message = TransactionMessage.create_or_find_by!(
+            deal: transaction,
+            sender: buyers[n%buyers.count+1],
+            receiver: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
+            body: transactions[n]['additional_chat'][i*2]["question"],
+          )
+          transaction_message = TransactionMessage.create_or_find_by!(
+            deal: transaction,
+            sender: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
+            receiver: buyers[n%buyers.count+1],
+            body: transactions[n]['additional_chat'][i*2+1]["answer"],
+          )
+        end
       end
     end
   end

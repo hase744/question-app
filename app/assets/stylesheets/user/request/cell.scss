@@ -16,7 +16,7 @@
             
             margin: 0px 5px 5px 0px;
             border-bottom:1px solid lightgray;
-            h2{
+            h3{
                 margin: 0px;
                 
             }
@@ -54,8 +54,14 @@
         .request_condition_area{
             display: inline-block;
             margin: 3px;
+            .request_condition_block{
+                display: inline-block;
+            }
             .request_condition_title{
-                
+                font-size: 14px;
+                padding: 1px;
+                border-radius: 2px;
+                color: #555555;
                 background-color: #EEEEEE;
             }
             .request_condition{

@@ -1,5 +1,4 @@
 class User::ServicesController < User::Base
-  layout "search_layout", only: :index
   before_action :check_login, only:[:new, :edit, :create, :update]
   before_action :check_published, only:[:show]
   before_action :define_service, only:[:show]
@@ -9,6 +8,19 @@ class User::ServicesController < User::Base
   before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
   before_action :check_can_suggest, only:[:new, :create]
   after_action :update_total_views, only:[:show]
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "responsive_layout"
+    when "index"
+      "search_layout"
+    else
+      "small"
+    end
+  end
+
   def index
     @services = Service
       .seeable

@@ -1,14 +1,14 @@
 .transaction_cell_area{
     margin-top: 5px;
     margin: 5px 5px 5px 5px;
-    border-radius: 10px;
+    border-radius: 2.5px;
     background-color: white;
+    //border: 1px solid lightgray;
     box-shadow: 0 0 2px lightgray;
-
-        
+    box-shadow: 1px 1px 3px gray;
     .transaction_cell_flame{
         width:100%;
-        height:100px;
+        //height:100px;
         border-radius: 10px;
         .youtube_video_area{
             float: left;
@@ -24,14 +24,14 @@
             border-radius: 10px 0px 0px 10px;
         }
         .transaction_link{
-            text-decoration: none;
+            //text-decoration: none;
         }
         .video_text_area{
             height: 100px;
             display: inline-block;
             background-color: white;
             border-radius: 10px;
-            width: calc(100% - 100px / 9 * 16);
+            //width: calc(100% - 100px / 9 * 16);
             h4{
                 margin-top: 0px;
                 margin-bottom: 0px;
@@ -39,7 +39,10 @@
                 font-weight: normal;
             }
             .request_title{
-                color: steelblue;
+                font-size: 20px;
+                color: blue;
+                font-weight: bold;
+                //color: steelblue;
             }
             hr{
                 size:10px;
@@ -48,18 +51,83 @@
                 display: inline-block;
             }
             .transaction_title{
-                color: indianred;
-                text-decoration: underline;
-                font-size:20px;
+                //color: indianred;
+                //text-decoration: underline;
+                font-size:15px;
             }
             h5{
                 margin-top: 3px;
                 margin-bottom: 0px;
                 padding-left: 5px;
-                color: gray;
+                color: #333333;
                 font-weight: lighter;
             }
+            .user_and_date{
+                font-weight: normal;
+                color: grey;
+                font-size: 11px;
+            }
         }
+    }
+    .seller_area{
+        display: inline-block;
+        width: calc(100% - 110px);
+        color: black;
+    }
+    .seller_container{
+        height: 40px;
+        margin-right: 10px;
+        .seller_image{
+            display: inline-block;
+            margin: 5px;
+            height: 30px;
+            width: 30px;
+            border-radius: 20px;
+            float: left;
+            object-fit: cover;
+        }
+        .seller_name_area{
+            display: inline-block;
+            height: 50px;
+            position: relative;
+            width: calc(100% - 60px);
+            padding-top: 5px;
+            .seller_name{
+                color: dimgray;
+                margin: 0px;
+            }
+            .datetime{
+                color: dimgray;
+                font-size: 13px;
+            }
+        }
+    }
+    .seller_info:hover .seller_name {
+        //text-decoration: underline;
+        color: gray;
+    }
+    .seller_info:hover .datetime{
+        //text-decoration: underline;
+        color: gray;
+    }
+    .change_text{
+        //text-align: center;
+        color: grey;
+    }
+    .change_text:after{
+        text-decoration: none;
+        color: grey;
+        cursor: pointer;
+    }
+    .change_text:hover{
+        text-decoration: underline;
+    }
+    .open_text:after{
+      content: "詳細を表示";
+    }
+    .close_text:after{
+      content: "詳細を閉じる";
+      
     }
 }
 

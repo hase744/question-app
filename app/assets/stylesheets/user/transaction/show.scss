@@ -53,13 +53,16 @@
                 margin: 0px;
             }
             .transaction_flame{
-                padding: 5px;
+                padding: 20px;
+                padding-top: 10px;
                 margin: 5px;
                 height: auto;
                 border-radius: 10px;
                 background-color: white;
-                box-shadow: 0 0 2px lightgray;
-                width: calc(100% - 20px);
+                box-shadow: 1px 1px 3px gray;
+                border-radius: 2.5px;
+                //box-shadow: 0 0 2px lightgray;
+                width: calc(100% - 50px);
                 .title{
                     margin-top: 5px;
                     margin-bottom: 0px;
@@ -151,7 +154,6 @@
                 .follow_message_area{
                     float: right;
                 }
-                border-radius: 10px;
 
                 .service_menu_bar{
                     display: flex;
@@ -194,8 +196,8 @@
                     }
                     label{
                         padding: 2px;
+                        font-size: 20px;
                         color: gray;
-                        background-color: whitesmoke;
                     }
                 }
                 .service_link_area{
@@ -301,7 +303,6 @@
     background: #fc0d1b;
     color: #fff;
     border-radius: 3px;
-    item: "\f164";
     margin-bottom: 10px;
     margin-left: 10px;
 }
@@ -382,21 +383,28 @@
     background-color: white;
     text-decoration: none;
     border-radius: 5px;
-    
-    width: calc(100% - 13px);
-    height: 100%;
+    height: 20px;
     font-size: 20px;
     font-weight: bold;
     align-items: center;
     text-align: center;
+    //background-color: red;
+    //float: left;
+}
+.twitter_share_button_area{
+    display: inline-block;
+    //height: 50px;
 }
 #twitter_share_button_area > .share_button{
     color: #00aced;
-    border: 1.5px solid #00aced;
+    font-size: 15px;
+    //border: 1.5px solid #00aced;
+    float: left;
 }
 #facebook_share_button_area > .share_button{
     color: #315096;
-    border: 1.5px solid #315096;
+    font-size: 15px;
+    //border: 1.5px solid #315096;
 }
 .share_button:hover{
     text-decoration: none;

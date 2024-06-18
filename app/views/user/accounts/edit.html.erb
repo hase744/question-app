@@ -14,26 +14,30 @@
       
         <div class="field_area">
           <%= f.label :categories, class:"field_label" %><br />
-          <%= f.hidden_field :categories, value: @user.categories, id:"category_field"%>
-          <span class="category_display" id="category_display"></span>
+          <%= f.hidden_field :category_ids, value: @user.categories, id:"category_field"%>
         </div>
         
-        <ul class="category_drag_list" id="categry_drag_list">
-          <%=f.collection_check_boxes(:category_ids, @categories, :id, :name) do |category| %>
-            <li draggable="true" id="li_<%=category%>">
-              <%= category.check_box class:"category_checkbox", id:category.text do %>
-                <%= category.check_box + category.text %>
-              <% end %>
-              <%=category_e_to_j(category.text)%>
-              <span class="drag_icon_area"><span class="drag_icon"></span></span>
-            </li>
-          <% end %>
-        </ul>
+        <div class="field_area">
+          <div id="labelContainer"><input class="input_field string_field"></div>
+          <div class="checkboxContainer">
+            <% @categories.each do |category| %>
+              <label>
+                <% if User.first.categories.include?(category)%>
+                  <input type="checkbox" value="<%=category.japanese_name%>" id="<%=category.id%>" checked> 
+                <% else %>
+                  <input type="checkbox" value="<%=category.japanese_name%>" id="<%=category.id%>"> 
+                <% end %>
+                <%=category.japanese_name%>
+              </label>
+            <% end %>
+          </div>
+        </div>
 
         <div class="field_area">
           <%= f.label :user_image, class:"field_label" %><br />
           <%= f.file_field :image, autocomplete: "image", class:"input_field" %>
         </div>
+
         <div class="field_area">
           <%= f.label :header_image, class:"field_label" %><br />
           <%= f.file_field :header_image, autocomplete: "image", class:"input_field", id:"thumbnail" %>
@@ -45,7 +49,6 @@
       <% end %>
     </div>
 </div>
-<%= javascript_pack_tag "user/accounts/edit"%>
-<%#= javascript_pack_tag "shared/count_characters"%>
-<style>
-</style>
+<script>
+<%= render "user/accounts/edit.js.erb" %>
+</script>

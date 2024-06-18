@@ -15,13 +15,13 @@
         -webkit-line-clamp: auto; 
     }
     .closing_text{
-        -webkit-line-clamp: 1; 
+        -webkit-line-clamp: 3; 
     }
   }
   .change_text{
     color: gray;
     text-align: center;
-      cursor: pointer;
+    cursor: pointer;
   }
   .open_text:after{
     content: "全文を表示";

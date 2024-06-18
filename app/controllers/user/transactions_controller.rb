@@ -1,10 +1,24 @@
 class User::TransactionsController < User::Base
-  layout "transaction_index", only: [:index]
+  #layout "search_layout", only: :index
+  #layout "transaction_index", only: [:index]
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like]
   before_action :check_transaction_is_delivered, only:[:show, :like]
   before_action :define_transaction, only:[:update, :deliver]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
   after_action :update_total_views, only:[:show]
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "responsive_layout"
+    when "index"
+      "search_layout"
+    else
+      "small"
+    end
+  end
+
   def index
     gon.layout = "transaction_index"
     @transactions = Transaction.left_joins(:transaction_categories)

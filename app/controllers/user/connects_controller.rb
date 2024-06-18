@@ -1,5 +1,5 @@
 class User::ConnectsController < User::Base
-  layout "small", only:[:edit]
+  layout "small", only:[:edit, :new, :certify_phone, :show]
   before_action :check_login
   before_action :phone_valid?, only:[:update, :edit]
   before_action :check_connect_unregistered, only:[:new, :create, :certify_phone]

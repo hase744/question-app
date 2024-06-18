@@ -18,20 +18,14 @@
                 <% end %>
                 <table class="service_condition_area">
                     <tr>
-                        <td class="label_icon">
-                        <span class="far fa-calendar-alt"></span>
-                        </td>
                         <td class="user_info_name">
-                            <span class="condition_name">購入から納品まで</span>
+                            <span class="condition_name">質問から回答まで</span>
                         </td>
                         <td>
                             <span class="service_condition"><%=@service.delivery_days%>日以内</span>
                         </td>
                     </tr>
                     <tr>
-                        <td class="label_icon">
-                        <span class="fas fa-chalkboard-teacher"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name"><%= Service.human_attribute_name(:delivery_form) %></span>
                         </td>
@@ -40,9 +34,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label_icon">
-                        <span class="fas fa-question"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name"><%= Service.human_attribute_name(:request_form) %></span>
                             </td>
@@ -52,21 +43,15 @@
                     </tr>
                     <%if @service.is_inclusive%>
                         <tr>
-                            <td class="label_icon">
-                            <span class="fas fa-pen"></span>
-                            </td>
                             <td class="user_info_name">
-                                <span class="condition_name"><%= Service.human_attribute_name(:request_max_characters)%></span>
+                                <span class="condition_name">質問の字数</span>
                                 </td>
                             <td>
-                                <span class="service_condition"><%=@service.request_max_characters%>字</span>
+                                <span class="service_condition"><%=@service.request_max_characters%>字以内</span>
                             </td>
                         </tr>
                         <%if @service.request_form.name == "video" %>
                         <tr>
-                            <td class="label_icon">
-                            <span class="far fa-file-video"></span>
-                            </td>
                             <td class="user_info_name">
                                 <span class="condition_name"><%= Service.human_attribute_name(:request_max_minutes)%></span>
                                 </td>
@@ -77,9 +62,6 @@
                         <% end %>
                     <% end %>
                     <tr>
-                        <td class="label_icon">
-                        <span class="fas fa-yen-sign"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name">料金</span>
                         </td>
@@ -89,9 +71,6 @@
                     </tr>
                     <%if @service.stock_quantity != nil %>
                     <tr>
-                        <td class="label_icon">
-                        <span class="fas fa-boxes"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name">残り</span>
                         </td>
@@ -101,9 +80,6 @@
                     </tr>
                     <% end %>
                     <tr>
-                        <td class="label_icon">
-                        <span class="fas fa-sitemap"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name">カテゴリー</span>
                         </td>
@@ -112,9 +88,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label_icon">
-                        <span class="far fa-comment-alt"></span>
-                        </td>
                         <td class="user_info_name">
                             <span class="condition_name">追加質問受付期間</span>
                         </td>
@@ -128,6 +101,10 @@
                         </td>
                     </tr>
                 </table>
+                <div class="service_detail_area">
+                    <h3 class="service_detail_name"><%= Service.human_attribute_name(:description)%></h3>
+                    <p class="service_detail"><%=@service.description%></p>
+                </div>
                 <div class="service_image_area">
                     <%if @service.image.url == nil%>
                         <%#=image_tag "/corretech_large_icon.png", class:"service_image"%>
@@ -135,13 +112,9 @@
                         <%=image_tag @service.image_url, class:"service_image",id:"service_image"%>
                     <% end %>
                 </div>
-                <div class="service_detail_area">
-                    <h3 class="service_detail_name">サービス内容</h3>
-                    <p class="service_detail"><%=@service.description%></p>
-                </div>
                 <%if can_purchase %>
                     <div class="transaction_button_area">
-                        <%=link_to "購入", new_user_request_path(service_id:@service.id), class:"transaction_button"%>
+                        <%=link_to "相談を投稿する", new_user_request_path(service_id:@service.id), class:"transaction_button"%>
                     </div>
                 <% end %>
                 <%= render "/user/shared/share_twitter"%>
@@ -162,7 +135,7 @@
         <% end %>
         <div class="service_hitsory" id="updated_by_ajax">
             <% @transactions.each do |transaction|%>
-                <%= render "user/transactions/cell", content:transaction %>
+                <%= render "user/transactions/cell", transaction:transaction %>
             <% end %>
         </div>
     </div>

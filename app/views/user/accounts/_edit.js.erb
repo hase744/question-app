@@ -1,0 +1,64 @@
+
+var checkboxes = document.querySelectorAll('.checkboxContainer input[type="checkbox"]');
+var labelContainer = document.getElementById('labelContainer');
+
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      add_value();
+        if (this.checked) {
+            addLabel(this.value);
+        } else {
+            removeLabel(this.value);
+        }
+    });
+});
+
+checkboxes.forEach(checkbox => {
+  if (checkbox.checked) {
+    console.log('aa');
+      addLabel(checkbox.value);
+  } else {
+      removeLabel(checkbox.value);
+  }
+});
+
+function addLabel(text) {
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = text;
+
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'close';
+    closeBtn.textContent = '×';
+    closeBtn.onclick = function() {
+        label.remove();
+        const correspondingCheckbox = Array.from(checkboxes).find(checkbox => checkbox.value === text);
+        if (correspondingCheckbox) {
+            correspondingCheckbox.checked = false;
+        }
+    };
+
+    label.appendChild(closeBtn);
+    labelContainer.appendChild(label);
+}
+
+function removeLabel(text) {
+    const labels = document.querySelectorAll('.label');
+    labels.forEach(label => {
+        if (label.textContent.replace('×', '').trim() === text) {
+            label.remove();
+        }
+    });
+}
+
+function add_value(){
+  categories = []
+  for (let i = 0; i < checkboxes.length; i++) {
+      if(checkboxes[i].checked){
+        //console.log(checkboxes[i]);
+        console.log(checkboxes[i].id);
+        categories.unshift(checkboxes[i].id);
+      }
+  }
+  category_field.value = `${categories}`;
+}

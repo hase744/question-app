@@ -1,6 +1,6 @@
 
 <%= link_to(user_account_path(user.id), class: 'user_link') do %>
-    <div class="user_cell_zone">
+    <div class="user_small_cell_zone">
         <div class="user_cell_flame">
             <div class="user_cell_area">
                 <div class="user_image_flame">
@@ -9,16 +9,11 @@
                     <% else %>
                     <%=image_tag user_image_default, class:"user_image"%>
                     <% end %>
-                    <div class="last_login">
-                        <% user.categories.each do |c|%>
-                            <%=c.japanese_name%>
-                        <% end %>
-                    </div>
                 </div>
 
                 <div class="user_name_area">
                     <span class="user_name" id="user_cell_area"><%=user.name%></span>
-                    <span class="day_form_logout">
+                    <span class="categories">
                     <% user.categories.each do |c|%>
                         <%=c.japanese_name%>
                     <% end %>

@@ -25,11 +25,12 @@
         
         border-radius: 20px;
         .transaction_content{
-            box-shadow: 0 0 2px lightgray;
             width: 100%;
             height: 100%;
             background-color: white;
             border-radius: 5px;
+            border: 1px solid lightgray;
+            //box-shadow: 0 0 2px lightgray;
             .transaction_link{
                 text-decoration: none;
                 color: gray;

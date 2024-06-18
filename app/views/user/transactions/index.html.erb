@@ -4,7 +4,7 @@
     <%else%>
         <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home" %> > 回答一覧 <%= paginate @transactions %></div>
         <% @transactions.each do |transaction|%>
-            <%= render "user/transactions/small_cell", transaction:transaction %>
+            <%= render "user/transactions/cell", transaction:transaction %>
         <% end %>
         <div class="main_bottom">
             <%= paginate @transactions %>

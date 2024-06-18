@@ -1,96 +1,107 @@
 <div class="menu_bar">
+    <div class="menu_bar_container">
         <%= link_to(user_homes_path, class: 'app_link app_name_area menu_component') do %>
             <span class="app_design">コ</span>
             <span class="app_name">corretech</span>
         <%end%>
-    <% if user_signed_in?%>
-        <div class="open_sidebar_menu_button">
-            <% if current_user.image.url %>
-                <%=image_tag current_user.image.url, class:"open_sidebar_menu_button_image"%>
-            <% else %>
-                <%=image_tag "/profile.jpg", class:"open_sidebar_menu_button_image"%>
-            <% end %>
-        </div>
-        <div class="menu_notification">
-            <% if notifications_length > 0 %>
-            <p class="notification_number"><%= notifications_length %></p>
-            <% end %>
-            <%= link_to "", user_notifications_notification_bar_path(1), remote: true, class:"far fa-bell notification_image", id:"notification_image"%>
-        </div>
-    <% else %>
-        <div class="login_path_area">
-            <%= link_to "ログイン",  new_user_session_path, class:"login_path"%>
-        </div>
-    <% end %>
-    <div class="menu_question">
-        <%= link_to "", abouts_path, class:"fa fa-question question_image"%>
-    </div>
-    <div class="open_search">
-        <span class="fas fa-search search_glass_image"></span>
-    </div>
-    <%= form_with url: user_transactions_path, class:"form menu_search_form", id:"menu_search_form", name:"menu_search_form" ,method:"get" do |f| %>
-        <div class="search_bar search">
-            <div class="searchForm inner_search_bar search_component search">
-                <div class="close_search search"><div><span class="close_icon"></span></div></div>
-                    <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
-                    <%= f.text_field :word, class:"search_component search search_input"%>
-                    <div class="searchForm-submit search_component search">
-                    <div class="search_glass"></div>
-                        <%= f.submit '', class:"menu_submit_button" %>
-                    </div>
-                    <%= f.text_field :name, class:"search-detail-json"%>
+        <% if user_signed_in?%>
+            <div class="open_sidebar_menu_button">
+                <% if current_user.image.url %>
+                    <%=image_tag current_user.image.url, class:"open_sidebar_menu_button_image"%>
+                <% else %>
+                    <%=image_tag "/profile.jpg", class:"open_sidebar_menu_button_image"%>
+                <% end %>
             </div>
+            <div class="menu_notification">
+                <% if notifications_length > 0 %>
+                <p class="notification_number"><%= notifications_length %></p>
+                <% end %>
+                <%= link_to "", user_notifications_notification_bar_path(1), remote: true, class:"far fa-bell notification_image", id:"notification_image"%>
+            </div>
+        <% else %>
+            <div class="left_menu_button_area">
+                <div class="left_menu_button open_sidebar_menu_button" id="btn01">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+            </div>
+            <% end %>
+        <div class="menu_question">
+            <%= link_to "", abouts_path, class:"fa fa-question question_image"%>
         </div>
-        <div class="wide_detail_search search search_forms">
-            <span id="price_field_area" class="request_search_field service_search_field">
-                <p class="service_search_field">価格</p>
-                <p class="request_search_field">予算</p>
-                <%= f.number_field :max_price, type:"number",min:"0",placeholder:"Max",step:"100", class:"max_price_field"%>
-                <span>〜</span>
-                <%= f.number_field :mini_price, type:"number",min:"0",placeholder:"min",step:"100",  class:"mini_price_field"%>
-                </br></br>
-            </span>
-
-            <span class="request_search_field checkbox_area">
-                <%= f.check_box :can_suggest, checked:params[:can_suggest]=="1", class:"checkbox"%><span>受付中</span>
-                </br></br>
-            </span>
-
-            <span id="sales_results_field_area" class="account_search_field">
-                <p>回答</p>
-                <%= f.number_field :total_sales_numbers, class:"sales_results", minn:"0", placeholder:"件数", step:"1"%>
-                </br></br>
-            </span>
-
-            <span id="price_field_area" class="request_search_field service_search_field">
-                <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
-                <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-                </br></br>
-            </span>
-
-            <span id="price_field_area" class="request_search_field service_search_field">
-                <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
-                <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-                </br></br>
-            </span>
-            
-            <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
-                <p>カテゴリー</p>
-                <div>
-                <%= render "layouts/form_category", f:f%>
-                </div></br>
-            </span>
+        <div class="open_search">
+            <span class="fas fa-search search_glass_image"></span>
         </div>
-    <% end %>
+        <% if !user_signed_in?%>
+            <div class="login_path_area">
+                <%= link_to "ログイン",  new_user_session_path, class:"login_path"%>
+            </div>
+        <% end %>
+        <%= form_with url: user_transactions_path, class:"form menu_search_form", id:"menu_search_form", name:"menu_search_form" ,method:"get" do |f| %>
+            <div class="search_bar search">
+                <div class="searchForm inner_search_bar search_component search">
+                    <div class="close_search search"><div><span class="close_icon"></span></div></div>
+                        <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
+                        <%= f.text_field :word, class:"search_component search search_input"%>
+                        <div class="searchForm-submit search_component search">
+                        <div class="search_glass"></div>
+                            <%= f.submit '', class:"menu_submit_button" %>
+                        </div>
+                        <%= f.text_field :name, class:"search-detail-json"%>
+                </div>
+            </div>
+            <div class="wide_detail_search search search_forms">
+                <span id="price_field_area" class="request_search_field service_search_field">
+                    <p class="service_search_field">価格</p>
+                    <p class="request_search_field">予算</p>
+                    <%= f.number_field :max_price, type:"number",min:"0",placeholder:"Max",step:"100", class:"max_price_field"%>
+                    <span>〜</span>
+                    <%= f.number_field :mini_price, type:"number",min:"0",placeholder:"min",step:"100",  class:"mini_price_field"%>
+                    </br></br>
+                </span>
 
+                <span class="request_search_field checkbox_area">
+                    <%= f.check_box :can_suggest, checked:params[:can_suggest]=="1", class:"checkbox"%><span>受付中</span>
+                    </br></br>
+                </span>
+
+                <span id="sales_results_field_area" class="account_search_field">
+                    <p>回答</p>
+                    <%= f.number_field :total_sales_numbers, class:"sales_results", minn:"0", placeholder:"件数", step:"1"%>
+                    </br></br>
+                </span>
+
+                <span id="price_field_area" class="request_search_field service_search_field">
+                    <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
+                    <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+                    </br></br>
+                </span>
+
+                <span id="price_field_area" class="request_search_field service_search_field">
+                    <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
+                    <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+                    </br></br>
+                </span>
+
+                <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
+                    <p>カテゴリー</p>
+                    <div>
+                    <%= render "layouts/form_category", f:f%>
+                    </div></br>
+                </span>
+            </div>
+        <% end %>
+    </div>
 </div>
 <% if user_signed_in?%>
 <%= render "layouts/notification_sidebar"%>
-<%= render "layouts/sidebar_menu"%>
 <% end %>
+<%= render "layouts/sidebar_menu"%>
 
 <div class="index_link_zone" id="index_link_zone">
     <div class="index_link_area">
+        <div class="index_link_container">
         <%= link_to(user_services_path, class: "index_link") do %>
             <div class="index_link_text"><%=Service.model_name.human%>を探す</div>
         <% end %>
@@ -103,6 +114,7 @@
         <%= link_to(user_transactions_path, class: "index_link") do %>
             <div class="index_link_text">回答を探す</div>
         <% end %>
+        </div>
     </div>
 </div>
 <div class="flash_alert_zone flash_zone">

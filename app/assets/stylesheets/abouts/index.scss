@@ -166,10 +166,10 @@
                         text-decoration: none;
                     }
                     .sign_up_link{
-                        padding:5px 40px;
+                        padding:5px 30px;
                     }
                     .sign_in_link{
-                        padding:5px 25px;
+                        padding:5px 30px;
                     }
                 }
             }
@@ -191,102 +191,6 @@
                 .image{
                     width: 100%;
                     object-fit: cover;
-                }
-            }
-        }
-        //以下は修正前のレイアウト //修正後のレイアウトが良ければ消す
-        .image_area{
-            height: $top_image_height;
-            //background-color: yellow;
-            position: relative;
-            .image_frame{
-                height: $top_image_height;
-                margin: 0 auto;
-                //background-color: white;
-                position: relative;
-                max-width: 800px;
-            }
-            .top_image_text_area{
-                font-weight: bold;
-                font-size: $front_font_size;
-                position: absolute;
-                top: calc(50% - #{$front_font_size} * 2);
-                right:0;
-                left: 0;
-                color: white;
-                text-shadow:0 0 10px black;
-                span{
-                    color: orange;
-                }
-            }
-            //.top_image{
-            //    width: 100%;
-            //    height:100%;
-            //    vertical-align: top;
-            //    object-fit:cover;
-            //}
-            .top_image1{
-                position: absolute;
-                left: 0;
-                //画像の中心が上から1/4になるようにする
-                bottom:calc(50% + (50% - 100vw *9 /16)/2);
-                //bottom: calc(75% - 100vw /16 *9 /2);
-                @media(min-width:525px){
-                    bottom:50%;
-                    height:50%;
-                }
-                max-width: 100%;
-                //height:50%;
-                vertical-align: top;
-                //object-fit:cover;
-                float: left;
-            }
-            .top_image2{
-                position: absolute;
-                right: 0;
-                //width: 80%;
-                max-width: 100%;
-                //画像の中心が下から1/4になるようにする
-                top:calc(50% + (50% - 100vw *9 /16)/2);
-                @media(min-width:525px){
-                    top:50%;
-                    height:50%;
-                }
-                //height:50%;
-                vertical-align: top;
-                //object-fit:cover;
-                float: right;
-            }
-            .top_image_background{
-                position: absolute;
-                top:0;
-                width: 100%;
-                height:100%;
-                opacity: 0.5;
-                background-color: white;
-                vertical-align: top;
-                object-fit:cover;
-            }
-            .sign_up_link{
-                font-size: 100px;
-            }
-            .sign_in_up_area{
-                font-size: 20px;
-                .sign_link{
-                    padding:5px 40px;
-                    font-size: 20px;
-                    width: 100px;
-                    background-color: #ff4f00;
-                    color: white;
-                    border-radius: 20px;
-                    text-shadow: none;
-                    text-decoration: none;
-                }
-                .sign_up_link{
-                    padding:5px 40px;
-                }
-                .sign_in_link{
-                    padding:5px 25px;
                 }
             }
         }

@@ -2,20 +2,24 @@
     <div class="search_detail_area">
         <div class="modal_body">
         <div class="modal_header">
-            <h4 class="p_tag">詳細な検索条件</h4>
+            <div class="title">詳細な検索</div>
         </div>
         <%= form_with url: user_accounts_path, class:"detail_search_form ",method:"get", id:"" do |f| %>
             <div class="text_field_area">
-            <%= f.text_field :name, value: params[:name], class:"text_field"%><span class="fa fa-search"></span>
+                <%= f.text_field :name, value: params[:name], class:"text_field", placeholder:"キーワード"%></span>
             </div>
             <!--
             <p>最終ログインからの経過日数</p>
             <%= f.number_field :elapsed_days, value: params[:elapsed_days], type:"number",min:"0",placeholder:"日数",step:"1", class:"max_price_field"%>日以内
             -->
             <p>回答数</p>
+            <div class="input_field text_field select_area">
+              <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件", num] }, selected: 0), include_blank: true,  class:"" ,required: true %>
+            </div>
+            <!--
             <%= f.number_field :total_sales_numbers, value:params[:total_sales_numbers], class:"total_sales_numbers", minn:"0", placeholder:"件数", step:"1"%>件以上
+            -->
             <p>カテゴリー</p>
-            </br>
             <div>
             <%= render "layouts/form_category", f:f%>
             </div>
