@@ -1,3 +1,4 @@
+@import 'variables';
 .service_show_zone{
     overflow: hidden;
     .service_left_area{
@@ -87,6 +88,9 @@
             .service_detail_area{
                 .service_detail_name{
                     margin-bottom: 10px;
+                    //background-color: $background-color;
+                    color: dimgrey;
+                    text-decoration: underline;
                 }
                 .service_detail{
                     margin-top: 0px;
@@ -101,7 +105,7 @@
                     width: 200px;
                     display: inline-block;
                     font-size: 15px;
-                    border-radius: 5px 5px 5px 5px;
+                    border-radius: 3px 3px 3px 3px;
                     color: white;
                     background-color: orange;
                     box-shadow: 0 0 2px lightgray;

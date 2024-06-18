@@ -133,7 +133,6 @@
                 </div>
                 -->
                 <div class="service_link_area">
-                    <label class'sercice_label'>相談室</label>
                     <div>
                     <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
                     </div>
@@ -197,8 +196,8 @@
                             <% end %>
                         </div>
                         <div class="time_name_area">
+                            <%= link_to item.sender.name, user_account_path(item.sender.id), class:"user_name" %>
                             <div class="send_time">
-                                <h2 class="user_name"><%= item.sender.name%></h2>
                                 <%=from_now(item.created_at)%>
                             </div>
                         </div>
@@ -217,16 +216,16 @@
             /<%=TransactionMessage.where(transaction_id:@transaction.id).count%>
         </div>
         <%if TransactionMessage.where(transaction_id:@transaction.id).count > 5%>
-            <div class="component_area get_transaction_message_button_button" id="get_transaction_message_button_button" style="text-align:center">
+            <div class=" get_transaction_message_button_button" id="get_transaction_message_button_button" style="text-align:center">
             もっと見る
             </div>
         <% end %>
     </div>
     </div>
     <div class="transaction_show_right_side">
-    <%= render 'user/shared/common_label', text: 'その他の回答', language: 'ja'%>
-        <% @transactions.each do |content| %>
-            <%= render "user/transactions/cell", content: content %>
+    <%= render 'user/shared/common_label', text: 'その他の相談', language: 'ja'%>
+        <% @transactions.each do |transaction| %>
+            <%= render "user/transactions/cell", transaction: transaction %>
         <% end %>
     </div>
 </div>
@@ -242,6 +241,7 @@ var sort_area = document.getElementsByClassName("sort_area");
 var loading_animation = document.getElementsByClassName("loading_animation");
 var get_transaction_message_button_button = document.getElementById("get_transaction_message_button_button");
 var loaded_pages = []
+var transaction_id = "<%=@transaction.id%>"
 
 //$("#get_transaction_message_button_button").css("display","none")
 $(".loading_animation").css("display","none");
@@ -288,14 +288,15 @@ $(window).on('scroll', function(){
             //$(".loading_animation").css("display","block");
             loaded_pages.push(page)
             console.log("ページ : " + page);
-            xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=<%=@transaction.id%>${order_params()}`);
+            console.log("id : " + `${transaction_id}`);
+            xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=${transaction_id}${order_params()}`);
         }
     }
 })
 
 $("#get_transaction_message_button_button").on('click', function(){
     var page = Math.ceil(transaction_message_area[0].childElementCount/5)+1
-    xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=<%=@transaction.id%>${order_params()}`);
+    xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=${transaction_id}${order_params()}`);
 })
 
 function order_params(){

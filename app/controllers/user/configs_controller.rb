@@ -1,6 +1,17 @@
 class User::ConfigsController < User::Base
-before_action :check_login
-Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+  before_action :check_login
+  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "application"
+    else
+      "small"
+    end
+  end
+
   def show
     @user = current_user
     #list = Stripe::PaymentIntent.list({limit: 3, customer: current_user.stripe_customer_id})

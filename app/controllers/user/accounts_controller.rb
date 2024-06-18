@@ -1,8 +1,16 @@
 class User::AccountsController < User::Base
-  layout "search_layout", only: :index
   before_action :check_login, only:[:edit, :update]
   before_action :check_published, only: [:show]
   after_action :create_access_log
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "index"
+      "search_layout"
+    end
+  end
+
   def index
     @users = User.all
     @users = @users.is_sellable
@@ -78,7 +86,7 @@ class User::AccountsController < User::Base
       uc.destroy
     end
 
-    params[:user][:category_ids].each do |c|
+    params[:user][:category_ids].split(',').each do |c|
       @user.user_categories.create(category_id: c.to_i) if c != ""
     end
     

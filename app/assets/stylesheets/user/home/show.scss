@@ -14,23 +14,121 @@
         }
     }
     .home_service_area{
-        overflow-x: auto;
-        white-space: nowrap;
+        display: flex;
+        width: 100%;
+        height: 230px;
+        @media (max-width:1000px) {
+            height: 220px;
+        }
+        overflow-x: scroll;
     }
     .home_service_unit{
-        display: inline-block;
+        margin: 0px;
         width: 200px;
-        height: 220px;
+        height: 160px;
+        flex-shrink: 0;
+        @media(max-width: 1000px){
+            width: 160px;
+        }
     }
     .home_user_area{
         display: flex;
         width: 100%;
-        height: 200px;
+        height: 180px;
         overflow-x: scroll;
     }
     .home_user_unit{
-        width: 300px;
-        margin: 5px;
+        width: 250px;
         flex-shrink: 0;
+    }
+    .transaction_and_label{
+        display: inline-block;
+        max-width: 700px;
+        width: calc(100% - 300px);
+        @media(max-width:700px){
+            width: 100%;
+        }
+        float: left;
+    }
+    
+    .label_area{
+        display: inline-block;
+        width: 100px;
+    }
+
+    .category_label_area{
+        display: inline;
+        float: right;
+        position: relative;
+        .category_list {
+            display: inline-block;
+            margin: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            background-color: white;
+            box-shadow: 0 0 2px lightgray;
+            border-radius: 5px;
+            //width: fit-content;
+            width: 100px;
+            font-size: 0.9em;
+            position: absolute;
+            top: 12px;
+            left: 0px;
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+        }
+        .hidden {
+            display: none;
+        }
+    }
+
+    #category_button{
+        color: blue;
+    }
+
+    #categoryList li {
+        padding: 2px 0;
+    }
+
+    .label_and_more{
+        @media (max-width:700px) {
+            display: none;
+        }
+    }
+    .label_and_categories{
+        display: none;
+        @media (max-width:700px) {
+            display: block;
+        }
+    }
+
+    .category_area{
+        float: left;
+        width: 300px;
+        //height: 200px;
+        .category_flame{
+            padding: 30px;
+            width: calc(100% - 70px);
+            height: calc(100% - 70px);
+            margin: 5px 5px 5px 5px;
+            border-radius: 5px;
+            //background-color: white;
+            border: 1px solid lightgray;
+            //box-shadow: 0 0 2px lightgray;
+            label{
+                font-size: 17px;
+            }
+        }
+        .category_link{
+            margin: 5px;
+            display: inline-block;
+            font-size: 14px;
+        }
+        @media(max-width: 700px){
+            display: none;
+        }
     }
 }

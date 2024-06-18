@@ -34,6 +34,27 @@
                     width: 200px;
                     padding-left: 10px;
                     color: #555555;
+
+                    .fas{
+                        display: inline-block;
+                        width: 20px;
+                    }
+                    .fa-chevron-right{
+                        padding-right: 10px;
+                    }
+                    div{
+                        display: inline-block;
+                        height: 100%;
+                        width: 100%;
+                    }
+                    .text{
+                        //font-weight: bold;
+                    }
+                }
+                .right_aligned{
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
                 }
                 a:hover{
                     background-color: #EEEEEE;
@@ -57,22 +78,6 @@
                     }
                 }
             }
-            .sidebar_menu_seller{
-                
-            }
-            .sidebar_menu_message{
-                
-            }
-            .sidebar_menu_request{
-                
-            }
-            .sidebar_menu_sell{
-                
-            }
-           
-            .sidebar_menu_logout{
-                
-            }
         }
     }
     .sidebar_menu_margin{
@@ -83,7 +88,15 @@
         width: calc(100% - 200px);
         opacity: 0.5;
         background-color: gray;
-        font-size: 30px;
+        color: white;
+        padding-left: 10px;
+        font-size: 50px;
+        cursor: pointer;
+    }
+    @media(min-width:1000px){
+        .search_link{
+            display: none;
+        }
     }
 }
 @media(min-width:1000px){
@@ -92,5 +105,8 @@
         height: 0px;
         width: 0px;
         z-index: -10;
+    }
+    .not_signined_menu{
+        display: none;
     }
 }

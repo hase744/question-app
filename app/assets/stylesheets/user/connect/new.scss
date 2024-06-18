@@ -1,0 +1,75 @@
+
+$select_width: 100px;
+.connect_new_area{
+    .field_area_title{
+        margin-bottom: 0px;
+    }
+    .connect_new_flame{
+    }
+    .select_area{
+        position: absolute;
+        top: 0px;
+    }
+    form{
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .select_flame{
+        margin-top: 10px;
+        width: calc(100% - 10px);
+        height: 25px;
+        border-radius: 5px;
+        border: solid 1px #627295;
+        height: 30px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid gray;
+        border-radius: 4px;
+        border-radius: 4px 0px 0px 4px;
+        width: #{$select_width};
+        display: inline-block;
+        position: relative;
+    }
+    .select_flame::before {
+        position: absolute;
+        top: 0.8em;
+        right: 0.8em;
+        width: 0;
+        height: 0;
+        padding: 0;
+        content: '';
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid gray;
+        pointer-events: none;
+    }
+    select {
+        width: 100%;
+        padding-right: 1em;
+        cursor: pointer;
+        text-indent: 0.01px;
+        text-overflow: ellipsis;
+        border: none;
+        outline: none;
+        background: transparent;
+        background-image: none;
+        box-shadow: none;
+        -webkit-appearance: none;
+        appearance: none;
+        padding: 8px 38px 8px 8px;
+        color: black;
+    }
+    .phone_input{
+        height: 28px;
+        border-radius: 0px 5px 5px 0px;
+        border: 1px solid gray;
+        position: absolute;
+        top: 10px;
+        left: #{$select_width};
+        width: calc(100% - #{$select_width});
+    }
+    .input_fields{
+        position: relative;
+        height: 50px;
+    }
+}

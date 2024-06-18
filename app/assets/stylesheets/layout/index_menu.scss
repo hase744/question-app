@@ -1,6 +1,17 @@
 .index_link_zone{
     width: 100%;
     z-index: -0.5;
+    .index_link_container{
+        height: 100%;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1000px;
+        position: relative;
+        //@media (max-width:1000px) {
+        //    width: 100%;
+        //}
+    }
     .index_link_area{
         background-color: white;
         //position: absolute;
@@ -9,10 +20,11 @@
         box-shadow: 0 0 2px lightgray;
         .index_link{
             float: right;
-            display: inline-block;
+            //display: inline-block;
             height:100%;
             text-decoration: none;
-            color: dimgray;
+            color: #333333;
+            font-size: 14px;
             //box-shadow: 0 0 2px lightgray;
             //box-shadow: 4px 0 3px -3px lightgray;
             //box-shadow: 4px 0 3px -3px lightgray inset;
@@ -23,6 +35,24 @@
                 text-align: center;
                 margin: 0 auto;
             }
+            .index_link_text::before {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                transform: translateY(-500%);
+                width: 10px;
+                height: 20px;
+                background: #d7e0dc;
+                content: "";
+            }
+        }
+        .index_link::before {
+            position: absolute;
+            //transform: translate(-50%, 50%);
+            width: 1px;
+            //height: calc(40%);
+            background: #d7e0dc;
+            content: "";
         }
         .index_link:hover{
             background-color: whitesmoke;
@@ -40,13 +70,22 @@
         background-color: white;
     }
 }
+.index_link::before {
+    transform: translate(-50%, 50%);
+    height: calc(50%);
+}
 //1000px以下
 @media(max-width:1000px){
     .index_link_area{
         height: 30px;
+        display: none;
     }
     .index_link{
         width: 70px;
+    }
+    .index_link::before {
+        transform: translate(-50%, 7.5px);
+        height: 15px;
     }
     .index_link_text{
         font-size: 10px;
@@ -58,7 +97,7 @@
         height:40px;
     }
     .index_link{
-        width: 150px;
+        width: 130px;
     }
     .index_link_margin{
         height: 30px;

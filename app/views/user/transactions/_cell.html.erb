@@ -1,28 +1,63 @@
 <div class="transaction_cell_area">
-<% content.set_item %>
-<%= link_to(user_transaction_path(content.id), class: 'transaction_link') do %>
+    <% transaction.set_item %>
     <div class="transaction_cell_flame">
+    <!--
         <div class="youtube_video_area">
-            <%if content.use_youtube%><% %>
-            <img src="https://img.youtube.com/vi/<%=content.youtube_id%>/maxresdefault.jpg" alt="Dinosaur" class="file transaction_file youtube_video">
-                <!--
-                <iframe class="transaction_file"src="https://www.youtube.com/embed/<%=content.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                -->
-            <% elsif content.request_form_name == "text" %>
-                <% if content.delivery_form.name == "image" || content.delivery_form.name == "text"%>
-                        <%= image_tag content.request.image_with_default, class:"transaction_file "%>
-                <% elsif content.delivery_form.name == "video" %>
-                    <%= image_tag content.thumbnail.url, class:"transaction_file content_file", controls: true, autobuffer: true%>
+            <%if transaction.use_youtube%><% %>
+            <img src="https://img.youtube.com/vi/<%=transaction.youtube_id%>/maxresdefault.jpg" alt="Dinosaur" class="file transaction_file youtube_video">
+                
+                <iframe class="transaction_file"src="https://www.youtube.com/embed/<%=transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                
+            <% elsif transaction.request_form_name == "text" %>
+                <% if transaction.delivery_form.name == "image" || transaction.delivery_form.name == "text"%>
+                        <%= image_tag transaction.request.image_with_default, class:"transaction_file "%>
+                <% elsif transaction.delivery_form.name == "video" %>
+                    <%= image_tag transaction.thumbnail.url, class:"transaction_file content_file", controls: true, autobuffer: true%>
                 <% end %>
             <% end %>
         </div>
+        -->
         
         <div class="video_text_area">
-            <h5 class="one_line_text request_title"><%= content.request.title%></h5>
-            <h5 class="one_line_text title"><span class="title transaction_title ">A.<%= content.title%></span></h5>
-            <h5><%= content.seller.name%></h5>
-            <h5 class="datetime"><%= from_now(content.created_at)%></h5>
+            <%= link_to(user_transaction_path(transaction.id), class: 'transaction_link') do %>
+            <h5 class="one_line_text request_title">Q.<%= transaction.request.title%></h5>
+            <% end %>
+            <h5 class="one_line_text user_and_date">質問者:&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= from_now(transaction.created_at)%></h5>
+            <h5 class="two_line_text title"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
+            <div class="display_none" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
+            <div class="seller_container">
+                <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
+                    <% if transaction.seller.image.url %>
+                    <%=image_tag transaction.seller.image.url, class:"seller_image"%>
+                    <% else %>
+                    <%=image_tag user_image_default, class:"seller_image"%>
+                    <% end %>
+                    <div class="seller_name_area">
+                        <p class="seller_name"><%=transaction.seller.name%></p>
+                    </div>
+                <% end %>
+                <%#= render "user/relationships/follow", user:transaction.seller%>
+            </div>
+                <h5 class="title"><%= transaction.description%></h5>
+            </div>
         </div>
     </div>
-    <% end %>
+    &nbsp;<div class="change_text open_text fas fa-angle-down" id="open_text<%=transaction.model_name%><%=transaction.id%>">&nbsp;</div>
 </div>
+<script>
+var description_text_area = document.getElementById("description_text_area");
+var open_text<%=transaction.model_name%><%=transaction.id%> = document.getElementById("open_text<%=transaction.model_name%><%=transaction.id%>");
+var description_text<%=transaction.model_name%><%=transaction.id%> = document.getElementById("description_text<%=transaction.model_name%><%=transaction.id%>");
+var answer_area<%=transaction.model_name%><%=transaction.id%> = document.getElementById("answer_area<%=transaction.model_name%><%=transaction.id%>")
+
+open_text<%=transaction.model_name%><%=transaction.id%>.addEventListener('click', (event) => {
+    open_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("open_text");
+    open_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("close_text");
+    
+    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("opening_text");
+    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("closing_text");
+    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("two_line_text");
+    answer_area<%=transaction.model_name%><%=transaction.id%>.classList.toggle("display_none");
+    console.log("description")
+});
+</script>

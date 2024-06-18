@@ -1,10 +1,16 @@
 <h3 class="zone_title"><%= link_to "設定", user_configs_path, class:"main_area_top_link" %> ＞ 電話番号登録</h3>
-<div class="connect_new_zone component_area">
-    <div class="connect_new_area component_flame">
+<div class="connect_new_zone component_area connect_new_area">
+    <div class="connect_new_area component_flame connect_new_flame">
         <%= form_with url: user_post_certify_phone_path do |form| %>
             <h3 class="field_area_title">電話番号</h3></br>
-            <%= form.select :country_id, @countries_form %>
-            <%=form.text_field :certification_number, type:"tel", class:"form_input", pattern:"^[0-9-]+$" %></br>
+            <div class="input_fields">
+                <div class="select_area">
+                    <div class="select_flame">
+                        <%= form.select :country_id, @countries_form, class:"select_field" %>
+                    </div>
+                </div>
+                <%=form.text_field :certification_number, type:"tel", class:"phone_input", pattern:"^[0-9-]+$" %></br>
+            </div>
             <div class="submit_area">
                 <%= form.submit '登録',class:"submit", placeholder:"" %>
             </div>

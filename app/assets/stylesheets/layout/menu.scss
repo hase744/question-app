@@ -21,15 +21,93 @@ $menu_link_height: 30px;
     position: relative;
     box-shadow: 0px 0px 2px whitesmoke;
     z-index: -0.5;
+    @media (max-width:1000px) {
+        box-shadow: 0 0 2px lightgray;
+    }
+    .menu_bar_container{
+        height: 100%;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1000px;
+        position: relative;
+        //@media (max-width:1000px) {
+        //    width: 100%;
+        //}
+    }
     /*
     display: flex; //flex型
     flex-direction: row; //flexを横方向に
     justify-content: flex-end; //flex内部のアイテムを末尾に寄せる
     */
+
+
+    $left_menu_button: 33px;
+    .left_menu_button_area {
+        display: inline-block;
+        //position: absolute;
+        float: right;
+        width: $left_menu_button;
+        height: $left_menu_button;
+        right: 10px;
+        .left_menu_button {
+            width: $left_menu_button*0.9;
+            height: $left_menu_button*0.8;
+            cursor: pointer;
+            margin-top: 12px;
+            margin-right: 5px;
+            position: relative;
+        }
+        .left_menu_button span {
+            position: absolute;
+            left: 0;
+            width: $left_menu_button*0.9;
+            height: $left_menu_button*0.08;
+            background-color: dimgray;
+            border-radius: $left_menu_button*0.08;
+        }
+        .left_menu_button, .left_menu_button span {
+            display: inline-block;
+            transition: all .5s;
+            box-sizing: border-box;
+        }
+        .left_menu_button span:nth-of-type(1) {
+            top: 0;
+        }
+        .left_menu_button span:nth-of-type(2) {
+            top: $menu_height*0.24;
+        }
+        .left_menu_button span:nth-of-type(3) {
+            bottom: 0;
+        }
+        .left_menu_button.active span:nth-of-type(1) {
+            -webkit-transform: translateY($menu_height*0.4) rotate(-45deg);
+            transform: translateY($menu_height*0.24) rotate(-45deg);
+        }
+        .left_menu_button.active span:nth-of-type(2) {
+            opacity: 0;
+        }
+        .left_menu_button.active span:nth-of-type(3) {
+            -webkit-transform: translateY(-$menu_height*0.4) rotate(45deg);
+            transform: translateY(-$menu_height*0.24) rotate(45deg);
+        }
+        .left_menu_button span{
+            display: none;
+            @media (max-width:1000px) {
+                display: inline-block;
+            }
+        }
+        display: none;
+        @media (max-width:1000px) {
+            display: inline-block;
+        }
+    }
+
+
     .app_name_area{
         position: absolute;
         //background-color: red;
-        left: -10px;
+        left: -25px;
         height: 45px;
         padding-top: 5px;
         display: inline-block;
@@ -40,7 +118,7 @@ $menu_link_height: 30px;
         text-decoration: none;
         .app_name{
             color: rgb(200, 200, 0);
-            font-size: 23px;
+            font-size: 20px;
         }
         .app_design{
             transform: rotate(-10deg) translate(5px, 3px);
@@ -220,14 +298,15 @@ $menu_link_height: 30px;
                 .close_icon::before, .close_icon::after{
                     content: "";
                     display: inline-block;
-                    width: 100%;/*バツ線の長さ*/
-                    height: 5px;/*バツ線の太さ*/
-                    background: #000;
+                    width: 80%;/*バツ線の長さ*/
+                    height: 3px;/*バツ線の太さ*/
+                    border-radius: 3px;
+                    background: #333333;
                     transform: rotate(45deg);
                     transform-origin:0% 50%;
                     position: absolute;
-                    top: calc(14% - 5px);
-                    left: 14%;
+                    top: calc(24% - 5px);
+                    left: 30%;
                 }
                 .close_icon::after{
                     transform: rotate(-45deg);
@@ -333,6 +412,7 @@ $menu_link_height: 30px;
         }
     }
 }
+
 .menu_bar{
     height: 50px;
 }
@@ -399,6 +479,7 @@ $menu_link_height: 30px;
     }
     .search_mode .wide_detail_search{
         display: inline-block;
+        box-shadow: 0px 0px 2px lightgray;
     }
 }
 
@@ -437,10 +518,10 @@ $menu_link_height: 30px;
 
 .detail_search_form{
     .text_field{
-        margin-top: 10px;
+        //margin-top: 10px;
         width: calc(100% - 10px);
         height: 25px;
-        border-radius: 20px;
+        border-radius: 5px;
         border: solid 1px #627295;
     }
     select{
@@ -449,7 +530,6 @@ $menu_link_height: 30px;
     .field_label{
         display: inline-block;
         margin-top: 20px;
-        margin-bottom: 5px;
         width: 100%;
     }
     .text_field_area{
@@ -477,8 +557,9 @@ $menu_link_height: 30px;
             margin-top: 20px;
             padding: 0px;
             width: 50%;
+            height: 25px;
             display: inline-block;
-            font-size: 20px;
+            font-size: 15px;
             border-radius: 5px 5px 3px 3px;
             color: white;
             background-color: orange;

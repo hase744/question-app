@@ -2,18 +2,22 @@
     <div class="search_detail_area">
         <div class="modal_body">
         <div class="modal_header">
-            <h4 class="p_tag">詳細な検索</h4>
+            <div class="title">詳細な検索</div>
         </div>
-        <%= form_with url: user_transactions_path, class:"detail_search_form ",method:"get", id:"" do |f| %>
+        <%= form_with url: user_transactions_path, class:"detail_search_form ",method:"get", id:"", placeholder:"キーワード" do |f| %>
             <div class="text_field_area">
-                <%= f.text_field :word, value:params[:word], class:"text_field "%><span class="fa fa-search"></span>
+                <%= f.text_field :word, value:params[:word], class:"text_field", placeholder:"キーワード"%></span>
             </div>
             
             <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br />
+            <div class="input_field text_field select_area">
             <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+            </div>
 
             <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br />
+            <div class="input_field text_field select_area">
             <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+            </div>
             </br>
             <div class="category_area">
                 <label class="field_label">カテゴリー</label><br />

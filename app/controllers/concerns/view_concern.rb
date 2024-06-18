@@ -7,7 +7,7 @@ module ViewConcern
   $selector = {
     '回答': "transaction", 
     '質問': "request", 
-    'サービス': "service", 
+    '相談室': "service", 
     '回答者　　': "account"
   }
   #コントローラー名とオプションのペア

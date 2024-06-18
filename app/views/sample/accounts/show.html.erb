@@ -54,9 +54,9 @@
                 <li class="menu_element"><%= link_to "投稿一覧", sample_account_posts_path(@user.id), remote: true, class:"user_content_link user_posts_link"%></li>
                 <li class="menu_element"><%= link_to "依頼", sample_account_requests_path(@user.id), remote: true, class:"user_content_link user_requests_link"%></li>
                 <li class="menu_element"><%= link_to "お気に入り", sample_account_likes_path(@user.id), remote: true, class:"user_content_link user_likes_link"%></li>
-                <li class="menu_element"><%= link_to "購入履歴", sample_account_purchases_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
+                <li class="menu_element"><%= link_to "質問履歴", sample_account_purchases_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
                 <%if @user.is_seller%>
-                <li class="menu_element"><%= link_to "販売履歴", sample_account_sales_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
+                <li class="menu_element"><%= link_to "回答履歴", sample_account_sales_path(@user.id), remote: true, class:"user_content_link user_purchases_link"%></li>
                 <li class="menu_element"><%= link_to "サービス", sample_account_services_path(@user.id), remote: true, class:"user_content_link user_services_link"%></li>
                 <!--
                 <li class="menu_element"><%= link_to "レビュー", sample_account_reviews_path(@user.id), remote: true, class:"user_content_link user_reviews_link"%></li>
