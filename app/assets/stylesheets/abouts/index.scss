@@ -122,17 +122,35 @@
             }
             //background-color: blue;
             .top_image_text_area{
-                font-weight: bold;
-                font-size: 40px;
                 position: absolute;
-                top: 10vw;
+                z-index: 1;
+                top: 25%;
                 bottom: 0;
-                right:50%;
+                right: 55%;
                 max-height: 500px;
                 max-width: 700px;
                 color: white;
-                text-shadow:0 0 10px black;
+                color: #e61874;
                 margin: auto;
+                margin-bottom: 0px;
+                text-shadow:0 0 10px black;
+                font-weight: bold;
+                .top_text{
+                    color: $text_yellow;
+                    color: rgb(230, 230, 0);
+                    font-size: 50px;
+                    @media(max-width: 1000px){
+                        font-size: 40px;
+                        margin-top: 20px;
+                    }
+                }
+                .explain{
+                    color: white;
+                    text-shadow:0 0 10px black;
+                    font-size: 22px;
+                    margin-bottom: 0px;
+                    margin-top: -10px;
+                }
                 .app_name{
                     font-size: 70px;
                     color: rgb(230, 230, 0);
@@ -140,43 +158,40 @@
                 @media(max-width: 1000px){
                     position: relative;
                     width: 100%;
-                    top: auto;
+                    top: 20px;
                     right: auto;
-                    font-size: 40px;
+                    //font-size: 40px;
                 }
                 .break{
                     display: inline-block;
-                }
-                .highlight{
-                    color: orange;
                 }
                 .sign_up_link{
                     font-size: 100px;
                 }
                 .sign_in_up_area{
-                    font-size: 20px;
+                    margin-top: 20px;
+                    font-size: 15px;
+
                     .sign_link{
-                        padding:5px 40px;
+                        display: inline-block;
+                        padding-top: 10px;
+                        padding-bottom: 10px;
                         font-size: 20px;
-                        width: 100px;
+                        width: 45%;
+                        max-width: 200px;
                         background-color: #ff4f00;
+                        background-color: orange;
                         color: white;
-                        border-radius: 20px;
+                        border-radius: 5px;
                         text-shadow: none;
                         text-decoration: none;
-                    }
-                    .sign_up_link{
-                        padding:5px 30px;
-                    }
-                    .sign_in_link{
-                        padding:5px 30px;
                     }
                 }
             }
             .image_flame{
                 position: absolute;
                 top: 0;
-                left: 50%;
+                left: 45%;
                 bottom: 0;
                 width: 50%;
                 height: 100%;
