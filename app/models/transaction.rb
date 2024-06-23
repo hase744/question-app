@@ -46,6 +46,10 @@ class Transaction < ApplicationRecord
   after_initialize do
   end
 
+  scope :solve_n_plus_1, -> {
+    includes(:seller, :buyer, :request, :service, :items)
+  }
+
   scope :ongoing, -> {
     self.where(
       is_rejected: false,

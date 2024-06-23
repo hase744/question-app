@@ -39,7 +39,7 @@
                 font-weight: normal;
             }
             .request_title{
-                font-size: 20px;
+                font-size: 17px;
                 color: blue;
                 font-weight: bold;
                 //color: steelblue;
@@ -113,11 +113,11 @@
     .change_text{
         //text-align: center;
         float: right;
-        color: grey;
+        color: #195faa;
     }
     .change_text:before{
         text-decoration: none;
-        color: blue;
+        color: #195faa;;
         cursor: pointer;
     }
     .change_text:hover{

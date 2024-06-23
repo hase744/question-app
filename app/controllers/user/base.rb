@@ -190,6 +190,17 @@ class User::Base < ApplicationController
     end
   end
 
+  def check_meta_tag
+    @twitter_title = "コレテク　~ノウハウを売買するQAサイト~"
+    @twitter_site = "@3UJVrqxCS0V4bin"
+    @twitter_creator = "@3UJVrqxCS0V4bin"
+    @og_title = "コレテク　~ノウハウを売買するQAサイト~"
+    @og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
+    @og_description = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+    @og_site_name = "コレテク"
+    @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.png"
+  end
+  
   private def check_login
     if !user_signed_in?
       session[:path_params] = params
