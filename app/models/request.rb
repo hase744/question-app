@@ -42,6 +42,10 @@ class Request < ApplicationRecord
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
 
+  def resize_to
+    [1000, 500]
+  end
+
   scope :solve_n_plus_1, -> {
     includes(:user, :services, :request_categories, :categories, :items)
   }

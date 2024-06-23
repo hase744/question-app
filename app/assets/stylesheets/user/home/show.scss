@@ -13,20 +13,63 @@
             font-size: 15px;
         }
     }
+    @media(min-width: 1000px){
+        .swiper-service-container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+        }
+        .swiper-user-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .swiper-slide {
+            display: flex;
+            width: 100%; /* カスタマイズ可能 */
+        }
+        .home_service_unit {
+            //width: 20%;
+            //float: left;
+        }
+        .swiper-button-custom {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            z-index: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            display: none;
+            @media(min-width: 1000px){
+                display: inline-block;
+            }
+        }
+        .swiper-button-next {
+            right: 0px;
+        }
+        .swiper-button-prev {
+            left: 0px;
+        }
+
+    }
     .home_service_area{
         display: flex;
         width: 100%;
-        height: 230px;
+        height: 220px;
         @media (max-width:1000px) {
             height: 220px;
+            overflow-x: auto;
         }
-        overflow-x: scroll;
+        z-index: 0;
     }
     .home_service_unit{
         margin: 0px;
-        width: 200px;
-        height: 160px;
+        //width: 20%;
+        height: 100%;
         flex-shrink: 0;
+        display: inline-block;
         @media(max-width: 1000px){
             width: 160px;
         }
@@ -35,11 +78,16 @@
         display: flex;
         width: 100%;
         height: 180px;
-        overflow-x: scroll;
+        z-index: 0;
+        @media (max-width:1000px) {
+            overflow-x: auto;
+        }
     }
     .home_user_unit{
         width: 250px;
         flex-shrink: 0;
+        margin: 0px;
+        //width: 20%;
     }
     .transaction_and_label{
         display: inline-block;
@@ -128,6 +176,35 @@
             font-size: 14px;
         }
         @media(max-width: 700px){
+            display: none;
+        }
+    }
+    .swiper-slide {
+        display: none;
+    }
+    .not-swiper-slide{
+        display: inline-block;
+    }
+    .swiper-service-container{
+        display: none;
+    }
+    .swiper-user-container{
+        display: none;
+    }
+    @media(min-width: 1000px){
+        .swiper-service-container{
+            display: block;
+        }
+        .swiper-user-container{
+            display: block;
+        }
+        .not-swiper-slide{
+            display: none;
+        }
+        .swiper-slide {
+            display: flex;
+        }
+        .to1000{
             display: none;
         }
     }

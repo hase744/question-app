@@ -52,7 +52,8 @@ namespace :sample do
     Category.where(name: CATEGORIES).each do |category|
       file_path = Rails.root.join('public', 'sample', category.name, 'services.json')
       services = JSON.parse(File.read(file_path))
-      10.times do |n|
+      #10.times do |n|
+      Parallel.each(0..9) do |n|
         service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
         service = Service.create_or_find_by!(
           user: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),

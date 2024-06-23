@@ -3,10 +3,22 @@
   set_search_detail = function(){//検索するコンテンツの種類によって詳細検索タブが変更
     $(".search_forms > span").css("display","none");
     $(".search_forms .search_detail").css("display","none");
-    console.log($(".search_forms div"))
     $(".transaction_search_field").css("display","none");
-    $(`.${selector.options[selector.selectedIndex].value}_search_field`).css("display","block");
+    $(`.${$('#form_select').val()}_search_field`).css("display","block");
     change_search_path();
+
+    //
+    //$('#menu_search_form').find(':input').each(function() {
+    //  if (this.name && this.name !== 'content' && this.name !== 'commit') {
+    //      const baseName = this.name.match(/\[([^\]]+)\]/)[1];
+    //      this.name = `${option.value}[${baseName}]`;
+    //  }
+    //});
+  }
+  set_default_searcg_detail = function(){
+    $(".search_forms > span").css("display","none");
+    $(".search_forms .search_detail").css("display","none");
+    $(`.menu_search_form .${$('#form_select').val()}_search_field`).css("display","block");
   }
   change_search_path = function(){//検索先のurlをselectから変更
     options = "<%= $options.to_json %>" //エスケープ入りのjson
@@ -17,6 +29,9 @@
     action = uri.origin + "/user/" + option.value + "s";
     //console.log("検索先" + action)
     $(".menu_search_form").attr('action', action);
+
+
+
   }
   $(".open_search").click(function() { // 検索バーを開く
     $('.menu_bar').addClass('search_mode');
@@ -25,7 +40,11 @@
     $('.menu_bar').removeClass('search_mode');
   });
   $("#form_select").change(function() { // 検索コンテンツの種類が変更されたとき
-    set_search_detail();
+    set_default_searcg_detail();
   });
+  //$(".search_input").on("focus", function() {
+  //  set_search_detail();
+  //});
   change_search_path();
+  set_default_searcg_detail();
 })();

@@ -3,6 +3,7 @@
   float: left;
   display: inline-block;
   height: 220px;
+  width: 100%;
 }
 .service_small_cell_flame{
   display: inline-block;
@@ -11,7 +12,7 @@
   //box-shadow: 0 0 2px lightgrey;
   border: 1px solid lightgray;
   border-radius: 5px;
-  margin: 5px;
+  //margin: 5px;
   width: calc(100% - 10px);
   height: calc(100% - 10px);
   max-width: calc(250px * 1.5 -10px);
@@ -23,7 +24,7 @@
       .service_image{
           height: 100%;
           width: 100%;
-          border-radius: 10px 10px 0px 0px;
+          border-radius: 5px 5px 0px 0px;
           object-fit: cover;
       }
   }

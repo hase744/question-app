@@ -1,21 +1,43 @@
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <div class="home_show_zone">
     <%= render "user/shared/label_with_link", label: "相談室", link: user_services_path %>
-    <div class="home_service_area">
-        <% @services.each do |service| %>
-            <div class="home_service_unit">
-            <%= render "user/services/small_cell", service: service%>
+    
+    <div class="swiper-service-container">
+        <div class="swiper-wrapper home_service_area">
+            <% @services.each.with_index do |service, index| %>
+                <div class="home_service_unit swiper-slide">
+                    <%= render "user/services/small_cell", service: service%>
+                </div>
+            <% end %>
+        </div>
+        <div class="swiper-button-next swiper-service-button-next swiper-service-button swiper-button-custom"></div>
+        <div class="swiper-button-prev swiper-service-button-prev swiper-service-button swiper-button-custom"></div>
+    </div>
+    <div class="home_service_area to1000">
+        <% @services.each.with_index do |service, index| %>
+            <div class="home_service_unit not-swiper-slide">
+                <%= render "user/services/small_cell", service: service%>
             </div>
         <% end %>
     </div>
     <%= render "user/shared/label_with_link", label: "回答者", link:  user_accounts_path %>
-        <div class="home_user_area to500">
+    <div class="swiper-user-container">
+        <div class="home_user_area swiper-wrapper">
             <% @users.each do |user| %>
-                <div class="home_user_unit">
-                <%= render "user/accounts/small_cell", user: user %>
+                <div class="home_user_unit swiper-slide">
+                    <%= render "user/accounts/small_cell", user: user %>
                 </div>
             <% end %>
         </div>
-    <div>
+        <div class="swiper-button-prev swiper-user-button-prev swiper-service-button swiper-button-custom"></div>
+        <div class="swiper-button-next swiper-user-button-next swiper-service-button swiper-button-custom"></div>
+    </div>
+    <div class="home_user_area to1000">
+        <% @users.each do |user| %>
+            <div class="home_user_unit not-swiper-slide">
+                <%= render "user/accounts/small_cell", user: user %>
+            </div>
+        <% end %>
     </div>
     <div class="transaction_and_label">
         <div class="label_and_more">
@@ -84,3 +106,37 @@
     </div>
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper('.swiper-service-container', {
+    slidesPerView: 5,
+    spaceBetween: 10,
+    navigation: {
+      nextEl: '.swiper-service-button-next',
+      prevEl: '.swiper-service-button-prev',
+    },
+  });
+  document.querySelector('.swiper-service-button-next').addEventListener('click', function () {
+      swiper.slideTo(swiper.activeIndex + 5);
+  });
+
+  document.querySelector('.swiper-service-button-prev').addEventListener('click', function () {
+      swiper.slideTo(swiper.activeIndex - 5);
+  });
+  var user_swiper = new Swiper('.swiper-user-container', {
+    slidesPerView: 4,
+    spaceBetween: 8,
+    navigation: {
+      nextEl: '.swiper-user-button-next',
+      prevEl: '.swiper-user-button-prev',
+    },
+  });
+  document.querySelector('.swiper-user-button-next').addEventListener('click', function () {
+      user_swiper.slideTo(user_swiper.activeIndex + 4);
+  });
+  document.querySelector('.swiper-user-button-prev').addEventListener('click', function () {
+      user_swiper.slideTo(user_swiper.activeIndex - 4);
+  });
+  
+</script>

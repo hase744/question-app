@@ -41,23 +41,24 @@
         <%= form_with url: user_transactions_path, class:"form menu_search_form", id:"menu_search_form", name:"menu_search_form" ,method:"get" do |f| %>
             <div class="search_bar search">
                 <div class="searchForm inner_search_bar search_component search">
-                    <div class="close_search search"><div><span class="close_icon"></span></div></div>
-                        <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
-                        <%= f.text_field :word, class:"search_component search search_input"%>
-                        <div class="searchForm-submit search_component search">
+                    <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
+                    <%= f.text_field :word, class:"search_component search search_input"%>
+                    <div class="searchForm-submit search_component search">
                         <div class="search_glass"></div>
-                            <%= f.submit '', class:"menu_submit_button" %>
-                        </div>
-                        <%= f.text_field :name, class:"search-detail-json"%>
+                        <%= f.submit '', class:"menu_submit_button" %>
+                    </div>
+                    <div class="close_search search"><div><span class="close_icon"></span></div></div>
+                    <%= f.text_field :name, class:"search-detail-json"%>
                 </div>
             </div>
             <div class="wide_detail_search search search_forms">
+                <span class="service_search_field">価格</br></span>
+                <span class="request_search_field">予算</br></span>
                 <span id="price_field_area" class="request_search_field service_search_field">
-                    <p class="service_search_field">価格</p>
-                    <p class="request_search_field">予算</p>
-                    <%= f.number_field :max_price, type:"number",min:"0",placeholder:"Max",step:"100", class:"max_price_field"%>
+
+                    <%= render "user/shared/form/max_price", f:f%>
                     <span>〜</span>
-                    <%= f.number_field :mini_price, type:"number",min:"0",placeholder:"min",step:"100",  class:"mini_price_field"%>
+                    <%= render "user/shared/form/mini_price", f:f%>
                     </br></br>
                 </span>
 
@@ -68,27 +69,30 @@
 
                 <span id="sales_results_field_area" class="account_search_field">
                     <p>回答</p>
-                    <%= f.number_field :total_sales_numbers, class:"sales_results", minn:"0", placeholder:"件数", step:"1"%>
+                    <div class="select_area">
+                        <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件", num] }, selected: 0), include_blank: true,  class:"sales_results" ,required: true %>
+                    </div>
                     </br></br>
                 </span>
 
                 <span id="price_field_area" class="request_search_field service_search_field">
                     <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
-                    <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
+                    <%= render "user/shared/form/request_form", f:f%>
                     </br></br>
                 </span>
 
                 <span id="price_field_area" class="request_search_field service_search_field">
                     <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
-                    <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-                    </br></br>
+                    <%= render "user/shared/form/delivery_form", f:f%>
+                    </br>
                 </span>
 
                 <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
                     <p>カテゴリー</p>
                     <div>
                     <%= render "layouts/form_category", f:f%>
-                    </div></br>
+                    </div>
+                    </br>
                 </span>
             </div>
         <% end %>

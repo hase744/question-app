@@ -13,15 +13,15 @@ class Form
       Form.new(
         id: 2,
         name: 'image',
-        japanese_name: '画像',
+        japanese_name: '文章＋画像',
         start_at: DateTime.new(2024, 1, 1)
       ),
-      Form.new(
-        id: 3,
-        name: 'video',
-        japanese_name: '動画',
-        start_at: DateTime.new(2024, 1, 1)
-      ),
+      #Form.new(
+      #  id: 3,
+      #  name: 'video',
+      #  japanese_name: '動画',
+      #  start_at: DateTime.new(2024, 1, 1)
+      #),
     ]
   end
 

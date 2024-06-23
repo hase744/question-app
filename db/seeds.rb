@@ -27,5 +27,5 @@ development_table_names.each do |table_name|
 end
 
 
-AdminUser.create!(email: ENV["EMAIL1"],name:"hasegawa", password: ENV["PASSWORD"], password_confirmation: ENV["PASSWORD"]) if Rails.env.development?
-AdminUserRole.create(admin_user_id: AdminUser.first.id, role: Role.find_by(name:"super_admin")) if Rails.env.development?
+AdminUser.create!(email: ENV["EMAIL1"],name:"hasegawa", password: ENV["PASSWORD"], password_confirmation: ENV["PASSWORD"]) #if Rails.env.development?
+AdminUserRole.create(admin_user_id: AdminUser.first.id, role: Role.find_by(name:"super_admin")) #if Rails.env.development?

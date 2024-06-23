@@ -27,8 +27,8 @@
             //text-decoration: none;
         }
         .video_text_area{
-            height: 100px;
-            display: inline-block;
+            //height: 100px;
+            //display: inline-block;
             background-color: white;
             border-radius: 10px;
             //width: calc(100% - 100px / 9 * 16);
@@ -55,7 +55,7 @@
                 //text-decoration: underline;
                 font-size:15px;
             }
-            h5{
+            .text{
                 margin-top: 3px;
                 margin-bottom: 0px;
                 padding-left: 5px;
@@ -112,22 +112,22 @@
     }
     .change_text{
         //text-align: center;
+        float: right;
         color: grey;
     }
-    .change_text:after{
+    .change_text:before{
         text-decoration: none;
-        color: grey;
+        color: blue;
         cursor: pointer;
     }
     .change_text:hover{
         text-decoration: underline;
     }
-    .open_text:after{
-      content: "詳細を表示";
+    .open_text:before{
+      content: "...詳細を表示";
     }
-    .close_text:after{
+    .close_text:before{
       content: "詳細を閉じる";
-      
     }
 }
 

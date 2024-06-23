@@ -15,7 +15,7 @@
                 <div><span class="request_alert">取引が完了しました</span></div>
             <% elsif @request.suggestion_deadline %>
                 <%if @request.suggestion_deadline < DateTime.now%>
-                    <div><span class="request_alert">募集が締め切られました</span></div>
+                    <div><span class="request_alert">期限切れ</span></div>
                 <% end %>
             <% end %>
             <%#if @request.is_rejected %>
@@ -106,7 +106,7 @@
                 </tr>
             </table>
             <div class="request_detail">
-                <h4>相談したい内容</h4>
+                <h4>本文</h4>
                 <div class="request_detail_content" id="request_detail_content">
                     <p id="request_detail_text" class="request_detail_text"><%=@request.description%></p>
                 </div>

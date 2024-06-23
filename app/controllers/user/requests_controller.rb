@@ -54,11 +54,11 @@ class User::RequestsController < User::Base
     end
     
     if params[:max_price].present?
-    @requests = @requests.where("max_price <= ?", "#{params[:max_price]}")
+      @requests = @requests.where("max_price <= ?", "#{params[:max_price]}")
     end
     if params[:mini_price].present?
       @requests = @requests.where("? <= max_price", "#{params[:mini_price]}")
-      end
+    end
 
     @requests = @requests.page(params[:page]).includes(:user).per(10)
     gon.layout = "action_index"

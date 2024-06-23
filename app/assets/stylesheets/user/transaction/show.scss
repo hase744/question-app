@@ -143,9 +143,6 @@
                         
                     }
                 }
-                .share_button_area{
-                    float: right;
-                }
                 .seller_area{
                     display: inline-block;
                     width: calc(100% - 110px);
@@ -153,39 +150,6 @@
                 }
                 .follow_message_area{
                     float: right;
-                }
-
-                .service_menu_bar{
-                    display: flex;
-                    overflow-x:scroll;
-                    white-space: nowrap;
-                    //-webkit-overflow-scrolling: touch;
-                    overflow-y: hidden;
-                    li{
-                        margin-bottom: 0px;
-                        text-align: center;
-                        color: gray;
-                        display: inline-block;
-                        vertical-align: middle;
-                        
-                        height: 40px;
-                        line-height: 40px;
-                        
-                        min-width: 100px;
-                    }
-                    li:hover{
-                        cursor: pointer;
-                        background-color: gainsboro;
-                    }
-                    .user_item_link{
-                        height: 40px;
-                        padding: 13px 17px;
-                        text-decoration: none;
-                        color: gray;
-                    }
-                    .user_item_link:hover{
-                        cursor: pointer;
-                    }
                 }
 
                 .service_link_area{

@@ -25,7 +25,7 @@
         .field_label{
             margin-top: 20px;
         }
-        .input_field{
+        input.input_field {
             height: 30px;
             width: 100%;
             border-radius: 5px;
@@ -44,43 +44,6 @@
         .check_box{
             height: 20px;
             width: 20px;
-        }
-        select {
-          width: 100%;
-          padding-right: 1em;
-          cursor: pointer;
-          text-indent: 0.01px;
-          text-overflow: ellipsis;
-          border: none;
-          outline: none;
-          background: transparent;
-          background-image: none;
-          box-shadow: none;
-          -webkit-appearance: none;
-          appearance: none;
-        }
-        .select_area {
-          position: relative;
-          border-radius: 4px;
-          width: 200px;
-          //height: 25px;
-        }
-        .select_area::before {
-          position: absolute;
-          top: 0.8em;
-          right: 0.8em;
-          width: 0;
-          height: 0;
-          padding: 0;
-          content: '';
-          border-left: 6px solid transparent;
-          border-right: 6px solid transparent;
-          border-top: 6px solid gray;
-          pointer-events: none;
-        }
-        .select_area select {
-          padding: 8px 38px 8px 8px;
-          color: black;
         }
     }
     /*
