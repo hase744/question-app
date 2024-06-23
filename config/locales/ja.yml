@@ -1,4 +1,9 @@
 ja:
+  controllers:
+    accounts: 回答者
+    requests: 質問
+    services: 相談室
+    transactions: 回答
   activerecord:
     models:
       user: ユーザー

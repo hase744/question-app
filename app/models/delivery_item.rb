@@ -9,6 +9,10 @@ class DeliveryItem < ApplicationRecord
     validate :validate_thumbnail
     before_validation :set_default_values
   
+    def resize_to
+      [1000, 500]
+    end
+
     after_initialize do
       if self.youtube_id.present?
         self.use_youtube = true

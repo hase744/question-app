@@ -89,49 +89,7 @@
                             <% end %>
                         </div>
                     </div>
-                    <!--
-                    <span class="share_button_area">
-                        <%= render "/user/shared/share_twitter"%>
-                    </span>
-                    -->
                 </div></br>
-                <!--
-                <div>
-                    <hr>
-                </div>
-                <table>
-                    <tr>
-                        <td>
-                        サービス
-                        </td>
-                        <td>
-                        ：
-                        </td>
-                        <td>
-                        <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link" %>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        依頼
-                        </td>
-                        <td>
-                        ：
-                        </td>
-                        <td>
-                        <%= link_to @transaction.request.title, user_request_path(@transaction.request.id), class:"request_link" %>
-                        </td>
-                    </tr>
-                </table>
-                -->
-                <!--
-                <div class="service_menu_bar" id="request_ajax_update">
-                    <li class="menu_element"><%= link_to "追加問答", user_review_path(@transaction.request.id), remote: true, class:"user_item_link user_posts_link"%></li>
-                    <li class="menu_element"><%= link_to "サービス", user_service_path(@transaction.service.id), remote: true, class:"user_item_link user_requests_link"%></li>
-                    <li class="menu_element"><%= link_to "依頼", user_request_path(@transaction.request.id), remote: true, class:"user_item_link user_likes_link"%></li>
-                    <li class="menu_element"><%= link_to "レビュー", user_review_path(@transaction.request.id), remote: true, class:"user_item_link user_purchases_link"%></li>
-                </div>
-                -->
                 <div class="service_link_area">
                     <div>
                     <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
@@ -186,26 +144,7 @@
         </div>
         <div class="transaction_message_area">
             <% @transaction_messages.each do |item|%>
-                <div class="transaction_message_cell_area">
-                    <div class="image_name_area">
-                        <div class="image_area">
-                            <% if item.sender.image.url %>
-                                <%=image_tag item.sender.image.url, class:"user_image"%>
-                            <% else %>
-                                <%=image_tag "/profile.jpg", class:"user_image"%>
-                            <% end %>
-                        </div>
-                        <div class="time_name_area">
-                            <%= link_to item.sender.name, user_account_path(item.sender.id), class:"user_name" %>
-                            <div class="send_time">
-                                <%=from_now(item.created_at)%>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message_text_area">
-                        <div class="message_text"><%=item.body %></div>
-                    </div>
-                </div>
+                <%= render "user/transaction_messages/cell", content:item %>
             <% end %>
         </div>
         <%= render partial:  "user/shared/loading_animation" %>

@@ -146,12 +146,24 @@ body{
     }
 }
 .search_layout{
+    .top_search_margin{
+        height: 50px;
+    }
+    .top_search_form{
+        padding-top: 0px;
+    }
     .main_area{
+        padding-top: 0px;
         max-width: 700px;
         margin: 0 auto;
     }
     @media(min-width:1000px){
+        padding-top: 50px;
+        .top_search_margin{
+            height: 0px;
+        }
         .main_area{
+            padding-top: 40px;
             max-width: none;
             width: calc(80% - 240px);
             margin: 0 0 0px calc(10% + 240px);

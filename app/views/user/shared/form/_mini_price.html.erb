@@ -1,0 +1,3 @@
+<div class="select_area">
+  <%= f.select :mini_price, options_for_select((100..10000).step(100).map { |num| ["#{num}円以上", num] }, selected: params[:mini_price]), { include_blank: 'mini'},  class:"" %>
+</div>

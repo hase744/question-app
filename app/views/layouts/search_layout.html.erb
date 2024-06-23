@@ -2,12 +2,27 @@
 <html lang="ja" prefix="og: http://ogp.me/ns#">
   <%= render "layouts/head" %>
   <body class="body search_layout">
-      <div class="header" id="header">
-        <%=render "layouts/menu"%>
-      </div>
-      <div class="main_area">
-        <%= yield %>
-      </div>
-    <%=javascript_pack_tag "layout/search_layout"%>
-  </body>
+      	<div class="header" id="header">
+        	<%=render "layouts/menu"%>
+      	</div>
+		<div class="top_search_margin">
+		</div>
+      	<div class="top_search_form_area">
+			<div class="top_search_form">
+      	    	<input class="search_input" type="text" placeholder='<%=I18n.t("controllers.#{controller_name}")%>を検索'>
+      	    	<div class="searchForm-submit">
+      	    	    <div class="search_glass"></div>
+      	    	</div>
+			</div>
+			<div class="open_search_button open_search"></div>
+      	</div>
+      	<div class="main_area">
+        	<%= yield %>
+      	</div>
+  	</body>
 </html>
+<script>
+$(".open_search").click(function() { // 検索バーを開く
+	$('.menu_bar').addClass('search_mode');
+});
+</script>

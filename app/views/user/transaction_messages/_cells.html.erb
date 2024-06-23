@@ -1,22 +1,3 @@
 <% transaction_messages.each do |content|%>
-    <div class="transaction_message_cell_area">
-        <div class="image_name_area">
-            <div class="image_area">
-                <% if content.sender.image.url %>
-                    <%=image_tag content.sender.image.url, class:"user_image"%>
-                <% else %>
-                    <%=image_tag "/profile.jpg", class:"user_image"%>
-                <% end %>
-            </div>
-            <div class="time_name_area">
-                <div class="send_time">
-                    <h2 class="user_name"><%= content.sender.name%></h2>
-                    <%=from_now(content.created_at)%>
-                </div>
-            </div>
-        </div>
-        <div class="message_text_area">
-            <div class="message_text"><%=content.body %></div>
-        </div>
-    </div>
+    <%= render "user/transaction_messages/cell", content:content  %>
 <% end %>

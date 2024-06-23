@@ -1,0 +1,3 @@
+<div class="select_area">
+<%= f.select :max_price, options_for_select((100..10000).step(100).to_a.reverse.map { |num| ["#{num}円以下", num] }, selected: params[:max_price]), { include_blank: 'Max'},  class:"" %>
+</div>

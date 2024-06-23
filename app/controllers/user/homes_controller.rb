@@ -2,6 +2,7 @@ class User::HomesController < ApplicationController
   layout "with_footer"
   def show
     @services = Service.all
+      .where(is_inclusive: true)
       .order(:average_star_rating)
       .order(:total_sales_numbers).limit(10)
     @users = User.where(is_seller:true).all.order(:total_sales_numbers).limit(10)

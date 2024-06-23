@@ -25,7 +25,7 @@
             <h3 class="request_content"><%=request.category.japanese_name%></h3>
             <%= f.hidden_field :category, value: request.category %>
           <% else %>
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'category_id', options_for_select(category_select_hash, selected: service.category_id), include_blank: true,  class:"" , name:"名前" ,required: true %>
             </div>
           <% end %>
@@ -36,7 +36,7 @@
           <%if request.present? %>
             <h3 class="request_content"><%=request.request_form.japanese_name%></h3>
           <% else %>
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'request_form_name', options_for_select(forms_japanese_hash, selected: service.request_form_name), include_blank: true,  class:"" ,required: true %>
             </div>
           <% end %>
@@ -45,7 +45,7 @@
         <%if !request.present? %>
           <div class="field_area length_field_area text_field_area">
             <label>質問の最大文字数</label>（<%=service.mini_request_max_characters%>〜<%=service.max_request_max_characters%>字）<br />
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'request_max_characters', options_for_select((service.mini_request_max_characters..service.max_request_max_characters).step(100).map { |num| ["#{num}字", num] }, selected: service.request_max_characters), include_blank: true,  class:"" ,required: true %>
             </div>
           </div>
@@ -53,7 +53,7 @@
           <% if Form.find_by(name: 'video').present? %>
           <div class="field_area length_field_area video_field_area", style="display: <%=service.video_display_style=%>">
             <label><%= Service.human_attribute_name(:request_max_minutes)%>（<%=service.mini_request_max_minutes%>〜<%=service.max_request_max_minutes%>分）</label><br />
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'request_max_minutes', options_for_select((service.mini_request_max_minutes..service.max_request_max_minutes).step(1).map { |num| ["#{num}分", num] }, selected: service.request_max_minutes), include_blank: true,  class:"" ,required: true %>
             </div>
           </div>
@@ -65,7 +65,7 @@
           <%if request%>
             <%= f.select :delivery_form_name, forms_japanese_hash(request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
           <%else%>
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'delivery_form_name', options_for_select(forms_japanese_hash, selected: service.delivery_form_name), include_blank: true,  class:"" ,required: true %>
             </div>
           <% end %>
@@ -73,7 +73,7 @@
 
         <div class="field_area">
           <%= f.label :transaction_message_days, class:"field_label"%>（最大<%=service.max_transaction_message_days%>日）<br/>
-          <div class="input_field text_field select_area">
+          <div class="select_area">
             <%= f.select 'transaction_message_days', options_for_select((0..service.max_transaction_message_days).step(1).map { |num| ["#{num}日", num] }, selected: service.transaction_message_days), include_blank: true,  class:"" ,required: true %>
           </div>
           <div class="transaction_message_alert" style="color:red;font-size:13px">＊追加質問を受け付けない</div>
@@ -82,7 +82,7 @@
         <%if request.nil? %>
           <div class="field_area">
             <%= f.label :stock_quantity, class:"field_label"%>（最大<%=service.stock_quantity_max_number%>個）<br/>
-            <div class="input_field text_field select_area">
+            <div class="select_area">
               <%= f.select 'stock_quantity', options_for_select((0..service.stock_quantity_max_number).step(1).map { |num| ["#{num}個", num] }, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
             </div>
           </div>
@@ -90,17 +90,17 @@
 
         <div class="field_area">
           <%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
-          <div class="input_field text_field select_area">
+          <div class="select_area">
             <%= f.select 'price', options_for_select((100..Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected: service.price), include_blank: true,  class:"price_field" ,required: true %>
           </div>
         </div>
 
         <div class="field_area">
           <%= f.label :delivery_days, class:"field_label"%>（1〜<%=service.delivery_days_max_number%>日）<br/>
-          <div class="input_field text_field select_area">
+          <div class="select_area">
             <%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
           </div>
-          <div>＊購入からこの日数を過ぎても納品されなかった場合、依頼人がキャンセル可能になります。</div>
+          <div>＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
         </div>
 
         <%if !request.present? %>

@@ -8,7 +8,7 @@ $menu_link_height: 30px;
 @media(max-width:1000px){
     .wide_detail_search{
         display: block;
-        padding-left: 50px;
+        padding-left: 10px;
         width: 100%;
         p{
             margin-bottom: 5px;
@@ -286,12 +286,13 @@ $menu_link_height: 30px;
                 padding-top: 0px;
                 width: 50px;
                 height: 100%;
+                right: 0px;
                 
                 cursor: pointer;
                 div{
                     position: relative;
                     top:9px;
-                    left:9px;
+                    left:0px;
                     height: 35px;
                     width: 35px;
                 }
@@ -333,7 +334,9 @@ $menu_link_height: 30px;
                 border: 1px solid #999;
                 border-radius: 5px 0px 0px 5px;
                 height: 37.5px;
-                width: 110px;
+                width: 71px;
+                background-color: white;
+                color: dimgray;
             }
             .form-control:hover{
                 color: gray;
@@ -348,6 +351,7 @@ $menu_link_height: 30px;
                 margin: 6px 0;
                 border: 1px solid #999;
                 height: 15.5px;
+                border-radius: 0px;
             }
             .searchForm-submit {
                 position: absolute;
@@ -446,20 +450,21 @@ $menu_link_height: 30px;
         .searchForm{
             .search_input{
                 position: absolute;
-                width: calc(100% - 160px );
+                //width: calc(100% - 160px );
                 top:0px;
-                left: 120px;
+                left: 80px;
+                right: 89px;
             }
             .form-control{
                 top:0px;
-                left: 50px;
+                left: 10px;
                 position: absolute;
             }
             .searchForm-submit{
                 display: inline-block;
                 top:100px;
                 position: absolute;
-                left: calc(100% - 50px );
+                left: calc(100% - 90px );
             }
         }
         .inner_search_bar{
@@ -525,7 +530,7 @@ $menu_link_height: 30px;
         border: solid 1px #627295;
     }
     select{
-        height: 22px;
+        height: 100%;
     }
     .field_label{
         display: inline-block;

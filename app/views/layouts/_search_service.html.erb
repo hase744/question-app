@@ -9,23 +9,15 @@
                 <%= f.text_field :word, value:params[:word], class:"text_field ", placeholder:"キーワード"%></span>
             </div>
             <label class="field_label">料金</label><br />
-            <div class="input_field text_field select_area">
-              <%= f.select :max_price, options_for_select((100..10000).step(100).map { |num| ["#{num}件", num] }, selected: 0), include_blank: true,  class:"" %>
-            </div>
-            <span>〜</span>
-            <div class="input_field text_field select_area">
-              <%= f.select :mini_price, options_for_select((100..10000).step(100).map { |num| ["#{num}件", num] }, selected: 0), include_blank: true,  class:"" %>
-            </div>
+            <%= render "user/shared/form/max_price", f:f%>
+            <div>〜</div>
+            <%= render "user/shared/form/mini_price", f:f%>
             
             <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label>
-            <div class="input_field text_field select_area">
-                <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-            </div>
+            <%= render "user/shared/form/request_form", f:f%>
 
             <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label>
-            <div class="input_field text_field select_area">
-                <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-            </div>
+            <%= render "user/shared/form/delivery_form", f:f%>
             </br>
             <div class="category_area">
                 <label class="field_label">カテゴリー</label><br />

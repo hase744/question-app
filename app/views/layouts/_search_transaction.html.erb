@@ -10,23 +10,18 @@
             </div>
             
             <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br />
-            <div class="input_field text_field select_area">
-            <%= f.select :request_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-            </div>
+            <%= render "user/shared/form/request_form", f:f%>
 
             <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br />
-            <div class="input_field text_field select_area">
-            <%= f.select :delivery_form, forms_japanese_hash, { include_blank: '選択'}, class:"select_field" %>
-            </div>
-            </br>
+            <%= render "user/shared/form/delivery_form", f:f%>
+            
             <div class="category_area">
-                <label class="field_label">カテゴリー</label><br />
+                <label class="field_label">カテゴリー</label>
                 <%= render "layouts/form_category", f:f%>
             </div>
 
             </br>
             <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>在庫あり</span>
-            </br>
             </br>
             <div class="search_button_area">
                 <%= f.submit '検索',class:"search_button", placeholder:"" %>
