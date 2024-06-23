@@ -106,8 +106,7 @@
     </div>
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>
-
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<%= render "user/homes/swiper.js.erb" %>
 <script>
   var swiper = new Swiper('.swiper-service-container', {
     slidesPerView: 5,

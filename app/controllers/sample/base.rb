@@ -95,6 +95,6 @@ class Sample::Base < ApplicationController
         @og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
         @og_description = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
         @og_site_name = "コレテク"
-        $og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.png"
+        @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.png"
     end
 end

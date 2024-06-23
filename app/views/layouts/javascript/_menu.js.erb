@@ -15,9 +15,9 @@
     //  }
     //});
   }
-  set_default_searcg_detail = function(){
+  set_default_search_detail = function(){
     $(".search_forms > span").css("display","none");
-    $(".search_forms .search_detail").css("display","none");
+    $(".menu_search_form .search_detail").css("display","none");
     $(`.menu_search_form .${$('#form_select').val()}_search_field`).css("display","block");
   }
   change_search_path = function(){//検索先のurlをselectから変更
@@ -40,11 +40,11 @@
     $('.menu_bar').removeClass('search_mode');
   });
   $("#form_select").change(function() { // 検索コンテンツの種類が変更されたとき
-    set_default_searcg_detail();
+    set_default_search_detail();
   });
   //$(".search_input").on("focus", function() {
   //  set_search_detail();
   //});
   change_search_path();
-  set_default_searcg_detail();
+  set_default_search_detail();
 })();

@@ -42,6 +42,7 @@
             <div class="search_bar search">
                 <div class="searchForm inner_search_bar search_component search">
                     <%= f.select :content,  options_for_select($selector, selected: $selected), { class: 'form-control search' , required: true }, class: 'form-control search',id:"form_select" %>
+                    <div class='fas fa-angle-down'id="toggle-select"></div>
                     <%= f.text_field :word, class:"search_component search search_input"%>
                     <div class="searchForm-submit search_component search">
                         <div class="search_glass"></div>

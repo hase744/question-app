@@ -337,6 +337,15 @@ $menu_link_height: 30px;
                 width: 71px;
                 background-color: white;
                 color: dimgray;
+                font-size: 15px;
+            }
+            .fas{
+                position: absolute;
+                top: 35%;
+                color: gray;
+                text-decoration: none;
+                cursor: pointer;
+                pointer-events: none;
             }
             .form-control:hover{
                 color: gray;
@@ -436,12 +445,18 @@ $menu_link_height: 30px;
     width: 0px;
     float: left;
 }
+.fas{
+    left: 50px;
+}
 @media(max-width:1000px){
     .menu_search_form{
         height: 0px;
         width: 100%;
         background-color: yellow;
         //display: none;
+    }
+    .fas{
+        left: 60px;
     }
     .search_bar{
         width: 100%;

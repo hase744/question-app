@@ -101,16 +101,16 @@
                         </td>
                     </tr>
                 </table>
-                <div class="service_detail_area">
-                    <h3 class="service_detail_name"><%= Service.human_attribute_name(:description)%></h3>
-                    <p class="service_detail"><%=@service.description%></p>
-                </div>
                 <div class="service_image_area">
                     <%if @service.image.url == nil%>
                         <%#=image_tag "/corretech_large_icon.png", class:"service_image"%>
                     <% else %>
                         <%=image_tag @service.image_url, class:"service_image",id:"service_image"%>
                     <% end %>
+                </div>
+                <div class="service_detail_area">
+                    <h3 class="service_detail_name"><%= Service.human_attribute_name(:description)%></h3>
+                    <p class="service_detail"><%=@service.description%></p>
                 </div>
                 <%if can_purchase %>
                     <div class="transaction_button_area">

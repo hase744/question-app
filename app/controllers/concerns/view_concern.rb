@@ -8,7 +8,7 @@ module ViewConcern
     '回答': "transaction", 
     '質問': "request", 
     '相談室': "service", 
-    '回答者　　': "account"
+    '回答者': "account"
   }
   #コントローラー名とオプションのペア
   $options = {
@@ -46,6 +46,6 @@ module ViewConcern
   $og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
   $og_description = "コレテクとはQ＆Aサイトとフリマサイトがお融合したサービスです。質問と回答のマーケットプレイス！登録して悩みを相談しよう！"
   $og_site_name = "コレテク"
-  $og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
-  #$og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+  @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+  #@og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
 end
