@@ -43,7 +43,7 @@ ja:
       request:
         title: タイトル
         description: 質問・相談内容
-        file: 依頼するファイル
+        file: 添付ファイル
         request_item: 依頼ファイル
         items: 依頼ファイル
         file_duration: 再生時間

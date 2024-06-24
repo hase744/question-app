@@ -339,13 +339,26 @@ $menu_link_height: 30px;
                 color: dimgray;
                 font-size: 15px;
             }
-            .fas{
+            .select_array{
                 position: absolute;
                 top: 35%;
                 color: gray;
                 text-decoration: none;
                 cursor: pointer;
                 pointer-events: none;
+                display: inline-block;
+
+                top: 41%;
+                vertical-align: middle;
+                color: gray;
+                line-height: 1;
+                width: 7px;
+                height: 7px;
+                border: 0.1em solid currentColor;
+                border-left: 0;
+                border-bottom: 0;
+                box-sizing: border-box;
+                transform: translateY(-25%) rotate(135deg);
             }
             .form-control:hover{
                 color: gray;
@@ -445,7 +458,7 @@ $menu_link_height: 30px;
     width: 0px;
     float: left;
 }
-.fas{
+.select_array{
     left: 50px;
 }
 @media(max-width:1000px){
@@ -455,7 +468,7 @@ $menu_link_height: 30px;
         background-color: yellow;
         //display: none;
     }
-    .fas{
+    .select_array{
         left: 60px;
     }
     .search_bar{

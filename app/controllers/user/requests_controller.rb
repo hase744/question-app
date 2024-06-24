@@ -92,10 +92,12 @@ class User::RequestsController < User::Base
     else
       @request = Request.new(service_id:params[:service_id])
     end
+    @request.items.build
   end
 
   def edit
     @request.set_item_values
+    @request.items.build
   end
 
   def preview
@@ -108,24 +110,29 @@ class User::RequestsController < User::Base
 
   def update
     @transactions = Transaction.where(request:@request) #サービスの購入である
+    puts "存在：#{@transactions.present?}"
     if @transactions.present? #サービスの購入である
       @request.assign_attributes(request_service_params)
     else
       @request.assign_attributes(request_params)
+      @request = Request.find(params[:id])
+      puts "カウント"
+      puts @request.items.count
     end
 
-    @request_item = nil
+    #@request_item = nil
+#
+    #if @request.request_form.name != "text"
+    #  @request_item = @request.items.first
+    #  if @request_item
+    #    @request_item.assign_attributes(request_item_params)
+    #  else
+    #    @request_item = @request.items.new(request_item_params)
+    #  end
+    #end
 
-    if @request.request_form.name != "text"
-      @request_item = @request.items.first
-      if @request_item
-        @request_item.assign_attributes(request_item_params)
-      else
-        @request_item = @request.items.new(request_item_params)
-      end
-    end
-
-    if save_request_and_item
+    #if save_request_and_item
+    if @request.update(request_params)
       puts "保存"
       puts @request.description
       if @transactions.present?
@@ -482,7 +489,8 @@ class User::RequestsController < User::Base
       :delivery_form_name,
       :service_id,
       :suggestion_deadline,
-      :delivery_days
+      :delivery_days, 
+      items_attributes: [:file]
     )
   end
 
