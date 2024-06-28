@@ -6,46 +6,61 @@
     <div class="transaction_new_area input_area">
     <%= form_with model: @transaction, url:user_transaction_path(@transaction.id), method:"put" do |f| %>
         <div class="field_area">
-          <%= f.label :title, class:"field_label"%>（最大<%=@transaction.title_max_length%>字）<br />
-          <%= f.text_field :title, maxlength:@transaction.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
+          	<%= f.label :title, class:"field_label"%>（最大<%=@transaction.title_max_length%>字）<br />
+          	<%= f.text_field :title, maxlength:@transaction.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
         </div>
       
         <div class="field_area">
-          <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display" %><br />
-          <%= f.text_area :description, maxlength:@transaction.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+          	<%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display" %><br />
+          	<%= f.text_area :description, maxlength:@transaction.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
         </div>
 
         <div class="field_area">
-          <%= f.label :category, class:"field_label" %><br />
+          	<%= f.label :category, class:"field_label" %><br />
             <h3 class="request_content"><%=translate(@transaction.service.category.name)%></h3>
             <%= f.hidden_field :category, value: @transaction.service.category %>
         </div>
 
         <div class="video_field_area" id="video_field_area">
-          <div id="youtube_area">
-            <div class="field_area" id="youtube_check_field_area">
-              <%= f.label :use_youtube, class:"field_label"%><br />
-              <%= f.check_box :use_youtube, class:"input_field check_box", id:"youtube_check_box" %><span>    YouTubeにアップロードした動画を使う</span>
-            </div>
-    
-            <div class="field_area" id="youtube_id_field_area">
-              <%= f.label :youtube_id, class:"field_label"%><br />
-              <%= f.text_field :youtube_id, autofocus: true, autocomplete: "name", class:"input_field text_field", id:"youtube_id_field" %>
-              <div>※YouTube動画のIDとは動画のURLの「https://www.youtube.com/watch?v=」の後に続く11字の文字列です。</div>
-            </div>
-          </div>
+		<!--
+          	<div id="youtube_area">
+          	  	<div class="field_area" id="youtube_check_field_area">
+          	  	  	<%= f.label :use_youtube, class:"field_label"%><br />
+          	  	  	<%= f.check_box :use_youtube, class:"input_field check_box", id:"youtube_check_box" %><span>    YouTubeにアップロードした動画を使う</span>
+          	  	</div>
+
+          	  	<div class="field_area" id="youtube_id_field_area">
+          	  	  	<%= f.label :youtube_id, class:"field_label"%><br />
+          	  	  	<%= f.text_field :youtube_id, autofocus: true, autocomplete: "name", class:"input_field text_field", id:"youtube_id_field" %>
+          	  	  	<div>※YouTube動画のIDとは動画のURLの「https://www.youtube.com/watch?v=」の後に続く11字の文字列です。</div>
+          	  	</div>
+          	</div>
+			-->
+
             <div class="field_area" id="file_field_area">
-              <%= f.label :file, class:"field_label" %><br />
-              <%= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input"%>
-              <div class="file_discription" id="file_discription"></div>
-              <div class="file_alarm" id="file_alarm"></div></br>
+              	<%= f.label :file, class:"field_label" %><br />
+              	<%#= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input", multiple: true%>
+              	<%= f.fields_for :items do |item_form| %>
+              	  	<% if item_form.object.file.present? %>
+              	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
+              	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+              	  	  	<%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
+              	  	  	</br></br>
+              	  	<% end %>
+              	  	<% if !item_form.object.file.present? %>
+              	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+              	  	<% end %>
+              	<% end %>
+
+              	<div class="file_discription" id="file_discription"></div>
+              	<div class="file_alarm" id="file_alarm"></div></br>
 
 
-              <%if @transaction.delivery_form.name == "video" %>
-              <%= f.label :thumbnail, class:"field_label" %>（任意）<br />
-              <%= f.file_field :thumbnail, autocomplete: "file", class:"input_field",id:"thumbnail"%>
-              <div>フォーマットはjpg,jpeg,pngのみ</div>
-              <% end %>
+              	<%if @transaction.delivery_form.name == "video" %>
+              		<%= f.label :thumbnail, class:"field_label" %>（任意）<br />
+              		<%= f.file_field :thumbnail, autocomplete: "file", class:"input_field",id:"thumbnail"%>
+              		<div>フォーマットはjpg,jpeg,pngのみ</div>
+              	<% end %>
 
             </div>
             
@@ -55,217 +70,226 @@
         </div>
 
         <div class="field_area">
-          <%= f.label :delivery_form, class:"field_label" %><br />
+          	<%= f.label :delivery_form, class:"field_label" %><br />
             <h3 class="request_content"><%=@transaction.service.delivery_form.japanese_name%></h3>
             <%= f.hidden_field :delivery_form, value: @transaction.service.delivery_form%>
         </div>
 
         <%if @transaction_exist %>
-          <%= f.hidden_field :transaction_id, value: @transaction.id%>
+          	<%= f.hidden_field :transaction_id, value: @transaction.id%>
         <% end %>
 
         <div class="submit_area">
-          <%= link_to "戻る", user_order_path(@transaction.id),class:"submit edit_link", id:"edit_link"%>
+          	<%= link_to "戻る", user_order_path(@transaction.id),class:"submit edit_link", id:"edit_link"%>
         </div></br>
 
         <div class="submit_area">
-          <%= f.submit "保存", class:"submit", id:"submit" %>
+          	<%= f.submit "保存", class:"submit", id:"submit" %>
         </div>
       <% end %>
     </div>
 </div>
+<%= render "user/shared/javascript/swiper.js.erb" %>
 <script>
-$(function(){
-var now = new Date();
-var year = now.getFullYear();
-var month = now.getMonth();
-var date = now.getDate();
-var hour = now.getHours();
-var min = now.getMinutes();
-var sec = now.getSeconds();
-var datetime = `${year}${month}${date}${hour}${min}${sec}`
-
-	var video_display = document.getElementById('video_display')
-  var thumbnail = document.getElementById('thumbnail')
-	video_display.onloadedmetadata = function(){
-		var canvas = document.querySelector("#canvas");
-		canvas.width = video_display.videoWidth;
-		canvas.height = video_display.videoHeight;
-	};
-	video_display.onseeked = function(){
-		capture();
-	};
-	video_display.onloadeddata = function(){
-  		this.currentTime = 0;
-    };
-	$("#file_input").change(function(){
-    console.log("change")
-		video_display.src = (URL).createObjectURL(this.files[0]);
-  	});
-	function capture(){
-		var canvas = document.querySelector("#canvas");
-	  	var context = canvas.getContext("2d");
-	  	context.drawImage(video_display, 0, 0);
-	  	var img = new Image();
-	  	//img.src = canvas.toDataURL("image/jpeg" , 0.8);
-
-    //  canvas.toBlob(function(blob) {
-    //  var newImg = document.createElement("img"),
-    //      url = URL.createObjectURL(blob);
-    //  
-    //  newImg.onload = function() {
-    //    // 無効化されたため、もはや blob を読み取る必要はありません。
-    //    URL.revokeObjectURL(url);
-    //  };
-    //  
-    //  newImg.src = url;
-    //  document.body.appendChild(newImg);
-    //});
-      canvas.toBlob(function (blob) {
-        blob_original = blob;  //変換されたBlobが渡されるので、blob_originalへセット
-        console.log(blob)
-        const pngFile = new File([blob], `${datetime}.png`, {type: "image/png"});
-        const dt = new DataTransfer();
-        dt.items.add(pngFile);
-        console.log(thumbnail)
-        thumbnail.files = dt.files;
-
-    }, "image/png", 0.95)
-  	}
-    //再生時間が10分以下のものだけOKにする
-    video_display.addEventListener('loadeddata', function() {
-      var duration = Math.floor(this.duration)
-      if(duration > 600){
-        $('#submit').prop('disabled', true);
-        alert("ファイル動画の長さは最大10分です。")
-        $("#file_input").files[0] = null
-        thumbnail.files = null
-      }else{
-        $('#submit').prop('disabled', false);
-      }
-    });
-});
-
-var file_form = document.getElementById("file_input");
-var file_form_alarm = document.getElementById("file_alarm")
-var submit = document.getElementById("submit")
-var file_discription = document.getElementById("file_discription")
-var youtube_check_box = document.getElementById("youtube_check_box")
-var youtube_area = document.getElementById("youtube_area")
-var file_field_area = document.getElementById("file_field_area")
-var youtube_id_field_area = document.getElementById("youtube_id_field_area")
-
-var delivery_form = gon.delivery_form
-
-if($("#youtube_id_field").val() != "" && $("#youtube_id_field").val() != null){
-  youtube_check_box.checked = true;
-}
-var judge_extension = function(){
-    if (window.File) {
-        // 指定したファイルの情報を取得
-        let inputed_file = file_form.files[0];
-        let file_type = null
-        if(inputed_file != null){
-          console.log(inputed_file)
-          file_type = inputed_file.name.split('.').pop();
-          console.log(file_type)
-        
-          let video_formats = ["MOV", "wmv", "mp4", "mov"]
-          let image_formats = ["jpg","jpeg","png", "heic"]
-
-          console.log("judge_extension")
-          switch(delivery_form){
-              //動画の拡張子でないか
-              case "video":
-                  console.log("video")
-                  if(!video_formats.includes(file_type)){
-                      console.log("※フォーマットがただしくありません")
-                      file_form_alarm.innerHTML = "※フォーマットがただしくありません"
-                      //submit.disabled = true
-                      console.log(submit.disabled)
-                  }else{
-                      file_form_alarm.innerHTML = null
-                      submit.disabled = false;
-                      console.log("submit.disabled = false;")
-                  }
-                  break;
-              //画像の拡張子でないか
-              case "image":
-                  console.log("image")
-                  if(!image_formats.includes(file_type)){
-                      console.log("※フォーマットがただしくありません")
-                      file_form_alarm.innerHTML = "※フォーマットがただしくありません"
-                      //submit.disabled = true
-                  }else{
-                      file_form_alarm.innerHTML = null
-                      submit.disabled = false;
-                  }
-                  break;
-              default:
-                  console.log("問題なし")
-                  file_form_alarm.innerHTML = null
-                  submit.disabled = false;
-              }
-        }
-    }
-}
-    
-var judge_youtube = function(){
-        //youtube_check_boxがチェックされたか
-        if(youtube_check_box.checked){
-            file_field_area.style.display = "none"
-            youtube_id_field_area.style.display = "block"
-            submit.disabled = false
-        }else{
-            file_field_area.style.display = "block"
-            youtube_id_field_area.style.display = "none"
-            //submit.disabled = true
-            judge_extension()
-        }
-    //file_field_area.style.display = "block"
-    //youtube_id_field_area.style.display = "none"
-}
-
-<% %>
-
-if(delivery_form != "text"){
-    //ファイルが変更されたら拡張子を判定
-    file_form.addEventListener("change", (e) => {judge_extension()});
-    //submit.disabled = true
-}
-
-var judge_delivery_form = function(){
-    switch(delivery_form){
-        //動画の拡張子でないか
-        case "video":
-            file_discription.innerHTML = "フォーマットはMOV, mov, wmv, mp4のみです。"
-            $("#video_field_area").css("display","block")
-            $("#video_field_area").css("display","block")
-            $("#youtube_area").css("display","block")
-            break;
-        //画像の拡張子でないか
-        case "image":
-            file_discription.innerHTML = "フォーマットはjpg,jpeg,pngのみです。"
-            console.log("フォーマットはjpg,jpeg,pngのみです。")
-            $("#video_field_area").css("display","block")
-            $("#youtube_area").css("display","none")
-            file_field_area.style.display = "block"
-            break;
-        case "text":
-            $("#video_field_area").css("display","none")
-            $("#youtube_area").css("display","none")
-            submit.disabled = false
-            break;
-        default:
-        break;
-    }
-}
-judge_youtube()
-judge_delivery_form()
-
-if(delivery_form == "video"){
-  youtube_check_box.addEventListener("change", (e) => {
-    judge_youtube()
-    });
-  }
+  var swiper = new Swiper('.swiper-container', {
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+<script>
+//$(function(){
+//var now = new Date();
+//var year = now.getFullYear();
+//var month = now.getMonth();
+//var date = now.getDate();
+//var hour = now.getHours();
+//var min = now.getMinutes();
+//var sec = now.getSeconds();
+//var datetime = `${year}${month}${date}${hour}${min}${sec}`
+//
+//	var video_display = document.getElementById('video_display')
+//  var thumbnail = document.getElementById('thumbnail')
+//	video_display.onloadedmetadata = function(){
+//		var canvas = document.querySelector("#canvas");
+//		canvas.width = video_display.videoWidth;
+//		canvas.height = video_display.videoHeight;
+//	};
+//	video_display.onseeked = function(){
+//		capture();
+//	};
+//	video_display.onloadeddata = function(){
+//  		this.currentTime = 0;
+//    };
+//	$("#file_input").change(function(){
+//    console.log("change")
+//		video_display.src = (URL).createObjectURL(this.files[0]);
+//  	});
+//	function capture(){
+//		var canvas = document.querySelector("#canvas");
+//	  	var context = canvas.getContext("2d");
+//	  	context.drawImage(video_display, 0, 0);
+//	  	var img = new Image();
+//	  	//img.src = canvas.toDataURL("image/jpeg" , 0.8);
+//
+//    //  canvas.toBlob(function(blob) {
+//    //  var newImg = document.createElement("img"),
+//    //      url = URL.createObjectURL(blob);
+//    //  
+//    //  newImg.onload = function() {
+//    //    // 無効化されたため、もはや blob を読み取る必要はありません。
+//    //    URL.revokeObjectURL(url);
+//    //  };
+//    //  
+//    //  newImg.src = url;
+//    //  document.body.appendChild(newImg);
+//    //});
+//      canvas.toBlob(function (blob) {
+//        blob_original = blob;  //変換されたBlobが渡されるので、blob_originalへセット
+//        console.log(blob)
+//        const pngFile = new File([blob], `${datetime}.png`, {type: "image/png"});
+//        const dt = new DataTransfer();
+//        dt.items.add(pngFile);
+//        console.log(thumbnail)
+//        thumbnail.files = dt.files;
+//
+//    }, "image/png", 0.95)
+//  	}
+//    //再生時間が10分以下のものだけOKにする
+//    video_display.addEventListener('loadeddata', function() {
+//      var duration = Math.floor(this.duration)
+//      if(duration > 600){
+//        $('#submit').prop('disabled', true);
+//        alert("ファイル動画の長さは最大10分です。")
+//        $("#file_input").files[0] = null
+//        thumbnail.files = null
+//      }else{
+//        $('#submit').prop('disabled', false);
+//      }
+//    });
+//});
+//
+//var file_form = document.getElementById("file_input");
+//var file_form_alarm = document.getElementById("file_alarm")
+//var submit = document.getElementById("submit")
+//var file_discription = document.getElementById("file_discription")
+//var youtube_check_box = document.getElementById("youtube_check_box")
+//var youtube_area = document.getElementById("youtube_area")
+//var file_field_area = document.getElementById("file_field_area")
+//var youtube_id_field_area = document.getElementById("youtube_id_field_area")
+//
+//var delivery_form = gon.delivery_form
+//
+//if($("#youtube_id_field").val() != "" && $("#youtube_id_field").val() != null){
+//  youtube_check_box.checked = true;
+//}
+//var judge_extension = function(){
+//    if (window.File) {
+//        // 指定したファイルの情報を取得
+//        let inputed_file = file_form.files[0];
+//        let file_type = null
+//        if(inputed_file != null){
+//          console.log(inputed_file)
+//          file_type = inputed_file.name.split('.').pop();
+//          console.log(file_type)
+//        
+//          let video_formats = ["MOV", "wmv", "mp4", "mov"]
+//          let image_formats = ["jpg","jpeg","png", "heic"]
+//
+//          console.log("judge_extension")
+//          switch(delivery_form){
+//              //動画の拡張子でないか
+//              case "video":
+//                  console.log("video")
+//                  if(!video_formats.includes(file_type)){
+//                      console.log("※フォーマットがただしくありません")
+//                      file_form_alarm.innerHTML = "※フォーマットがただしくありません"
+//                      //submit.disabled = true
+//                      console.log(submit.disabled)
+//                  }else{
+//                      file_form_alarm.innerHTML = null
+//                      submit.disabled = false;
+//                      console.log("submit.disabled = false;")
+//                  }
+//                  break;
+//              //画像の拡張子でないか
+//              case "image":
+//                  console.log("image")
+//                  if(!image_formats.includes(file_type)){
+//                      console.log("※フォーマットがただしくありません")
+//                      file_form_alarm.innerHTML = "※フォーマットがただしくありません"
+//                      //submit.disabled = true
+//                  }else{
+//                      file_form_alarm.innerHTML = null
+//                      submit.disabled = false;
+//                  }
+//                  break;
+//              default:
+//                  console.log("問題なし")
+//                  file_form_alarm.innerHTML = null
+//                  submit.disabled = false;
+//              }
+//        }
+//    }
+//}
+//    
+//var judge_youtube = function(){
+//        //youtube_check_boxがチェックされたか
+//        if(youtube_check_box.checked){
+//            file_field_area.style.display = "none"
+//            youtube_id_field_area.style.display = "block"
+//            submit.disabled = false
+//        }else{
+//            file_field_area.style.display = "block"
+//            youtube_id_field_area.style.display = "none"
+//            //submit.disabled = true
+//            judge_extension()
+//        }
+//    //file_field_area.style.display = "block"
+//    //youtube_id_field_area.style.display = "none"
+//}
+//
+//<% %>
+//
+//if(delivery_form != "text"){
+//    //ファイルが変更されたら拡張子を判定
+//    file_form.addEventListener("change", (e) => {judge_extension()});
+//    //submit.disabled = true
+//}
+//
+//var judge_delivery_form = function(){
+//    switch(delivery_form){
+//        //動画の拡張子でないか
+//        case "video":
+//            file_discription.innerHTML = "フォーマットはMOV, mov, wmv, mp4のみです。"
+//            $("#video_field_area").css("display","block")
+//            $("#video_field_area").css("display","block")
+//            $("#youtube_area").css("display","block")
+//            break;
+//        //画像の拡張子でないか
+//        case "image":
+//            file_discription.innerHTML = "フォーマットはjpg,jpeg,pngのみです。"
+//            console.log("フォーマットはjpg,jpeg,pngのみです。")
+//            $("#video_field_area").css("display","block")
+//            $("#youtube_area").css("display","none")
+//            file_field_area.style.display = "block"
+//            break;
+//        case "text":
+//            $("#video_field_area").css("display","none")
+//            $("#youtube_area").css("display","none")
+//            submit.disabled = false
+//            break;
+//        default:
+//        break;
+//    }
+//}
+//judge_youtube()
+//judge_delivery_form()
+//
+//if(delivery_form == "video"){
+//  youtube_check_box.addEventListener("change", (e) => {
+//    judge_youtube()
+//    });
+//  }
 </script>

@@ -10,7 +10,7 @@
                 
             <% elsif transaction.request_form_name == "text" %>
                 <% if transaction.delivery_form.name == "image" || transaction.delivery_form.name == "text"%>
-                        <%= image_tag transaction.request.image_with_default, class:"transaction_file "%>
+                        <%= image_tag transaction.request.thumb_with_default, class:"transaction_file "%>
                 <% elsif transaction.delivery_form.name == "video" %>
                     <%= image_tag transaction.thumbnail.url, class:"transaction_file content_file", controls: true, autobuffer: true%>
                 <% end %>

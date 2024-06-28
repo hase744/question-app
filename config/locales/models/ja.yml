@@ -33,7 +33,7 @@ ja:
         request_form: 質問形式
         stock_quantity: 供給できるサービスの在庫数
         close_date: 募集終了日
-        delivery_days: 納品までにかかる最多日数
+        delivery_days: 回答までにかかる日数
         is_published: 公開する
         price: 料金
         transaction_message_days: 追加相談室日数
@@ -66,7 +66,7 @@ ja:
         youtube_id: YouTubeのID
       transaction:
         title: タイトル
-        description: 説明
+        description: 本文
         category: カテゴリー
         use_youtube: アップロード方法
         youtube_id: YouTube動画のID
@@ -79,8 +79,8 @@ ja:
         star_rating: 星評価
         thumbnail: サムネイル
         is_canceled: キャンセル
-        is_rejected: 依頼拒否
-        reject_reason: お断り理由（依頼者に伝えます）
+        is_rejected: 回答拒否
+        reject_reason: お断り理由（質問者に伝えます）
       delivery_item:
         file: ファイル
         file_duration: 再生時間

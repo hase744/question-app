@@ -54,6 +54,7 @@ class User::ServicesController < User::Base
   end
 
   def show
+    @transaction = Transaction.find(params[:transaction_id]) if params[:transaction_id].present?
     @relationship = nil
     if @service.user == current_user
       gon.tweet_text = "サービスを出品しました。気になる方は以下のリンクへ！"
@@ -80,6 +81,8 @@ class User::ServicesController < User::Base
       @service = Service.new(request: Request.find(params[:request_id]))
     else
       @service = Service.new()
+      @service.stock_quantity = nil
+      @service.transaction_message_days = nil
     end
     set_form_values
   end
@@ -109,7 +112,7 @@ class User::ServicesController < User::Base
           notifier_id:current_user.id,
           controller:"services",
           action:"show",
-          description:"あなたの依頼に対し、サービスが提案されました。",
+          description:"あなたの回答に対し、相談室が提案されました。",
           id_number:@service.id
         )
         flash.alert = "サービスを提案。"
@@ -270,7 +273,7 @@ class User::ServicesController < User::Base
 
   private def check_can_suggest
     if @request && !can_suggest?
-      flash.notice = "既にサービスを提案しています"
+      flash.notice = "既に相談室を提案しています"
       redirect_to user_request_path(@request.id)
     end
   end

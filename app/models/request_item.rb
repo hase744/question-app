@@ -6,12 +6,11 @@ class RequestItem < ApplicationRecord
     attr_accessor :duration
     attr_accessor :youtube_id_valid
     mount_uploader :file, FileUploader
-    mount_uploader :thumbnail, ImageUploader
     before_validation :set_default_values
   
     validate :validate_youtube_id
     validate :validate_file
-    validate :validate_thumbnail
+    #validate :validate_thumbnail
     validate :validatable_duration
   
     after_initialize do
@@ -55,8 +54,8 @@ class RequestItem < ApplicationRecord
       when "text" then
         self.youtube_id = nil
       when "image" then
-        self.thumbnail = self.file
-        self.youtube_id = nil
+        #self.thumbnail = self.file
+        #self.youtube_id = nil
       when "video" then
         if self.use_youtube
           self.thumbnail = nil

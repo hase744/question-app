@@ -19,7 +19,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def rejection(transaction)
         @transaction = transaction
-        mail to: @transaction.seller.email, subject: "あなたの依頼がお断りされました"
+        mail to: @transaction.seller.email, subject: "あなたの質問がお断りされました"
     end
 
     def purchase(transaction)
@@ -29,6 +29,6 @@ class Email::TransactionMailer < ApplicationMailer
 
     def delivery(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "あなたの依頼に回答が納品されました"
+        mail to: transaction.seller.email, subject: "あなたの質問に回答が納品されました"
     end
 end

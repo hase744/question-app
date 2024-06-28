@@ -14,8 +14,16 @@ module TemplateConcern
       self.description ||= "専門的なアドバイスや解決策を提供し、悩みや疑問に対してリアルタイムでサポートします。豊富な経験をもとに、仕事に関する様々なテーマに対応可能です。進行中のプロジェクトやキャリアに関する相談から、スキルの向上やキャリアアドバイスまで、あらゆる仕事に関するトピックに対応いたします。プロフェッショナルな助言で仕事に自信を持ち、成功への一歩を踏み出しましょう。安心して相談できるプライベートな空間で、あなたの仕事に関する課題を共有し、解決に導くお手伝いを致します。"
     end
   end
- 
+
   def image_with_default
-    self.image&.url.present? ? self.image.url : '/corretech_icon.png'
+    self.items&.first&.file&.url.present? ? self.items&.first&.file&.url : '/corretech_icon.png'
+  end
+
+  def thumb_with_default
+    self.items&.first&.file&.thumb&.url.present? ? self.items&.first&.file&.thumb&.url : '/corretech_icon.png'
+  end
+
+  def exist_thumb?
+    self.items&.first&.file&.thumb&.url.present
   end
 end

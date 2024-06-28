@@ -1,5 +1,5 @@
 <div class="order_show_zone">
-    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> ＞ 依頼の回答</p>
+    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> ＞ 回答</p>
     <%= render "user/shared/error_message", model: @transaction%>
     <div class="order_show_flame component_area">
         <%  if @transaction.is_canceled || @transaction.is_rejected%>
@@ -20,39 +20,41 @@
         <div  class="information_component">
             </label class="title_label">本文</label></br>
             <% if @transaction.description %>
-                <h3 class="margin0px break_word"><%=@transaction.description %></h3>
+                <h5 class="margin0px break_word"><%=@transaction.description %></h5>
             <% else %>
-                <h3 class="margin0px break_word">未記入</h3>
+                <h5 class="margin0px break_word">未記入</h5>
             <% end %>
         </div>
         <div  class="information_component">
             <%if @transaction.delivery_form_name != "text"%>
                 </label class="title_label">ファイル</label></br>
                 <% if @transaction.item %>
-                  <%if @transaction.use_youtube%>
-                      <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                  <% elsif @transaction.file.url != nil %>
-                      <% if @transaction.service.delivery_form.name == "image"%>
-                          <%= image_tag @transaction.file.url, class:"image"%>
-                      <% elsif @transaction.service.delivery_form.name == "video" %>
-                          <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
-                      <% end %>
-                  <% end %>
+                    <%if @transaction.use_youtube%>
+                        <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <% elsif @transaction.file.url != nil %>
+                        <% if @transaction.service.delivery_form.name == "image"%>
+                            <% @transaction.items.each do |item|%>
+                                <%= image_tag item.file.url, class:"image"%>
+                            <% end %>
+                        <% elsif @transaction.service.delivery_form.name == "video" %>
+                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                        <% end %>
+                    <% end %>
                 <% end %>
             <% end %>
             <% if false %>
-              <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
-              <img id="description_image" class="description_image">
+                <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+                <img id="description_image" class="description_image">
             <% end %>
         </div>
         <div  class="information_component">
-          <% if @transaction.item %>
-            <%if @transaction.thumbnail.url && @transaction.delivery_form.name == "video"%>
-              </label class="title_label">サムネイル</label></br>
-              <%= image_tag @transaction.thumbnail.url, class:"image"%>
+            <% if @transaction.item %>
+                <%if @transaction.items && @transaction.delivery_form.name == "video"%>
+                    </label class="title_label">サムネイル</label></br>
+                    <%= image_tag @transaction.items, class:"image"%>
+                <% end %>
             <% end %>
-          <% end %>
-          </div>
+            </div>
         <% if can_deliver(@transaction)%>
             <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
                 <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>

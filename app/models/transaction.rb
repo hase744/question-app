@@ -11,7 +11,7 @@ class Transaction < ApplicationRecord
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
-  has_many :categories,through: :transaction_categories, dependent: :destroy
+  has_many :categories, through: :transaction_categories, dependent: :destroy
 
   delegate :user, to: :service
   delegate :request_form_name, to: :service
@@ -40,8 +40,8 @@ class Transaction < ApplicationRecord
   attr_accessor :use_youtube
   attr_accessor :youtube_id
   attr_accessor :file
-  attr_accessor :thumbnail
   attr_accessor :item
+  accepts_nested_attributes_for :items, allow_destroy: true
 
   after_initialize do
   end
@@ -90,7 +90,6 @@ class Transaction < ApplicationRecord
     self.item = self.items.first
     if self.item.present?
       self.file = self.item.file
-      self.thumbnail = self.item.thumbnail
       self.use_youtube = self.item.use_youtube
       self.youtube_id = self.item.youtube_id
     end
@@ -111,7 +110,6 @@ class Transaction < ApplicationRecord
   def reset_item
     self.item = nil
     self.file = nil
-    self.thumbnail = nil
     self.use_youtube = nil
     self.youtube_id = nil
   end
@@ -124,7 +122,6 @@ class Transaction < ApplicationRecord
     if (self.file.present? || self.use_youtube) && self.item
       self.item.assign_attributes(
         file: self.file,
-        thumbnail: self.thumbnail,
         use_youtube: self.use_youtube,
         youtube_id: self.youtube_id
       )
@@ -289,7 +286,7 @@ class Transaction < ApplicationRecord
   end
 
   def description_max_length
-    10000
+    20000
   end
   
   def review_description_max_length

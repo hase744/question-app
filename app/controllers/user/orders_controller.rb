@@ -3,6 +3,19 @@ class User::OrdersController < User::Base
   before_action :identify_user, only:[:show, :edit, :update]
   before_action :identify_seller, only:[:show, :reject]
   before_action :check_transaction_is_editable, only:[:edit, :update]
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "small"
+    when "edit"
+      "small"
+    else
+      "application"
+    end
+  end
+  
   def index
     @transactions = solve_n_plus_1(Transaction.all)
     @transactions = @transactions.page(params[:page]).per(10)

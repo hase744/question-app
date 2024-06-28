@@ -99,12 +99,15 @@ class User < ApplicationRecord
   end
 
   def update_total_points
+    puts "アップデート"
     total_charged_points = 0
     Payment.where(user:self).each do |payment|
+      puts payment.point
       total_charged_points += payment.point
     end
     total_transactions = Transaction.left_joins(:request)
     total_transactions = total_transactions.where(
+      buyer: self,
       is_canceled:false, 
       is_violating: false,
       is_rejected:false, 

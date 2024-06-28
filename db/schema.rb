@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   create_table "delivery_items", force: :cascade do |t|
     t.bigint "transaction_id", null: false
     t.string "file"
-    t.string "thumbnail"
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -139,13 +138,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_inquiries_on_admin_user_id"
     t.index ["user_id"], name: "index_inquiries_on_user_id"
-  end
-
-  create_table "media", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "messages", force: :cascade do |t|
@@ -222,32 +214,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
-  create_table "potential_sellers", force: :cascade do |t|
-    t.string "name"
-    t.string "email"
-    t.string "url"
-    t.bigint "media_id"
-    t.bigint "user_id"
-    t.bigint "inviter_id"
-    t.bigint "proposer_id"
-    t.bigint "category_id"
-    t.integer "total_followers"
-    t.text "description"
-    t.text "profile_description"
-    t.boolean "is_allowed"
-    t.boolean "is_checked"
-    t.string "reward"
-    t.boolean "is_rewarded"
-    t.text "allowance_reason"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_potential_sellers_on_category_id"
-    t.index ["inviter_id"], name: "index_potential_sellers_on_inviter_id"
-    t.index ["media_id"], name: "index_potential_sellers_on_media_id"
-    t.index ["proposer_id"], name: "index_potential_sellers_on_proposer_id"
-    t.index ["user_id"], name: "index_potential_sellers_on_user_id"
-  end
-
   create_table "question_answers", force: :cascade do |t|
     t.string "sort"
     t.text "question"
@@ -281,7 +247,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   create_table "request_items", force: :cascade do |t|
     t.bigint "request_id", null: false
     t.string "file"
-    t.string "thumbnail"
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -295,7 +260,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.integer "delivery_form_name", null: false
     t.string "title"
     t.text "description"
-    t.string "image"
     t.integer "max_price"
     t.integer "mini_price"
     t.boolean "is_inclusive"
@@ -436,9 +400,9 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.bigint "transaction_id", null: false
     t.bigint "sender_id", null: false
     t.bigint "receiver_id", null: false
+    t.string "file"
     t.text "body"
     t.integer "total_likes", default: 0
-    t.string "file"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["receiver_id"], name: "index_transaction_messages_on_receiver_id"
@@ -613,11 +577,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
   add_foreign_key "posts", "users"
-  add_foreign_key "potential_sellers", "admin_users", column: "inviter_id"
-  add_foreign_key "potential_sellers", "admin_users", column: "proposer_id"
-  add_foreign_key "potential_sellers", "categories"
-  add_foreign_key "potential_sellers", "media", column: "media_id"
-  add_foreign_key "potential_sellers", "users"
   add_foreign_key "relationships", "users", column: "followee_id"
   add_foreign_key "relationships", "users", column: "follower_id"
   add_foreign_key "request_categories", "categories"

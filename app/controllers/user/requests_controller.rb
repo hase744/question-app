@@ -1,7 +1,7 @@
 class User::RequestsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish ] #ログイン済みである
   before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
-  before_action :define_transaction, only:[:purchase, :publish, :preview , :update, :publish, :purchase]
+  before_action :define_transaction, only:[:purchase, :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
@@ -67,6 +67,10 @@ class User::RequestsController < User::Base
   def show
     @request = Request.find(params[:id])
     @request.set_item_values
+    @transactions = @request.transactions.where(
+      is_contracted: true,
+      is_rejected: false
+      )
     if !@request.is_published
       flash.notice = "依頼が非公開です。"
       redirect_to user_requests_path
@@ -96,6 +100,7 @@ class User::RequestsController < User::Base
   end
 
   def edit
+    @request.service = @transaction&.service if @transaction
     @request.set_item_values
     @request.items.build
   end
@@ -113,28 +118,11 @@ class User::RequestsController < User::Base
     puts "存在：#{@transactions.present?}"
     if @transactions.present? #サービスの購入である
       @request.assign_attributes(request_service_params)
-    else
-      @request.assign_attributes(request_params)
-      @request = Request.find(params[:id])
-      puts "カウント"
-      puts @request.items.count
     end
-
-    #@request_item = nil
-#
-    #if @request.request_form.name != "text"
-    #  @request_item = @request.items.first
-    #  if @request_item
-    #    @request_item.assign_attributes(request_item_params)
-    #  else
-    #    @request_item = @request.items.new(request_item_params)
-    #  end
-    #end
-
-    #if save_request_and_item
     if @request.update(request_params)
-      puts "保存"
-      puts @request.description
+      params.dig(:items, :file).each do |file|
+        @request.items.create(file: file)
+      end
       if @transactions.present?
         redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
       else
@@ -148,7 +136,15 @@ class User::RequestsController < User::Base
       render "user/requests/edit"
     end
   end
-  
+
+  def remove_file
+    @request_item = RequestItem.find(params[:id])
+    @request = @request_item.request
+    if @request_item.delete
+      redirect_to edit_user_request_path(@request.id), notice: 'File was successfully removed.'
+    end
+  end
+
   def save_request_and_item
     if @request_item
       if @request.save && @request_item.save
@@ -166,15 +162,14 @@ class User::RequestsController < User::Base
   end
 
   def publish
-    @request.image = params[:request][:image]
     @request.set_publish
-    
+    @request.items.create(file: params[:request][:file]) if @request.request_form.name == "text"
     if @transaction #サービスの購入である
       #@request.service = @service
       create_contract
     else #公開依頼のとき
       if @request.save
-        flash.notice ="依頼を公開しました"
+        flash.notice ="質問を公開しました"
         redirect_to user_request_path(@request.id)
       else
         detect_models_errors([@transaction, current_user, @request, @service, @request_item])
@@ -187,7 +182,9 @@ class User::RequestsController < User::Base
   end
 
   def purchase
+    puts "購入"
     @request.set_publish
+    puts "#{@request.is_valid?}"
     create_contract
   end
 
@@ -208,6 +205,7 @@ class User::RequestsController < User::Base
       flash.notice = "購入しました。"
       redirect_to user_request_path(@request.id)
     else
+      puts "失敗 #{@request.items.count}"
       detect_models_errors([@transaction, current_user, @request])
       flash.notice = "購入できませんでした。"
       @request.set_item_values
@@ -217,7 +215,7 @@ class User::RequestsController < User::Base
   end
 
   def create
-    @request = Request.new(request_params)
+    @request = Request.new(request_new_params)
     #@request_item = @request.items.new(request_item_params)
     @request.user = current_user
     if @request.service_id
@@ -240,6 +238,10 @@ class User::RequestsController < User::Base
     else
       @request.is_inclusive = true
       if @request.save!
+        #params[:items][:file].each do |file|
+        params.dig(:items, :file).each do |file|
+          @request.items.create(file: file)
+        end
         redirect_to user_request_preview_path(@request.id)
       else
         render "user/requests/new"
@@ -460,8 +462,6 @@ class User::RequestsController < User::Base
         end
       end
 
-      puts "既存の依頼"
-      puts params[:service_id]
       if ordered_request.present? #依頼しかけのサービスがある
         @transaction = Transaction.find_by(request: ordered_request, service_id: params[:service_id])
         redirect_to user_request_preview_path(ordered_request.id, transaction_id: @transaction.id)
@@ -490,7 +490,41 @@ class User::RequestsController < User::Base
       :service_id,
       :suggestion_deadline,
       :delivery_days, 
+      items_attributes: [:id, :file, :_destroy],
+      #items_attributes: [:id, { file: [] }, :_destroy],
+      #items_attributes: [:file]
+    )
+  end
+
+  private def request_new_params
+    params.require(:request).permit(
+      :title,
+      :description,
+      :use_youtube,
+      :youtube_id,
+      :max_price,
+      :image,
+      :file_duration,
+      :thumbnail,
+      :category_id,
+      :request_form_name,
+      :delivery_form_name,
+      :service_id,
+      :suggestion_deadline,
+      :delivery_days, 
       items_attributes: [:file]
+      #items_attributes: [file: []],
+      #items_attributes: [:file => []]
+      #items_attributes: [
+      #  { file: [] } # file パラメータは配列として許可する
+      #]
+      #items_attributes: [
+      #  :id,                # IDを許可
+      #  { file: [] },       # ファイルを配列として許可
+      #  :_destroy           # ネストされた属性の削除を許可
+      #]
+      #items_attributes: [:id, :file],
+      #items_attributes: [:id, :file, :_destroy]
     )
   end
 

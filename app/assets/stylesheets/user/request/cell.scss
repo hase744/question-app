@@ -52,8 +52,8 @@
             }
         }
         .request_condition_area{
-            display: inline-block;
             margin: 3px;
+            z-index: 0.7;
             .request_condition_block{
                 display: inline-block;
             }
@@ -69,10 +69,16 @@
                 margin: 0px;
             }
         }
-        
+        .vertical_condition_area{
+            height: 150px;
+        }
     }
 }
-@media(max-width:500px){
+
+@media(max-width: 500px){
+    .vertical_condition_area{
+        display: none;
+    }
     .request_cell_area{
         .request_cell_flame{
             .item_area{
@@ -86,7 +92,7 @@
         }
     }
 }
-@media(min-width:500px){
+@media(min-width: 500px){
     .request_cell_area{
         .request_cell_flame{
             .item_area{
@@ -98,5 +104,11 @@
                 }
             }
         }
+    }
+    .horizontal_condition_area{
+        display: none;
+    }
+    .vertical_condition_area{
+        display: inline-block;
     }
 }

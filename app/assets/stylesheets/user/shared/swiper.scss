@@ -1,0 +1,40 @@
+.swiper-container{
+  	position: relative;
+  	overflow: hidden;
+	  z-index: 0;
+	  height: 100%;
+  	.wiper-wrapper{
+  	  	white-space: nowrap;
+		height: 100%;
+		z-index: 0.5;
+  	}
+  	.swiper-button-custom {
+  	    position: absolute;
+  	    //top: 45%;
+		height: 5%;
+  	    //top: 0px;
+  	    transform: translateY(-50%);
+  	    z-index: 0.5;
+  	    //background-color: rgba(0, 0, 0, 0.5);
+  	    color: white;
+		color: black;
+  	    padding: 10px;
+  	    cursor: pointer;
+  	    display: inline-block;
+  	}
+  	.swiper-button-next-custom {
+  	    right: 10px;
+  	}
+  	.swiper-button-prev-custom {
+  	    left: 10px;
+  	}
+  	.request_link{
+
+  	}
+  	.swiper-slide {
+  	  //display: flex;
+  	  max-width: 100%;
+  	  height: auto;
+  	  display: block;
+  	}
+}

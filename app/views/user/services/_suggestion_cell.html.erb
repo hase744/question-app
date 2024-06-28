@@ -1,7 +1,7 @@
 
     <div class="suggestion_area">
         <div class="service_info_area">
-            <%= link_to(user_service_path(service.id), class:"service_link_area") do%>
+            <%= link_to(user_service_path(service.id, transaction_id: transaction&.id), class:"service_link_area") do%>
                 <h3 class="service_title"><%= service.title%></h3>
             <% end %>
             <div class="service_user_condition_image">

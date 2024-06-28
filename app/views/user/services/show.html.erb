@@ -1,6 +1,11 @@
 <div class="service_show_zone">
     <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category.japanese_name%></p>
     <div class="service_left_area">
+        <%if @transaction %>
+            <%= render 'user/shared/common_label', text: '質問', language: 'ja' %>
+            <%= render "user/requests/cell", request:@transaction.request %>
+            <%= render 'user/shared/common_label', text: '相談室', language: 'ja' %>
+        <% end %>
         <div class="service_area">
             <div class="service_flame">
                 <div class="service_title_area">
@@ -41,7 +46,7 @@
                             <span class="service_condition"><%=@service.request_form.japanese_name%></span>
                         </td>
                     </tr>
-                    <%if @service.is_inclusive%>
+                    <%if @service.is_inclusive %>
                         <tr>
                             <td class="user_info_name">
                                 <span class="condition_name">質問の字数</span>
@@ -114,7 +119,13 @@
                 </div>
                 <%if can_purchase %>
                     <div class="transaction_button_area">
-                        <%=link_to "相談を投稿する", new_user_request_path(service_id:@service.id), class:"transaction_button"%>
+                        <%=
+                        if @transaction&.is_suggestion
+                            link_to "購入する", new_user_request_path(service_id:@service.id), class:"transaction_button"
+                        else
+                            link_to "質問を投稿する", new_user_request_path(service_id:@service.id), class:"transaction_button"
+                        end
+                        %>
                     </div>
                 <% end %>
                 <%= render "/user/shared/share_twitter"%>
@@ -122,7 +133,7 @@
             <% if !@service.request.present?%>
             <div class="service_info_menu" id="request_ajax_update">
                 <li class="menu_element"><%= link_to "回答", user_service_transactions_path(@service.id), remote: true, class:"user_content_link user_transactions_link"%></li>
-                <li class="menu_element"><%= link_to "依頼", user_service_requests_path(@service.id), remote: true, class:"user_content_link user_requests_link"%></li>
+                <li class="menu_element"><%= link_to "質問", user_service_requests_path(@service.id), remote: true, class:"user_content_link user_requests_link"%></li>
                 <li class="menu_element"><%= link_to "レビュー", user_service_reviews_path(@service.id), remote: true, class:"user_content_link user_reviews_link"%></li>
             </div>
             <% end %>
@@ -139,6 +150,6 @@
             <% end %>
         </div>
     </div>
-        <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
+    <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
 <%= javascript_pack_tag javascript_path %>

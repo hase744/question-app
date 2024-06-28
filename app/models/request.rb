@@ -1,7 +1,6 @@
 class Request < ApplicationRecord
   #include ActiveModel::Model
   #extend CarrierWave::Mount
-  mount_uploader :image, ImageUploader
   belongs_to :user
   belongs_to :service, optional: true
   belongs_to :deal, class_name: 'Transaction', optional: true, foreign_key: :transaction_id
@@ -9,8 +8,8 @@ class Request < ApplicationRecord
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
-  has_many :categories,through: :request_categories, dependent: :destroy
-  has_one :request_category
+  has_many :categories, through: :request_categories, dependent: :destroy
+  has_one :request_category, dependent: :destroy
   has_one :category, through: :request_category
 
   before_validation :set_default_values
@@ -23,12 +22,11 @@ class Request < ApplicationRecord
   attr_accessor :use_youtube
   attr_accessor :youtube_id
   attr_accessor :file
-  attr_accessor :thumbnail
   attr_accessor :request_file
   attr_accessor :service_id
   attr_accessor :service
 
-  validates :title,:description, presence: true
+  validates :title, :description, presence: true
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
   validates :max_price, numericality: {only_integer: true, greater_than_or_equal_to: 100, allow_nil: true}
@@ -37,10 +35,11 @@ class Request < ApplicationRecord
   validate :validate_description
   validate :validate_delivery_days
   validate :validate_suggestion_deadline
-  #validate :validate_is_published
+  validate :validate_is_published
   #validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+  accepts_nested_attributes_for :items, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
     includes(:user, :services, :request_categories, :categories, :items)
@@ -123,18 +122,15 @@ class Request < ApplicationRecord
     
     case self.request_form.name
     when "text" then
-      self.thumbnail = self.file
       self.youtube_id = nil
       self.use_youtube = false
       self.total_files = 0
     when "image" then
-      self.thumbnail = self.file
       self.youtube_id = nil
       self.use_youtube = false
       self.total_files = 0
     when "video" then
       if self.use_youtube
-        self.thumbnail = nil
       else
         self.youtube_id = nil
       end
@@ -171,7 +167,6 @@ class Request < ApplicationRecord
     if self.items.present?
       self.request_file = self.items.first
       self.file = self.request_file.file
-      self.thumbnail = self.request_file.thumbnail
       self.use_youtube = self.request_file.use_youtube
       self.youtube_id = self.request_file.youtube_id
     else
@@ -303,8 +298,16 @@ class Request < ApplicationRecord
     end
   end
 
+  def image_display_style
+    if self.service&.request_form&.name == 'image' 
+      'block'
+    else
+      'none'
+    end
+  end
+
   def video_display_style
-    if self.service&.request_form == 'video'
+    if self.service&.request_form&.name == 'video' 
       'block'
     else
       'none'

@@ -3,16 +3,10 @@ class DeliveryItem < ApplicationRecord
     attr_accessor :use_youtube
     attr_accessor :video_second
     mount_uploader :file, FileUploader
-    mount_uploader :thumbnail, ImageUploader
     validate :validate_youtube_id
     validate :validate_file
-    validate :validate_thumbnail
     before_validation :set_default_values
   
-    def resize_to
-      [1000, 500]
-    end
-
     after_initialize do
       if self.youtube_id.present?
         self.use_youtube = true
@@ -35,14 +29,11 @@ class DeliveryItem < ApplicationRecord
   
       case delivery_form.name
       when "text" then
-        self.thumbnail = self.file
         self.youtube_id = nil
       when "image" then
-        self.thumbnail = self.file
         self.youtube_id = nil
       when "video" then
         if self.use_youtube
-          self.thumbnail = nil
           self.file = nil
         else
           self.youtube_id = nil
@@ -89,20 +80,7 @@ class DeliveryItem < ApplicationRecord
         end
       end
     end
-  
-    def validate_thumbnail
-      if  self.delivery_form.name == "text"
-        errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present?
-      elsif self.delivery_form.name == "image"
-        errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present?
-      elsif self.delivery_form.name == "video"
-        if !self.use_youtube
-          errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present?
-        end
-      end
-    end
-  
-  
+
     def is_video_extension
       if self.file.present?
         file_extension = File.extname(self.file.path).delete(".")

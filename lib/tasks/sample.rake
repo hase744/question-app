@@ -91,7 +91,6 @@ namespace :sample do
             max_price: (n+2)*500,
             mini_price: (n+1)*500,
             category_id: category.id,
-            image: File.open(image_path),
             use_youtube:false,
             suggestion_deadline: DateTime.now + n + 1,
             request_form_name: Form.find_by(name:"text").name.to_sym,
@@ -101,6 +100,9 @@ namespace :sample do
             published_at:DateTime.now - n + 2,
             total_views:0,
             is_inclusive: true
+          )
+          request.items.create(
+            file: File.open(image_path),
           )
         else
           # ファイルが存在しない場合の処理
@@ -128,7 +130,6 @@ namespace :sample do
           max_price: (n+2)*500,
           mini_price: (n+1)*500,
           category_id: category.id,
-          image: File.open(image_path),
           use_youtube:false,
           suggestion_deadline: DateTime.now + n + 1,
           request_form_name: Form.find_by(name:"text").name.to_sym,
@@ -138,6 +139,9 @@ namespace :sample do
           published_at:DateTime.now - n + 2,
           total_views:0,
           is_inclusive: false
+        )
+        request.items.create(
+          file: File.open(image_path),
         )
         puts "seller#{n}@exmaple.com"
         service = Service.create_or_find_by!(
