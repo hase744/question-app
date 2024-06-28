@@ -120,6 +120,16 @@ namespace :user do
     resource :videos, only: [:show]
     resource :homes, only: [:show]
     resource :images, only: [ :show]
+    resources :requests do
+      member do
+        delete :remove_file, to: 'requests#remove_file'
+      end
+    end
+    resources :transactions do
+      member do
+        delete :remove_file, to: 'transactions#remove_file'
+      end
+    end
   end
   
   namespace :sample do

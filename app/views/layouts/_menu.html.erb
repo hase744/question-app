@@ -69,9 +69,9 @@
                 </span>
 
                 <span id="sales_results_field_area" class="account_search_field">
-                    <p>回答</p>
+                    <p>回答数</p>
                     <div class="select_area">
-                        <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件", num] }, selected: 0), include_blank: true,  class:"sales_results" ,required: true %>
+                        <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件以上", num] }, selected: 0), include_blank: true,  class:"sales_results" ,required: true %>
                     </div>
                     </br></br>
                 </span>

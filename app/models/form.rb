@@ -7,13 +7,19 @@ class Form
       Form.new(
         id: 1,
         name: 'text',
-        japanese_name: '文章',
+        japanese_name: '文章のみ',
         start_at: DateTime.new(2024, 1, 1)
       ),
       Form.new(
         id: 2,
         name: 'image',
         japanese_name: '文章＋画像',
+        start_at: DateTime.new(2024, 1, 1)
+      ),
+      Form.new(
+        id: 3,
+        name: 'free',
+        japanese_name: '自由',
         start_at: DateTime.new(2024, 1, 1)
       ),
       #Form.new(

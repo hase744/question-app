@@ -1,5 +1,6 @@
 
 <%= form_with model: request, url:path, method: method do |f| %>
+  
   <div class="field_area">
     <%= f.label :title, class:"field_label"%>（最大<%= request.title_max_length %>字）<br/>
     <%= f.text_field :title, maxlength: request.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field"%>
@@ -47,9 +48,20 @@
         <iframe class="youtube_video" id="youtube_video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
-    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.video_display_style=%>">
+    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.image_display_style %>">
       <%= f.label :file, class:"field_label" %><br />
-      <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg'%>
+      <%= f.fields_for :items do |item_form| %>
+        <% if item_form.object.file.present? %>
+          <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
+          <%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+          <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete %>
+          </br></br>
+        <% end %>
+        <% if !item_form.object.file.present? %>
+          <%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+        <% end %>
+      <% end %>
+
       <%= f.hidden_field :file_duration, id:"file_duration" %>
       <div class="file_discription" id="file_discription"></div>
       <div class="file_alarm" id="file_alarm"></div>
@@ -63,14 +75,14 @@
   </div>
 
   <div class="field_area">
-  <%= f.label :delivery_form, class:"field_label" %><br />
-  <%if service.present? %>
-    <h3 class="request_content"><%=service.delivery_form.japanese_name%></h3>
-  <% else %>
-    <div class="input_field text_field select_area">
-      <%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
-    </div>
-  <% end %>
+    <%= f.label :delivery_form, class:"field_label" %><br />
+    <%if service.present? %>
+      <h3 class="request_content"><%=service.delivery_form.japanese_name%></h3>
+    <% else %>
+      <div class="input_field text_field select_area">
+        <%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+      </div>
+    <% end %>
   </div>
 
   <div class="field_area">

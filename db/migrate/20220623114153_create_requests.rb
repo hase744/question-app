@@ -8,7 +8,6 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       #t.references :category, index:true
       t.string :title, index:true
       t.text :description
-      t.string :image
 
       t.integer :max_price, index:true
       t.integer :mini_price, index:true #予算の加減　＊現在は未使用

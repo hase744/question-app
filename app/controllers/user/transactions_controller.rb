@@ -40,6 +40,7 @@ class User::TransactionsController < User::Base
     else
       redirect_to user_order_path(params[:id])
     end
+    @transaction.items.build
   end
 
   def show
@@ -97,17 +98,11 @@ class User::TransactionsController < User::Base
   end
 
   def update
-    if @transaction.items.present?
-      @delivery_item = @transaction.items.first
-      @delivery_item.assign_attributes(transaction_item_params)
-    elsif @transaction.delivery_form.name != "text"
-      @delivery_item = DeliveryItem.new(transaction_item_params)
-      #だと@transaction保村時に@deliveryItenも保存しようとされる
-      @delivery_item.deal = @transaction
-    end
-
     @transaction.assign_attributes(transaction_params)
-    if  save_transaction_and_item
+    if  @transaction.save#save_transaction_and_items
+      params.dig(:items, :file).each do |file|
+        @transaction.items.create(file: file)
+      end
       flash.notice = "回答を編集しました"
       redirect_to user_order_path(params[:id])
     else
@@ -117,19 +112,11 @@ class User::TransactionsController < User::Base
     end
   end
 
-  def save_transaction_and_item
-    if @delivery_item && @delivery_item.valid?
-      if @transaction.save && @delivery_item.save
-        true
-      else
-        false
-      end
-    else
-      if @transaction.save
-        true
-      else
-        false
-      end
+  def remove_file
+    @delivery_item = DeliveryItem.find(params[:id])
+    @transaction = @delivery_item.deal
+    if @delivery_item.delete
+      redirect_to edit_user_transaction_path(@transaction.id), notice: 'ファイルを削除しました。'
     end
   end
 
@@ -285,7 +272,6 @@ class User::TransactionsController < User::Base
   private def transaction_item_params
     params.require(:transaction).permit(
       :file,
-      :thumbnail,
       :use_youtube,
       :youtube_id,
     )

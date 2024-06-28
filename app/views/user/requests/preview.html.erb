@@ -5,10 +5,10 @@
 <%= render "user/shared/error_message", model: current_user%>
 <%if @service_exist %>
   <h2 class="service_new_title"><%=@service.user.name%>さんのサービスを購入</h2>
-  <%= render "user/services/suggestion_cell", service:@service%>
+  <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
   <h2 class="service_new_title">依頼内容</h2>
 <% else %>
-  <h2 class="service_new_title">依頼を新規作成</h2>
+  <h2 class="service_new_title">質問を新規作成</h2>
 <% end %>
 <div class="service_new_zone">
     <div class="service_new_area input_area">
@@ -20,7 +20,7 @@
       
         <div class="field_area">
         <%= f.label :description, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.description %></h3>
+          <h5 class="request_content"><%=@request.description %></h5>
         </div>
 
         <div class="field_area">
@@ -42,11 +42,13 @@
             <% end %>
             <div class="field_area" id="file_field_area">
                 <% if @request.request_form_name == "image"%>
-                  <%= image_tag @request.file.url, class:"image"%>
+                  <% @request.items.each.with_index do |item, index| %>
+                    <%= image_tag item&.file&.url, class:"image" if item.file.url%>
+                  <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text" && @request.items %>
                   <% @request.items.each do |file|%>
-                  <%= image_tag file.url, class:"image"%>
+                    <%= image_tag file.url, class:"image"%>
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text"%>
@@ -90,7 +92,7 @@
         <% end %>
 
         <div class="submit_area">
-          <%= f.file_field  :image, id:"file_input", class:"display_none" %>
+          <%= f.file_field  :file, id:"file_input", class:"display_none" %>
           <%= f.hidden_field :transaction_id %>
           <%= f.submit @submit_text, class:"submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"}%>
         </div>

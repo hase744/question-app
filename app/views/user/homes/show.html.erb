@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
 <div class="home_show_zone">
     <%= render "user/shared/label_with_link", label: "相談室", link: user_services_path %>
     
@@ -106,7 +105,7 @@
     </div>
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>
-<%= render "user/homes/swiper.js.erb" %>
+<%= render "user/shared/javascript/swiper.js.erb" %>
 <script>
   var swiper = new Swiper('.swiper-service-container', {
     slidesPerView: 5,

@@ -1,9 +1,10 @@
 <%if @service_exist %>
   <h2 class="service_new_title"><%=@service.user.name%>さんのサービスを購入</h2>
-  <%= render "user/services/suggestion_cell", service:@service%>
-  <h2 class="service_new_title">依頼内容</h2>
+  <% transaction = Transaction.find_by(requests: @request, service: @service) %>
+  <%= render "user/services/suggestion_cell", service:@service, transaction: transaction %>
+  <h2 class="service_new_title">質問内容</h2>
 <% else %>
-  <h2 class="service_new_title">依頼を編集</h2>
+  <h2 class="service_new_title">質問を編集</h2>
 <% end %>
 <%= render "user/shared/error_message", model: @request%>
 <%= render "user/shared/error_message", model: @request_item%>

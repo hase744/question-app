@@ -1,8 +1,10 @@
 <div class="request_image_area container">
+  <% request.items.each do |item|%>
+    <%= image_tag item.file.url, class:"request_image", id:"request_image", onclick:"revealImage()"%>
+  <% end %>
   <div class="button_area">
-    <button class="btn dli-chevron-down dli-chevron" id='btn' onclick="revealImage()"></button>
+    <button class="btn dli-chevron-down dli-chevron" id='btn' ></button>
   </div>
-  <%= image_tag request.image.url, class:"request_image", id:"request_image"%>
 </div>
 <script>
 function revealImage() {
@@ -23,6 +25,7 @@ function revealImage() {
   height: auto;
   height: 100px;
   object-fit: cover;
+  cursor: pointer;
 }
 .request_image_area > img {
   opacity: 0.5;
@@ -37,12 +40,13 @@ function revealImage() {
 .btn {
   position: absolute;
   z-index: 1;
-  top: 0px;
-  left: 0;
+  top: -50px;
+  left: 50%;
   color: grey;
   border: none;
   cursor: pointer;
   background-color: transparent;
+  pointer-events: none;
 }
 .dli-chevron-up {
   transform: translateX(50%) translateY(100%) rotate(-45deg);
@@ -50,7 +54,7 @@ function revealImage() {
 .dli-chevron{
   display: inline-block;
   vertical-align: middle;
-  color: #333;
+  //color: #333;
   line-height: 1;
   width: 1em;
   height: 1.2em;

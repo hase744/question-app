@@ -1,5 +1,5 @@
-$('#request_request_form_name').change(function() {
-  var selectedValue = $(this).val();
+select_file = function() {
+  var selectedValue = $('#request_request_form_name').val();
   if (selectedValue === 'image') {
     $('#fileInput').attr('accept', '<%= Request.acceptable_image_extensions%>');
     console.log('<%= Request.acceptable_image_extensions%>')
@@ -21,4 +21,6 @@ $('#request_request_form_name').change(function() {
     $("#youtube_area").show();
     $("#youtube_id_field_area").hide();
   }
-});
+}
+select_file();
+$('#request_request_form_name').change(select_file);

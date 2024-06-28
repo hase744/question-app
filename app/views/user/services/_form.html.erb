@@ -62,13 +62,13 @@
 
         <div class="field_area">
           <%= f.label :delivery_form, class:"field_label" %><br />
-          <%if request%>
-            <%= f.select :delivery_form_name, forms_japanese_hash(request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
-          <%else%>
-            <div class="select_area">
-              <%= f.select 'delivery_form_name', options_for_select(forms_japanese_hash, selected: service.delivery_form_name), include_blank: true,  class:"" ,required: true %>
-            </div>
-          <% end %>
+          <div class="select_area">
+            <%if request%>
+              <%= f.select :delivery_form_name, forms_japanese_hash(request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
+            <%else%>
+                <%= f.select 'delivery_form_name', options_for_select(forms_japanese_hash, selected: service.delivery_form_name), include_blank: true,  class:"" ,required: true %>
+            <% end %>
+          </div>
         </div>
 
         <div class="field_area">
@@ -98,9 +98,9 @@
         <div class="field_area">
           <%= f.label :delivery_days, class:"field_label"%>（1〜<%=service.delivery_days_max_number%>日）<br/>
           <div class="select_area">
-            <%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
+            <%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日以内", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
           </div>
-          <div>＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
+          <div class="annotation">＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
         </div>
 
         <%if !request.present? %>

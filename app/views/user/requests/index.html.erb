@@ -11,8 +11,18 @@
         <div class="main_bottom"><%= paginate @requests %></div>
     <% end %>
 </div>
+<%= render "user/shared/javascript/swiper.js.erb" %>
 <script>
 set_search_detail();
 //content.options[0].selected = false;
 //content.options[1].selected = true;
+</script>
+
+<script>
+  var swiper = new Swiper('.swiper-container', {
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
 </script>

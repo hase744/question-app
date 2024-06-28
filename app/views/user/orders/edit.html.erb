@@ -1,4 +1,4 @@
-<h2 class="order_edit_title">依頼を断る</h2>
+<h2 class="order_edit_title">回答を断る</h2>
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: current_user %>
 <%= render "user/shared/error_message", model: @transaction.item %>
@@ -12,7 +12,7 @@
           <%= f.hidden_field :is_rejected, value:true %>
         </div>
         <div class="submit_area">
-          <%= f.submit "送信", class:"submit", id:"submit", data: {confirm: "依頼を断りますか？"} %>
+          <%= f.submit "送信", class:"submit", id:"submit", data: {confirm: "回答を断りますか？"} %>
         </div>
       <% end %>
     </div>
