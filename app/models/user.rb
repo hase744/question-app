@@ -99,10 +99,8 @@ class User < ApplicationRecord
   end
 
   def update_total_points
-    puts "アップデート"
     total_charged_points = 0
     Payment.where(user:self).each do |payment|
-      puts payment.point
       total_charged_points += payment.point
     end
     total_transactions = Transaction.left_joins(:request)
@@ -116,9 +114,6 @@ class User < ApplicationRecord
         is_published:true
       }
     )
-    #total_transactions.each do |transaction|
-    #  total_charged_points -= transaction.price
-    #end
     total_charged_points -= total_transactions.sum(:price)
     self.total_points = total_charged_points
     self.save
@@ -140,7 +135,7 @@ class User < ApplicationRecord
   end
   
   def update_service_mini_price
-    self.update(mini_price: Service.where(user: self, is_inclusive: true, is_published:true).minimum(:price))
+    self.update(mini_price: Service.where(user: self, request_id: nil, is_published:true).minimum(:price))
   end
 
   def name_max_length

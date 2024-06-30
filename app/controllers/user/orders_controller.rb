@@ -76,20 +76,19 @@ class User::OrdersController < User::Base
     @service = @transaction.service
 
     @transaction.assign_attributes(is_canceled: true, canceled_at: DateTime.now)
-    @service.assign_attributes(stock_quantity: @service.stock_quantity+1)
+    @service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
-    if all_models_valid?([@transaction, current_user, @service])
-      @transaction.save
-      @service.save
-      current_user.update_total_points
-      flash.notice = "依頼をキャンセルしました"
-      redirect_to user_orders_path(user: "buyer")
-      create_cancel_notification
-      Email::TransactionMailer.cancel(@transaction).deliver_now
-    else
-      detect_models_errors([@transaction, current_user, @service])
-      flash.alert = "キャンセルできませんでした"
-      render "user/shared/error"
+    ActiveRecord::Base.transaction do
+      if @transaction.save && @service.save && current_user.update_total_points
+        flash.notice = "質問をキャンセルしました"
+        redirect_to user_orders_path(user: "buyer", scope: "ongoing")
+        create_cancel_notification
+        Email::TransactionMailer.cancel(@transaction).deliver_now
+      else
+        detect_models_errors([@transaction, current_user, @service])
+        flash.alert = "キャンセルできませんでした"
+        render "user/shared/error"
+      end
     end
   end
 
@@ -101,21 +100,18 @@ class User::OrdersController < User::Base
 
     @transaction.assign_attributes(reject_params)
     @transaction.rejected_at = DateTime.now
-    @service.assign_attributes(stock_quantity: @service.stock_quantity+1)
+    @service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
-    if all_models_valid?([@transaction, @buyer, @service, @request])
-      @request.save
-      @buyer.update_total_points
-      @service.update(stock_quantity:@service.stock_quantity+1) #在庫を追加
-      @transaction.save
-      flash.notice = "依頼を断りました"
-      redirect_to user_orders_path
-      puts "notification"
-      puts create_rejection_notification
-      Email::TransactionMailer.rejection(@transaction).deliver_now
-    else
-      gon.text_max_length = @transaction.reject_reason_max_length
-      render "user/orders/edit"
+    ActiveRecord::Base.transaction do
+      if @request.save && @buyer.update_total_points && @service.save && @transaction.save 
+        flash.notice = "質問を断りました"
+        create_rejection_notification
+        redirect_to user_orders_path(user: "seller", scope: "ongoing")
+        Email::TransactionMailer.rejection(@transaction).deliver_now
+      else
+        gon.text_max_length = @transaction.reject_reason_max_length
+        render "user/orders/edit"
+      end
     end
   end
 
@@ -141,9 +137,10 @@ class User::OrdersController < User::Base
       user_id: @transaction.seller,
       notifier_id: current_user.id,
       description: "依頼がキャンセルされました。",
-      action: "show",
-      controller: "requests",
-      id_number: @request.id
+      action: "index",
+      controller: "orders",
+      id_number: @request.id,
+      parameter: "?scope=undelivered&user=seller"
       )
   end
 
@@ -152,10 +149,11 @@ class User::OrdersController < User::Base
     Notification.create(
       user_id: @transaction.buyer.id,
       notifier_id: current_user.id,
-      description: "依頼がお断りされました。",
-      action: "show",
-      controller: "requests",
-      id_number: @request.id
+      description: "質問がお断りされました。",
+      action: "index",
+      controller: "orders",
+      id_number: @request.id,
+      parameter: "?scope=undelivered&user=buyer"
       )
   end
 
@@ -188,13 +186,10 @@ class User::OrdersController < User::Base
 
   private def can_edit_transaction
     if @transaction.is_canceled
-      puts "中止"
       false
     elsif @transaction.is_rejected
-      puts "拒絶"
       false
     elsif @transaction.is_delivered
-      puts "完了"
       false
     else
       true

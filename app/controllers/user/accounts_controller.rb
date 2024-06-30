@@ -104,13 +104,8 @@ class User::AccountsController < User::Base
     @services = Service.all
     @services = solve_n_plus_1(@services)
     @services = @services.where(user: User.find(params[:id]))
-    if user_signed_in?
-      if current_user.id == params[:id].to_i
-      else
-       @services = @services.where(is_published:true, is_inclusive: true)
-      end
-    else
-     @services = @services.where(is_published:true, is_inclusive: true)
+    if !user_signed_in? || current_user.id != params[:id].to_i
+      @services = @services.where(is_published:true, request_id: nil)
     end
     @services = @services.order(id: :DESC).page(params[:page]).per(20)
     render partial: "user/accounts/services", locals: { contents: @services }

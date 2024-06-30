@@ -6,7 +6,7 @@ class CreateServices < ActiveRecord::Migration[6.1]
       t.integer :delivery_form_name, index:true
       #t.references :category, index:true
       #t.references :request, index:true
-      t.boolean :is_inclusive, index:true
+      t.references :request, index:true, foreign_key: true
       t.string :title, index:true
       t.text :description
       t.integer :price

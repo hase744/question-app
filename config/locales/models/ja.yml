@@ -44,8 +44,7 @@ ja:
         title: タイトル
         description: 質問・相談内容
         file: 添付ファイル
-        request_item: 依頼ファイル
-        items: 依頼ファイル
+        items: 添付ファイル
         file_duration: 再生時間
         thumbnail: サムネイル
         category: カテゴリー

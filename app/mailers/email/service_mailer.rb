@@ -1,7 +1,7 @@
 class Email::ServiceMailer < ApplicationMailer
-    def suggestion(service)
-        @service = service
-        request = Request.find(@service.request_id)
-        mail to: request.user.email, subject: "サービス提案の報告"
+    def suggestion(transaction)
+        request = transaction.request
+        @service = transaction.service
+        mail to: request.user.email, subject: "相談室提案の報告"
     end
 end

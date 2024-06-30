@@ -8,7 +8,7 @@ class Service < ApplicationRecord
   has_one :service_category
   has_one :category, through: :service_category
   has_many :requests, through: :transactions
-  #belongs_to :request, optional: true
+  belongs_to :request, optional: true
   belongs_to :user
   before_validation :set_default_values
   before_validation :update_renewed_at
@@ -17,14 +17,12 @@ class Service < ApplicationRecord
   after_save :update_user_service_mini_price
   attr_accessor :request_max_minutes
   attr_accessor :category_id
-  attr_accessor :request
-  attr_accessor :request_id
 
   validates :title, length: {maximum: :title_max_length}, presence: true
   validates :description, length: {maximum: :description_max_length}, presence: true
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :delivery_days, numericality: {only_integer: true, fgreater_than_or_equal_to: :delivery_days_minimum_number, less_than_or_equal_to: :delivery_days_max_number}, presence: true
-  validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}, presence: true
+  validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}#, presence: true
   validates :transaction_message_days, numericality: {only_integer: true, greater_than_or_equal_to: :minimum_transaction_message_days, less_than_or_equal_to: :max_transaction_message_days}, presence: true
   validate :validate_price
   #validate :validate_form
@@ -38,14 +36,15 @@ class Service < ApplicationRecord
     left_joins(:categories, :user, :service_categories)
     .solve_n_plus_1
     .where(
-    is_inclusive: true,
-    is_published:true,
-    user: {
-      is_published: true, 
-      state: 'normal',
-      is_seller:true,
-    }
-  )}
+      request_id: nil,
+      is_published: true,
+      user: {
+        is_published: true, 
+        state: 'normal',
+        is_seller: true,
+      }
+    )
+  }
   
   after_initialize do
     if self.request_form_name == 'video'
@@ -65,7 +64,18 @@ class Service < ApplicationRecord
   end
 
   def delivery_form
-      Form.find_by(name: self.delivery_form_name)
+    Form.find_by(name: self.delivery_form_name)
+  end
+
+  def is_inclusive
+    self.request_id == nil
+  end
+
+  def exclusive_transaction
+    Transaction.find_by(
+      service: self,
+      request: self.request
+    )
   end
 
   def update_renewed_at
@@ -89,6 +99,13 @@ class Service < ApplicationRecord
     end
   end
 
+  def thumb_with_default
+    if self.image.thumb.url == nil
+      "/corretech_icon.png"
+    else 
+      self.image.thumb.url
+    end 
+  end
   
   def update_average_star_rating
     transactions =  Transaction.where(service: self).where.not(star_rating: nil)
@@ -117,7 +134,7 @@ class Service < ApplicationRecord
   end
 
   def get_unbuyable_message(user)
-    if  self.stock_quantity < 1
+    if  self.stock_quantity && self.stock_quantity < 1
       "売り切れのため購入できません。"
     elsif !self.is_published
       "サービスが非公開です。"
@@ -130,7 +147,23 @@ class Service < ApplicationRecord
     elsif !self.user.is_normal
       "回答者のアカウントに問題が発生しました。"
     elsif self.request && self.request.user != user
-      "そのサービスは購入できません。"
+      "購入できません。"
+    else
+      nil
+    end
+  end
+
+  def get_unsuggestable_message(request)
+    if  self.stock_quantity < 1
+      "在庫が足りません"
+    elsif request.user.is_deleted
+      "アカウントが存在しません。"
+    elsif !request.user.is_stripe_customer_valid?
+      "質問者の決済が承認されていません。"
+    elsif request.request_form != self.request_form
+      "質問形式が違います"
+    elsif self.request_max_characters < request.description.length
+      "相談室の文字数が足りません"
     else
       nil
     end
@@ -138,7 +171,7 @@ class Service < ApplicationRecord
 
   def set_default_values
     if self.request_id
-        self.request = Request.find(self.request_id.to_i)
+      self.request = Request.find(self.request_id.to_i)
     end
     
     if self.request #依頼に対する提案である
@@ -148,7 +181,7 @@ class Service < ApplicationRecord
       self.request_max_characters = nil
       self.request_max_duration = nil
     elsif self.request_form_name == 'video' && self.is_inclusive
-        self.request_max_duration = request_max_minutes.to_i*60
+      self.request_max_duration = request_max_minutes.to_i*60
     end
   end
 
@@ -199,7 +232,7 @@ class Service < ApplicationRecord
         if self.request_max_duration > 600
             errors.add(:request_max_minutes, "は最大10分です")
         end
-      elsif !self.request.present? && self.is_inclusive#依頼に対する提案ではない
+      elsif !self.request.present? #依頼に対する提案ではない
         errors.add(:request_max_minutes, "に値が空です")
       end
     end

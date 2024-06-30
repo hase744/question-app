@@ -93,6 +93,7 @@ namespace :user do
     get "services/requests/:id", to: "services#requests", as:"service_requests"
     get "services/reviews/:id", to: "services#reviews", as:"service_reviews"
     get "services/transactions/:id", to: "services#transactions", as:"service_transactions"
+    put "services/:id/suggest", to: "services#suggest", as:"service_suggest"
     put "orders/:id", to: "orders#cancel", as:"cancel_order"
     patch "orders/:id", to: "orders#reject", as:"reject_order"
     

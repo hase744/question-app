@@ -1,21 +1,5 @@
 module CommonMethods
     extend ActiveSupport::Concern
-    def can_suggest?
-        if  @request.is_inclusive &&  user_signed_in?
-            if @request.suggestion_deadline > DateTime.now 
-                if !@request.services.where(user: current_user).present? && @request.user != current_user
-                    true
-                else
-                    false
-                end
-            else
-                false
-            end
-        else
-            false
-        end 
-    end
-
     def solve_n_plus_1(relation)
         case relation.klass.to_s
         when User.to_s then

@@ -60,15 +60,13 @@
     }
     .service_image_area{
         display: inline-block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
+        float: left;
+        height: 120px;
+        width: 180px;
         .service_image{
             object-fit: cover;
             height: 100%;
-            float: right;
-            max-width: calc(300px);
+            width: 100%;
         }
     }
 
@@ -78,6 +76,7 @@
         position: relative;
         width: 100%;
         .service_condition_user{
+            height: 120px;
             float: left;
         }
         .service_condition_area{

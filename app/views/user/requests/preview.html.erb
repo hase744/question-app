@@ -4,11 +4,11 @@
 <%= render "user/shared/error_message", model: @service%>
 <%= render "user/shared/error_message", model: current_user%>
 <%if @service_exist %>
-  <h2 class="service_new_title"><%=@service.user.name%>さんのサービスを購入</h2>
+  <h3 class="service_new_title"><%=@service.user.name%>へ質問を作成</h3>
   <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
-  <h2 class="service_new_title">依頼内容</h2>
+  <h3 class="service_new_title">依頼内容</h3>
 <% else %>
-  <h2 class="service_new_title">質問を新規作成</h2>
+  <h3 class="service_new_title">質問を新規作成</h3>
 <% end %>
 <div class="service_new_zone">
     <div class="service_new_area input_area">
@@ -47,8 +47,8 @@
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text" && @request.items %>
-                  <% @request.items.each do |file|%>
-                    <%= image_tag file.url, class:"image"%>
+                  <% @request.items.each do |item|%>
+                    <%= image_tag item.file.url, class:"image"%>
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text"%>

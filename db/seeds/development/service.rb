@@ -27,7 +27,6 @@ file = CarrierWave::SanitizedFile.new(tempfile: file)
         request_max_minutes: duration_arrays[n%6],
         request_max_files:0,
         #request_max_length: request_max_lengths[n%6],
-        is_inclusive: true
     )
     #service.service_categories.create(category: Category.find_by(name: categories[n%3]))
     #user.update(mini_price: Service.where(user: user, request_id:nil, is_published:true).minimum(:price))

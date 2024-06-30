@@ -1,8 +1,8 @@
 <%if @request.present? %>
   <%= render "user/requests/cell", request: @service.request%>
-  <h2 class="service_new_title"><%=@request.user.name%>さんにサービスを提案</h2>
+  <h3 class="service_new_title"><%=@request.user.name%>に相談室を提案</h3>
 <% else %>
-  <h2 class="service_new_title">サービスを新規出品</h2>
+  <h3 class="service_new_title">サービスを新規出品</h3>
 <% end %>
 <%= render "user/shared/caveat",path: abouts_service_guide_path,label:"出品可能なサービスについて" %>
 <%= render "user/shared/caveat",path: abouts_how_to_sell_path,label:"サービスの各項目の詳細について" %>

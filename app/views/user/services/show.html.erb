@@ -121,7 +121,7 @@
                     <div class="transaction_button_area">
                         <%=
                         if @transaction&.is_suggestion
-                            link_to "購入する", new_user_request_path(service_id:@service.id), class:"transaction_button"
+                            link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
                         else
                             link_to "質問を投稿する", new_user_request_path(service_id:@service.id), class:"transaction_button"
                         end
@@ -132,7 +132,7 @@
             </div>
             <% if !@service.request.present?%>
             <div class="service_info_menu" id="request_ajax_update">
-                <li class="menu_element"><%= link_to "回答", user_service_transactions_path(@service.id), remote: true, class:"user_content_link user_transactions_link"%></li>
+                <li class="menu_element"><%= link_to "回答", user_service_transactions_path(@service.id),method: :post, remote: true, class:"user_content_link user_transactions_link"%></li>
                 <li class="menu_element"><%= link_to "質問", user_service_requests_path(@service.id), remote: true, class:"user_content_link user_requests_link"%></li>
                 <li class="menu_element"><%= link_to "レビュー", user_service_reviews_path(@service.id), remote: true, class:"user_content_link user_reviews_link"%></li>
             </div>
@@ -145,11 +145,11 @@
             <% end %>
         <% end %>
         <div class="service_hitsory" id="updated_by_ajax">
-            <% @transactions.each do |transaction|%>
+            <% @service.transactions.solve_n_plus_1.where(is_delivered:true).page(params[:page]).per(5).each do |transaction|%>
                 <%= render "user/transactions/cell", transaction:transaction %>
             <% end %>
         </div>
     </div>
     <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
-<%= javascript_pack_tag javascript_path %>
+<%= javascript_pack_tag "user/services/show" %>

@@ -14,7 +14,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def cancel(transaction)
         @transaction = transaction
-        mail to: @transaction.buyer.email, subject: "あなたのサービスの依頼がキャンセルされました"
+        mail to: @transaction.buyer.email, subject: "あなたの購入がキャンセルされました"
     end
 
     def rejection(transaction)
@@ -24,7 +24,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def purchase(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "あなたのサービスが購入されました"
+        mail to: transaction.seller.email, subject: "あなたの相談室に質問がされました"
     end
 
     def delivery(transaction)

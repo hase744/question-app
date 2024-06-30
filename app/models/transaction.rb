@@ -31,8 +31,10 @@ class Transaction < ApplicationRecord
   validate :validate_is_rejected
   validate :validate_reject_reason
   validate :validate_review
-
+  validate :validate_is_suggestion
+  validate :previous_transaction
   before_validation :set_default_values
+
   after_save :create_transaction_category
   after_save :update_total_sales
   after_save :update_average_star_rating
@@ -153,6 +155,36 @@ class Transaction < ApplicationRecord
     self.service_descriprion = self.service.description
     self.seller = self.service.user
     self.buyer = self.request.user
+  end
+
+  def validate_is_suggestion
+    if self.is_suggestion && self.service.request_id.nil?
+      if self.request.user.is_deleted
+        errors.add(:base,  "アカウントが存在しません。")
+      elsif !self.request.user.is_stripe_customer_valid?
+        errors.add(:base,  "質問者の決済が承認されていません。")
+      elsif self.request.request_form.name != self.service.request_form.name
+        errors.add(:base,  "質問形式が違います")
+      elsif self.service.request_max_characters < self.request.description.length
+        errors.add(:base,  "相談室の文字数が足りません")
+      else
+        nil
+      end
+    end
+  end
+
+  def previous_transaction
+    previous_transaction = Transaction.where(
+      request: self.request, 
+      service: self.service
+    ).where.not(id: self.id)
+    if previous_transaction.present?
+      if self.is_suggestion
+        errors.add(:base, "既に提案済みです")
+      else
+        errors.add(:base, "既に質問済みです")
+      end
+    end
   end
 
   def validate_price
