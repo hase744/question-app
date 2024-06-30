@@ -73,8 +73,8 @@ class Request < ApplicationRecord
       self.delivery_days ||= ((self.suggestion_deadline - Time.current)/60/60/24).round(0)
     end
 
-    if self.delivery_days
-      self.suggestion_deadline ||= DateTime.now + delivery_days.to_i.day
+    if self.suggestion_acceptance_duration
+      self.suggestion_deadline ||= DateTime.now + suggestion_acceptance_duration
     end
 
     if original_request_exists?
@@ -98,6 +98,15 @@ class Request < ApplicationRecord
       Form.find_by(name: self.delivery_form_name)
   end
 
+  def acceptance_duration_in_days
+    suggestion_acceptance_duration / 86400
+  end
+
+  # 日数を秒数に変換して acceptance_duration に設定
+  def acceptance_duration_in_days=(days)
+    self.suggestion_acceptance_duration = (days.to_f * 86400).to_i
+  end
+  
   def set_publish
     self.assign_attributes(
       is_published:true, 
@@ -137,7 +146,9 @@ class Request < ApplicationRecord
       self.total_files = 1
     end
 
+
     if self.delivery_days
+      self.acceptance_duration_in_days=(delivery_days)
       self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
     end
   end
@@ -148,6 +159,26 @@ class Request < ApplicationRecord
     self.image.cache!(CarrierWave::SanitizedFile.new(StringIO.new(file_content)))
     self.image.retrieve_from_cache!(self.image.cache_name)
     self.save
+  end
+
+  def is_suggestable?(user)
+    if get_unsuggestable_message(user).present?
+      false
+    else
+      true
+    end
+  end
+
+  def get_unsuggestable_message(user)
+    if !self.is_inclusive
+      "その質問には提案できません"
+    elsif self.user == user
+      "自分の質問には提案できません"
+    elsif  self.suggestion_deadline < DateTime.now
+      "期限が過ぎています"
+    else
+      nil
+    end
   end
 
   def set_service_values
@@ -238,9 +269,6 @@ class Request < ApplicationRecord
 
     if self.service
       if self.service.request_max_characters && self.service.request_max_characters < self.description.gsub(/(\r\n?|\n)/,"a").length
-        #&& !self.service.request.present?
-        puts self.description.gsub(/(\r\n?|\n)/,"")
-        puts self.description.gsub(/(\r\n?|\n)/,"").length
         errors.add(:description, "は最大#{self.service.request_max_characters}字です")
       end
     end
@@ -280,9 +308,9 @@ class Request < ApplicationRecord
   end
 
   def validate_delivery_days
-    if self.delivery_days
-      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.delivery_days.to_i > 30
-      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.delivery_days.to_i < 1
+    if self.delivery_days && self.will_save_change_to_suggestion_acceptance_duration?
+      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptance_duration_in_days > 30
+      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptance_duration_in_days < 1
     end
   end
 

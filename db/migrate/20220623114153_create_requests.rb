@@ -8,6 +8,7 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       #t.references :category, index:true
       t.string :title, index:true
       t.text :description
+      t.string :image
 
       t.integer :max_price, index:true
       t.integer :mini_price, index:true #予算の加減　＊現在は未使用
@@ -18,6 +19,7 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       #t.boolean :use_youtube, default: false
 
       t.boolean :is_inclusive, index:true
+      t.integer :suggestion_acceptance_duration, index:true
       t.datetime :suggestion_deadline, index:true
 
       t.integer :description_total_characters, default: 0, index:true

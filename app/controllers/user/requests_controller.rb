@@ -1,13 +1,13 @@
 class User::RequestsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish ] #ログイン済みである
   before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
-  before_action :define_transaction, only:[:purchase, :publish, :preview , :update, :publish, :purchase, :edit]
+  before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
   before_action :check_service_updated, only:[:publish, :edit, :update] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
   before_action :check_new_at, only:[:create]
-  before_action :check_original_request, only:[:new, :create] #購入しようとしているサービスが自分の依頼に対する提案である
+  before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
   layout :choose_layout
@@ -15,6 +15,8 @@ class User::RequestsController < User::Base
   private def choose_layout
     case action_name
     when "show"
+      "responsive_layout"
+    when "purchase"
       "responsive_layout"
     when "index"
       "search_layout"
@@ -66,11 +68,6 @@ class User::RequestsController < User::Base
 
   def show
     @request = Request.find(params[:id])
-    @request.set_item_values
-    @transactions = @request.transactions.where(
-      is_contracted: true,
-      is_rejected: false
-      )
     if !@request.is_published
       flash.notice = "依頼が非公開です。"
       redirect_to user_requests_path
@@ -84,7 +81,6 @@ class User::RequestsController < User::Base
       if user_signed_in?
         @relationship = Relationship.find_by(followee: @request.user, follower_id: current_user.id)
       end
-
       @request.update(total_views:@request.total_views + 1)
     end
   end
@@ -120,7 +116,7 @@ class User::RequestsController < User::Base
       @request.assign_attributes(request_service_params)
     end
     if @request.update(request_params)
-      params.dig(:items, :file).each do |file|
+      params.dig(:items, :file)&.each do |file|
         @request.items.create(file: file)
       end
       if @transactions.present?
@@ -166,7 +162,11 @@ class User::RequestsController < User::Base
     @request.items.create(file: params[:request][:file]) if @request.request_form.name == "text"
     if @transaction #サービスの購入である
       #@request.service = @service
-      create_contract
+      if create_contract
+        redirect_to user_request_path(@request.id)
+      else
+        render  "user/requests/preview"
+      end
     else #公開依頼のとき
       if @request.save
         flash.notice ="質問を公開しました"
@@ -182,10 +182,12 @@ class User::RequestsController < User::Base
   end
 
   def purchase
-    puts "購入"
     @request.set_publish
-    puts "#{@request.is_valid?}"
-    create_contract
+    if create_contract
+      redirect_to user_request_path(@request.id)
+    else
+      render  "user/services/show"
+    end
   end
 
   def create_contract
@@ -193,24 +195,26 @@ class User::RequestsController < User::Base
       is_contracted:true,
       contracted_at:DateTime.now,
       )
-    @service.stock_quantity = @service.stock_quantity-1
+    @service.stock_quantity = @service.stock_quantity-1 if @service.stock_quantity
     @request.set_service_values
-    if all_models_valid?([@transaction, current_user, @request, @service])
-      @service.save
-      @transaction.save
-      @request.save
-      current_user.update_total_points
-      Email::TransactionMailer.purchase(@transaction).deliver_now
-      create_notification
-      flash.notice = "購入しました。"
-      redirect_to user_request_path(@request.id)
-    else
-      puts "失敗 #{@request.items.count}"
-      detect_models_errors([@transaction, current_user, @request])
-      flash.notice = "購入できませんでした。"
-      @request.set_item_values
-      set_preview_values
-      render  "user/requests/preview"
+
+    ActiveRecord::Base.transaction do
+      if @service.save && @request.save && @transaction.save
+        current_user.update_total_points
+        Email::TransactionMailer.purchase(@transaction).deliver_now
+        create_notification
+        flash.notice = "購入しました。"
+        true
+      else
+        puts "失敗 #{@request.items.count}"
+        flash.notice = "購入できませんでした。" +
+        [@service.errors.full_messages,
+         @request.errors.full_messages,
+         @transaction.errors.full_messages].flatten.join("\n")
+        @request.set_item_values
+        set_preview_values
+        false
+      end
     end
   end
 
@@ -239,7 +243,7 @@ class User::RequestsController < User::Base
       @request.is_inclusive = true
       if @request.save!
         #params[:items][:file].each do |file|
-        params.dig(:items, :file).each do |file|
+        params.dig(:items, :file)&.each do |file|
           @request.items.create(file: file)
         end
         redirect_to user_request_preview_path(@request.id)
@@ -304,7 +308,7 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id:@service.user_id,
       notifier_id: current_user.id,
-      description: "サービスが購入されました。",
+      description: "相談室に質問がされました。",
       action: "show",
       controller: "requests",
       id_number: @request.id
@@ -361,17 +365,16 @@ class User::RequestsController < User::Base
   private def define_transaction
     if params[:transaction_id]
       @transaction = Transaction.left_joins(:request).find_by(
-          id: params[:transaction_id],
-          request: {user: current_user}
-          )
+        id: params[:transaction_id],
+        request: {user: current_user}
+        )
     elsif params[:service_id] && params[:id]
       @transaction = Transaction.find_by(request_id: params[:id].to_i, service_id: params[:service_id].to_i)
-    elsif params[:request]
-      if params[:request][:service_id] && params[:id]
-        @transaction = Transaction.find_by(service_id: params[:request][:service_id], request_id: params[:id])
-      else
-        @transaction = false
-      end
+    elsif params.dig(:request, :service_id) && params[:id]
+      @transaction = Transaction.find_by(
+        service_id: params[:request][:service_id], 
+        request_id: params[:id]
+        )
     else
       @transaction = false
     end
@@ -396,7 +399,6 @@ class User::RequestsController < User::Base
       end
     end
   end
-
 
   private def check_service_buyable
     flash.notice = @service&.get_unbuyable_message(current_user)
@@ -435,20 +437,8 @@ class User::RequestsController < User::Base
   end
 
   private def check_original_request #そのサービスが自分の依頼に対する提案である
-    if @service
-      if @request
-      else
-        if !@service.is_inclusive
-          @transactions = @service.transactions.left_joins(:request).where(
-            is_suggestion:true, 
-            request:{user:current_user}
-            )
-          if @transactions.present?
-            @transaction = @transactions.first
-            redirect_to user_request_preview_path(@transaction.request.id, transaction_id:@transaction.id)
-          end
-        end
-      end
+    if @service&.request&.user == current_user
+      redirect_to user_service_path(@service.exclusive_transaction.id)
     end
   end
   
@@ -491,8 +481,6 @@ class User::RequestsController < User::Base
       :suggestion_deadline,
       :delivery_days, 
       items_attributes: [:id, :file, :_destroy],
-      #items_attributes: [:id, { file: [] }, :_destroy],
-      #items_attributes: [:file]
     )
   end
 
@@ -513,18 +501,6 @@ class User::RequestsController < User::Base
       :suggestion_deadline,
       :delivery_days, 
       items_attributes: [:file]
-      #items_attributes: [file: []],
-      #items_attributes: [:file => []]
-      #items_attributes: [
-      #  { file: [] } # file パラメータは配列として許可する
-      #]
-      #items_attributes: [
-      #  :id,                # IDを許可
-      #  { file: [] },       # ファイルを配列として許可
-      #  :_destroy           # ネストされた属性の削除を許可
-      #]
-      #items_attributes: [:id, :file],
-      #items_attributes: [:id, :file, :_destroy]
     )
   end
 

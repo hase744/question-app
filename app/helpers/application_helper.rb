@@ -126,7 +126,7 @@ include Variables
         if !user_signed_in?
             true
         #サインインしている && サービスが公開 && 在庫がある
-        elsif user_signed_in? && (@service.is_published && @service.stock_quantity > 0)
+        elsif user_signed_in? && (@service.is_published && (@service.stock_quantity == nil || @service.stock_quantity > 0 ))
             #出品者でない
             if @service.user != current_user
                 true

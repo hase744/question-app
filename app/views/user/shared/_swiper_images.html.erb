@@ -1,6 +1,12 @@
 <% if model.items.count == 1%>
     <%= link_to(model.items.last.file.url, class: 'link') do %>
-        <%= image_tag model.items.last.file.thumb.url, class:"image"%>
+        <%= 
+		if use_thumb
+			image_tag model.items.last.file.thumb.url, class:"image"
+		else
+			image_tag model.items.last.file.url, class:"image"
+		end
+		%>
     <% end %>
 <% else %>
     <div class="swiper-container">

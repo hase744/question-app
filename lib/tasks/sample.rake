@@ -69,7 +69,6 @@ namespace :sample do
           request_max_characters: (n+1)*200,
           request_max_minutes: n,
           request_max_files: 0,
-          is_inclusive: true,
           image: File.open(service_image_path)
         )
       end
@@ -158,7 +157,6 @@ namespace :sample do
           request_max_characters: (n+1)*50,
           request_max_minutes: n,
           request_max_files: 0,
-          is_inclusive: false
         )
         transaction = Transaction.create_or_find_by!(
           title: transactions[n]['answer']['title'],

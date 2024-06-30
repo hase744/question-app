@@ -100,8 +100,8 @@ class User::TransactionsController < User::Base
   def update
     @transaction.assign_attributes(transaction_params)
     if  @transaction.save#save_transaction_and_items
-      params.dig(:items, :file).each do |file|
-        @transaction.items.create(file: file)
+      params.dig(:items, :file)&.each do |file|
+        @transaction.items.create(file: file) if @transaction.request_form.name != "text"
       end
       flash.notice = "回答を編集しました"
       redirect_to user_order_path(params[:id])

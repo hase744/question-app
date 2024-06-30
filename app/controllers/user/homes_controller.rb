@@ -3,7 +3,7 @@ class User::HomesController < ApplicationController
   def show
     @services = Service.all
       .solve_n_plus_1
-      .where(is_inclusive: true)
+      .where(request_id: nil)
       .order(:average_star_rating)
       .order(:total_sales_numbers).limit(10)
     @users = User.all

@@ -114,20 +114,18 @@
             <div class="item_area">
                 <%if @request.use_youtube%>
                     <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <% elsif @request.file&.url != nil %>
+                <% elsif @request.items.present? %>
                     <% if @request.request_form.name == "image" || @request.request_form.name == "text"%>
                         <%= render "user/shared/swiper_images", model: @request, use_thumb:false %>
                     <% elsif @request.request_form.name == "video" %>
                         <%= video_tag @request.file.url,poster:@request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                     <% end %>
                 <% end %>
-                <% if @request.request_form_name == "text"%>
-                    <%#= image_tag @request.image_with_default, class:"image"%>
-                <% end %>
             </div>
-            <% if can_suggest? %>
+            <% if user_signed_in? && @request.is_suggestable?(current_user) %>
                 <div class="suggest_button_area">
-                    <%=link_to "提案", new_user_service_path(request_id:@request.id), class:"suggest_button"%>
+                    <%=link_to "今回限定の相談室を提案", new_user_service_path(request_id:@request.id), class:"suggest_button"%>
+                    <p class="modal_open suggest_button">すでにある相談室を提案</p>
                 </div>
             <% end %>
 
@@ -148,25 +146,18 @@
                 </div>
             <% end %>
         <% end %>
-        <% if Service.left_joins(:requests).where(requests: @request, is_inclusive:false).count > 0 %>
+        <% if @request.suggestion_deadline && @request.suggestion_deadline > DateTime.now %>
             <%= render 'user/shared/common_label', text: '提案された相談室', language: 'ja' %>
-        <% end %>
-        <% Service.left_joins(:requests).where(requests: @request, is_inclusive:false).each do |service| %>
-            <% transaction = Transaction.find_by(requests: @request, service: service) %>
-            <%= render "user/services/suggestion_cell", service:service, transaction: transaction %>
-        <% end %>
-        <% if @transactions.present? %>
-            <%= render 'user/shared/common_label', text: '購入された相談室', language: 'ja' %>
-            <% @transactions.each do |transaction| %>
-                <%= render "user/services/suggestion_cell", service: transaction.service, transaction: transaction %>
+            <% @request.transactions.where(is_suggestion: true).each do |transaction| %>
+                <%= render "user/services/suggestion_cell", service:transaction.service, transaction: transaction %>
+            <% end %>
+        <% else %>
+            <%= render 'user/shared/common_label', text: '回答', language: 'ja' %>
+            <% Transaction.where(request_id: @request.id, is_delivered:true).each do |transaction| %>
+                <%= render "user/transactions/cell", transaction: transaction %>
             <% end %>
         <% end %>
-        <% if Transaction.exists?(request_id: @request.id, is_delivered:true) %>
-            <div class="common_label_area">
-                <h3 class="suggest_title common_label">回答</h3>
-            </div>
-            <%= render "user/transactions/cell", transaction:Transaction.find_by(request_id: @request.id, is_delivered:true) %>
-        <% end %>
+
     </div>
     <%= render "user/accounts/profile", user: @request.user, relationship:@relationship %>
 </div>
@@ -178,4 +169,43 @@
       prevEl: '.swiper-button-prev',
     },
   });
+</script>
+<div class="modal_content">
+    <div class="service_area">
+    <% current_user.services.where(request_id:nil).each do |service| %>
+        <%= link_to(user_service_suggest_path(service.id, request_id: @request.id), class: "service_cell", method: :put, data: { confirm: "#{service.title}を提案しますか？" } ) do %>
+            <div class="image_area">
+                <%= image_tag service.thumb_with_default, class:"image" %>
+            </div>
+            <div class="title_area">
+                <span class="two_line_text">
+                    <%= service.title%>
+                </span>
+            </div>
+        
+        <% end %>
+    <% end %>
+    </div>
+    <div modal_delete_area>
+        <p class="modal_delete">閉じる</p>
+    </div>
+</div>
+<div class="modal_overlay"></div>
+<script>
+$(function(){
+  const modal = $('.modal_content');
+  const overlay = $('.modal_overlay');
+  $('.modal_open').on('click', function(){
+    modal.addClass("open");
+    overlay.addClass("open");
+  });
+  $('.modal_delete').on('click', function(){
+    modal.removeClass("open");
+    overlay.removeClass("open");
+  });
+  overlay.on('click', function(){
+    modal.removeClass("open");
+    overlay.removeClass("open");
+  });
+});
 </script>
