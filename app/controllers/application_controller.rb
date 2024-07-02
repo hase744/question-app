@@ -3,12 +3,13 @@ class ApplicationController < ActionController::Base
   class IpAdressRejected < ActionController::ActionControllerError; end
   include CommonConcern
   include CommonMethods
+  include StripeMethods
   include OperationConfig
   include CategoryConfig
   include FormConfig
   include Variables
-  include ErrorHandlers if Rails.env.production?
   include ViewConcern
+  include ErrorHandlers if Rails.env.production?
   layout :layout_by_resource
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?

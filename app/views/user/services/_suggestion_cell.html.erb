@@ -9,7 +9,7 @@
                     <%if service.image.url == nil%>
                         <%=image_tag "/corretech_icon.png", class:"service_image"%>
                     <% else %>
-                        <%=image_tag service.image.url, class:"service_image"%>
+                        <%=image_tag service.image.thumb.url, class:"service_image"%>
                     <% end %>
                 </div>
                 <div class="service_condition_user">

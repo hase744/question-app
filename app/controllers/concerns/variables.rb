@@ -1,9 +1,9 @@
 module Variables
     def transaction_margin
-        0.20
+        0.25
     end
     
     def date_of_payment
-        "毎月25日"
+        "手動での入金"
     end
 end

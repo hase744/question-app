@@ -53,7 +53,7 @@ question_answers = [
         sort:"seller"
     },{
         question:"売上が振り込まれるのはいつですか？",
-        answer:"#{date_of_payment}に振り込みがされます。",
+        answer:"#{date_of_payment}が可能です。",
         sort:"seller"
     },{
         question:"エラーが起きた際は、どうすればいいですか？",

@@ -1,0 +1,6 @@
+
+<tr id="<%=payout.id%>">
+  <td><span class="price">¥<%= payout.amount%></span></td>
+  <td><%=translate_list(payout.status)%></td>
+  <td class="right-align">　<%= readable_datetime(Time.at(payout.created))%></td>
+</tr>

@@ -6,7 +6,6 @@
     <%= render "user/orders/header"%>
     <div class="order_index_flame">
         <% @transactions.each do |transaction| %>
-            <% transaction.set_item %>
             <div class="order_cell">
                 <div class="request_area">
                     <%= link_to(user_request_path(transaction.request_id), class: 'request_link below_500') do %>
@@ -26,7 +25,11 @@
                         <% end %>
                         <% if transaction.is_delivered %>
                             <span class="alert green">納品済み</span>
-                        <% else %>
+                        <% elsif transaction.is_canceled %>
+                            <span class="alert orange">キャンセル</span>
+                        <% elsif transaction.is_rejected %>
+                            <span class="alert orange">断り済み</span>
+                        <% elsif transaction.is_rejected %>
                             <span class="alert orange">納品前</span>
                         <% end %>
                     </div>

@@ -16,8 +16,5 @@ class User::HomesController < ApplicationController
       .delivered
       .order(:total_views)
       .limit(12)
-    @transactions.each do |t|
-      t.set_item
-    end
   end
 end
