@@ -1,0 +1,64 @@
+.connect_reward_zone{
+  .connect_reward_area{
+    .connect_reward_flame{
+      //max-width: 230px;
+      margin: 0 auto;
+    }
+      text-align: center;
+      color: dimgray;
+      .message{
+        text-align: left;
+      }
+      .finance_component{
+        grid-template-columns: auto 1fr;
+        margin: 0 auto;
+        th{
+          height: 25px;
+        }
+        .yen{
+          position: relative;
+          width: 30px;
+        }
+        .yen span{
+          position: absolute;
+          color: black;
+          bottom: 2px;
+          right: 0px;
+        }
+        .finance_result span{
+          color: black;
+          float: right;
+          font-size: 20px;
+          font-weight: lighter;
+          letter-spacing: 2px;
+        }
+      }
+      .caveat{
+        //text-align: left;
+        padding-top: 10px;
+        font-size: 13px;
+      }
+  }
+  .finance_history_area{
+    margin: 10px;
+    .finance_history{
+      margin: 0 auto;
+      border-collapse: collapse;
+      width: 100%;
+      tr{
+        border-bottom: 1px solid lightgray;
+      }
+      .price{
+        float: right;
+        letter-spacing: 2px;
+      }
+    
+    }
+  }
+  .loading_animation{
+    display: none;
+  }
+  #load_payments_button{
+    cursor: pointer;
+  }
+}

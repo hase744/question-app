@@ -54,7 +54,6 @@ class User::OrdersController < User::Base
 
   def show
     @transaction = Transaction.find(params[:id])
-    @transaction.set_item
 
     if @transaction.title && @transaction.description
       @disabled = false

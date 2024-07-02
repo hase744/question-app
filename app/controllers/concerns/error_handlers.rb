@@ -3,6 +3,7 @@ module ErrorHandlers
 
 included do
     rescue_from StandardError, with: :rescue500
+    rescue_from ProfitMismatchError, with: :profit_mismatch_rescue
     rescue_from ApplicationController::Forbidden, with: :rescue403
     rescue_from ApplicationController::IpAdressRejected, with: :rescue403
     rescue_from ActiveRecord::RecordNotFound, with: :rescue404
@@ -78,5 +79,12 @@ end
         @message = "決済情報のエラーです。\n#{e}"
         create_error_log(e)
         render "errors/stripe_error", status: 500, layout: "alert"
+    end
+
+    private def profit_mismatch_rescue(e)
+        @error = e
+        @message = "Profit and available amount mismatch: #{e.message}"
+        create_error_log(e)
+        #render "errors/profit_mismatch", status: 500, layout: "alert"
     end
 end

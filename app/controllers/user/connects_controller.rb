@@ -1,5 +1,5 @@
 class User::ConnectsController < User::Base
-  layout "small", only:[:edit, :new, :certify_phone, :show]
+  layout "small", only:[:edit, :new, :certify_phone, :show, :reward]
   before_action :check_login
   before_action :phone_valid?, only:[:update, :edit]
   before_action :check_connect_unregistered, only:[:new, :create, :certify_phone]
@@ -26,6 +26,51 @@ class User::ConnectsController < User::Base
       redirect_to edit_user_connects_path
     end
     define_countryies
+  end
+
+  def reward
+    begin
+      get_finance_info
+    rescue ProfitMismatchError => e
+      @error_message = e.message
+    end
+  end
+
+  def payments
+    @payouts = Stripe::Payout.list({
+      limit: 10, # 取得する送金記録の数を指定（例：10件）
+      starting_after: params[:last_id]
+    }, {
+      stripe_account: current_user.stripe_account_id # ConnectアカウントIDを指定
+    })
+    render partial: 'user/connects/payout', collection: @payouts.data, as: :payout
+  end
+  
+  def credit
+    begin
+      get_finance_info
+      if @deposit_amount > 0
+        payout = Stripe::Payout.create({
+          amount: @deposit_amount, # Amount in cents (e.g., 1000 cents = $10.00)
+          currency: 'jpy',
+        }, {
+          stripe_account:  current_user.stripe_account_id, # Connected account ID
+        })
+        transfer = Stripe::Transfer.create({
+          amount: 200,
+          currency: 'jpy',
+          destination: ENV["ROOT_ACCOUNT_ID"], 
+          description: 'Transfer to admin account minus fee',
+        }, {
+          stripe_account: current_user.stripe_account_id,
+        })
+      end
+      flash.notice = "#{@deposit_amount}円を入金しました"
+      redirect_to user_connect_reward_path
+    rescue ProfitMismatchError => e
+      @error_message = e.message
+      render "user/connects/reward", layout: "small"
+    end
   end
 
   def certify_phone

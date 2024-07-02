@@ -27,8 +27,11 @@ module CommonMethods
             "consult"=>"相談",
             "career"=>"キャリア",
             "business"=>"ビジネス",
-            "job_hunting"=>"就活",
-            "study_english"=>"英語"
+            "paid"=>"完了",
+            "pending"=>"準備中",
+            "in_transit"=>"送金中",
+            "canceled"=>"キャンセル",
+            "failed"=>"失敗",
         }[word.to_s]
     end  
 end

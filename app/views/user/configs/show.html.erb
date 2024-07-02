@@ -52,7 +52,7 @@
                     </th>
                     <th>
                     </th>
-                    <th class="finance_result">¥<%=@profit_sum + @margin_sum%>
+                    <th class="finance_result">¥<%=@total_revenue%>
                     </th>
                 </tr>
                 <tr>
@@ -60,7 +60,7 @@
                     </th>
                     <th>
                     </th>
-                    <th class="finance_result">-¥<%=@margin_sum%>
+                    <th class="finance_result">-¥<%=@total_margin%>
                     </th>
                 </tr>
                 <tr>
@@ -68,18 +68,18 @@
                     </th>
                     <th>
                     </th>
-                    <th class="finance_result">¥<%=@balance_amount %>
+                    <th class="finance_result">¥<%=@total_profit %>
                     </th>
                 </tr>
             </table>
-            <div class="caveat">＊<%=date_of_payment%>振り込み</div>
+            <div class="caveat">＊<%=date_of_payment%></div>
         </div>
     </div>
+    <%= link_to(user_orders_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-exchange-alt">&nbsp;取引一覧</h4>
+    <% end %>
     <%= link_to(user_cards_path, class:"link_area config_component_area") do %>
         <h4 class="far fa-credit-card">&nbsp;クレジットカード情報</h4>
-    <% end %>
-    <%= link_to(edit_user_configs_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-cogs">&nbsp;設定</h4>
     <% end %>
     <%= link_to(user_connects_path, class:"link_area config_component_area") do %>
         <h4 class="far fa-id-card">&nbsp;回答者情報</h4>
@@ -87,7 +87,10 @@
     <%= link_to(user_payments_path, class:"link_area config_component_area") do %>
         <h4 class="fas fa-coins">&nbsp;ポイント</h4>
     <% end %>
-    <%= link_to(user_orders_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-exchange-alt">&nbsp;取引一覧</h4>
+    <%= link_to(user_connect_reward_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-money-check-alt">&nbsp;収益の銀行口座入金</h4>
+    <% end %>
+    <%= link_to(edit_user_configs_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-cogs">&nbsp;設定</h4>
     <% end %>
 </div>

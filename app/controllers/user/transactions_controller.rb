@@ -27,9 +27,6 @@ class User::TransactionsController < User::Base
     @transactions = @transactions.filter_categories(params)
     @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
     @transactions = @transactions.page(params[:page]).per(30)
-    @transactions.each do |t|
-      t.set_item
-    end
     
   end
 
@@ -45,7 +42,7 @@ class User::TransactionsController < User::Base
 
   def show
     @transaction = Transaction.find(params[:id])
-    @transaction.set_item
+    @transaction.set_default_values
     @transaction.request.set_item_values
     if @transaction.file && @transaction.file.url
       if @transaction.request_form.name == "text"
@@ -75,14 +72,18 @@ class User::TransactionsController < User::Base
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
     #@transactions = solve_n_plus_1(@transactions)
-    @transactions = Transaction.left_joins(:transaction_categories).includes(:seller, :service, :request, :items, :categories).where(is_delivered:true, transaction_categories:{category: @transaction.category})
+    @transactions = Transaction.all
+      .left_joins(:transaction_categories)
+      .includes(:seller, :service, :request, :items, :categories)
+      .where.not(id: @transaction.id)
+      .where(
+        is_delivered:true, 
+        transaction_categories:{category: @transaction.category}
+        )
     transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)
     @transactions = @transactions.where(id: @transaction.id..).order(created_at: "ASC").limit(10)
     if @transactions.count < transactions.count
       @transactions = transactions
-    end
-    @transactions.each do |t|
-      t.set_item
     end
     transaction_like = TransactionLike.find_by(user:current_user, transaction_id: params[:id])
     if transaction_like
@@ -101,7 +102,7 @@ class User::TransactionsController < User::Base
     @transaction.assign_attributes(transaction_params)
     if  @transaction.save#save_transaction_and_items
       params.dig(:items, :file)&.each do |file|
-        @transaction.items.create(file: file) if @transaction.request_form.name != "text"
+        @transaction.items.create(file: file) if @transaction.delivery_form.name != "text"
       end
       flash.notice = "回答を編集しました"
       redirect_to user_order_path(params[:id])

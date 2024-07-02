@@ -1,0 +1,89 @@
+<div class="connect_reward_zone">
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞ 銀行口座の入金</h3>
+	<div class="connect_reward_area">
+    	<div class="component_area connect_reward_area">
+			<div class="connect_reward_flame">
+				<%if @error_message%>
+				 	<div class="message"><i class='fas fa-exclamation-triangle'></i>決済アカウントの収益と取引の収益に不一致があります。</div>
+				 	<div class="message"><%="#{@error_message}" %></div>
+				<% end %>
+				<table class="finance_component">
+    			    <tr>
+    			        <th><span class="finance_label">売　　　上</span>
+    			        </th>
+    			        <th class="yen"><span>&nbsp;¥</span></th>
+    			        <th class="finance_result"><span><%=@total_revenue %></span>
+    			        </th>
+    			    </tr>
+    			    <tr>
+    			        <th><span class="finance_label">手　数　料</span>
+    			        </th>
+    			        <th class="yen"><span>-¥</span></th>
+    			        <th class="finance_result"><span><%=@total_margin%></span>
+    			        </th>
+    			    </tr>
+    			    <tr>
+    			        <th><span class="finance_label">入金手数料</span>
+    			        </th>
+    			        <th class="yen"><span>-¥</span></th>
+    			        <th class="finance_result"><span>200</span>
+    			        </th>
+    			    </tr>
+    			    <tr>
+    			        <th><span class="finance_label">入金可能金額</span>
+    			        </th>
+    			        <th class="yen"><span>&nbsp;¥</span></th>
+    			        <th class="finance_result"><span><%=@deposit_amount%></span>
+    			        </th>
+    			    </tr>
+    			</table>
+				</br>
+				<div class="submit_area">
+				<%if @deposit_amount > 0%>
+					<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@deposit_amount}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
+				<%else%>
+					<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>
+				<% end %>
+				<div class="caveat">＊入金完了には1~3営業日がかかります。</div>
+			</div>
+		</div>
+	</div>
+	<div class="finance_history_area">
+	<table class="finance_history">
+	    <tr>
+	      <th>金額</th>
+	      <th>ステータス</th>
+	      <th>日時</th>
+	    </tr>
+		<%@payouts.each do |payout|%>
+			<%= render "user/connects/payout", payout: payout%>
+		<% end %>
+	</table>
+	<a id="load_payments_button">続きを取得</a>
+	<%= render "user/shared/loading_animation" %>
+	</div>
+</div>
+<script>
+  $('#load_payments_button').on('click', function() {
+    var lastId = $('.finance_history tr:last').attr('id');
+	console.log(lastId)
+	$('#load_payments_button').css('display','none');
+	$('#loading_animation').css('display','block');
+    $.ajax({
+      url: '/user/connects/payments',
+      data: { last_id: lastId },
+      dataType: 'html',
+      success: function(data) {
+		$('#load_payments_button').css('display','block');
+	$('#loading_animation').css('display','none');
+	  	var $data = $(data);
+		var $trElements = $data.filter('tr');
+	  	console.log($trElements.length)
+        $('.finance_history tbody').append(data);
+		if($trElements.length < 10){
+		 	$('#load_payments_button').hide();
+		}
+      }
+    });
+  });
+</script>

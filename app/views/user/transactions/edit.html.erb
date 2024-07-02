@@ -38,30 +38,31 @@
 			-->
 
             <div class="field_area" id="file_field_area">
-              	<%= f.label :file, class:"field_label" %><br />
-              	<%#= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input", multiple: true%>
-              	<%= f.fields_for :items do |item_form| %>
-              	  	<% if item_form.object.file.present? %>
-              	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
-              	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
-              	  	  	<%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
-              	  	  	</br></br>
-              	  	<% end %>
-              	  	<% if !item_form.object.file.present? %>
-              	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
-              	  	<% end %>
-              	<% end %>
-
-              	<div class="file_discription" id="file_discription"></div>
-              	<div class="file_alarm" id="file_alarm"></div></br>
-
-
-              	<%if @transaction.delivery_form.name == "video" %>
-              		<%= f.label :thumbnail, class:"field_label" %>（任意）<br />
-              		<%= f.file_field :thumbnail, autocomplete: "file", class:"input_field",id:"thumbnail"%>
-              		<div>フォーマットはjpg,jpeg,pngのみ</div>
-              	<% end %>
-
+				<% if @transaction.delivery_form.name != "text" %>
+            	  	<%= f.label :file, class:"field_label" %><br />
+            	  	<%#= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input", multiple: true%>
+            	  	<%= f.fields_for :items do |item_form| %>
+            	  	  	<% if item_form.object.file.present? %>
+            	  	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
+            	  	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+            	  	  	  	<%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
+            	  	  	  	</br></br>
+            	  	  	<% end %>
+            	  	  	<% if !item_form.object.file.present? %>
+            	  	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+            	  	  	<% end %>
+            	  	<% end %>
+					
+            	  	<div class="file_discription" id="file_discription"></div>
+            	  	<div class="file_alarm" id="file_alarm"></div></br>
+					
+					
+            	  	<%if @transaction.delivery_form.name == "video" %>
+            	  		<%= f.label :thumbnail, class:"field_label" %>（任意）<br />
+            	  		<%= f.file_field :thumbnail, autocomplete: "file", class:"input_field",id:"thumbnail"%>
+            	  		<div>フォーマットはjpg,jpeg,pngのみ</div>
+            	  	<% end %>
+				<% end %>
             </div>
             
             <canvas id="canvas" class="display_none"></canvas>

@@ -69,6 +69,9 @@ namespace :user do
     get 'connects/send_token', to: "connects#send_token"
     post 'connects/certify_phone', to: "connects#certify_phone", as:"post_certify_phone"
     get 'connects/form', to: "connects#form"
+    get 'connects/reward', to: 'connects#reward', as:"connect_reward"
+    get 'connects/payments', to: 'connects#payments', as:"connect_payments"
+    post 'connects/credit', to: 'connects#credit', as:"connect_credit"
     get 'images/answer'
     get 'accounts/likes/:id', to:"accounts#likes", as:"account_likes"
     get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"

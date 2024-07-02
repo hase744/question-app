@@ -33,6 +33,7 @@ class Transaction < ApplicationRecord
   validate :validate_review
   validate :validate_is_suggestion
   validate :previous_transaction
+  validate :validate_is_delivered
   before_validation :set_default_values
 
   after_save :create_transaction_category
@@ -46,6 +47,12 @@ class Transaction < ApplicationRecord
   accepts_nested_attributes_for :items, allow_destroy: true
 
   after_initialize do
+  end
+
+  def set_default_values
+    if Rails.env.development?
+      self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
+    end
   end
 
   scope :solve_n_plus_1, -> {
@@ -88,15 +95,11 @@ class Transaction < ApplicationRecord
       is_delivered: true
       )
   }
-  def set_item
-    self.item = self.items.first
-    if self.item.present?
-      self.file = self.item.file
-      self.use_youtube = self.item.use_youtube
-      self.youtube_id = self.item.youtube_id
-    end
+
+  after_initialize do
+    set_delivery_content
   end
-  
+
   def request_form
     Form.find_by(name: self.request_form_name)
   end
@@ -263,10 +266,13 @@ class Transaction < ApplicationRecord
   def validate_item
     if self.is_published
       if self.items
-        if !self.items.first.valid?
-          errors.add(:item, "が不適切です")
+        items.each do |item|
+          next if item.valid?
+          item.errors.full_messages.each do |msg|
+            errors.add(:items, msg)
+          end
         end
-      else
+      elsif self.delivery_form.name != "text"
         errors.add(:item, "がありません")
       end
     end
@@ -282,6 +288,14 @@ class Transaction < ApplicationRecord
       end
     else
       false
+    end
+  end
+
+  def validate_is_delivered
+    if self.is_delivered
+      if self.request_form.name != "text"
+        errors.add(:base, "画像ファイルを入力してください")  if self.items.count < 1
+      end
     end
   end
   
@@ -354,14 +368,37 @@ class Transaction < ApplicationRecord
   #  self.request.user.id
   #end
 
+  def all_review_present? #一つでも空だったらfalse
+    if !self.review_description.present?
+      false
+    elsif !self.star_rating.present?
+      false
+    elsif !self.reviewed_at.present?
+      false
+    else
+      true
+    end
+  end
+
+  def all_review_empty? #一つでも値があればfalse
+    if self.review_description.present?
+      false
+    elsif self.star_rating.present?
+      false
+    elsif self.reviewed_at.present?
+      false
+    else
+      true
+    end
+  end
+
   def validate_review
-    #レビューに関する情報がひとつでもあるのに、どれかがない
-    if self.review_description.present? || self.star_rating.present? || self.reviewed_at.present?
-      if !self.review_description.present? || !self.star_rating.present? || !self.reviewed_at.present?
-        errors.add(:review_description, "がありません") if !self.review_description.present?
-        errors.add(:star_rating, "がありません") if !self.star_rating.present?
-        errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?s
-      end
+    #レビューに関する情報がひとつでもあるのに、どれかがない == 全て空でもないand全て埋まってるわけでもない == (全て空or全て埋まってる)じゃない
+    puts "レビュー #{(all_review_present? || all_review_empty?)} #{all_review_present?} #{all_review_empty?}"
+    if self.is_delivered? && !all_review_present? && !all_review_empty?
+      errors.add(:review_description, "がありません") if !self.review_description.present?
+      errors.add(:star_rating, "がありません") if !self.star_rating.present?
+      errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?
     end
   end
 
