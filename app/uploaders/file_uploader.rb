@@ -15,7 +15,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb, if: :image? do
-    process resize_to_fit: [100, 100]
+    process resize_to_fit: [300, 300]
   end
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url(*args)
