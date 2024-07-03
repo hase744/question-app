@@ -97,6 +97,13 @@ class ApplicationController < ActionController::Base
           service_id: session[:path_params]['service_id'],
           )
       end
+      if session[:path_params]['id']
+        return url_for(
+          controller: session[:path_params]['controller'],
+          action: session[:path_params]['action'],
+          id: session[:path_params]['id'],
+          )
+      end
         url_for(
           controller: session[:path_params]['controller'],
           action: session[:path_params]['action'],

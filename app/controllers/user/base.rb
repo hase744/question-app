@@ -203,7 +203,7 @@ class User::Base < ApplicationController
   
   private def check_login
     if !user_signed_in?
-      session[:path_params] = params
+      session[:path_params] = params if request.method == 'GET'
       redirect_to new_user_session_path
     end
   end

@@ -41,9 +41,9 @@
                 </div>
             <% end %>
             <div class="field_area" id="file_field_area">
-                <% if @request.request_form_name == "image"%>
+                <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
                   <% @request.items.each.with_index do |item, index| %>
-                    <%= image_tag item&.file&.url, class:"image" if item.file.url%>
+                    <%= image_tag item&.file&.url, class:"image" if item.file.url && item.file.is_image? %>
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text" && @request.items %>

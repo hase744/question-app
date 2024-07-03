@@ -18,21 +18,23 @@
                         </div>
                     <% end %>
                     <div class="description_area"><%= @transaction.request.description%></div>
-                    <%if @transaction.request.use_youtube%><% %>
-                        <div class="item_file_flame 16_to_9" id="item_file_flame">
-                            <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%=@transaction.request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    <% elsif @transaction.request.file != nil %>
-                        <% if @transaction.request.request_form.name == "image"%>
+
+                    <%if @transaction.request.request_form.name == 'text' %>
+                        <%= render 'user/shared/adjustable_image', request: @transaction.request%>
+                    <% else %>
+                        <% @transaction.request.items.each do |item| %>
                             <%= link_to(@transaction.request.file.url, class: 'item_link') do %>
-                                <%= image_tag @transaction.request.file.url, class:"image "%>
+                                <%= image_tag @transaction.request.file.url, class:"image" if item.file.is_image? %>
                             <% end %>
-                        <%elsif @transaction.request.request_form.name == "text" %>
-                        <% elsif @transaction.request.request_form.name == "video" %>
-                            <%= video_tag @transaction.request.file.url, poster:@transaction.request.thumbnail.url, class:"image item_file", controls: true, autobuffer: true%>
+                            <% if item.use_youtube %>
+                                <div class="item_file_flame 16_to_9" id="item_file_flame">
+                                    <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%= item.youtube_id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            <% elsif item.file.is_video? %>
+                                <%= image_tag @transaction.request.file.url, class:"image" %>
+                            <% end %>
                         <% end %>
                     <% end %>
-                    <%= render 'user/shared/adjustable_image', request: @transaction.request%>
                     <%##= render "/user/shared/description", text:@transaction.request%>
                 </div>
             </div>
@@ -43,9 +45,9 @@
                 <div class="seller_info">
                     <%= link_to(user_account_path(@transaction.seller.id), class: 'seller_area') do %>
                         <% if @transaction.seller.image.url %>
-                        <%=image_tag @transaction.seller.image.url, class:"seller_image"%>
+                            <%=image_tag @transaction.seller.image.url, class:"seller_image"%>
                         <% else %>
-                        <%=image_tag user_image_default, class:"seller_image"%>
+                            <%=image_tag user_image_default, class:"seller_image"%>
                         <% end %>
                         <div class="seller_name_area">
                             <p class="seller_name"><%=@transaction.seller.name%></p>
@@ -57,25 +59,21 @@
                 <h2 class="title transaction_title"><%=@transaction.title%></h2>
                 <hr>
                 <div class="description_area"><%= @transaction.description%></div>
-                    <%if @transaction.use_youtube%><% %>
-                        <div class="item_file_flame 16_to_9" id="item_file_flame">
-                            <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    <% elsif @transaction.file && @transaction.file.url%>
-                        <% if @transaction.service.delivery_form.name == "image" %>
-                        <% @transaction.items.each do |item|%>
-                            <%= link_to(item.file.url, class: 'item_link') do %>
-                                <%= image_tag item.file.url, class:"image "%>
-                            <% end %>
-                        <% end %>
-                        <% elsif @transaction.service.delivery_form.name == "text" %>
-                            <%= link_to(@transaction.file.url, class: 'item_link') do %>
-                                <%= image_tag @transaction.file.url, class:"text_image"%>
-                            <% end %>
-                        <% elsif @transaction.service.delivery_form.name == "video" %>
-                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image item_file", controls: true, autobuffer: true%>
-                        <% end %>
+
+
+                <% @transaction.items.each do |item| %>
+                    <%= link_to(item.file.url, class: 'item_link') do %>
+                        <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
                     <% end %>
+                    <% if item.use_youtube %>
+                        <div class="item_file_flame 16_to_9" id="item_file_flame">
+                            <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%=item.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    <% elsif item.file.is_video? %>
+                        <%= image_tag item.file.url, class:"image" %>
+                    <% end %>
+                <% end %>
+
                 <%#= render "/user/shared/description", text:@transaction%>
                 <div class="like_share_area">
                     <div class="like_area">

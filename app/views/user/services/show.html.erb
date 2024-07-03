@@ -1,5 +1,5 @@
 <div class="service_show_zone">
-    <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category.japanese_name%></p>
+    <p class="main_heade one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category.japanese_name%></p>
     <div class="service_left_area">
         <%if @transaction %>
             <%= render 'user/shared/common_label', text: '質問', language: 'ja' %>

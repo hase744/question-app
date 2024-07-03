@@ -1,4 +1,4 @@
-<% if model.items.count == 1%>
+<% if model.items.map{|item| item.file.is_image? }.count == 1%>
     <%= link_to(model.items.last.file.url, class: 'link') do %>
         <%= 
 		if use_thumb
@@ -11,7 +11,7 @@
 <% else %>
     <div class="swiper-container">
         <div class="swiper-wrapper">
-            <% model.items.each do |item| %>
+            <% model.items.select{|item| item.file.is_image? }.each do |item| %>
                 <%= link_to(item.file.url, class: 'link swiper-slide') do %>
 					<%=
 					if use_thumb

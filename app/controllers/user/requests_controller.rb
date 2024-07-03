@@ -119,6 +119,9 @@ class User::RequestsController < User::Base
       params.dig(:items, :file)&.each do |file|
         @request.items.create(file: file)
       end
+      if @request.request_form.name == "text" && !@request.is_published
+        @request.items.delete_all
+      end
       if @transactions.present?
         redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
       else
@@ -228,16 +231,16 @@ class User::RequestsController < User::Base
       @transaction = Transaction.new
       @request.set_service_values
       @transaction.assign_attributes(service:@service, request:@request)
-      if all_models_valid?([@transaction, current_user, @request, @service])
-        if @transaction.save
+      ActiveRecord::Base.transaction do
+        if @transaction.save && @request.save
+          params.dig(:items, :file)&.each do |file|
+            @request.items.create(file: file) if @request.request_form.name != "text"
+          end
           redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
         else
-          detect_models_errors([@transaction, current_user, @request, @service])
+          detect_models_errors([@transaction, @request])
           render "user/requests/new"
         end
-      else
-        detect_models_errors([@transaction, current_user, @request, @service])
-        render "user/requests/new"
       end
     else
       @request.is_inclusive = true

@@ -17,6 +17,10 @@ class FileUploader < CarrierWave::Uploader::Base
   version :thumb, if: :image? do
     process resize_to_fit: [300, 300]
   end
+
+  version :normal_size, if: :image? do
+    process resize_to_fit: [1000, 1000]
+  end
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url(*args)
   #   # For Rails 3.1+ asset pipeline compatibility:
@@ -43,6 +47,14 @@ class FileUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png).include?(new_file.extension.downcase)
   end
   
+  def is_image?
+    %w(jpg jpeg gif png).include?(file.extension.downcase)
+  end
+
+  def is_video?
+    %w(MOV mov wmv mp4).include?(file.extension.downcase)
+  end
+
   def extension_allowlist
     %w(jpg jpeg png MOV mov wmv mp4)
   end
