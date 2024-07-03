@@ -1,0 +1,79 @@
+function register_callback() {
+  $("#request_ajax_update").on(
+      "ajax:complete",
+      function(event) {
+        var res = event.detail[0].response
+        $('#updated_by_ajax').html(res)
+      }
+  );
+}
+
+$("#request_ajax_update")[0].addEventListener('ajax:error', function(event) {
+  // 失敗時の処理
+  console.log("受信できません。")
+  notify_for_seconds("受信できません。");
+});
+
+
+var user_intro_area = document.getElementById("user_intro_area");
+var open_text = document.getElementById("open_text");
+var description_text = document.getElementById("description_text");
+
+var user_content_link = document.getElementsByClassName("user_content_link")
+var user_content_links = Array.from(user_content_link)
+var menu_element = document.getElementsByClassName('menu_element');
+var user_detail = document.getElementsByClassName("user_detail")[0]
+var menu_elements = Array.from(menu_element)
+var path_to_page = {"posts":5,"requests":5,"likes":10,"purchases":5,"sales":5,"services":20,"followees":5}
+var path = "posts"
+var page = 2 //スクロールする時に取得するページ（既に取得済みのページ数 + 1）
+var loaded_pages  = []
+
+function update_menu_color(element){
+    for(let i=0; i<menu_elements.length; i++){
+        menu_elements[i].classList.remove('blue');
+        menu_elements[i].classList.add('gray');
+    }
+    element.classList.remove('gray');
+    element.classList.add('blue');
+}
+update_menu_color(menu_elements[0])
+
+//横スクロールメニューの要素が押された時
+menu_elements.forEach(element => element.addEventListener("click", ()=>{
+    update_menu_color(element);
+    path = element.getAttribute('path');
+    console.log(path);//取得するパス
+    var loaded_element_count = user_detail.childElementCount+1; //現在取得済みの要素数
+    //繰り上げ（現在取得済みの要素数 / 取得するページの要素数）＋１
+    page = Math.ceil(loaded_element_count/path_to_page[path]) + 1;
+    }
+));
+
+var insert_elements = function(response, scroll_element){
+  scroll_element.insertAdjacentHTML('beforeend', response)
+}
+
+//スクロールをした判定
+$(window).on('scroll', function(){
+    var user_detail = document.getElementsByClassName("user_detail")[0]
+    let token = document.getElementsByName("csrf-token")[0].content;
+    var docHeight = $(document).innerHeight(), //ドキュメントの高さ
+    windowHeight = $(window).innerHeight(), //ウィンドウの高さ
+    pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+    page = Math.ceil(user_detail.childElementCount/path_to_page[path])+1
+    console.log("page : "+page)
+    //ウィンドウの一番下までスクロールした時 && スクロール位置が変化した
+    if(check_scroll() && !loaded_pages.includes(page)) {
+        loaded_pages.unshift(page)
+        scrollTo(0, pageBottom + 10);
+        xml_request(`${path}/${gon.user_id}`, page, user_detail,  insert_elements, null);
+    }
+});
+
+
+
+window.register_callback = register_callback;
+register_callback();
+
+

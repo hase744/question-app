@@ -53,9 +53,9 @@ class User::AccountsController < User::Base
     puts user_account_posts_path(@user.id)
     @bar_elements = [
       {path:"posts",japanese_name:"投稿", link:user_account_posts_path(@user.id), page:5, for_seller:false},
-      {path:"requests",japanese_name:"依頼", link:user_account_requests_path(@user.id), page:5, for_seller:false},
+      {path:"requests",japanese_name:"質問", link:user_account_requests_path(@user.id), page:5, for_seller:false},
       {path:"likes",japanese_name:"お気に入り", link:user_account_likes_path(@user.id), page:10, for_seller:false},
-      {path:"purchases",japanese_name:"質問", link:user_account_purchases_path(@user.id), page:5, for_seller:false},
+      {path:"purchases",japanese_name:"回答された質問", link:user_account_purchases_path(@user.id), page:5, for_seller:false},
       {path:"sales",japanese_name:"回答", link:user_account_sales_path(@user.id), page:5, for_seller:true},
       {path:"services",japanese_name:Service.model_name.human, link:user_account_services_path(@user.id), page:20, for_seller:true},
       {path:"followees",japanese_name:"フォロー", link:user_account_followees_path(@user.id), page:5, for_seller:true}

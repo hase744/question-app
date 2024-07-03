@@ -1,6 +1,17 @@
 class User::PostsController < User::Base
   before_action :check_login, only:[:new, :create, :destroy]
   before_action :identify_user, only:[:destroy]
+  layout :choose_layout
+
+  private def choose_layout
+    case action_name
+    when "show"
+      "responsive_layout"
+    else
+      "small"
+    end
+  end
+
   def new
     @post = Post.new
     @submit_text = "投稿"

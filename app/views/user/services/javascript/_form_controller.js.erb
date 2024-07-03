@@ -17,12 +17,16 @@ $("form").submit(function(event) {
 
 //追加相談室日数が0日の時＊追加質問を受け付けないと表示させる
 $("#service_transaction_message_days").on("change", function() {
-  if ($(this).val() === "0") {
+  update_transaction_message_days();
+});
+
+function update_transaction_message_days(){
+  if ($("#service_transaction_message_days").val() === "0") {
     $(".transaction_message_alert").show();
   } else {
     $(".transaction_message_alert").hide();
   }
-});
+}
 
 $('#service_request_form_name').change(function(){
   var selectedValue = $(this).val();
@@ -32,3 +36,4 @@ $('#service_request_form_name').change(function(){
     $('.video_field_area').css('display', 'none');
   }
 });
+update_transaction_message_days();

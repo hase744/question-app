@@ -40,20 +40,14 @@
                
             </div>
             <span></span>
-            <div class="user_intro_area" id="user_intro_area">
-            <!--
-                <div class="youtube_video_area" id="youtube_video_area">
-                    <iframe id="youtube_video" class="youtube_video 16_to_9"src="https://www.youtube.com/embed/-BdsyC6xhCk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                -->
-                <div class="change_text open_text" id="open_text"></div>
-            </div>
             
             <%= render "user/shared/description", text:@user %>
             <div class="user_profile_menu" id="request_ajax_update">
             <% @bar_elements.each do |element| %>
                 <%if !(!@user.is_seller && element[:for_seller]) %>
-                <li class="menu_element"><%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%></li>
+                    <li class="menu_element" path=<%="#{element[:path]}"%>>
+                        <%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%>
+                    </li>
                 <% end %>
             <% end %>
             </div>
@@ -64,10 +58,10 @@
         <%= render partial: "user/accounts/posts", locals: { contents: @posts}%>
     </div>
 </div>
-<%= javascript_pack_tag javascript_path %>
 <%= javascript_pack_tag "shared/xml_request" %>
 <%= javascript_pack_tag "shared/check_scroll" %>
 <script>
+<%= render "user/accounts/show.js.erb" %>
 <% flash.each do |type, message| %>
     // Bootstrapを導入しているため、`class="alert alert-success"`としています
       $("#added-message").html('<p class="alert alert-success"><%= type %><%= message %></p>')

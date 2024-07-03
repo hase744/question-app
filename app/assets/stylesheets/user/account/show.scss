@@ -62,9 +62,6 @@
                 }
             }
         }
-        .user_intro_area{
-            
-          }
         .user_profile_menu{
             display: flex;
             overflow-x:scroll;
@@ -85,7 +82,6 @@
             }
             li:hover{
                 cursor: pointer;
-                background-color: gainsboro;
                 border-radius: 5px 5px 0px 0px;
             }
             .user_content_link{
@@ -93,6 +89,21 @@
                 padding: 13px 17px;
                 text-decoration: none;
                 color: gray;
+            }
+            .gray{
+                border-bottom: none;
+                a{
+                    color: gray;
+                }
+            }
+            .blue{
+                border-bottom: 2px solid blue;
+                a{
+                    color: blue;
+                }
+            }
+            .gray:hover .user_content_link{
+                color: darkgray;
             }
             .user_content_link:hover{
                 cursor: pointer;
