@@ -158,12 +158,13 @@ class User::ServicesController < User::Base
         redirect_to user_services_path
       else
         flash.notice = "削除できませんでした。"
-        redirect_to user_service_path(params[:id])
       end
+    elsif @service.request_id
+      flash.notice = "提案済みのサービスは削除できません。"
     else
-      flash.notice = "取引が過去に存在するサービスは削除できません。"
-      redirect_to user_service_path(params[:id])
+      flash.notice = "取引が既に存在するサービスは削除できません。"
     end
+    redirect_to user_service_path(params[:id])
   end
 
   def requests
