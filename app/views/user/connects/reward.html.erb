@@ -39,7 +39,7 @@
     			</table>
 				</br>
 				<div class="submit_area">
-				<%if @deposit_amount > 0%>
+				<%if @deposit_amount ==nil || @deposit_amount > 0%>
 					<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@deposit_amount}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
 				<%else%>
 					<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>
@@ -48,20 +48,22 @@
 			</div>
 		</div>
 	</div>
-	<div class="finance_history_area">
-	<table class="finance_history">
-	    <tr>
-	      <th>金額</th>
-	      <th>ステータス</th>
-	      <th>日時</th>
-	    </tr>
-		<%@payouts.each do |payout|%>
-			<%= render "user/connects/payout", payout: payout%>
-		<% end %>
-	</table>
-	<a id="load_payments_button">続きを取得</a>
-	<%= render "user/shared/loading_animation" %>
-	</div>
+	<%if @payouts.present? %>
+		<div class="finance_history_area">
+			<table class="finance_history">
+			    <tr>
+			      <th>金額</th>
+			      <th>ステータス</th>
+			      <th>日時</th>
+			    </tr>
+				<%@payouts.each do |payout|%>
+					<%= render "user/connects/payout", payout: payout%>
+				<% end %>
+			</table>
+			<a id="load_payments_button">続きを取得</a>
+			<%= render "user/shared/loading_animation" %>
+		</div>
+	<% end %>
 </div>
 <script>
   $('#load_payments_button').on('click', function() {

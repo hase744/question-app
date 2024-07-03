@@ -1,5 +1,7 @@
 <div id="user_profile" class="user_show_zone">
+<% if @user.is_seller%>
 <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%> > <%=@user.name%></p>
+<% end %>
     <div class="user_profile_area">
         <div class="user_profile_introduction">
             <div class="user_info_image">

@@ -33,4 +33,20 @@ class ApplicationRecord < ActiveRecord::Base
       "image/#{extension}"
     }.join(',')
   end
+
+  def request_form_has_image?
+    if ['text','image','free'].include?(request_form.name)
+      true
+    else
+      false
+    end
+  end
+
+  def delivery_form_has_image?
+    if ['text','image','free'].include?(delivery_form.name)
+      true
+    else
+      false
+    end
+  end
 end

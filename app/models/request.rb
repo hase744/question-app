@@ -4,7 +4,7 @@ class Request < ApplicationRecord
   belongs_to :user
   belongs_to :service, optional: true
   belongs_to :deal, class_name: 'Transaction', optional: true, foreign_key: :transaction_id
-  has_many :transactions
+  has_many :transactions, dependent: :destroy
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
@@ -327,10 +327,10 @@ class Request < ApplicationRecord
   end
 
   def image_display_style
-    if self.service&.request_form&.name == 'image' 
-      'block'
-    else
+    if self.service&.request_form&.name == 'text' 
       'none'
+    else
+      'block'
     end
   end
 
