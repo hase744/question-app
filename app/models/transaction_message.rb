@@ -1,17 +1,25 @@
 class TransactionMessage < ApplicationRecord
-  mount_uploader :file, FileUploader
+  mount_uploader :file, ImageUploader
   
   belongs_to :deal, class_name: "Transaction", foreign_key: :transaction_id
   belongs_to :sender, class_name: "User", foreign_key: "sender_id"
   belongs_to :receiver, class_name: "User", foreign_key: "receiver_id"
 
-  validate :validate_transaction_is_delivered
   validate :validate_sender
-  validate :validate_deadline
+  validate :can_send_message
   validates :body, length: {minimum: 1, maximum: :body_max_characters}
   attr_accessor :deadline
-  
   before_validation :set_default_values
+
+  scope :by_transaction_id_and_order, ->(params) {
+    puts params
+    scope = includes(:sender).joins(:deal)
+    scope = scope.where('transaction_messages.created_at > transactions.delivered_at') if params[:after_delivered]
+    scope.where(transaction_id: params[:transaction_id])
+      .order(created_at: params[:order])
+      .page(params[:page])
+      .per(5)
+  }
 
   def set_default_values
     @service = self.deal.service
@@ -28,20 +36,16 @@ class TransactionMessage < ApplicationRecord
     end
   end
 
-  def validate_deadline
-    if self.sender == @buyer && (self.deal.delivered_at + self.deal.transaction_message_days) > DateTime.now
-      errors.add(:deadline, "が過ぎています")
+  def can_send_message
+    if !self.deal.can_send_message(self.sender)
+      errors.add(:deadline, "メッセージを保存できません")
     end
   end
-  
+
   def validate_sender
     if self.sender != @buyer && self.sender != @seller
       errors.add(:sendr, "が不適切です")
     end
-  end
-
-  def validate_transaction_is_delivered
-    errors.add(:deal, "の納品が完了していません") if !self.deal.is_delivered
   end
 
   def body_max_characters

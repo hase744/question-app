@@ -1,0 +1,129 @@
+<%= render 'user/shared/common_label', text: '追加メッセージ', language: 'ja'%>
+<%if user_signed_in? && @transaction.can_send_message(current_user) %>
+    <%= render "user/transaction_messages/new", 
+        transaction_message: @transaction_message,
+        transaction: @transaction 
+        %>
+<% end %>
+<div class="sort_area">&nbsp;
+	<%= link_to "古い順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"ASC", transaction_id:@transaction.id, after_delivered: action_name == "show"), remote:true, class:"sort_button desc_button asc_mode", style:'cursor:pointer', onclick:"change_to_asc()"%>
+	<span class="asc_mode">｜ 新しい順</span>
+	<span class="desc_mode"> 古い順 ｜</span>
+    <%= link_to "新しい順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"DESC", transaction_id:@transaction.id, after_delivered: action_name == "show"), remote:true, class:"sort_button asc_button desc_mode", style:'cursor:pointer', onclick:"change_to_desc()"%>
+</div>
+<div class="transaction_message_area">
+    <% @transaction_messages.each do |item|%>
+        <%= render "user/transaction_messages/cell", content:item %>
+    <% end %>
+</div>
+<%= render partial:  "user/shared/loading_animation" %>
+<div class="total_transaction_message">
+    <span id="loaded_transaction_messages_number">
+        <%=@transaction_messages.count%>
+    </span>/<%= @total_message_count%>
+</div>
+<%if @total_message_count > 5%>
+    <div class="get_transaction_message_button" id="get_transaction_message_button" style="text-align:center">
+    もっと見る
+    </div>
+	</br>
+<% end %>
+<script>
+var transaction_message_area = document.getElementsByClassName("transaction_message_area");
+var sort_button = document.getElementsByClassName("sort_button");
+var sort_area = document.getElementsByClassName("sort_area");
+var loading_animation = document.getElementsByClassName("loading_animation");
+var get_transaction_message_button = document.getElementById("get_transaction_message_button");
+var loaded_pages = []
+var order = "<%= params[:transaction_message_order] %>"
+var transaction_id = "<%=@transaction.id%>"
+var total_message_count = <%=@total_message_count %>
+var after_delivered = <%=action_name == "show"%>
+
+function asc_mode(){
+	$(".asc_mode").css("display","inline");
+	$(".desc_mode").css("display","none");
+}
+function desc_mode(){
+	$(".asc_mode").css("display","none");
+	$(".desc_mode").css("display","inline");
+}
+function create_loading_animation(){
+	loaded_pages = [];
+    transaction_message_area[0].innerHTML = "";
+    if(window.innerWidth <= 1000){
+        $("#get_transaction_message_button").css("display","block")
+    }
+    $(".loading_animation").css("display","block");
+}
+function change_to_asc(){
+	desc_mode();
+	create_loading_animation();
+}
+function change_to_desc(){
+	asc_mode();
+    transaction_message_area[0].innerHTML = "";
+    create_loading_animation();
+}
+function order_params(){
+	if($('a.asc_button').css('display') == 'inline'){
+		var params = "&transaction_message_order=ASC";
+	}
+	if($('a.desc_button').css('display') == 'inline'){
+		var params = "&transaction_message_order=DESC";
+	}
+    return params;
+}
+
+function load_messasges(page){
+	loaded_pages.push(page);
+	param = `&transaction_id=${transaction_id}${order_params()}`
+	console.log(after_delivered)
+	if(after_delivered){
+		param += '&after_delivered=true'
+	}
+	xml_request(
+		"/user/transaction_messages/cells",
+		page,
+		transaction_message_area[0],
+		insert_contact_elements,
+		`&transaction_id=${transaction_id}${order_params()}`
+	);
+}
+
+function get_next_page(){
+	return Math.ceil(transaction_message_area[0].childElementCount/5)+1
+}
+
+//transaction_message_area[0]にcellを挿入
+var insert_contact_elements = function(response, scroll_element){
+    $(".loading_animation").css("display","none");
+    scroll_element.insertAdjacentHTML('beforeend', response);
+	message_count = transaction_message_area[0].childElementCount;
+    $("#loaded_transaction_messages_number").html(message_count);
+    if(<%= @total_message_count%> == message_count){
+        $("#get_transaction_message_button").css("display","none");
+    }
+}
+
+$(window).on('scroll', function(){
+    if(window.innerWidth >= 1000){
+        var page = get_next_page();
+        if(check_scroll(null) && (page >= 2 && !loaded_pages.includes(page))){
+            load_messasges(page);
+        }
+    }
+})
+
+$("#get_transaction_message_button").on('click', function(){
+    var page = get_next_page();
+    load_messasges(page);
+})
+
+$(".loading_animation").css("display","none");
+if(order == "DESC"){
+	asc_mode();
+}else{
+	desc_mode();
+}
+</script>

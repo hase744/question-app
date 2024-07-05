@@ -1,10 +1,13 @@
 class User::TransactionsController < User::Base
   #layout "search_layout", only: :index
   #layout "transaction_index", only: [:index]
-  before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like]
+  before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
   before_action :check_transaction_is_delivered, only:[:show, :like]
-  before_action :define_transaction, only:[:update, :deliver]
+  before_action :define_transaction, only:[:show, :update, :deliver, :messages]
+  before_action :filter_transaction, only:[:update, :deliver]
+  before_action :define_transaction_message, only:[:show, :messages]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
+  before_action :check_can_send_message, only:[:messages]
   after_action :update_total_views, only:[:show]
   layout :choose_layout
 
@@ -41,37 +44,22 @@ class User::TransactionsController < User::Base
   end
 
   def show
-    @transaction = Transaction.find(params[:id])
-    @transaction.set_default_values
-    @transaction.request.set_item_values
-    if @transaction.file && @transaction.file.url
-      if @transaction.request_form.name == "text"
-        @transaction.request.set_item_values
-        @og_image = @transaction.request.file.url
-      elsif @transaction.service.image
-        @og_image = @transaction.service.image.url
-      end
-      gon.env = Rails.env
+    if @transaction.request_form.name == "text"
+      @og_image = @transaction.request.items.first.file.url
+    elsif @transaction.service.image
+      @og_image = @transaction.service.image.url
     end
+    gon.env = Rails.env
+    @transaction_along_messages =  TransactionMessage
+      .joins(:deal)
+      .where(transaction_id:@transaction.id)
+      .where('transaction_messages.created_at < transactions.delivered_at')
+    @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
     gon.tweet_text = @transaction.description
-
-    if params[:transaction_message_order]
-      begin #params[:transaction_message_order]がs"ASC"でも"SESC"でもないとき
-        @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).order(created_at:params[:transaction_message_order]).limit(5)
-      rescue
-        flash.notice = "orderが無効です。"
-        @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).limit(5)
-      end
-    else
-      @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).limit(5)
-    end
-    gon.total_transaction_messages = TransactionMessage.where(transaction_id:@transaction.id).count
     gon.text_max_length = TransactionMessage.new.body_max_characters
-
     @transaction_message = TransactionMessage.new()
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
-    #@transactions = solve_n_plus_1(@transactions)
     @transactions = Transaction.all
       .left_joins(:transaction_categories)
       .includes(:seller, :service, :request, :items, :categories)
@@ -80,6 +68,7 @@ class User::TransactionsController < User::Base
         is_delivered:true, 
         transaction_categories:{category: @transaction.category}
         )
+    @total_message_count = @transaction.total_after_delivered_messages
     transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)
     @transactions = @transactions.where(id: @transaction.id..).order(created_at: "ASC").limit(10)
     if @transactions.count < transactions.count
@@ -176,51 +165,22 @@ class User::TransactionsController < User::Base
       )
   end
 
-  def set_values_in_show
-    @transaction = Transaction.find(params[:id])
-    if @transaction.file.url
-      if @transaction.request_form.name == "text"
-        @og_image = @transaction.request.file.url
-      elsif @transaction.service.image
-        @og_image = @transaction.service.image.url
-      end
-      gon.env = Rails.env
-    end
-    gon.tweet_text = @transaction.description
-
-    if params[:transaction_message_order]
-      begin #params[:transaction_message_order]がs"ASC"でも"SESC"でもないとき
-        @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).order(created_at:params[:transaction_message_order]).limit(5)
-      rescue
-        flash.notice = "orderが無効です。"
-        @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).limit(5)
-      end
-    else
-      @transaction_messages = TransactionMessage.includes(:sender).where(transaction_id:params[:id]).limit(5)
-    end
-    gon.total_transaction_messages = TransactionMessage.where(transaction_id:@transaction.id).count
-
-    @transaction_message = TransactionMessage.new()
-
-    #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
-    @transactions = Transaction.left_joins(:transaction_categories).includes(:seller, :request).where(is_delivered:true, transaction_categories:{category: @transaction.category})
-    transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)
-    @transactions = @transactions.where(id: @transaction.id..).order(created_at: "ASC").limit(10)
-    if @transactions.count < transactions.count
-      @transactions = transactions
-    end
-    transaction_like = TransactionLike.find_by(user:current_user, transaction_id: params[:id])
-    if transaction_like
-      @transaction_like_exist = true
-    end
-  end
-
   def new_image(name)
     @text = @transaction.description
     erb = File.read('./app/views/user/images/answer.html.erb')
     kit = IMGKit.new(ERB.new(erb).result(binding))
     img = kit.to_img(:jpg)
     kit.to_file("./app/assets/images/#{name}.png")
+  end
+
+  def messages
+    @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
+  end
+
+  private def check_can_send_message
+    if !@transaction.can_send_message(current_user)
+      redirect_back(fallback_location: root_path)
+    end
   end
 
   private def update_total_views
@@ -244,6 +204,9 @@ class User::TransactionsController < User::Base
 
   private def define_transaction
     @transaction = Transaction.find(params[:id])
+  end
+
+  private def filter_transaction
     @transaction = Transaction.left_joins(:service)
     @transaction = @transaction.find_by(
       id: params[:id],
@@ -251,6 +214,17 @@ class User::TransactionsController < User::Base
       is_canceled: false,
       is_delivered: false,
       is_rejected: false,
+      )
+  end
+
+  private def define_transaction_message
+    params[:transaction_message_order] ||= "ASC"
+    @transaction_messages = TransactionMessage
+      .by_transaction_id_and_order(
+        transaction_id: params[:id], 
+        order: params[:transaction_message_order],
+        page: 1,
+        after_delivered: action_name == "show"
       )
   end
 

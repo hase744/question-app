@@ -7,36 +7,37 @@
     box-shadow: 1px 1px 3px gray;
     margin: 5px;
     .image_name_area{
-        height: 50px;
+        width: 100%;
+        height: 40px;
+        text-align: left;
+        float: left;
         .image_area{
             display: inline-block;
-            width: 50px;
-            height: 100%;
+            width: 40px;
+            height: 40px;
             float: left;
-            @media(max-width:500px){
-                width: 50px;
-            }
-            @media(min-width:500px){
-                width: 50px;
-            }
+            margin-right: 5px;
             .user_image{
                 object-fit: cover;
-                height: 40px;
-                width: 40px;
+                height: 30px;
+                width: 30px;
                 margin: 5px;
                 border-radius: 25px;
             }
         }
         .time_name_area{
             display: inline-block;
-            width: calc(100% - 60px);
+            width: calc(100% - 70px);
+            height: 30px;
             //float: left;
-            padding-top: 3px;
+            margin-top: 5px;
         }
         .send_time{
             color: gray;
             font-size: 13px;
-            //display: inline-block;
+            display: inline-block;
+            width: 100%;
+            height: 30px;
         }
         .user_name{
             margin: 0px;
@@ -47,6 +48,14 @@
         .message_text{
             padding: 5px;
             white-space: pre-line;
+        }
+    }
+    .image_area{
+        margin: 5px;
+        .image{
+            width: calc(100% - 20px);
+            margin: 5px;
+            object-fit: cover;
         }
     }
 }
