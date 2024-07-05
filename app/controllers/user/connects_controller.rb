@@ -3,7 +3,7 @@ class User::ConnectsController < User::Base
   before_action :check_login
   before_action :phone_valid?, only:[:update, :edit]
   before_action :check_connect_unregistered, only:[:new, :create, :certify_phone]
-  before_action :check_connect_registered, only:[:update, :destroy]
+  before_action :check_connect_registered, only:[:update, :destroy, :credit]
   before_action :check_ongoing_transaction, only:[:destroy]
   before_action :check_phone_confirmation_enabled, only:[:certify_phone, :create, :new, :send_token]
 

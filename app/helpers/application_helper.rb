@@ -72,9 +72,9 @@ include Variables
 
   def readable_datetime(datetime)
     if datetime
-      datetime.strftime("%Y/%m/%d/%H:%M")
+      datetime.strftime("%Y/%m/%d %H:%M")
     else
-      "-/-/-/-:-"
+      "-/-/- -:-"
     end
   end
 
@@ -162,22 +162,6 @@ include Variables
 
   def javascript_path
     "#{controller_path}/#{action_name}.js"
-  end
-
-  def can_send_transaction_message
-    if user_signed_in?
-      #買った人である。かつ、transaction_messageを送る期限内である
-      if current_user == @transaction.buyer && (@transaction.delivered_at.to_datetime + @transaction.transaction_message_days) > DateTime.now.to_datetime
-        true
-      #売った人である
-      elsif current_user == @transaction.seller
-        true
-      else
-        false
-      end
-    else
-      false
-    end
   end
 
   def message_receivable(user)

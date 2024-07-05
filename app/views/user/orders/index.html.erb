@@ -87,16 +87,19 @@
                     </div>
                 </div>
                 <div class="button_zone">
+                <div class="button_area">
+                    <%=link_to "追加メッセージ", user_transaction_message_room_path(transaction.id), class:"button" %>
+                </div>
                 <% if transaction.seller == current_user && transaction.is_ongoing %>
+                    ｜&nbsp;<div class="button_area">
+                        <%=link_to "回答を作成", user_order_path(transaction.id), class:"button" %>
+                    </div>&nbsp;｜
                     <div class="button_area">
-                        ：<%=link_to "回答を作成", user_order_path(transaction.id), class:"button" %>
-                    </div>
-                    <div class="button_area">
-                        ：<%=link_to "回答を断る", edit_user_order_path(transaction.id), class:"button" %>
+                        <%=link_to "回答を断る", edit_user_order_path(transaction.id), class:"button" %>
                     </div>
                 <% elsif transaction.delivery_time < DateTime.now && transaction.is_ongoing  %>
-                    <div class="button_area">
-                        ：<%=link_to "キャンセル", user_cancel_order_path(transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは返金されます。"} %>
+                    ｜&nbsp;<div class="button_area">
+                        <%=link_to "キャンセル", user_cancel_order_path(transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは返金されます。"} %>
                     </div>
                 <% end %>
                 </div>

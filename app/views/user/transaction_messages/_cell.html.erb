@@ -9,12 +9,15 @@
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name"><%= content.sender.name%></h2>
-                <%=from_now(content.created_at)%>
+                <h2 class="user_name one_line_text"><%= content.sender.name%></h2>
+                <%=readable_datetime(content.created_at)%>
             </div>
         </div>
     </div>
     <div class="message_text_area">
         <div class="message_text"><%=content.body %></div>
     </div>
+    <%= link_to content.file.url, class:"image_area" do %>
+        <%= image_tag content.file.normal_size.url, class:"image" if content.file.normal_size.url%>
+    <% end %>
 </div>

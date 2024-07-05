@@ -53,7 +53,7 @@
                 margin: 0px;
             }
             .transaction_flame{
-                padding: 20px;
+                padding: 10px;
                 padding-top: 10px;
                 margin: 5px;
                 height: auto;
@@ -62,7 +62,7 @@
                 box-shadow: 1px 1px 3px gray;
                 border-radius: 2.5px;
                 //box-shadow: 0 0 2px lightgray;
-                width: calc(100% - 50px);
+                width: calc(100% - 30px);
                 .title{
                     margin-top: 5px;
                     margin-bottom: 0px;
@@ -183,6 +183,52 @@
                     //float:right;
                 }
             }
+        }
+        .along_message_area{
+            //background-color: white;
+            //box-shadow: 1px 1px 3px gray;
+            border-radius: 5px;
+            margin: 5px;
+            .user_name_area{
+                height: 40px;
+                margin-bottom: 0px;
+                .user_image_area{
+                    margin-top: 5px;
+                    height: 30px;
+                    float: left;
+                    padding-left: 7px;
+                    .image{
+                        height: 30px;
+                        width: 30px;
+                        object-fit: cover;
+                        border-radius: 50%;
+                    }
+                }
+                .user_name{
+                    margin: 7.5px;
+                    display: inline-block;
+                }
+            }
+            .open_button_area{
+                height: 50px;
+                width: 100%;
+                text-align: left;
+                .open_button{
+                    float: left;
+                    height: 100%;
+                    width: 3px;
+                    margin-left: 20px;
+                    margin-right: 10px;
+                    display: inline-block;
+                    background-color: lightgray;
+                }
+                a{
+                    cursor: pointer;
+                }
+            }
+        }
+        .along_messages{
+            display: none;
         }
         .review_name{
             margin-right: 5px;
@@ -325,13 +371,13 @@
     text-align: center;
     color: gray;
 }
-.get_transaction_message_button_button{
+.get_transaction_message_button{
     color: blue;
     @media(min-width:1000px){
         display: none;
     }
 }
-.get_transaction_message_button_button:hover{
+.get_transaction_message_button:hover{
     cursor: pointer;
 }
 

@@ -267,7 +267,7 @@ class User::RequestsController < User::Base
         redirect_to user_request_path(params[:id])
       end
     else
-      flash.notice = "削除できませんでした。"
+      flash.notice = "取引・提案のある質問は削除できません。"
       redirect_to user_request_path(params[:id])
     end
   end

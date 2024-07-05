@@ -39,7 +39,7 @@
     			</table>
 				</br>
 				<div class="submit_area">
-				<%if @deposit_amount ==nil || @deposit_amount > 0%>
+				<%if (@deposit_amount == nil || @deposit_amount > 0) && current_user.stripe_account_id %>
 					<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@deposit_amount}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
 				<%else%>
 					<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>

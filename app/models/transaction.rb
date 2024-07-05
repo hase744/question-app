@@ -100,6 +100,13 @@ class Transaction < ApplicationRecord
     set_delivery_content
   end
 
+  def total_after_delivered_messages
+    self.transaction_messages
+      .joins(:deal)
+      .where('transaction_messages.created_at > transactions.delivered_at')
+      .count
+  end
+
   def request_form
     Form.find_by(name: self.request_form_name)
   end
@@ -320,6 +327,25 @@ class Transaction < ApplicationRecord
   def validate_reject_reason
     if (self.is_delivered || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
       errors.add(:reject_reason, "は現在で記入きません")
+    end
+  end
+
+  def can_send_message(user)
+    #買った人である。かつ、transaction_messageを送る期限内である
+    if user == self.seller
+      true
+    elsif user != self.buyer
+      false
+    elsif self.transaction_message_days.nil?
+      true
+    elsif self.transaction_message_days == 0
+      false
+    elsif self.delivered_at == nil
+      true
+    elsif DateTime.now.to_datetime < self.delivered_at.to_datetime + self.transaction_message_days
+      true
+    else
+      false
     end
   end
 

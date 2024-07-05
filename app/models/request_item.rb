@@ -14,7 +14,6 @@ class RequestItem < ApplicationRecord
     validate :validatable_duration
   
     after_initialize do
-      puts "ここ！"
       if self.youtube_id.present?
         self.use_youtube = true
       else

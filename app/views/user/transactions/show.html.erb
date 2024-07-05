@@ -23,8 +23,8 @@
                         <%= render 'user/shared/adjustable_image', request: @transaction.request%>
                     <% else %>
                         <% @transaction.request.items.each do |item| %>
-                            <%= link_to(@transaction.request.file.url, class: 'item_link') do %>
-                                <%= image_tag @transaction.request.file.url, class:"image" if item.file.is_image? %>
+                            <%= link_to(item.file.url, class: 'item_link') do %>
+                                <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
                             <% end %>
                             <% if item.use_youtube %>
                                 <div class="item_file_flame 16_to_9" id="item_file_flame">
@@ -38,6 +38,33 @@
                     <%##= render "/user/shared/description", text:@transaction.request%>
                 </div>
             </div>
+        </div>
+        <%if @transaction_along_messages.present? %>
+        <div class="along_message_area">
+            <div class="user_name_area">
+                <div class="user_image_area">
+                <%= image_tag @transaction_along_messages.first.sender.image.thumb.url, class:"image" %>
+                </div>
+                <div class="user_name">
+                    <span class="one_line_text">
+                        <%= @transaction_along_messages.first.sender.name %>
+                    </span>
+                </div>
+            </div>
+            <div class="open_button_area">
+                <div class="open_button"></div>
+                <span class="one_line_text">
+                <%= @transaction_along_messages.first.body %>
+                </span>
+                <a class="open_along_messages" onclick="open_along_messages()">詳細のメッセージ
+                <span class="fas fa-angle-down"></span></a>
+            </div>
+        </div>
+        <% end %>
+        <div class="along_messages">
+        <% @transaction_along_messages.each do |message|%>
+            <%= render "user/transaction_messages/cell", content:message %>
+        <% end %>
         </div>
         <%= render 'user/shared/common_label', text: 'Answer', language: 'en'%>
         <div class="transaction_area">
@@ -108,57 +135,7 @@
             <%= render "user/reviews/new", transaction: @transaction %>
         <% end %>
         <div class="transaction_message_flame" id="transaction_message_flame">
-        <%if can_send_transaction_message %>
-        <div class="transaction_message_form_area component_area">
-            <%if @transaction.buyer == current_user%>
-                <p class="title">
-                追加質問<%=render "user/shared/total_characters_display"%></br>
-                <%=from_now(@transaction.delivered_at.to_datetime + @transaction.transaction_message_days)%>
-                (
-                <%=(@transaction.delivered_at.to_datetime + @transaction.transaction_message_days).strftime("%Y/%m/%d %H:%m")%>
-                まで)
-                </p>
-            <% elsif @transaction.seller == current_user %>
-                <p class="title">追加回答<%=render "user/shared/total_characters_display"%></p>
-            <% end %>
-            <div class="transaction_message_form_flame">
-                <%= form_with model:@transaction_message, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %>
-                  <%=f.text_area :body, id:"transaction_message_body", class:"text_field text_area", required: true%>
-                  <%=f.hidden_field :transaction_id, value:@transaction.id, id:"transaction_id", class:"text_field", required: true%>
-                  <div class="transaction_message_submit_area">
-                    <%= f.submit "送信",class:"transaction_message_submit", placeholder:"" %>
-                  </div>
-                <% end %>
-            </div>
-        </div>
-        <% end %>
-        <%= render 'user/shared/common_label', text: '追加メッセージ', language: 'ja'%>
-        <div class="sort_area">
-            <%if params[:transaction_message_order] == "ASC" || params[:transaction_message_order] == nil%>
-            並び：<%= link_to "降順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"DESC", transaction_id:@transaction.id), remote:true, class:"sort_button desc_button", onclick:"change_sort()"%>
-                昇順
-            <% elsif params[:transaction_message_order] == "DESC" %>
-            並び：降順
-                <%= link_to "昇順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"ASC", transaction_id:@transaction.id), remote:true, class:"sort_button asc_button", onclick:"change_sort()"%>
-            <% end %>
-        </div>
-        <div class="transaction_message_area">
-            <% @transaction_messages.each do |item|%>
-                <%= render "user/transaction_messages/cell", content:item %>
-            <% end %>
-        </div>
-        <%= render partial:  "user/shared/loading_animation" %>
-        <div class="total_transaction_message">
-            <span id="loaded_transaction_messages_number">
-                <%=@transaction_messages.count%>
-            </span>
-            /<%=TransactionMessage.where(transaction_id:@transaction.id).count%>
-        </div>
-        <%if TransactionMessage.where(transaction_id:@transaction.id).count > 5%>
-            <div class=" get_transaction_message_button_button" id="get_transaction_message_button_button" style="text-align:center">
-            もっと見る
-            </div>
-        <% end %>
+        <%= render "user/transaction_messages/cells_area" %>
     </div>
     </div>
     <div class="transaction_show_right_side">
@@ -170,85 +147,16 @@
 </div>
 <%=javascript_pack_tag "user/transactions/show"%>
 <script>
+function open_along_messages(){
+    $('.along_message_area').css('display','none')
+    $('.along_messages').css('display','block')
+}
+
+
 var item_file_flame = document.getElementById("item_file_flame");
 var item_file = document.getElementById("item_file");
 var transaction_flame = document.getElementById("transaction_flame");
 var like_count = document.getElementById("like_count");
-var transaction_message_area = document.getElementsByClassName("transaction_message_area");
-var sort_button = document.getElementsByClassName("sort_button");
-var sort_area = document.getElementsByClassName("sort_area");
-var loading_animation = document.getElementsByClassName("loading_animation");
-var get_transaction_message_button_button = document.getElementById("get_transaction_message_button_button");
-var loaded_pages = []
-var transaction_id = "<%=@transaction.id%>"
-
-//$("#get_transaction_message_button_button").css("display","none")
-$(".loading_animation").css("display","none");
-function change_sort(){
-    console.log("sort");
-    console.log(sort_area[0]);
-    loaded_pages = []
-    if(sort_button[0].classList.contains("asc_button")){
-        console.log("asc");
-        sort_area[0].innerHTML = '並び：<%= link_to "降順", user_transaction_messages_reset_cells_path(page:1, transaction_id:@transaction.id, transaction_message_order:"DESC"), remote:true, class:"sort_button desc_button", onclick:"change_sort()"%> 昇順';
-    }else{
-        console.log("desc");
-        sort_area[0].innerHTML = '並び：降順 <%= link_to "昇順", user_transaction_messages_reset_cells_path(page:1, transaction_id:@transaction.id, transaction_message_order:"ASC"), remote:true, class:"sort_button asc_button", onclick:"change_sort()"%>';
-    }
-    transaction_message_area[0].innerHTML = "";
-    if(window.innerWidth <= 1000){
-        $("#get_transaction_message_button_button").css("display","block")
-    }
-    $(".loading_animation").css("display","block");
-}
-
-
-var targetElement = document.getElementById("transaction_message_flame");
-var clientRect = targetElement.getBoundingClientRect();
-
-//transaction_message_area[0]にcellを挿入
-var insert_contact_elements = function(response, scroll_element){
-    console.log(scroll_element);
-    $(".loading_animation").css("display","none");
-    scroll_element.insertAdjacentHTML('beforeend', response);
-    $("#loaded_transaction_messages_number").html(transaction_message_area[0].childElementCount)
-    if(gon.total_transaction_messages == transaction_message_area[0].childElementCount){
-        $("#get_transaction_message_button_button").css("display","none")
-    }
-}
-
-$(window).on('scroll', function(){
-    var docHeight = $(document).innerHeight(), //ドキュメントの高さ
-        windowHeight = $(window).innerHeight(), //ウィンドウの高さ
-        pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
-    if(window.innerWidth >= 1000){
-        var page = Math.ceil(transaction_message_area[0].childElementCount/5)+1;
-        if(check_scroll(null) && (page >= 2 && !loaded_pages.includes(page))){
-            //$(".loading_animation").css("display","block");
-            loaded_pages.push(page)
-            console.log("ページ : " + page);
-            console.log("id : " + `${transaction_id}`);
-            xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=${transaction_id}${order_params()}`);
-        }
-    }
-})
-
-$("#get_transaction_message_button_button").on('click', function(){
-    var page = Math.ceil(transaction_message_area[0].childElementCount/5)+1
-    xml_request("/user/transaction_messages/cells", page, transaction_message_area[0], insert_contact_elements,  `&transaction_id=${transaction_id}${order_params()}`);
-})
-
-function order_params(){
-    var desc_button  = document.getElementsByClassName("desc_button");
-    var asc_button = document.getElementsByClassName("asc_button");
-    var params = "desc";
-    if(desc_button.length == 0){
-        var params = "&transaction_message_order=DESC";
-    }else if(asc_button.length == 0){
-        var params = "&transaction_message_order=ASC";
-    }
-    return params;
-}
 
 <% if @transaction.service.delivery_form.name == "video"%>
 function resize_item_file_flame(){
