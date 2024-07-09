@@ -1,0 +1,20 @@
+$(".open_text").click(function() {
+    var parent = $(this).closest(".transaction_cell_area");
+    var open_text = parent.find(".open_text");
+    var description_text = parent.find(".description_text");
+    var answer_area = parent.find(".answer_area");
+    var transaction_cell_flame = parent.find(".transaction_cell_flame");
+
+    if(open_text.hasClass('close_text')){
+        open_text.html("&nbsp;<span class='fas fa-angle-down'></span>&nbsp;")
+    }else{
+        open_text.html("&nbsp;<span class='fas fa-angle-up'></span>&nbsp;")
+    }
+    open_text.toggleClass("open_text");
+    open_text.toggleClass("close_text");
+    transaction_cell_flame.toggleClass("transaction_cell_flame_open");
+    description_text.toggleClass("opening_text");
+    description_text.toggleClass("closing_text");
+    description_text.toggleClass("three_line_text");
+    answer_area.toggleClass("display_none");
+});

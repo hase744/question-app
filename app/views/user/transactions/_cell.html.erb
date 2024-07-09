@@ -1,5 +1,5 @@
 <div class="transaction_cell_area">
-    <div class="transaction_cell_flame">
+    <div class="transaction_cell_flame transaction_cell_flame_open">
     <!--
         <div class="youtube_video_area">
             <%if transaction.use_youtube%><% %>
@@ -22,8 +22,8 @@
             <h5 class="one_line_text request_title ">Q.<%= transaction.request.title%><%= transaction.request.title%><%= transaction.request.title%></h5>
             <% end %>
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= from_now(transaction.created_at)%></h5>
-            <h5 class="two_line_text text"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
-            <div class="display_none" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
+            <h5 class="three_line_text text description_text"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
+            <div class="display_none answer_area" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
             <div class="seller_container">
                 <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
                     <% if transaction.seller.image.thumb.url %>
@@ -41,30 +41,5 @@
             </div>
         </div>
     </div>
-    &nbsp;<div class="change_text open_text" id="open_text<%=transaction.model_name%><%=transaction.id%>">&nbsp;<span class='fas fa-angle-down'></span>&nbsp;</div>
+    <div class="change_text open_text" id="open_text<%=transaction.model_name%><%=transaction.id%>">&nbsp;<span class='fas fa-angle-down'></span>&nbsp;</div>
 </div>
-<script>
-var description_text_area = document.getElementById("description_text_area");
-var open_text<%=transaction.model_name%><%=transaction.id%> = document.getElementById("open_text<%=transaction.model_name%><%=transaction.id%>");
-var description_text<%=transaction.model_name%><%=transaction.id%> = document.getElementById("description_text<%=transaction.model_name%><%=transaction.id%>");
-var answer_area<%=transaction.model_name%><%=transaction.id%> = document.getElementById("answer_area<%=transaction.model_name%><%=transaction.id%>");
-
-
-open_text<%=transaction.model_name%><%=transaction.id%>.addEventListener('click', (event) => {
-    console.log(open_text<%=transaction.model_name%><%=transaction.id%>.classList.contains('close_text'))
-    if(open_text<%=transaction.model_name%><%=transaction.id%>.classList.contains('close_text')){
-        open_text<%=transaction.model_name%><%=transaction.id%>.innerHTML = "&nbsp;<span class='fas fa-angle-down'></span>&nbsp;"
-    }else{
-        open_text<%=transaction.model_name%><%=transaction.id%>.innerHTML = "&nbsp;<span class='fas fa-angle-up'></span>&nbsp;"
-    }
-    open_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("open_text");
-    open_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("close_text");
-    console.log("a");
-    
-    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("opening_text");
-    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("closing_text");
-    description_text<%=transaction.model_name%><%=transaction.id%>.classList.toggle("two_line_text");
-    answer_area<%=transaction.model_name%><%=transaction.id%>.classList.toggle("display_none");
-    console.log("description")
-});
-</script>

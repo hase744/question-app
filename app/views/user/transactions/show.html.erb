@@ -100,8 +100,6 @@
                         <%= image_tag item.file.url, class:"image" %>
                     <% end %>
                 <% end %>
-
-                <%#= render "/user/shared/description", text:@transaction%>
                 <div class="like_share_area">
                     <div class="like_area">
                         <div class="like_flame">
@@ -145,6 +143,9 @@
         <% end %>
     </div>
 </div>
+<script>
+<%= render "user/transactions/cell.js.erb"%>
+</script>
 <%=javascript_pack_tag "user/transactions/show"%>
 <script>
 function open_along_messages(){

@@ -26,6 +26,11 @@ development_table_names.each do |table_name|
     end
 end
 
-AdminUser.create!(email: Rails.application.credentials.admin_user[:email],name: Rails.application.credentials.admin_user[:name], password: Rails.application.credentials.admin_user[:password], password_confirmation: Rails.application.credentials.admin_user[:password])
+admin_user = AdminUser.create!(email: Rails.application.credentials.admin_user[:email],name: Rails.application.credentials.admin_user[:name], password: Rails.application.credentials.admin_user[:password], password_confirmation: Rails.application.credentials.admin_user[:password])
 #AdminUser.create!(email: ENV["EMAIL1"],name:"hasegawa", password: ENV["PASSWORD"], password_confirmation: ENV["PASSWORD"]) #if Rails.env.development?
 AdminUserRole.create(admin_user_id: AdminUser.first.id, role: Role.find_by(name:"super_admin")) #if Rails.env.development?
+Operation.create(
+    admin_user: admin_user, 
+    start_at: DateTime.now,
+    state: 'running'
+    )

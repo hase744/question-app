@@ -47,17 +47,19 @@
                 <%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
             </div>
             <div class="category_label_area">
-                <label id="category_button">
-                カテゴリ一覧&nbsp;<span class="fas fa-angle-down">&nbsp;</span>
-                </label>
-                <div id="category_list" class="category_list hidden">
-                    <ul>
-                    <% Category.all.each do |category|%>
-                        <div>
-                        <li><%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%></li>
-                        </div>
-                    <% end %>
-                    </ul>
+                <div class="category_label_flame">
+                    <label id="category_button">
+                    カテゴリ一覧&nbsp;<span class="fas fa-angle-down">&nbsp;</span>
+                    </label>
+                    <div id="category_list" class="category_list hidden">
+                        <ul>
+                        <% Category.all.each do |category|%>
+                            <div>
+                            <li><%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%></li>
+                            </div>
+                        <% end %>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -104,6 +106,9 @@
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>
 <%= render "user/shared/javascript/swiper.js.erb" %>
+<script>
+<%= render "user/transactions/cell.js.erb"%>
+</script>
 <script>
   var swiper = new Swiper('.swiper-service-container', {
     slidesPerView: 5,
