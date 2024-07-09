@@ -19,11 +19,10 @@
             <!--
             <%= f.number_field :total_sales_numbers, value:params[:total_sales_numbers], class:"total_sales_numbers", minn:"0", placeholder:"件数", step:"1"%>件以上
             -->
-            <p>カテゴリー</p>
+            <label class="field_label">カテゴリー</label><br/>
             <div>
-            <%= render "layouts/form_category", f:f%>
+            <%= render "layouts/form_category", f:f, model: User.new.class.name%>
             </div>
-            </br>
             <div class="search_button_area">
             <%= f.submit '検索',class:"search_button", placeholder:"" %>
             </div>

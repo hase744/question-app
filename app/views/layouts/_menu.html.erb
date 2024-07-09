@@ -52,6 +52,7 @@
                     <%= f.text_field :name, class:"search-detail-json"%>
                 </div>
             </div>
+            <div class="wide_detail_search_container search search_forms">
             <div class="wide_detail_search search search_forms">
                 <span class="service_search_field">価格</br></span>
                 <span class="request_search_field">予算</br></span>
@@ -91,10 +92,11 @@
                 <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
                     <p>カテゴリー</p>
                     <div>
-                    <%= render "layouts/form_category", f:f%>
+                    <%= render "layouts/form_category", f:f, model: "all"%>
                     </div>
                     </br>
                 </span>
+            </div>
             </div>
         <% end %>
     </div>
@@ -150,4 +152,3 @@
 <script>
 <%= render "layouts/javascript/menu.js.erb" %>
 </script>
-<%= javascript_pack_tag "layout/form_category"%>

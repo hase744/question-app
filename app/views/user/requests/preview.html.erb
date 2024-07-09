@@ -25,7 +25,7 @@
 
         <div class="field_area">
           <%= f.label :category, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.category.japanese_name%></h3>
+          <h3 class="request_content"><%=@request.categories.map{|c| c.japanese_name }.join(',') %></h3>
         </div>
 
         <div class="field_area">

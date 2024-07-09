@@ -1,5 +1,16 @@
 .category_checkbox_area{
     .checkbox_area{
+        width: calc(100% - 20px);
         display: inline-block;
+    }
+    .parent_check_box{
+        display: inline-block;
+        width: 100%;
+    }
+    .space{
+        display: inline-block;
+        width: 20px;
+        height: 10px;
+        //background-color: red;
     }
 }

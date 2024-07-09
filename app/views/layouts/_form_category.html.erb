@@ -1,11 +1,64 @@
-<span class="category_checkbox_area">
-    <!--　category_treeのkeyを配列にする-->
+<span class="category_checkbox_area <%=model%>">
     <%=f.hidden_field :categories, class:"categories_field" %>
-    <% category_tree.keys.each do |key| %>
-        <span class="checkbox_area"><%= f.check_box key.to_sym, class:"#{key} categoory_checkbox", id:key%><%=category_e_to_j(key)%>　</span>
-        <!--　category_treeのvalueを配列にする-->
-        <% category_tree[key].each do |value| %>
-            <span class="checkbox_area"><%= f.check_box value.to_sym, class:"#{value} categoory_checkbox", id:value%><%=category_e_to_j(value)%>　</span>
-        <% end %>
+    <% Category.hash_tree[:categories].each do |category|%>
+        <%= render "layouts/category_checkbox", f:f, category:category %>
     <% end %>
 </span>
+<script>
+<% categories_tree = Category.hash_tree[:categories].to_json %>
+categories = <%= raw(categories_tree) %>;
+
+function updateParentCheckbox(parentId, childClass) {
+    let allChecked = true;
+    $(`.<%=model%> .${childClass}`).each(function() {
+        if (!$(this).is(':checked')) {
+            allChecked = false;
+        }
+    });
+    $(`#${parentId}`).prop('checked', allChecked);
+}
+
+function update_category_form(){
+    var checkedCategories = $('.<%=model%> .categoory_checkbox:checked').map(function() {
+        return $(this).attr('name');
+    }).get();
+    
+    // Join the names with commas and set the value to the hidden input
+    $('.<%=model%> #categories').val(checkedCategories.join(','));
+}
+
+categories.forEach(category => {
+    $(`.<%=model%> #${category.name}`).change(function() {
+        console.log(category);
+        if ($(this).is(':checked')) {
+            category.child_categories.forEach(child => {
+                $(`.<%=model%> #${child.name}`).prop('checked', true);
+            });
+            update_category_form()
+        } else {
+            category.child_categories.forEach(child => {
+                $(`.<%=model%> #${child.name}`).prop('checked', false);
+            });
+            update_category_form()
+        }
+    });
+
+    category.child_categories.forEach(child => {
+        $(`.<%=model%> #${child.name}`).change(function() {
+            updateParentCheckbox(category.name, child.name);
+        });
+        update_category_form()
+    });
+});
+
+
+$('.<%=model%> .categoory_checkbox').change(function() {
+    // Get all checked checkboxes
+    var checkedCategories = $('.<%=model%> .categoory_checkbox:checked').map(function() {
+        return $(this).attr('name');
+    }).get();
+    
+    // Join the names with commas and set the value to the hidden input
+    $('.<%=model%> #categories').val(checkedCategories.join(','));
+});
+</script>

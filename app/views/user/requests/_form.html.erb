@@ -16,9 +16,17 @@
     <%if service.present? %>
       <h3 class="request_content"><%=service.category.japanese_name%></h3>
     <% else %>
-      <div class="input_field text_field select_area">
-        <%= f.select :category_id, category_select_hash, autocomplete: "select_input", class:"input_field" ,required: true%>
-      </div>
+      <%= f.fields_for :request_categories do |category_form| %>
+          <%if request.request_categories.length > 1%>
+            <%if category_form.object.category_name %>
+              <div class="select_area">
+                    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+              </div>
+            <% end %>
+          <% else %>
+            <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+          <% end %>
+      <% end %>
     <% end %>
   </div>
 

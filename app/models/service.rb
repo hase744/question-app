@@ -4,15 +4,20 @@ class Service < ApplicationRecord
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
-  has_many :categories,through: :service_categories
+  #has_many :categories, through: :service_categories, source: :category_name
+  #has_many :categories, through: :user_categories, source: :category
   has_one :service_category
-  has_one :category, through: :service_category
+  #has_one :category, through: :service_category
+  #has_one :category, through: :service_category, source: :category
   has_many :requests, through: :transactions
   belongs_to :request, optional: true
   belongs_to :user
   before_validation :set_default_values
   before_validation :update_renewed_at
-  after_save :create_service_category
+
+  #delegate :category_name, to: :service_category, prefix: true
+  delegate :category, to: :service_category, allow_nil: true
+  #after_save :create_service_category
   after_save :update_total_services
   after_save :update_user_service_mini_price
   attr_accessor :request_max_minutes
@@ -27,13 +32,15 @@ class Service < ApplicationRecord
   validate :validate_price
   #validate :validate_form
   validate :validate_request_max_length
-  validate :validatable_category
+  #validate :validatable_category
   validate :validate_request_max_duration
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
-  scope :solve_n_plus_1, -> {includes(:user, :requests, :categories, :service_categories, :category, :service_category, :transactions)}
+  accepts_nested_attributes_for :service_categories, allow_destroy: true
+
+  scope :solve_n_plus_1, -> {includes(:user, :requests, :service_categories, :service_category, :transactions)}
   scope :seeable, -> { 
-    left_joins(:categories, :user, :service_categories)
+    left_joins(:user, :service_categories)
     .solve_n_plus_1
     .where(
       request_id: nil,
@@ -46,6 +53,18 @@ class Service < ApplicationRecord
     )
   }
   
+  scope :filter_categories, -> (names){
+    if names.present?
+      names = names.split(',')
+      self.left_joins(:service_categories)
+        .where(service_categories: {
+          category_name: names
+        })
+    else
+      self
+    end
+  }
+
   after_initialize do
     if self.request_form_name == 'video'
       self.request_max_minutes = self.request_max_minutes.to_i if self.request_max_minutes
@@ -57,6 +76,10 @@ class Service < ApplicationRecord
       end
     end
     set_service_content
+  end
+
+  def categories
+    Category.where(name:self.service_categories.pluck(:category_name))
   end
 
   def request_form
@@ -170,6 +193,15 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
+    if self.service_categories.length > 1
+      if self.categories.length > 1 #カテゴリの種類がたくさんある
+        self.service_categories.first.update(
+          category_name: self.service_categories.last.category_name
+        )
+      end
+      self.service_categories.last.destroy
+    end
+
     if self.request_id
       self.request = Request.find(self.request_id.to_i)
     end
@@ -192,15 +224,15 @@ class Service < ApplicationRecord
     end
   end
 
-  def create_service_category
-    if category_id
-      if self.service_categories.first
-        self.service_categories.first.update(category_id: category_id)
-      else
-        self.service_categories.create(category_id: category_id)
-      end
-    end
-  end
+  #def create_service_category
+  #  if category_id
+  #    if self.service_categories.first
+  #      self.service_categories.first.update(category_id: category_id)
+  #    else
+  #      self.service_categories.create(category_name: category_id)
+  #    end
+  #  end
+  #end
 
   def update_total_services
     if self.request.present?
@@ -262,6 +294,10 @@ class Service < ApplicationRecord
     else
       'none'
     end
+  end
+
+  def category_names
+    self.categories.map{|c| c.japanese_name}.join(',')
   end
 
   def title_max_length#最大値

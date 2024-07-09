@@ -25,7 +25,7 @@ class User < ApplicationRecord
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
   #has_many :categories, class_name: "UserCategory", dependent: :destroy
   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
-  has_many :categories,through: :user_categories
+  has_many :service_categories, through: :services, source: :service_categories
   has_many :deals, class_name: "Transaction", foreign_key: :user_id
   has_many :transaction_likes, class_name: "TransactionLike", foreign_key: :user_id
   has_many :payments, dependent: :destroy
@@ -68,7 +68,7 @@ class User < ApplicationRecord
   enum state: CommonConcern.user_states
 
   scope :solve_n_plus_1, -> {
-    includes(:categories, :user_categories)
+    includes(:service_categories)
   }
   
   scope :is_sellable, -> {
@@ -81,9 +81,35 @@ class User < ApplicationRecord
       )
   }
 
+  scope :filter_categories, -> (names){
+    if names.present?
+      names = names.split(',')
+      self.left_joins(:service_categories)
+      .where(service_categories: {
+        category_name: names
+      }).distinct
+    else
+      self
+    end
+  }
+
   def country
     Country.find_by(name: self.country_id)
   end
+
+  def self.categories
+    Category.all.select do |category|
+      user_categories.any? { |uc| uc.category_name == category.name }
+    end
+  end
+
+  def categories
+    Category.where(name:self.service_categories.pluck(:category_name))
+  end
+
+  #def categories
+  #  Category.where(name:self.user_categories.pluck(:category_name))
+  #end
 
   #validates :postal_code, format: { with: /\A(?:\d{4}-\d{3}|\d{7})\z/, message: "is not valid. Please enter a valid postal code." }
 
@@ -180,23 +206,6 @@ class User < ApplicationRecord
     rescue
       false
     end
-    #if self.stripe_customer_id.present? && self.stripe_card_id.present?
-    #    begin
-    #        stripe_account =  Stripe::Customer.retrieve_source(
-    #            self.stripe_customer_id,
-    #            self.stripe_card_id,
-    #          )
-    #        if ["pass","unavailable"].include?(stripe_account.cvc_check)
-    #            true
-    #        else
-    #            false
-    #        end
-    #    rescue
-    #        false
-    #    end
-    #else
-    #    false
-    #end
   end
 
   def can_respond_order(request)

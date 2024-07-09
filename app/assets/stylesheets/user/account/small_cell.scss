@@ -1,3 +1,4 @@
+@import "variables";
 .user_link{
     color: black;
     //display: inline-block;
@@ -175,8 +176,22 @@
             .categories{
                 position: absolute;
                 top: 40px;
-                color: gray;
-                font-size: 12px;
+                color: dimgray;
+                font-size: 9px;
+                //top: 0px;
+                bottom: 0px;
+                width: 100%;
+                overflow: hidden;
+                white-space: nowrap;
+                .name_tag{
+                    padding: 2px 2px;
+                    display: inline-block;
+                    background-color: #f1f1f1;   
+                    //color: $text_yellow;
+                    //padding-right: 2px;
+                    //border: 1px solid silver;
+                    border-radius: 2px;
+                }
             }
         }
         .introduction{

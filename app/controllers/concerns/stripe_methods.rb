@@ -47,4 +47,23 @@ module StripeMethods
       raise ProfitMismatchError.new(@total_profit, @available_amount) if @total_profit != @available_amount
     end
   end
+
+  def send_to_root_user(user)
+    @balance = Stripe::Balance.retrieve(
+      {stripe_account: user.stripe_account_id}
+      )
+    @pending_amount = @balance.pending[0].amount
+    @available_amount = @balance.available[0].amount
+    puts @pending_amount
+    puts @available_amount
+    @balance_amount = @pending_amount + @available_amount
+    transfer = Stripe::Transfer.create({
+      amount: @balance_amount,
+      currency: 'jpy',
+      destination: ENV["ROOT_ACCOUNT_ID"], 
+      description: 'Transfer to admin account minus fee',
+    }, {
+      stripe_account: user.stripe_account_id,
+    })
+  end
 end

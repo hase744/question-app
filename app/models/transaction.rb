@@ -11,7 +11,9 @@ class Transaction < ApplicationRecord
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
-  has_many :categories, through: :transaction_categories, dependent: :destroy
+  #has_many :categories, through: :transaction_categories
+  has_one :transaction_category
+  has_one :category, through: :transaction_category
 
   delegate :user, to: :service
   delegate :request_form_name, to: :service
@@ -96,8 +98,24 @@ class Transaction < ApplicationRecord
       )
   }
 
+  scope :filter_categories, -> (names){
+    if names.present?
+      names = names.split(',')
+      self.left_joins(:transaction_categories)
+        .where(transaction_categories: {
+          category_name: names
+        })
+    else
+      self
+    end
+  }
+
   after_initialize do
     set_delivery_content
+  end
+
+  def categories
+    Category.where(name:self.transaction_categories.pluck(:category_name))
   end
 
   def total_after_delivered_messages
@@ -175,6 +193,8 @@ class Transaction < ApplicationRecord
         errors.add(:base,  "質問者の決済が承認されていません。")
       elsif self.request.request_form.name != self.service.request_form.name
         errors.add(:base,  "質問形式が違います")
+      elsif self.request.category.name != self.service.category.name
+        errors.add(:base,  "カテゴリが違います")
       elsif self.service.request_max_characters < self.request.description.length
         errors.add(:base,  "相談室の文字数が足りません")
       else
@@ -217,7 +237,7 @@ class Transaction < ApplicationRecord
 
   def create_transaction_category #常にself.category.present?=falseなので意味ない
     if !self.category.present?
-      self.transaction_categories.create(category: self.service.category)
+      self.transaction_categories.create(category_name: self.service.category.name)
     end
   end
 
@@ -335,16 +355,23 @@ class Transaction < ApplicationRecord
     if user == self.seller
       true
     elsif user != self.buyer
+      puts "aa #{self.buyer.id}"
+      puts user.id
       false
     elsif self.transaction_message_days.nil?
       true
     elsif self.transaction_message_days == 0
+      puts "bb"
       false
     elsif self.delivered_at == nil
       true
     elsif DateTime.now.to_datetime < self.delivered_at.to_datetime + self.transaction_message_days
       true
     else
+      puts "cc"
+      puts DateTime.now.to_datetime
+      puts delivered_at.to_datetime
+      puts transaction_message_days
       false
     end
   end

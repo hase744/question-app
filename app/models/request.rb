@@ -8,9 +8,10 @@ class Request < ApplicationRecord
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
-  has_many :categories, through: :request_categories, dependent: :destroy
+  #has_many :categories, through: :request_categories, dependent: :destroy
   has_one :request_category, dependent: :destroy
-  has_one :category, through: :request_category
+  #has_one :category, through: :request_category
+  delegate :category, to: :request_category, allow_nil: true
 
   before_validation :set_default_values
   after_save :create_request_category
@@ -40,9 +41,10 @@ class Request < ApplicationRecord
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
+  accepts_nested_attributes_for :request_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
-    includes(:user, :services, :request_categories, :categories, :items)
+    includes(:user, :services, :request_categories, :items)
   }
 
   scope :suggestable, -> {
@@ -56,6 +58,18 @@ class Request < ApplicationRecord
         state: 'normal'
       }
     )
+  }
+
+  scope :filter_categories, -> (names){
+    if names.present?
+      names = names.split(',')
+      self.left_joins(:request_categories)
+        .where(request_categories: {
+          category_name: names
+        })
+    else
+      self
+    end
   }
 
   after_initialize do
@@ -90,6 +104,10 @@ class Request < ApplicationRecord
     self.categories.first
   end
 
+  def categories
+    Category.where(name:self.request_categories.pluck(:category_name))
+  end
+
   def request_form
     Form.find_by(name: self.request_form_name)
   end
@@ -115,7 +133,15 @@ class Request < ApplicationRecord
   end
 
   def set_default_values
-    puts "セットアイテム : #{self.items&.first&.valid?}"
+    if self.request_categories.length > 1
+      if self.categories.length > 1 #カテゴリの種類がたくさんある
+        self.request_categories.first.update(
+          category_name: self.request_categories.last.category_name
+        )
+      end
+      self.request_categories.last.destroy
+    end
+
     if self.service
       #self.request_form = self.service.request_form
       #self.delivery_form = self.service.delivery_form
@@ -217,15 +243,15 @@ class Request < ApplicationRecord
   def create_request_category
     if self.service
       self.service.categories.each do |category|
-        if !RequestCategory.exists?(request: self, category: category)
-          self.request_categories.create(category: category)
+        if !RequestCategory.exists?(request: self, category_name: category.name)
+          self.request_categories.create(category_name: category.name)
         end
       end
     else
       if self.request_categories.first
-          self.request_categories.first.update(category_id: category_id)
+          #self.request_categories.first.update(category_id: category_id)
       else
-          self.request_categories.create(category_id: category_id)
+          #self.request_categories.create(category_id: category_id)
       end
     end
   end

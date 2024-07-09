@@ -17,7 +17,7 @@
             
             <div class="category_area">
                 <label class="field_label">カテゴリー</label>
-                <%= render "layouts/form_category", f:f%>
+                <%= render "layouts/form_category", f:f, model: Transaction.new.class.name%>
             </div>
 
             </br>

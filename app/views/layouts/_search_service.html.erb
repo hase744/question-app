@@ -18,15 +18,13 @@
 
             <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label>
             <%= render "user/shared/form/delivery_form", f:f%>
-            </br>
             <div class="category_area">
                 <label class="field_label">カテゴリー</label><br />
-                <%= render "layouts/form_category", f:f%>
+                <%= render "layouts/form_category", f:f, model: Service.new.class.name%>
             </div>
 
             </br>
             <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>在庫あり</span>
-            </br>
             </br>
             <div class="search_button_area">
                 <%= f.submit '検索',class:"search_button", placeholder:"" %>

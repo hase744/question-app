@@ -569,7 +569,7 @@ $menu_link_height: 30px;
         position: relative;
     }
     .category_area{
-        padding-top: 20px;
+        //padding-top: 20px;
         p{
            padding-bottom: 0px;
         }
@@ -609,6 +609,11 @@ $menu_link_height: 30px;
 @media(max-width:1000px){
     .modal_body{
         display: none;
+    }
+    .search_mode .wide_detail_search_container{
+        width: 100%;
+        height: calc(100vh - 50px);
+        overflow-x: scroll;
     }
 }
 @media(min-width:1000px){

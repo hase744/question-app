@@ -42,13 +42,14 @@
         .category_drag_list{
           padding-left:0;
         }
-        
     }
 
     #labelContainer {
       	margin-bottom: 20px;
-      	height:30px;
+      	height:40px;
       	position: relative;
+        overflow-x: scroll;
+		width: 100%;
       	input{
 			position: absolute;
 			top: 0px;

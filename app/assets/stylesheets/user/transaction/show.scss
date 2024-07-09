@@ -103,7 +103,10 @@
                 .text_image{
                     width: 100%;
                     height: 100px;
-                    object-fit: cover;
+                    //object-fit: cover;
+                    //object-fit: none;
+                    object-position: 50px 50px;
+                    object-position: right top;
                     opacity: 0.5;
                 }
                 .like_share_area{
@@ -283,6 +286,8 @@
         display: inline-block;
         width: 100%;
     }
+
+
 }
 @media(max-width: 1000px){
     .transaction_show_zone{
@@ -418,4 +423,62 @@
 }
 .share_button:hover{
     text-decoration: none;
+}
+
+.adjustable_image_area{
+    .container {
+        height: 50%;
+    }
+    .request_image {
+        display: block;
+        width: 100%;
+        height: auto;
+        height: 100px;
+        object-fit: cover;
+        object-position: 0px -50px;
+        @media(max-width: 1000px){
+            object-position: 0px calc(-100vw * 0.05);
+        }
+        cursor: pointer;
+    }
+    .request_image_area > img {
+        opacity: 0.5;
+    }
+    .reveal > img {
+        height: 100%;
+        opacity: 1.0;
+        object-position: 0px;
+    }
+    .button_area {
+        position: relative;
+    }
+    .btn {
+        position: absolute;
+        z-index: 1;
+        top: -50px;
+        left: 50%;
+        color: grey;
+        border: none;
+        cursor: pointer;
+        background-color: transparent;
+        pointer-events: none;
+    }
+    .dli-chevron-up {
+        transform: translateX(50%) translateY(100%) rotate(-45deg);
+    }
+    .dli-chevron{
+        display: inline-block;
+        vertical-align: middle;
+        //color: #333;
+        line-height: 1;
+        width: 1em;
+        height: 1.2em;
+        border: 0.3em solid currentColor;
+        border-left: 0;
+        border-bottom: 0;
+        box-sizing: border-box;
+    }
+    .dli-chevron-down {
+        transform: translateX(50%) translateY(100%) rotate(135deg);
+    }
 }

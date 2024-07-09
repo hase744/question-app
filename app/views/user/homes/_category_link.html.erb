@@ -1,0 +1,8 @@
+<span class="link_area">
+  <div class="parent_link">
+    <%= link_to category[:japanese_name], user_transactions_path(categories: category[:name]), class:"category_link"%>
+  </div>
+  <% category[:child_categories].each do |category| %>
+    <div class="space"></div><%= render "user/homes/category_link", category:category %>
+  <% end %>
+</span>

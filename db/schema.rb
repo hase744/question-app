@@ -73,18 +73,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "categories", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.text "description"
-    t.bigint "parent_category_id"
-    t.datetime "start_at"
-    t.datetime "end_at"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["parent_category_id"], name: "index_categories_on_parent_category_id"
-  end
-
   create_table "contacts", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "user_id", null: false
@@ -236,11 +224,11 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   end
 
   create_table "request_categories", force: :cascade do |t|
-    t.bigint "category_id", null: false
+    t.integer "category_name", null: false
     t.bigint "request_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_request_categories_on_category_id"
+    t.index ["category_name"], name: "index_request_categories_on_category_name"
     t.index ["request_id"], name: "index_request_categories_on_request_id"
   end
 
@@ -316,11 +304,11 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   end
 
   create_table "service_categories", force: :cascade do |t|
-    t.bigint "category_id", null: false
+    t.integer "category_name", null: false
     t.bigint "service_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_service_categories_on_category_id"
+    t.index ["category_name"], name: "index_service_categories_on_category_name"
     t.index ["service_id"], name: "index_service_categories_on_service_id"
   end
 
@@ -382,11 +370,11 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   end
 
   create_table "transaction_categories", force: :cascade do |t|
-    t.bigint "category_id", null: false
+    t.integer "category_name", null: false
     t.bigint "transaction_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_transaction_categories_on_category_id"
+    t.index ["category_name"], name: "index_transaction_categories_on_category_name"
     t.index ["transaction_id"], name: "index_transaction_categories_on_transaction_id"
   end
 
@@ -475,11 +463,11 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   end
 
   create_table "user_categories", force: :cascade do |t|
-    t.bigint "category_id", null: false
+    t.integer "category_name", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["category_id"], name: "index_user_categories_on_category_id"
+    t.index ["category_name"], name: "index_user_categories_on_category_name"
     t.index ["user_id"], name: "index_user_categories_on_user_id"
   end
 
@@ -565,7 +553,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "admin_user_roles", "roles"
-  add_foreign_key "categories", "categories", column: "parent_category_id"
   add_foreign_key "contacts", "rooms"
   add_foreign_key "contacts", "users"
   add_foreign_key "contacts", "users", column: "destination_id"
@@ -582,16 +569,13 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   add_foreign_key "posts", "users"
   add_foreign_key "relationships", "users", column: "followee_id"
   add_foreign_key "relationships", "users", column: "follower_id"
-  add_foreign_key "request_categories", "categories"
   add_foreign_key "request_categories", "requests"
   add_foreign_key "request_items", "requests"
   add_foreign_key "requests", "users"
-  add_foreign_key "service_categories", "categories"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
   add_foreign_key "services", "requests"
   add_foreign_key "services", "users"
-  add_foreign_key "transaction_categories", "categories"
   add_foreign_key "transaction_categories", "transactions"
   add_foreign_key "transaction_likes", "transactions"
   add_foreign_key "transaction_likes", "users"
@@ -602,7 +586,6 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   add_foreign_key "transactions", "services"
   add_foreign_key "transactions", "users", column: "buyer_id"
   add_foreign_key "transactions", "users", column: "seller_id"
-  add_foreign_key "user_categories", "categories"
   add_foreign_key "user_categories", "users"
   add_foreign_key "user_state_histories", "users"
 end

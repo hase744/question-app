@@ -1,0 +1,9 @@
+<span class="checkbox_area">
+  <div class="parent_check_box">
+    <%= f.check_box category[:name].to_sym, class:"#{category[:name]} categoory_checkbox", id: category[:name], checked: params[category[:name].to_sym] == "1", readonly: false%>
+    <%=category[:japanese_name]%>　
+  </div>
+  <% category[:child_categories].each do |category| %>
+    <div class="space"></div><%= render "layouts/category_checkbox", f:f, category:category %>
+  <% end %>
+</span>
