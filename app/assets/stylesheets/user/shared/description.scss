@@ -10,6 +10,9 @@
         -webkit-box-orient: vertical;
         white-space: pre-line;
         overflow: hidden;
+        @media(max-width: 1000px){
+          font-size: 13px;
+        }
     }
     .opening_text{
         -webkit-line-clamp: auto; 
@@ -22,13 +25,18 @@
     color: gray;
     text-align: center;
     cursor: pointer;
+    @media(max-width: 1000px){
+      font-size: 13px;
+    }
   }
   .open_text:after{
     content: "全文を表示";
+    cursor: pointer;
     
   }
   .close_text:after{
     content: "一部を表示";
+    cursor: pointer;
     
   }
     

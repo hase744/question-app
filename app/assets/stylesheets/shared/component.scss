@@ -97,6 +97,15 @@
     -webkit-line-clamp: 2;
     //-webkit-line-clamp: auto; 
 }
+.three_line_text{
+    margin-bottom: 0px;
+    margin-top: 20px;
+    display: -webkit-box;
+    margin: 0px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+}
 .width_100{
     width: 100%;
     height: auto;
