@@ -51,7 +51,6 @@ var answer_area<%=transaction.model_name%><%=transaction.id%> = document.getElem
 
 
 open_text<%=transaction.model_name%><%=transaction.id%>.addEventListener('click', (event) => {
-    console.log("zz")
     console.log(open_text<%=transaction.model_name%><%=transaction.id%>.classList.contains('close_text'))
     if(open_text<%=transaction.model_name%><%=transaction.id%>.classList.contains('close_text')){
         open_text<%=transaction.model_name%><%=transaction.id%>.innerHTML = "&nbsp;<span class='fas fa-angle-down'></span>&nbsp;"

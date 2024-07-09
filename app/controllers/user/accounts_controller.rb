@@ -16,7 +16,6 @@ class User::AccountsController < User::Base
     @users = @users.is_sellable
     @users = @users.where("name LIKE?", "%#{params[:name]}%")
     @users = @users.order(total_sales_numbers: :desc)
-    #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers]) if params[:total_sales_numbers].present? && @users.present?
     @users = @users.filter_categories(params[:categories])
     
     #if params[:total_sales_numbers].present? && @users.present?
