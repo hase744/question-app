@@ -1,4 +1,4 @@
-class Sample
+class SampleData
   CATEGORIES = ['business', 'career']
   def self.create_users
     Category.where(name: CATEGORIES).each do |category|
