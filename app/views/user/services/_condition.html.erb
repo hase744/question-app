@@ -41,7 +41,7 @@
             </span>
         </td>
         <td class="service_info">
-            <span class="service_condition"><%=service.category.japanese_name%></span>
+            <span class="service_condition"><%=service.categories.map{|c| c.japanese_name}.join(',')%></span>
         </td>
     </tr>
 </table>

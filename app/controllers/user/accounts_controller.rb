@@ -16,13 +16,12 @@ class User::AccountsController < User::Base
     @users = @users.is_sellable
     @users = @users.where("name LIKE?", "%#{params[:name]}%")
     @users = @users.order(total_sales_numbers: :desc)
-    if params[:categories].present?
-      @users = @users.where(user_categories: {category_id: params[:categories].split(",").map(&:to_i)})
-    end
+    #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers]) if params[:total_sales_numbers].present? && @users.present?
+    @users = @users.filter_categories(params[:categories])
     
-    if params[:total_sales_numbers].present?
-      @users = @users.where("total_sales_numbers > ?", params[:total_sales_numbers])
-    end
+    #if params[:total_sales_numbers].present? && @users.present?
+    #  #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
+    #end
 
     if params[:elapsed_days].present?
       @requests = @requests.where("suggestion_deadline > ?", DateTime.parse(params[:suggestion_deadline]) - 30)
@@ -35,14 +34,9 @@ class User::AccountsController < User::Base
 
   def edit
     @user = current_user
-    gon.category_e_to_j = category_e_to_j
     gon.text_max_length = @user.description_max_length
     
-    @categories = Category.all
-    @categories = @categories.where(name: category_tree.keys) #config.jsonにある親カテゴリー
-    @categories.each do |parent_category| #子カテゴリーを追加
-      @categories = @categories.or(Category.where(parent_category: parent_category))
-    end
+    @categories = Category.all #config.jsonにある親カテゴリー
   end
 
   def show
@@ -102,7 +96,7 @@ class User::AccountsController < User::Base
 
   def services
     @services = Service.all
-    @services = solve_n_plus_1(@services)
+    @services = @services.solve_n_plus_1
     @services = @services.where(user: User.find(params[:id]))
     if !user_signed_in? || current_user.id != params[:id].to_i
       @services = @services.where(is_published:true, request_id: nil)

@@ -75,7 +75,7 @@ ja:
         delivery_form: 回答形式
         delivery_time: 納品期限
         review_description: 感想
-        star_rating: 星評価
+        star_rating: 評価
         thumbnail: サムネイル
         is_canceled: キャンセル
         is_rejected: 回答拒否

@@ -28,10 +28,7 @@ class User::ServicesController < User::Base
     @services = Service
       .seeable
       .where("title LIKE?", "%#{params[:word]}%")
-
-    if params[:categories].present?
-      @services = @services.where(service_categories: {category_id: params[:categories].split(",").map(&:to_i)})
-    end
+      .filter_categories(params[:categories])
 
     if params[:request_form].present?
       @services = @services.where(request_form_name: params[:request_form])
@@ -83,6 +80,7 @@ class User::ServicesController < User::Base
       @service = Service.new(request: Request.find(params[:request_id]))
     else
       @service = Service.new()
+      @service.service_categories.build
       @service.stock_quantity = nil
       @service.transaction_message_days = nil
     end
@@ -91,7 +89,8 @@ class User::ServicesController < User::Base
 
   def edit
     @service = Service.find_by(id: params[:id], user:current_user)
-    @service.category_id = @service.category.id
+    #@service.service_categories.build
+    #@service.category_id = @service.category.id
     @submit_text = '更新'
   end
 
@@ -105,6 +104,10 @@ class User::ServicesController < User::Base
         request: @request, 
         is_suggestion: true
       )
+      if @service.service_categories.length == 0
+        @service.service_categories.new(category_name: @request.category.name)
+      end
+      #@service.service_categories
       ActiveRecord::Base.transaction do
         if @service.save && @request.save && @transaction.save
           after_suggest
@@ -340,7 +343,8 @@ class User::ServicesController < User::Base
       :request_form_name,
       :delivery_form_name,
       :request_id,
-      :is_published
+      :is_published,
+      service_categories_attributes: [:category_name],
     )
   end
 
@@ -360,7 +364,8 @@ class User::ServicesController < User::Base
       :request_id,
       :request_max_minutes,
       :request_max_characters,
-      :is_published
+      :is_published,
+      service_categories_attributes: [:category_name],
     )
   end
 end

@@ -30,6 +30,7 @@ class User::RequestsController < User::Base
       .suggestable
       .where("title LIKE?", "%#{params[:word]}%")
       .order(id: :DESC)
+      .filter_categories(params[:categories])
 
     if params[:categories].present?
       @requests = @requests.where(request_categories: {category_id: params[:categories].split(",").map(&:to_i)})
@@ -91,6 +92,7 @@ class User::RequestsController < User::Base
       @request.set_item_values
     else
       @request = Request.new(service_id:params[:service_id])
+      @request.request_categories.build
     end
     @request.items.build
   end
@@ -98,6 +100,7 @@ class User::RequestsController < User::Base
   def edit
     @request.service = @transaction&.service if @transaction
     @request.set_item_values
+    @request.request_categories.build
     @request.items.build
   end
 
@@ -483,7 +486,7 @@ class User::RequestsController < User::Base
       :service_id,
       :suggestion_deadline,
       :delivery_days, 
-      items_attributes: [:id, :file, :_destroy],
+      request_categories_attributes: [:category_name],
     )
   end
 
@@ -503,7 +506,7 @@ class User::RequestsController < User::Base
       :service_id,
       :suggestion_deadline,
       :delivery_days, 
-      items_attributes: [:file]
+      request_categories_attributes: [:category_name],
     )
   end
 

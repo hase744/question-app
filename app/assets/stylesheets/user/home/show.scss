@@ -166,14 +166,28 @@
             //background-color: white;
             border: 1px solid lightgray;
             //box-shadow: 0 0 2px lightgray;
+            .link_area{
+                width: calc(100% - 20px);
+                display: inline-block;
+            }
+            .parent_link{
+                display: inline-block;
+                width: 100%;
+            }
+            .space{
+                display: inline-block;
+                width: 20px;
+                height: 10px;
+                //background-color: red;
+            }
             label{
                 font-size: 17px;
             }
-        }
-        .category_link{
-            margin: 5px;
-            display: inline-block;
-            font-size: 14px;
+            .category_link{
+                margin: 5px;
+                display: inline-block;
+                font-size: 14px;
+            }
         }
         @media(max-width: 700px){
             display: none;

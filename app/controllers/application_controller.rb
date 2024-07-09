@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   include CommonMethods
   include StripeMethods
   include OperationConfig
-  include CategoryConfig
   include FormConfig
   include Variables
   include ViewConcern
@@ -46,11 +45,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_view_value
-    gon.category_tree = category_tree
-    gon.parent_categories = category_tree.keys
-    gon.child_categories = category_tree.keys
-    gon.category_child_to_parent = category_child_to_parent
-    gon.category_e_to_id = category_e_to_id
     gon.layout = "normal"
     gon.is_loaded = true
     gon.user_signed_in = user_signed_in?

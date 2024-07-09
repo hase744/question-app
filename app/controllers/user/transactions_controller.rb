@@ -27,7 +27,7 @@ class User::TransactionsController < User::Base
     @transactions = Transaction.left_joins(:transaction_categories)
     @transactions = solve_n_plus_1(@transactions)
     @transactions = @transactions.where(is_delivered:true).order(id: :DESC)
-    @transactions = @transactions.filter_categories(params)
+    @transactions = @transactions.filter_categories(params[:categories])
     @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
     @transactions = @transactions.page(params[:page]).per(30)
     
@@ -62,11 +62,11 @@ class User::TransactionsController < User::Base
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
     @transactions = Transaction.all
       .left_joins(:transaction_categories)
-      .includes(:seller, :service, :request, :items, :categories)
+      .includes(:seller, :service, :request, :items, :transaction_categories)
       .where.not(id: @transaction.id)
       .where(
         is_delivered:true, 
-        transaction_categories:{category: @transaction.category}
+        transaction_categories:{category_name: @transaction.category.name}
         )
     @total_message_count = @transaction.total_after_delivered_messages
     transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)

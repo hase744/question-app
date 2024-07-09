@@ -10,12 +10,18 @@
     }
     .search_detail_flame{
         .search_detail_area{
+            //z-index: -0.5;
+            //top: -50px;
+            //left: 0px;
+            //position: absolute;
+            //background-color: blue;
             .modal_header{
                 text-align: center;
                 .title{
                     margin-top: 5px;
                 }
             }
+            overflow-y: scroll;
         }
 
         //select {
@@ -74,6 +80,10 @@
         float: left;
         display: none;
         width: 240px;
+        position: relative;
+        height: calc(100vh - 90px);
+        //background-color: red;
+        overflow-y: scroll;
         .search_detail_flame{
             background-color: white;
             border-radius: 10px;

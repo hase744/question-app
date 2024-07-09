@@ -25,16 +25,5 @@ class AboutsController < ApplicationController
     end
 
     def how_to_sell
-        @categories = ""
-        category_list.each do |category|
-            @categories += "、#{category_e_to_j(category)}"
-        end
-        @forms = ""
-        forms_japanese_hash.keys.each do |f|
-            @forms += f
-            if f != forms_japanese_hash.keys.last
-                @forms += "、"
-            end
-        end
     end
 end

@@ -1,7 +1,6 @@
 module ApplicationHelper
 include CommonMethods
 include OperationConfig
-include CategoryConfig
 include FormConfig
 include Variables
   def from_now(datetime)
@@ -138,13 +137,9 @@ include Variables
   end
 
   def category_select_hash
-    hash =  {}
-    puts "名前"
-    category_list.each do |name|
-      puts name
-      hash.store(category_e_to_j[name], Category.find_by(name: name).id)
+    Category.all.each_with_object({}) do |category, hash|
+      hash[category.japanese_name] = category.name
     end
-    hash
   end
 
   def request_completed

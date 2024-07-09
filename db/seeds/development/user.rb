@@ -28,7 +28,7 @@ user = User.create!(
     description:"ここにユーザーの自己紹介を表示させる。例えば特技、暦何年かなどを自由に記入できる。",
     last_login_at:DateTime.now
 )
-user.user_categories.create(category: Category.first)
+user.user_categories.create(category_name: Category.first.name)
 
 user = User.create!(
     email: ENV["EMAIL2"],
@@ -46,7 +46,7 @@ user = User.create!(
     description:"ここにユーザーの自己紹介を表示させる。例えば特技、暦何年かなどを自由に記入できる。",
     last_login_at:DateTime.now
 )
-user.user_categories.create(category: Category.first)
+user.user_categories.create(category_name: Category.first.name)
 
 #is_seller = [true, false]
 #categories = ["career","business","job_hunting"]#

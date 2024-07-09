@@ -96,10 +96,8 @@
     <div class="category_area">
         <div class="category_flame">
         <label>カテゴリ一覧</label>
-            <% Category.all.each do |category|%>
-                <div>
-                <%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%>
-                </div>
+            <% Category.hash_tree[:categories].each do |category| %>
+                <%= render "user/homes/category_link", category:category %>
             <% end %>
         </div>
     </div>

@@ -1,10 +1,10 @@
 <table class="user_info_table">
     <tr>
-      <td class="user_info_name">レビュー</td>
+      <td class="user_info_name">評価</td>
       <td>
         <span class="user_info">
         <% if user.total_reviews < minimum_total_reviews%>
-        <span>ーーーーー</span>
+        <span></span>
         <% else %>
         <%= render "user/reviews/star_rating", user: user,star_rating: star_rating%>
         <span class="seller_review <%= user%>"><%=user.average_star_rating.round(1)%>(<%=user.total_reviews.round(1)%>)</span>
@@ -15,7 +15,7 @@
     <tr> 
       <td class="user_info_name">専門分野</td>
       <td>
-        <span class="user_info">
+        <span class="user_info one_line_text">
           <% user.categories.each do |c|%>
               <%=c.japanese_name%>
           <% end %>

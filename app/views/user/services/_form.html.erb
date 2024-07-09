@@ -23,11 +23,25 @@
           <%= f.label :category, class:"field_label" %><br />
           <%if request.present? %>
             <h3 class="request_content"><%=request.category.japanese_name%></h3>
-            <%= f.hidden_field :category, value: request.category %>
+            <%= f.fields_for :service_categories_attributes do |category_fields| %>
+              <%#= category_fields.hidden_field :category_name, value: request.category.name %>
+            <% end %>
           <% else %>
-            <div class="select_area">
-              <%= f.select 'category_id', options_for_select(category_select_hash, selected: service.category_id), include_blank: true,  class:"" , name:"名前" ,required: true %>
-            </div>
+              <%= f.fields_for :service_categories do |category_form| %>
+                <%if service.service_categories.length > 1%>
+                  <%if category_form.object.category_name %>
+                    <div class="select_area">
+                          <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div class="select_area">
+                    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+                  </div>
+                <% end %>
+              <% end %>
+            <% service.service_categories.each do |sc| %>
+            <% end %>
           <% end %>
         </div>
 
@@ -81,7 +95,7 @@
 
         <%if request.nil? %>
           <div class="field_area">
-            <%= f.label :stock_quantity, class:"field_label"%>（最大<%=service.stock_quantity_max_number%>個）<br/>
+            <%= f.label :stock_quantity, class:"field_label"%><br/>
             <div class="select_area">
               <%= f.select 'stock_quantity', options_for_select((0..service.stock_quantity_max_number).step(1).map { |num| ["#{num}個", num] }, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
             </div>

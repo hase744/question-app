@@ -32,7 +32,7 @@
             
             <label class="field_label">カテゴリー</label><br/>
             <div>
-                <%= render "layouts/form_category", f:f%>
+                <%= render "layouts/form_category", f:f, model: Request.new.class.name%>
             </div>
             </br>
             <div class="search_button_area">
