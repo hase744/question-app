@@ -1,6 +1,5 @@
-require_relative 'sample'
+require_relative 'sample_data.rb'
 namespace :sample do
-  CATEGORIES = ['business', 'career']
   desc "サンプルの生成" 
   task create_users: :environment do
     Sample.create_users
@@ -18,7 +17,7 @@ namespace :sample do
     Sample.create_transactions
   end
 
-  task create_transactions: :environment do
+  task create_all: :environment do
     Sample.create_users
     Sample.create_services
     Sample.create_requests
