@@ -4,20 +4,14 @@ class Service < ApplicationRecord
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
-  #has_many :categories, through: :service_categories, source: :category_name
-  #has_many :categories, through: :user_categories, source: :category
   has_one :service_category
-  #has_one :category, through: :service_category
-  #has_one :category, through: :service_category, source: :category
   has_many :requests, through: :transactions
   belongs_to :request, optional: true
   belongs_to :user
   before_validation :set_default_values
   before_validation :update_renewed_at
 
-  #delegate :category_name, to: :service_category, prefix: true
   delegate :category, to: :service_category, allow_nil: true
-  #after_save :create_service_category
   after_save :update_total_services
   after_save :update_user_service_mini_price
   attr_accessor :request_max_minutes
@@ -30,9 +24,7 @@ class Service < ApplicationRecord
   validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}#, presence: true
   validates :transaction_message_days, numericality: {only_integer: true, greater_than_or_equal_to: :minimum_transaction_message_days, less_than_or_equal_to: :max_transaction_message_days}, presence: true
   validate :validate_price
-  #validate :validate_form
   validate :validate_request_max_length
-  #validate :validatable_category
   validate :validate_request_max_duration
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
@@ -216,23 +208,6 @@ class Service < ApplicationRecord
       self.request_max_duration = request_max_minutes.to_i*60
     end
   end
-
-  def validatable_category
-    if !self.categories.exists? && !Category.exists?(id: self.category_id.to_i)
-      #カテゴリーが存在しない & 入力されたカテゴリーが存在しない
-      errors.add(:category_id)
-    end
-  end
-
-  #def create_service_category
-  #  if category_id
-  #    if self.service_categories.first
-  #      self.service_categories.first.update(category_id: category_id)
-  #    else
-  #      self.service_categories.create(category_name: category_id)
-  #    end
-  #  end
-  #end
 
   def update_total_services
     if self.request.present?

@@ -11,7 +11,6 @@ class Transaction < ApplicationRecord
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
-  #has_many :categories, through: :transaction_categories
   has_one :transaction_category
   has_one :category, through: :transaction_category
 
@@ -355,23 +354,16 @@ class Transaction < ApplicationRecord
     if user == self.seller
       true
     elsif user != self.buyer
-      puts "aa #{self.buyer.id}"
-      puts user.id
       false
     elsif self.transaction_message_days.nil?
       true
     elsif self.transaction_message_days == 0
-      puts "bb"
       false
     elsif self.delivered_at == nil
       true
     elsif DateTime.now.to_datetime < self.delivered_at.to_datetime + self.transaction_message_days
       true
     else
-      puts "cc"
-      puts DateTime.now.to_datetime
-      puts delivered_at.to_datetime
-      puts transaction_message_days
       false
     end
   end
@@ -403,23 +395,6 @@ class Transaction < ApplicationRecord
       true
     end
   end
-
-  #def seller
-  #  self.service.user
-  #end
-#
-#
-  #def seller_id
-  #  self.service.user.id
-  #end
-#
-  #def buyer
-  #  self.request.user
-  #end
-#
-  #def buyer_id
-  #  self.request.user.id
-  #end
 
   def all_review_present? #一つでも空だったらfalse
     if !self.review_description.present?

@@ -8,9 +8,7 @@ class Request < ApplicationRecord
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
-  #has_many :categories, through: :request_categories, dependent: :destroy
   has_one :request_category, dependent: :destroy
-  #has_one :category, through: :request_category
   delegate :category, to: :request_category, allow_nil: true
 
   before_validation :set_default_values
