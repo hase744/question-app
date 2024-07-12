@@ -1,0 +1,7 @@
+$('.star5_rating').each(function(index) {
+    var classes = $(this).attr('class')
+    var other_class = classes.replace('star5_rating', '').trim();
+    console.log(other_class)
+    ratio = $(this).attr('name')
+    $(`<style type="text/css">.${other_class}::after { width: ` + ratio + '%; }</style>').appendTo('head');
+});

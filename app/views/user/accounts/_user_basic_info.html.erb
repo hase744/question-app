@@ -1,19 +1,17 @@
 <table class="user_info_table">
     <tr>
-      <td class="user_info_name">評価</td>
+      <td class="user_info_name"><label>評価</label></td>
       <td>
         <span class="user_info">
-        <% if user.total_reviews < minimum_total_reviews%>
-        <span></span>
-        <% else %>
-        <%= render "user/reviews/star_rating", user: user,star_rating: star_rating%>
-        <span class="seller_review <%= user%>"><%=user.average_star_rating.round(1)%>(<%=user.total_reviews.round(1)%>)</span>
-        <% end %>
+        <%if user.total_reviews >= minimum_total_reviews%>
+            <%= render "user/shared/star_display", model:user %>
+        <%else%>
+        <%end%>
         </span>
       </td>
     </tr>
     <tr> 
-      <td class="user_info_name">専門分野</td>
+      <td class="user_info_name"><label>専門分野</label></td>
       <td>
         <span class="user_info one_line_text">
           <% user.categories.each do |c|%>
@@ -23,13 +21,13 @@
       </td>
     </tr>
     <tr>
-      <td class="user_info_name">最低単価</td>
+      <td class="user_info_name"><label>最低単価</label></td>
       <td>
         <span class="user_info"><%=user.mini_price%>円</span>
       </td>
     </tr>
     <tr>
-      <td class="user_info_name">回答</td>
+      <td class="user_info_name"><label>回答数</label></td>
       <td>
         <span class="user_info"><%=user.total_sales_numbers%>件</span>
       </td>

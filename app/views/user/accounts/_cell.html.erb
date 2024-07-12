@@ -17,12 +17,51 @@
 
                 <div class="user_name_area">
                     <span class="user_name" id="user_cell_area"><%=user.name%></span>
-                    <span class="day_form_logout">最終ログイン：<%=from_now(user.last_login_at)%></span>
+                    <span class="day_form_logout one_line_text">最終ログイン：<%=from_now(user.last_login_at)%></span>
                 </div>
 
                 <div class="introduction user_description_area">
                     <p class="user_description"><%= user.description%></p>
                 </div>
+
+                <table class="user_record_area">
+                    <tr class="category user_record">
+                        <td><span class="record_name">専門分野</span>　</td>
+                        <td class="record_content">
+                            <span class="user_category">
+                                <% user.categories.each do |c|%>
+                                    <%=c.japanese_name%>
+                                <% end %>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr class="category user_record">
+                        <td><span class="record_name">評価</span>　</td>
+                        <td class="record_content">
+                            <%if user.total_reviews >= minimum_total_reviews%>
+                                <%= render "user/shared/star_display", model:user %>
+                            <%else%>
+                            <%end%>
+                        </td>
+                    </tr>
+                    <tr class="category user_record">
+                        <td><span class="record_name">回答数</span>　</td>
+                        <td class="record_content">
+                            <span class="user_sale"><%=user.total_sales_numbers%>件</span>
+                        </td>
+                    </tr>
+                    <tr class="category user_record">
+                        <td><span class="record_name">最低単価</span>　</td>
+                        <td class="record_content">
+                            <% if user.mini_price%>
+                            <span class="user_id"><%=user.mini_price%>円/件</span>
+                            <% else %>
+                            <span class="user_id"></span>
+                            <% end %>
+                        </td>
+                    </tr>
+                </table>
+<!--
                 <div class="user_record_area">
                     <div class="category user_record one_line_text">
                         <span class="record_name">専門分野</span>　
@@ -35,10 +74,8 @@
                     <div class="review user_record">
                         <span class="record_name">レビュー</span>　
                         <%if user.total_reviews >= minimum_total_reviews%>
-                        <span id="star_rating" class="star5_rating user<%=user.id%>" data-rate="4"></span>
-                        <span class="user_review <%= user%>"><%=user.average_star_rating.round(1)%></span>
+                            <%= render "user/shared/star_display", model:user %>
                         <%else%>
-                        <span>ーーーーー</span>
                         <%end%>
                     </div>
                     <div class="sale_record user_record">
@@ -54,6 +91,7 @@
                         <% end %>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>

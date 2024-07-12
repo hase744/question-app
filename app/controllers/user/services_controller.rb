@@ -173,7 +173,7 @@ class User::ServicesController < User::Base
   def requests
     @requests = Request
     @requests = @requests.left_joins(:services)
-    @requests = solve_n_plus_1(@requests)
+    @requests = @requests.solve_n_plus_1
     @requests = @requests.where(services: Service.find(params[:id]), is_published: true)
     @requests = @requests.order(id: :DESC)
     @requests = @requests.page(params[:page]).per(5)

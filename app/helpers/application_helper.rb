@@ -86,7 +86,7 @@ include Variables
   end
 
   def minimum_total_reviews
-    5
+    1
   end
 
   def convert_path(controller, action, id)

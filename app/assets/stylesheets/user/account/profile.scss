@@ -18,7 +18,8 @@
         .user_name_area{
             margin-top: 20px;
             .user_link{
-                color: dimgray;}
+                color: dimgray;
+            }
             .user_link:hover{
                 color: #c0c0c0;
             }
@@ -46,7 +47,6 @@
                 color: blue;
             }
         }
-        
     }
     .user_edit{
         visibility: hidden;
@@ -81,9 +81,6 @@
                 margin-left: 100px;
             }
             .user_info_table{
-                width: calc(100% - 120px);
-                min-width: 300px;
-                max-width: 500px;
                 .user_info{
                     float: left;
                 }
@@ -97,18 +94,14 @@
                         border-radius: 75px;
                     }
                 }
-                .user_info_table{
-                    width: calc(100% - 70px);
-                    min-width: 0px;
-                    max-width: 400px;
-                }
             }
-            @media(max-width: 300px){
+            @media(max-width: 500px){
                 .user_image_area{
                     height: 50px;
                 }
                 .user_info_table{
-                    width: 100%;
+                    margin-left: 10px;
+                    margin-bottom: 10px;
                 }
             }
         }
