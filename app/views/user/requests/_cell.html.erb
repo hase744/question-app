@@ -5,7 +5,7 @@
             <%= link_to(user_request_path(request.id), class: 'request_link') do %>
                 <h3><%=request.title%></h3>
             <% end %>
-            <span>質問者:&nbsp;<%= link_to request.user.name, user_account_path(request.user.id) %></span>
+            <span>質問者：<%= link_to request.user.name, user_account_path(request.user.id) %></span>
         </div>
         <%if request.request_form_name == "text"%>
         <div class="request_condition_area">

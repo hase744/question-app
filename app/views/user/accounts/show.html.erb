@@ -61,9 +61,6 @@
 <%= javascript_pack_tag "shared/xml_request" %>
 <%= javascript_pack_tag "shared/check_scroll" %>
 <script>
-<%= render "user/transactions/cell.js.erb"%>
-</script>
-<script>
 <%= render "user/accounts/show.js.erb" %>
 <% flash.each do |type, message| %>
     // Bootstrapを導入しているため、`class="alert alert-success"`としています

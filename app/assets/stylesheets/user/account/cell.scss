@@ -89,18 +89,38 @@
                     -webkit-box-orient: vertical;
                     overflow: hidden;
                     -webkit-line-clamp: 4;
+                    font-size: 13px;
                 }
             }
             
             .user_record_area{
                 display: inline-block;
                 position: relative;
-                height: 100px;
+                //height: 80px;
+                    padding: 0px;
+                    margin: 0px;
+                tr{
+                    
+                    padding: 0px;
+                    margin: 0px;
+                }
+                td{
+                    //display: inline-block;
+                    height: 10px;
+                    padding: 0px;
+                    margin: 0px;
+                }
                 .user_record{
-                    position: absolute;
+                    //position: absolute;
                     //height: 10px;
-                    left: 10px;
-                    .record_name{}
+                    left: 14px;
+                    .record_name{
+                        font-size: 12px;
+                        padding: 3px 1.5px;
+                    }
+                    .record_content{
+                        font-size: 14px;
+                    }
                 }
                 .category{
                     top:0px;
@@ -177,7 +197,7 @@
                 }
             }
             .introduction{
-                height: 100px;
+                height: 80px;
                 width: 100%;
                 p{
                     margin: 5px;
@@ -224,7 +244,7 @@
                 }
             }
             .introduction{
-                height: 100px;
+                height: 80px;
                 float: left;
                 min-width: 300px;
                 

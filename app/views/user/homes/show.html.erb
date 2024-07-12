@@ -55,7 +55,7 @@
                         <ul>
                         <% Category.all.each do |category|%>
                             <div>
-                            <li><%= link_to category.japanese_name, user_transactions_path(category_id: category.id), class:"category_link"%></li>
+                            <li><%= link_to category.japanese_name, user_transactions_path(categories: category.name), class:"category_link"%></li>
                             </div>
                         <% end %>
                         </ul>
@@ -106,9 +106,6 @@
     <%= javascript_pack_tag "user/transactions/index"%>
 </div>
 <%= render "user/shared/javascript/swiper.js.erb" %>
-<script>
-<%= render "user/transactions/cell.js.erb"%>
-</script>
 <script>
   var swiper = new Swiper('.swiper-service-container', {
     slidesPerView: 5,
