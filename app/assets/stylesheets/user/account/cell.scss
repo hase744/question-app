@@ -58,10 +58,8 @@
                 }
             }
             .user_name_area{
-                
                 display: inline-block;
                 position: relative;
-                
                 border-bottom:1px solid lightgrey;
                 vertical-align:top;
                 .user_name{
@@ -220,14 +218,14 @@
         .user_cell_flame{
             .user_name_area{
                 display: inline-block;
-                height: 50px;
+                height: 35px;
                 width: calc(100% - 110px);
                 margin-left: 10px;
                 .day_form_logout{
                     display: none;
                 }
                 .user_name{
-                    font-size: 30px;
+                    font-size: 25px;
                 }
                 
             }
@@ -280,13 +278,15 @@
             }
             
             .introduction{
-                width: calc(100% - 100px);
+                width: calc(100% - 110px);
                 min-width: 300px;
             }
             .user_record_area{
                 width: 300px;
                 left: 100px;
-                
+            }
+            .user_description_area{
+                margin-left: 10px;
             }
         }
     }
@@ -299,53 +299,60 @@
             }
             
             .introduction{
-                width: calc(100% - 400px);
+                width: calc(100% - 410px);
                 min-width: 300px;
             }
             .user_record_area{
-                width: 300px;
+                width: 290px;
                 
+            }
+            .user_description_area{
+                margin-left: 10px;
+            }
+            .user_description{
+                font-size: 16px !important;
             }
         }
     }
 }
 
-.from1000to1200{
-    .user_cell_zone{
-        .user_cell_flame{
-            .user_name{
-                font-size: 30px;
-            }
-            
-            .introduction{
-                width: calc(100% - 100px);
-                min-width: 300px;
-            }
-            .user_record_area{
-                width: 300px;
-                left: 100px;
-                
-            }
-        }
-    }
-}
-.from1200{
-    .user_cell_zone{
-        .user_cell_flame{
-            .user_name{
-                font-size: 30px;
-            }
-            .introduction{
-                width: auto;
-                min-width: 300px;
-                width: calc(100% - 400px);
-            }
-            .user_record_area{
-                width: 300px;
-                right: 0px;
-                
-            }
-        }
-    }
-
-}
+//.from1000to1200{
+//    .user_cell_zone{
+//        .user_cell_flame{
+//            .user_name{
+//                font-size: 20px;
+//            }
+//            
+//            .introduction{
+//                width: calc(100% - 410px);
+//                min-width: 300px;
+//            }
+//            .user_record_area{
+//                width: 300px;
+//                left: 100px;
+//            }
+//            .user_description{
+//                font-size: 16px !important;
+//            }
+//        }
+//    }
+//}
+//.from1200{
+//    .user_cell_zone{
+//        .user_cell_flame{
+//            .user_name{
+//                font-size: 30px;
+//            }
+//            .introduction{
+//                width: auto;
+//                min-width: 300px;
+//                width: calc(100% - 410px);
+//            }
+//            .user_record_area{
+//                width: 300px;
+//                right: 0px;
+//                
+//            }
+//        }
+//    }
+//}

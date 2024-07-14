@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_12_130419) do
+ActiveRecord::Schema.define(version: 2024_07_12_150923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -321,6 +321,15 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
     t.index ["service_id"], name: "index_service_files_on_service_id"
   end
 
+  create_table "service_likes", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["service_id"], name: "index_service_likes_on_service_id"
+    t.index ["user_id"], name: "index_service_likes_on_user_id"
+  end
+
   create_table "services", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "request_form_name"
@@ -574,6 +583,8 @@ ActiveRecord::Schema.define(version: 2023_05_12_130419) do
   add_foreign_key "requests", "users"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
+  add_foreign_key "service_likes", "services"
+  add_foreign_key "service_likes", "users"
   add_foreign_key "services", "requests"
   add_foreign_key "services", "users"
   add_foreign_key "transaction_categories", "transactions"

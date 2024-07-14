@@ -6,6 +6,7 @@ class Service < ApplicationRecord
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
   has_one :service_category
   has_many :requests, through: :transactions
+  has_many :likes, class_name: "ServiceLike"
   belongs_to :request, optional: true
   belongs_to :user
   before_validation :set_default_values
@@ -82,8 +83,16 @@ class Service < ApplicationRecord
     Form.find_by(name: self.delivery_form_name)
   end
 
+  def total_likes
+    self.likes.count
+  end
+
   def is_inclusive
     self.request_id == nil
+  end
+
+  def average_star_rating
+    transactions.where.not(reviewed_at: nil).average(:star_rating).to_f
   end
 
   def exclusive_transaction

@@ -1,5 +1,5 @@
 class User::ServicesController < User::Base
-  before_action :check_login, only:[:new, :edit, :create, :update]
+  before_action :check_login, only:[:new, :edit, :create, :update, :history]
   before_action :define_service, only:[:show, :suggest]
   before_action :check_published, only:[:show]
   before_action :define_transaction, only:[:show]
@@ -297,6 +297,7 @@ class User::ServicesController < User::Base
     if !@request.present?
     elsif @request.suggestion_deadline < DateTime.now || !@request.user.is_stripe_customer_valid?
       flash.notice = "その依頼に対して提案できません。"
+      redirect_back(fallback_location: root_path)
     end
   end
 

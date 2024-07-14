@@ -104,12 +104,12 @@
                     <div class="like_area">
                         <div class="like_flame">
                             <%if @transaction_like_exist%>
-                                <%= link_to(user_transactions_like_path(@transaction.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
-                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.total_likes%></span>いいね
+                                <%= link_to(user_transaction_likes_path(id:@transaction.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
+                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.likes.count%></span>いいね
                                 <% end %>
                             <% else %>
-                                <%= link_to(user_transactions_like_path(@transaction.id), class: "like_button", id:"like_button", method: :post, remote:true) do%>
-                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.total_likes%></span>いいね
+                                <%= link_to(user_transaction_likes_path(id:@transaction.id), class: "like_button", id:"like_button", method: :post, remote:true) do%>
+                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.likes.count%></span>いいね
                                 <% end %>
                             <% end %>
                         </div>
@@ -150,11 +150,34 @@ function open_along_messages(){
     $('.along_messages').css('display','block')
 }
 
-
 var item_file_flame = document.getElementById("item_file_flame");
 var item_file = document.getElementById("item_file");
 var transaction_flame = document.getElementById("transaction_flame");
 var like_count = document.getElementById("like_count");
+
+$("#like_button")[0].addEventListener('ajax:success', function(event) {
+  // 成功時の処理
+  var res = event.detail[0];
+  $(".like_button").toggleClass("liked_button");
+  if(res){
+    notify_for_seconds("いいねしました。");
+    like_count.textContent = parseFloat(like_count.textContent) + 1
+  }else{
+    notify_for_seconds("いいねを解除しました。");
+    like_count.textContent = parseFloat(like_count.textContent) - 1
+  }
+  
+});
+
+$("#like_button")[0].addEventListener('ajax:error', function(event) {
+  // 失敗時の処理
+  console.log("いいねできませんでした。")
+  var res = event.detail[0];
+  console.log(res["is_liked"]);
+  $(".like_button").toggleClass("liked_button");
+  notify_for_seconds("いいねできませんでした。");
+  like_count.textContent = parseFloat(like_count.textContent) - 1
+});
 
 <% if @transaction.service.delivery_form.name == "video"%>
 function resize_item_file_flame(){

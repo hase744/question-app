@@ -11,6 +11,7 @@
                 <div class="service_title_area">
                     <h3 class="service_title"><%=@service.title%></h3>
                 </div>
+                <div class="service_score_area">
                 <% if @service.user == current_user%>
                     <div class="edit_delete_area">
                         <%if @service.is_inclusive%>
@@ -20,7 +21,32 @@
                         <% end %>
                         <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
                     </div>
+                <% else %>
+                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
+                        <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
+                    <% end %>
                 <% end %>
+                    <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
+                    <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_delivered: true).count %>件</span>
+                </div>
+                <!--
+                <% if @service.user == current_user%>
+                    <div class="edit_delete_area">
+                        <%if @service.is_inclusive%>
+                            <%= link_to "編集", edit_user_service_path(@service.id), class:"edit" %>
+                        <% else %>
+                            <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
+                        <% end %>
+                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
+                    </div>
+                <% else %>
+                    <div class="service_like_area">
+                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
+                        <span class="far fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
+                    <% end %>
+                    </div>
+                <% end %>
+                    -->
                 <table class="service_condition_area">
                     <tr>
                         <td class="user_info_name">
@@ -153,3 +179,26 @@
     <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
 <%= javascript_pack_tag "user/services/show" %>
+<script>
+var like_count = document.getElementById("like_count");
+$("#like_button")[0].addEventListener('ajax:success', function(event) {
+  // 成功時の処理
+  var res = event.detail[0];
+  if(res){
+    notify_for_seconds("いいねしました。");
+    like_count.textContent = parseFloat(like_count.textContent) + 1
+  }else{
+    notify_for_seconds("いいねを解除しました。");
+    like_count.textContent = parseFloat(like_count.textContent) - 1
+  }
+  
+});
+
+$("#like_button")[0].addEventListener('ajax:error', function(event) {
+  // 失敗時の処理
+  var res = event.detail[0];
+  $(".like_button").toggleClass("liked_button");
+  notify_for_seconds("いいねできませんでした。");
+  like_count.textContent = parseFloat(like_count.textContent) - 1
+});
+</script>

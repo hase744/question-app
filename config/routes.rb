@@ -124,7 +124,9 @@ namespace :user do
     resource :payments, only: [:show, :create]
     resource :videos, only: [:show]
     resource :homes, only: [:show]
-    resource :images, only: [ :show]
+    resource :images, only: [:show]
+    resource :service_likes, only: [:create, :destroy, :show]
+    resource :transaction_likes, only: [:create, :destroy, :show]
     resources :requests do
       member do
         delete :remove_file, to: 'requests#remove_file'

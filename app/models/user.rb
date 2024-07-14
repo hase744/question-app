@@ -28,6 +28,7 @@ class User < ApplicationRecord
   has_many :service_categories, through: :services, source: :service_categories
   has_many :deals, class_name: "Transaction", foreign_key: :user_id
   has_many :transaction_likes, class_name: "TransactionLike", foreign_key: :user_id
+  has_many :service_likes, class_name: "ServiceLike", foreign_key: :user_id
   has_many :payments, dependent: :destroy
   has_many :historyies, dependent: :destroy, class_name: "UserStateHistory", foreign_key: :user_id
   #has_many :transactions, through: :service
