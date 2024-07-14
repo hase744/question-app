@@ -1,0 +1,2 @@
+module User::ServiceLikesHelper
+end

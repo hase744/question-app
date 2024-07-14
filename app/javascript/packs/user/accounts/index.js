@@ -13,13 +13,14 @@ window.addEventListener("resize", function() {
 
   // ウィンドウの幅に応じてクラス名を設定
   console.log(width)
-  if (width >= 1200) {
-    console.log("from1200");
-    searchedUserArea.classList.add("from1200");
-  } else if (width >= 1000 && width < 1200) {
-    searchedUserArea.classList.add("from1000to1200");
-    console.log("from1000to1200")
-  } else if (width >= 720 && width < 1000) {
+  //if (width >= 1200) {
+  //  console.log("from1200");
+  //  searchedUserArea.classList.add("from1200");
+  //} else if (width >= 1000 && width < 1200) {
+  //  searchedUserArea.classList.add("from1000to1200");
+  //  console.log("from1000to1200")
+  //} else 
+  if (width >= 720) {
     searchedUserArea.classList.add("from720to1000");
     console.log("from720to1000")
   } else if (width >= 500 && width < 720) {

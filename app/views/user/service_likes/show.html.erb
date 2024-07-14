@@ -1,0 +1,33 @@
+<div class="service_likes_show">
+    <div class="common_label_area">
+      <h3 class="common_label">お気に入りの相談室</h3>
+      <%= paginate @services %>
+    </div>
+    <% @services.each do |service| %>
+        <%= link_to(user_service_path(service.id), class: "service_cell" ) do %>
+            <div class="image_area">
+                <%= image_tag service.thumb_with_default, class:"image" %>
+            </div>
+            <div class="title_name_area">
+                <div class="title_area">
+                    <span class="two_line_text">
+                        <%= service.title%>
+                    </span>
+                </div>
+                <div class="user_info_area">
+                    <div class="user_image_area">
+                        <%if service.user.image.thumb.url == nil%>
+                            <%=image_tag "/profile.jpg", class:"user_image"%>
+                        <% else %>
+                            <%=image_tag service.user.image.thumb.url, class:"user_image"%>
+                        <% end %>
+                    </div>
+                    <div class="user_name_area">
+                    <span class="user_name one_line_text"><%=service.user.name%></span>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+    <% end %>
+    <%= paginate @services %>
+</div>

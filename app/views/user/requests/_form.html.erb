@@ -24,7 +24,9 @@
               </div>
             <% end %>
           <% else %>
-            <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+            <div class="select_area">
+              <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+            </div>
           <% end %>
       <% end %>
     <% end %>

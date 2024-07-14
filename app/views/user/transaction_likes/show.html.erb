@@ -1,0 +1,10 @@
+<div class="transaction_like_show">
+  	<div class="common_label_area">
+  	  	<h3 class="common_label">いいねした回答</h3>
+  	  	<%= paginate @transactions %>
+  	</div>
+  	<% @transactions.each do |transaction| %>
+		<%= render "user/transactions/cell", transaction: transaction %>
+  	<% end %>
+  	<%= paginate @transactions %>
+</div>
