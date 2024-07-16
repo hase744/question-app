@@ -1,0 +1,16 @@
+<div class="request_like_show">
+    <div class="main_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした質問 <%= paginate @requests %></div>
+  	<% @requests.each do |request| %>
+		  <%= render "user/requests/cell", request: request %>
+  	<% end %>
+  	<%= paginate @requests %>
+</div>
+<script>
+
+var swiper = new Swiper('.swiper-container', {
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+});
+</script>

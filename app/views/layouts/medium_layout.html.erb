@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns#">
+  <%= render "layouts/head" %>
+  <body class="body medium_layout">
+    <div class="header" id="header">
+      <%=render "layouts/menu"%>
+    </div>
+    <div class="main_area">
+      <%= yield %>
+    </div>
+  </body>
+  <%= render "layouts/bottom" %>
+</html>

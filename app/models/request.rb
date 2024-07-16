@@ -10,6 +10,7 @@ class Request < ApplicationRecord
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
   has_one :request_category, dependent: :destroy
   delegate :category, to: :request_category, allow_nil: true
+  has_many :likes, class_name: "RequestLike"
 
   before_validation :set_default_values
   after_save :create_request_category
@@ -114,6 +115,10 @@ class Request < ApplicationRecord
       Form.find_by(name: self.delivery_form_name)
   end
 
+  def total_likes
+    self.likes.count
+  end
+
   def acceptance_duration_in_days
     suggestion_acceptance_duration / 86400
   end
@@ -215,6 +220,30 @@ class Request < ApplicationRecord
       self.delivery_form_name = self.service.delivery_form_name
       self.category_id = self.service.category.id
       self.suggestion_deadline = nil
+    end
+  end
+
+  def status
+    if self.is_inclusive
+      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now
+        "期限切れ"
+      else
+        "受付中"
+      end
+    else
+      transactions = Transaction.where(request_id: self.id)
+      if transactions.length >= 1 
+        transaction = transactions[0]
+        if transaction.is_canceled || transaction.is_rejected
+          "中断"
+        elsif transaction.is_delivered
+          "回答済み"
+        else
+          "回答待ち"
+        end
+      else
+        "回答待ち"
+      end
     end
   end
 

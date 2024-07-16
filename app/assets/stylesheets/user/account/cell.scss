@@ -165,8 +165,8 @@
     .user_cell_zone{
         .user_cell_flame{
             .user_image_flame{
-                height: 60px;
-                width: 50px;
+                height: 55px;
+                width: 55px;
                 border-bottom:1px solid lightgrey;
                 .last_login{
                     display: none;
@@ -177,8 +177,8 @@
                 }
             }
             .user_name_area{
-                height: 60px;
-                width: calc(100% - 50px);
+                height: 55px;
+                width: calc(100% - 55px);
                 .user_name{
                     font-size: 20px;
                     display: -webkit-box;
@@ -189,9 +189,9 @@
                 }
                 .day_form_logout{
                     position: absolute;
-                    top: 35px;
+                    top: 30px;
                     color: gray;
-                    
+                    font-size: 13px;
                 }
             }
             .introduction{

@@ -84,17 +84,20 @@
     <%= link_to(user_connects_path, class:"link_area config_component_area") do %>
         <h4 class="far fa-id-card">&nbsp;回答者情報</h4>
     <% end %>
-    <%= link_to(user_payments_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-coins">&nbsp;ポイント</h4>
-    <% end %>
-    <%= link_to(user_connect_reward_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-money-check-alt">&nbsp;収益の銀行口座入金</h4>
-    <% end %>
     <%= link_to(user_service_likes_path, class:"link_area config_component_area") do %>
         <h4 class="fas fa-heart">&nbsp;気に入りの相談室</h4>
     <% end %>
     <%= link_to(user_transaction_likes_path, class:"link_area config_component_area") do %>
         <h4 class="fas fa-thumbs-up">&nbsp;いいねした回答</h4>
+    <% end %>
+    <%= link_to(user_request_likes_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-thumbs-up">&nbsp;いいねした質問</h4>
+    <% end %>
+    <%= link_to(user_payments_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-coins">&nbsp;ポイント</h4>
+    <% end %>
+    <%= link_to(user_connect_reward_path, class:"link_area config_component_area") do %>
+        <h4 class="fas fa-money-check-alt">&nbsp;収益の銀行口座入金</h4>
     <% end %>
     <%= link_to(edit_user_configs_path, class:"link_area config_component_area") do %>
         <h4 class="fas fa-cogs">&nbsp;設定</h4>

@@ -15,7 +15,7 @@ class User::RequestsController < User::Base
   private def choose_layout
     case action_name
     when "show"
-      "responsive_layout"
+      "normal_layout"
     when "purchase"
       "responsive_layout"
     when "index"

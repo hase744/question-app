@@ -126,6 +126,7 @@ namespace :user do
     resource :homes, only: [:show]
     resource :images, only: [:show]
     resource :service_likes, only: [:create, :destroy, :show]
+    resource :request_likes, only: [:create, :destroy, :show]
     resource :transaction_likes, only: [:create, :destroy, :show]
     resources :requests do
       member do

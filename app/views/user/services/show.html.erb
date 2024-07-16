@@ -22,7 +22,7 @@
                         <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
                     </div>
                 <% else %>
-                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
+                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button #{@service.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
                         <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
                     <% end %>
                 <% end %>
@@ -140,7 +140,7 @@
                     <% end %>
                 </div>
                 <div class="service_detail_area">
-                    <h3 class="service_detail_name"><%= Service.human_attribute_name(:description)%></h3>
+                    <h3 class="service_detail_label"><%= Service.human_attribute_name(:description)%></h3>
                     <p class="service_detail"><%=@service.description%></p>
                 </div>
                 <%if can_purchase %>
@@ -184,6 +184,7 @@ var like_count = document.getElementById("like_count");
 $("#like_button")[0].addEventListener('ajax:success', function(event) {
   // 成功時の処理
   var res = event.detail[0];
+  $("#like_button").toggleClass("liked_button");
   if(res){
     notify_for_seconds("いいねしました。");
     like_count.textContent = parseFloat(like_count.textContent) + 1
@@ -197,7 +198,7 @@ $("#like_button")[0].addEventListener('ajax:success', function(event) {
 $("#like_button")[0].addEventListener('ajax:error', function(event) {
   // 失敗時の処理
   var res = event.detail[0];
-  $(".like_button").toggleClass("liked_button");
+  //$(".like_button").toggleClass("liked_button");
   notify_for_seconds("いいねできませんでした。");
   like_count.textContent = parseFloat(like_count.textContent) - 1
 });

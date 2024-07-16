@@ -51,6 +51,11 @@
                     color: darkgray;
                 }
             }
+            .liked_button{
+                .fa-heart{
+                    color: red;
+                }
+            }
             .edit_delete_area{
                 display: inline-block;
                 //width: 100%;
@@ -116,12 +121,17 @@
                 }
             }
             .service_detail_area{
-                .service_detail_name{
-                    margin-bottom: 0px;
+                .service_detail_label_area{
+                    text-decoration: underline;
+                    width: 100%;
+                }
+                .service_detail_label{
+                    //border-bottom: solid 2px lightgray;
+                    margin: 0px;
                     //background-color: $background-color;
-                    color: dimgrey;
+                    //color: dimgrey;
                     //background-color: whitesmoke;
-                    border-radius: 5px;
+                    //border-radius: 5px;
                     //text-decoration: underline;
                 }
                 .service_detail{

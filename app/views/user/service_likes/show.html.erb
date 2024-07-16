@@ -1,8 +1,5 @@
 <div class="service_likes_show">
-    <div class="common_label_area">
-      <h3 class="common_label">お気に入りの相談室</h3>
-      <%= paginate @services %>
-    </div>
+    <div class="main_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした質問 <%= paginate @services %></div>
     <% @services.each do |service| %>
         <%= link_to(user_service_path(service.id), class: "service_cell" ) do %>
             <div class="image_area">

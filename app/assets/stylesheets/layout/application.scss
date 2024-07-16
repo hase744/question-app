@@ -124,6 +124,27 @@ body{
         }
     }
 }
+.medium_layout{
+    @media(max-width:700px){
+        .main_area{
+            margin:0%;
+            padding-left: 0px;
+            width: 100%;
+        }
+        .search_detail_margin{
+            display: none;
+        }
+    }
+    @media(min-width:700px){
+        .main_area{
+            margin: 0 0 0 calc(50% - 350px);
+            width: 700px;
+        }
+        .sidebar_menu_margin{
+            display: none;
+        }
+    }
+}
 .responsive_layout{
     .main_area{
         @media(max-width:1000px){
