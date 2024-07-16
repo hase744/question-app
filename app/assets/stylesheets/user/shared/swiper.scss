@@ -21,6 +21,13 @@
   	    padding: 10px;
   	    cursor: pointer;
   	    display: inline-block;
+		background-color: black;
+		top: calc(50% + 20px);
+		//top: 90%;
+		height: 20px;
+		width: 20px;
+		border-radius: 50%;
+		opacity: 0.5;
   	}
   	.swiper-button-next-custom {
   	    right: 10px;
@@ -37,4 +44,41 @@
   	  height: auto;
   	  display: block;
   	}
+
+
+	/* 前へ次への矢印カスタマイズ */
+	.swiper-button-prev:after,
+	.swiper-button-next:after {
+		content: "";
+		width: 1rem;
+		height: 1rem;
+		border: 0;
+		border-top: solid 0.3rem white;
+		border-right: solid 0.3rem white;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 0;
+		margin: auto;
+	}
+	/* 前への矢印カスタマイズ */
+	.swiper-button-prev:before {
+		border-bottom: 20px solid transparent;
+		border-right: 30px solid #ff4500;
+		border-top: 20px solid transparent;
+	}
+	.swiper-button-prev:after {
+		transform: rotate(-135deg);
+		left: 7px;
+	}
+	/* 次への矢印カスタマイズ */
+	.swiper-button-next:before {
+		border-bottom: 20px solid transparent;
+		border-left: 30px solid #ff4500;
+		border-top: 20px solid transparent;
+	}
+	.swiper-button-next:after {
+	  transform: rotate(45deg);
+	  left: -7px;
+	}
 }

@@ -9,7 +9,7 @@
 		%>
     <% end %>
 <% else %>
-    <div class="swiper-container">
+    <div  id="bullets" class="swiper-container">
         <div class="swiper-wrapper">
             <% model.items.select{|item| item.file.is_image? }.each do |item| %>
                 <%= link_to(item.file.url, class: 'link swiper-slide') do %>
@@ -25,6 +25,6 @@
         </div>
         <div class="swiper-button-next swiper-button-custom"></div>
         <div class="swiper-button-prev swiper-button-custom"></div>
-		<div class="swiper-pagination"></div>
+				<div class="swiper-pagination"></div>
     </div>
 <% end %>

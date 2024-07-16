@@ -98,25 +98,6 @@ include Variables
     }[controller][action]
   end
 
-  def translate(word)
-    if word
-      word_array = word.split(",")
-      all_words = ""
-      
-      word_array.each do |w|
-        if all_words == ""
-          all_words += translate_list(w.delete(" "))
-        else
-          all_words += ", "
-          all_words += translate_list(w.delete(" "))
-        end
-      end
-      all_words
-    else
-      word
-    end
-  end
-
   def notifications_length
     Notification.where(user_id: current_user.id, is_notified:false).length
   end

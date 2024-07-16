@@ -40,4 +40,12 @@ class ApplicationRecord < ActiveRecord::Base
       false
     end
   end
+
+  def liked_class(user)
+    if self.likes.where(user: user).present?
+      "liked_button"
+    else
+      "not_liked_button"
+    end
+  end
 end

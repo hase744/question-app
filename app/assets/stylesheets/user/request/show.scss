@@ -2,10 +2,12 @@
     overflow: hidden;
     .request_area{
         display: inline-block;
-        @media(min-width: 1000px){
-            width: calc(100% - 320px);
-            float: left;
-        }
+        //@media(min-width: 1000px){
+        //    width: calc(100% - 320px);
+        //    float: left;
+        //}
+        width: 100%;
+        float: left;
         .request_flame{
             background-color: white;
             box-shadow: 0 0 2px lightgray;
@@ -19,17 +21,57 @@
                 
                 .request_title{
                     margin-top: 5px;
-                    margin-bottom: 5px;
-                    border-bottom: solid 2px lightgray;
+                    margin-bottom:0px;
+                }
+                border-bottom: solid 2px lightgray;
+            }
+            .request_score_area{
+                .request_score_info{
+                    display: inline-block;
+                    margin: 5px;
+                    label{
+                        background-color: #EEEEEE;
+                        padding: 5px 2px;
+                        font-size: 12px;
+                        //border-radius: 5px;
+                    }
+                }
+                .user_name{
+                    display: inline-block;
+                    span{
+                        display: inline-block;
+                    }
+                }
+                margin-top: 5px;
+            }
+            .request_like_area{
+                margin-top: 10px;
+            }
+            .like_button{
+                color: gray;
+                border: 1.5px solid lightgray;
+                padding: 5px;
+                border-radius: 3px;
+                font-size: 14px;
+                text-decoration: none;
+                //display: inline-block;
+                float: right;
+                .fa-heart{
+                    color: darkgray;
+                }
+            }
+            .liked_button{
+                .fa-heart{
+                    color: red;
                 }
             }
             .edit_delete_area{
                 display: inline-block;
-                height: 20px;
-                width: 100%;
-                .button{
+                //width: 100%;
+                float: right;
+                a{
                     float: right;
-                    margin-left: 10px;
+                    margin-left: 5px;
                 }
             }
             /*
@@ -80,13 +122,13 @@
                 }
             }
             .request_detail{
-                h4{
-                    margin-bottom: 0px;
+                .request_detail_label{
+                    margin: 0px;
+                    margin-top: 5px;
                 }
                 .request_detail_content{
-                    margin-top: 5px;
                     .request_detail_text{
-                        margin-top: 10px;
+                        margin: 0px;
                         white-space: pre-line;
                     }
                 }
@@ -150,12 +192,12 @@
     }
 }
 @media(min-width: 1000px){
-    .request_show_zone{
-        .request_area{
-            width: calc(100% - 320px);
-
-            float: left;
-        }
-        
-    }
+    //.request_show_zone{
+    //    .request_area{
+    //        width: calc(100% - 320px);
+//
+    //        float: left;
+    //    }
+    //    
+    //}
 }
