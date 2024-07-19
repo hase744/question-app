@@ -101,6 +101,7 @@ class Transaction < ApplicationRecord
     if names.present?
       names = names.split(',')
       self.left_joins(:transaction_categories)
+        .distinct
         .where(transaction_categories: {
           category_name: names
         })

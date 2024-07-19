@@ -9,13 +9,14 @@ class User::RequestsController < User::Base
   before_action :check_new_at, only:[:create]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
+  before_action :check_already_constracted, only:[:new, :create, :publish, :purchase]
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
   layout :choose_layout
 
   private def choose_layout
     case action_name
     when "show"
-      "normal_layout"
+      "medium_layout"
     when "purchase"
       "responsive_layout"
     when "index"
@@ -437,8 +438,17 @@ class User::RequestsController < User::Base
       if current_user.total_points < @service.price
         @defficiency = @service.price - current_user.total_points
         flash.notice = "残高が#{@defficiency}ポイント足りません"
-        redirect_to user_payments_path(price:@defficiency, controller_name:"user/requests", action_name:"new", id_number:@service.id, price:@service.price, service_id:@service.id)
+        session[:payment_service_id] = @service.id
+        session[:payment_transaction_id] = @transaction.id
+        redirect_to user_payments_path(point:@defficiency)
       end
+    end
+  end
+
+  private def check_already_constracted
+    if @transaction&.is_contracted
+      flash.notice = "購入済みです"
+      redirect_to user_service_path(@service.id, transaction_id: @transaction.id)
     end
   end
 

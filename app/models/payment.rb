@@ -14,4 +14,10 @@ class Payment < ApplicationRecord
   def update_user_point
     self.user.update_total_points
   end
+  
+  def self.point_options
+    (100.. Request.new.max_price_upper_limit)
+      .step(100)
+      .map { |num| ["#{num}p", num] }
+  end
 end

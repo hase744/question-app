@@ -151,8 +151,8 @@
     .user_cell_flame{
       width: 240px;
         .user_image_flame{
-            height: 60px;
-            width: 50px;
+            height: 55px;
+            width: 55px;
             border-bottom:1px solid lightgrey;
             .last_login{
                 display: none;
@@ -163,8 +163,8 @@
             }
         }
         .user_name_area{
-            height: 60px;
-            width: calc(100% - 50px);
+            height: 55px;
+            width: calc(100% - 55px);
             .user_name{
                 font-size: 15px;
                 display: -webkit-box;
@@ -175,7 +175,7 @@
             }
             .categories{
                 position: absolute;
-                top: 40px;
+                top: 35px;
                 color: dimgray;
                 font-size: 9px;
                 //top: 0px;

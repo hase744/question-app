@@ -57,11 +57,16 @@ class User::TransactionMessagesController < User::Base
   end
 
   def create_notification(user, description)
+    if @transaction.is_delivered
+      action = "show"
+    else
+      action = "messages"
+    end
     Notification.create(
       user:user,
       notifier_id: current_user.id,
-      controller:"transactions",
-      action:"show",
+      controller: "transactions",
+      action: action,
       id_number:@transaction.id,
       description: description,
       parameter: "?transaction_message_order=DESC"

@@ -15,6 +15,7 @@ class ApplicationController < ActionController::Base
   before_action :get_path
   before_action :set_view_value
   before_action :check_user_state
+  before_action :check_session_point
   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
   def create_error_log(e)
@@ -207,6 +208,14 @@ class ApplicationController < ActionController::Base
       true
     else
       false
+    end
+  end
+  
+  def check_session_point
+    unless controller_name == "payments"
+      session[:point] == nil
+      session[:payment_service_id] = nil
+      session[:payment_transaction_id] = nil
     end
   end
   #ユーザー登録の時に名前を登録できるようにする。

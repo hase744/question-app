@@ -17,7 +17,8 @@ class User::OrdersController < User::Base
   end
   
   def index
-    @transactions = solve_n_plus_1(Transaction.all)
+    @transactions = Transaction.solve_n_plus_1
+      .where.not(contracted_at: nil)
     @transactions = @transactions.page(params[:page]).per(10)
     #パラメーターが空の時、ユーザー情報からデフォルトとしてパラメーターを設定
     if !params[:user].present?
