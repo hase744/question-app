@@ -7,14 +7,9 @@
             <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form",class:'field_area', onSubmit:"return check()"  do |f|%>
                 <label>購入するポイント</label></br>
                 <div class="input_field select_area">
-                    <%=f.select :price, options_for_select((100.. Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}p", num] }), id:"payment_price"%>
+                    <%=f.select :price, options_for_select(Payment.point_options, selected: params[:point]), id:"payment_price"%>
                 </div>
-                <%=f.hidden_field :point, id:"payment_point"%></br>
-                <%= f.hidden_field :action_name, value:@action_name %>
-                <%= f.hidden_field :controller_name, value:@controller_name %>
-                <%= f.hidden_field :id_number, value:@id_number %>
-                <%= f.hidden_field :service_id, value:@service_id %>
-                <h3 class="point_sum">合計：<span id="price_display"><%=@default_point%></span>円</h3>
+                <h3 class="point_sum">料金：<span id="price_display"><%=@default_point%></span>円</h3>
                 <div class="refund_label">＊返金不可</div>
                 <div class="submit_area">
                     <%= f.submit "購入", class:"submit", id:"submit", onSubmit:"return submitCheck()", data: {confirm: "購入しますか？\n返金はできません"} %>

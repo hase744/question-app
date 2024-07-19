@@ -7,7 +7,7 @@ class User::TransactionsController < User::Base
   before_action :filter_transaction, only:[:update, :deliver]
   before_action :define_transaction_message, only:[:show, :messages]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
-  before_action :check_can_send_message, only:[:messages]
+  #before_action :check_can_send_message, only:[:messages]
   after_action :update_total_views, only:[:show]
   layout :choose_layout
 
@@ -17,6 +17,8 @@ class User::TransactionsController < User::Base
       "responsive_layout"
     when "index"
       "search_layout"
+    when "messages"
+      "medium_layout"
     else
       "small"
     end
@@ -24,13 +26,14 @@ class User::TransactionsController < User::Base
 
   def index
     gon.layout = "transaction_index"
-    @transactions = Transaction.left_joins(:transaction_categories)
-    @transactions = solve_n_plus_1(@transactions)
+    @transactions = Transaction.all
+    @transactions = @transactions.joins(:transaction_categories)
+    @transactions = @transactions.distinct
+    @transactions = @transactions.solve_n_plus_1
     @transactions = @transactions.where(is_delivered:true).order(id: :DESC)
     @transactions = @transactions.filter_categories(params[:categories])
     @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
     @transactions = @transactions.page(params[:page]).per(30)
-    
   end
 
   def edit
@@ -62,6 +65,7 @@ class User::TransactionsController < User::Base
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
     @transactions = Transaction.all
       .left_joins(:transaction_categories)
+      .distinct
       .includes(:seller, :service, :request, :items, :transaction_categories)
       .where.not(id: @transaction.id)
       .where(
