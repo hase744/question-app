@@ -57,7 +57,7 @@ class Transaction < ApplicationRecord
   end
 
   scope :solve_n_plus_1, -> {
-    includes(:seller, :buyer, :request, :service, :items)
+    includes(:seller, :buyer, :request, :service, :items, {request: :items})
   }
 
   scope :ongoing, -> {

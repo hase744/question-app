@@ -118,7 +118,7 @@ class User::AccountsController < User::Base
     
     @transactions = Transaction.all
     @transactions = @transactions.where(id: @transaction_likes.pluck(:id))
-    @transactions = solve_n_plus_1(@transactions)
+    @transactions = @transactions.solve_n_plus_1
     render partial: "user/accounts/transactions", locals: { contents: @transactions }
   end
 

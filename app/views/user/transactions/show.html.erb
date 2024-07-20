@@ -117,7 +117,7 @@
                 </div></br>
                 <div class="service_link_area">
                     <div>
-                    <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
+                        <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
                     </div>
                 </div>
                 <%= render "/user/shared/share_buttons", text: @transaction.description %>

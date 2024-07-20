@@ -99,7 +99,7 @@
                     </div>
                 <% elsif transaction.delivery_time < DateTime.now && transaction.is_ongoing  %>
                     ｜&nbsp;<div class="button_area">
-                        <%=link_to "キャンセル", user_cancel_order_path(transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは返金されます。"} %>
+                        <%=link_to "キャンセル", user_cancel_order_path(transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは元に戻ります。"} %>
                     </div>
                 <% end %>
                 </div>

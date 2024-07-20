@@ -68,11 +68,6 @@ class User::ServicesController < User::Base
     @og_title = @service.title
     @og_description = @service.description
     @relationship = Relationship.find_by(followee:@service.user, follower_id: current_user.id) if user_signed_in?
-    
-    #@transactions = @service.transactions
-    #@transactions = solve_n_plus_1(@transactions)
-    #@transactions = @transactions.where(is_delivered:true)
-    #@transactions = @transactions.page(params[:page]).per(5)
   end
 
   def new
