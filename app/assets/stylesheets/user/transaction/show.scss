@@ -159,7 +159,7 @@
                     display: inline-block;
                     div{
                         //font-size: 10px;
-                        color: gray;
+                        //color: gray;
                     }
                     label{
                         padding: 2px;
@@ -171,19 +171,23 @@
                     display: block;
                     height: 100%;
                     overflow: hidden;
-                }
-                .service_link{
-                    color: blue;
-                    height: 100%;
-                    font-size: 20px;
-                    text-decoration: underline;
-                }
-                .service_label{
-                    color: gray;
-                    //background-color: whitesmoke;
-                }
-                .serice_link_component{
-                    //float:right;
+                    .service_link{
+                        color: blue;
+                        height: 100%;
+                        font-size: 15px;
+                        text-decoration: underline;
+                    }
+                    .service_label{
+                        font-size: 15px;
+                        color: black;
+                        background-color: whitesmoke;
+                    }
+                    .serice_link_component{
+                        font-weight: bold;
+                        color: #444444;
+                        //text-decoration: none;
+                        //float:right;
+                    }
                 }
             }
         }
