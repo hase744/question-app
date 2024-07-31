@@ -52,7 +52,7 @@ class User::PaymentsController < User::Base
         elsif @service_id
           redirect_to new_user_request_path(service_id: @service_id)
         else
-          redirect_to new_user_request_path
+          redirect_to user_configs_path
         end
       rescue
         redirect_to user_configs_path

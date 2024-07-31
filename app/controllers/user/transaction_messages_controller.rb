@@ -33,7 +33,7 @@ class User::TransactionMessagesController < User::Base
     @transaction_message.sender = current_user
     @transaction = @transaction_message.deal
     if @transaction_message.save
-      Email::TransactionMailer.notify_message(@transaction_message).deliver_now #if @transaction_message.receiver.can_email_transaction
+      EmailJob.perform_later(mode: :message, model: @transaction_message)
       if @transaction.seller == @transaction_message.sender
         create_notification(@transaction.buyer, "追加回答が届いています。")
         flash.alert = "回答を送信しました。"

@@ -130,7 +130,7 @@ class User::TransactionsController < User::Base
       if !transfer.reversed
         @transaction.stripe_transfer_id = transfer.id
         @transaction.save
-        Email::TransactionMailer.delivery(@transaction).deliver_now
+        EmailJob.perform_later(mode: :deliver, model: @transaction)
         create_notification(@transaction)
         flash.notice = "回答を納品しました。"
         redirect_to user_transaction_path(@transaction.id)
