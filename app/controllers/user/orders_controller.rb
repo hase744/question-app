@@ -82,7 +82,7 @@ class User::OrdersController < User::Base
         flash.notice = "質問をキャンセルしました"
         redirect_to user_orders_path(user: "buyer", scope: "ongoing")
         create_cancel_notification
-        Email::TransactionMailer.cancel(@transaction).deliver_now
+        EmailJob.perform_later(mode: :cancel, model: @transaction)
       else
         detect_models_errors([@transaction, current_user, @service])
         flash.alert = "キャンセルできませんでした"
@@ -106,7 +106,7 @@ class User::OrdersController < User::Base
         flash.notice = "質問を断りました"
         create_rejection_notification
         redirect_to user_orders_path(user: "seller", scope: "ongoing")
-        Email::TransactionMailer.rejection(@transaction).deliver_now
+        EmailJob.perform_later(mode: :reject, model: @transaction)
       else
         gon.text_max_length = @transaction.reject_reason_max_length
         render "user/orders/edit"

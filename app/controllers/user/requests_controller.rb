@@ -209,7 +209,7 @@ class User::RequestsController < User::Base
     ActiveRecord::Base.transaction do
       if save_models
         current_user.update_total_points
-        Email::TransactionMailer.purchase(@transaction).deliver_now
+        EmailJob.perform_later(mode: :purchase, model: @transaction)
         create_notification
         flash.notice = "購入しました。"
         true
