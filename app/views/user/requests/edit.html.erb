@@ -1,7 +1,6 @@
-<%if @service_exist %>
-  <h3 class="service_new_title"><%=@service.user.name%>へ質問</h3>
-  <% transaction = Transaction.find_by(requests: @request, service: @service) %>
-  <%= render "user/services/suggestion_cell", service:@service, transaction: transaction %>
+<%if @service %>
+  <h3 class="service_new_title">相談室</h3>
+  <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
   <h3 class="service_new_title">質問内容</h3>
 <% else %>
   <h3 class="service_new_title">質問を編集</h3>

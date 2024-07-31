@@ -33,6 +33,7 @@ newSentences = newSentences.map(str => str.startsWith('</br>') ? str.slice(5) : 
 var newTextContent = newSentences.join('</br>')
 textContent = textContent.replace(/KAIGYOSTR/g, '</br>');
 $("#message_area").html(newTextContent);
+$("#message_area").html(textContent);
 mini_font_size = <%= image_width*0.03 %>;
 max_font_size = <%= image_width*0.05 %>;
 text_length = $("#message_area").text().length;

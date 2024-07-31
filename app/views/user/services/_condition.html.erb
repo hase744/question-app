@@ -3,6 +3,17 @@
     <tr class="service_info">
         <td class="info_name_area">
             <span class="info_name">
+                <span class="condition_name">料金</span>
+                <spam class="coron"><span>
+            </span>
+        </td>
+        <td class="service_info">
+            <span class="service_condition"><%=service.price%>円</span>
+        </td>
+    </tr>
+    <tr class="service_info">
+        <td class="info_name_area">
+            <span class="info_name">
                 <span class="condition_name"><%=Transaction.human_attribute_name(:delivery_form) %></span>
                 <spam class="coron"><span>
             </span>
@@ -20,17 +31,6 @@
         </td>
         <td class="service_info">
             <span class="service_condition"><%=service.request_form.japanese_name%></span>
-        </td>
-    </tr>
-    <tr class="service_info">
-        <td class="info_name_area">
-            <span class="info_name">
-                <span class="condition_name">料金</span>
-                <spam class="coron"><span>
-            </span>
-        </td>
-        <td class="service_info">
-            <span class="service_condition"><%=service.price%>円</span>
         </td>
     </tr>
     <tr class="service_info">

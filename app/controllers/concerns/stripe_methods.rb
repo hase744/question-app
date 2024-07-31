@@ -58,7 +58,7 @@ module StripeMethods
     puts @available_amount
     @balance_amount = @pending_amount + @available_amount
     transfer = Stripe::Transfer.create({
-      amount: @balance_amount,
+      amount: @available_amount,
       currency: 'jpy',
       destination: ENV["ROOT_ACCOUNT_ID"], 
       description: 'Transfer to admin account minus fee',

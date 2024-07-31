@@ -18,7 +18,7 @@ file = CarrierWave::SanitizedFile.new(tempfile: file)
         price: (n+1)*100,
         category_id: Category.find(n%Category.count+1).id,
         #image: file,
-        stock_quantity: n + 1,
+        #stock_quantity: n + 1,
         transaction_message_days: n%30,
         delivery_days: n%14 + 1,
         request_form_name: Form.find_by(name: 'text').name_sym,

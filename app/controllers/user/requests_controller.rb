@@ -5,8 +5,8 @@ class User::RequestsController < User::Base
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
-  before_action :check_service_updated, only:[:publish, :edit, :update] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
-  before_action :check_new_at, only:[:create]
+  before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
+  before_action :check_accessed_at, only:[:create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_already_constracted, only:[:new, :create, :publish, :purchase]
@@ -118,6 +118,7 @@ class User::RequestsController < User::Base
     puts "存在：#{@transactions.present?}"
     if @transactions.present? #サービスの購入である
       @request.assign_attributes(request_service_params)
+      @request.service = @service
     end
     if @request.update(request_params)
       params.dig(:items, :file)&.each do |file|
@@ -166,16 +167,16 @@ class User::RequestsController < User::Base
 
   def publish
     @request.set_publish
-    @request.items.create(file: params[:request][:file]) if @request.request_form.name == "text"
+    @item = @request.items.new(file: params[:request][:file]) if @request.request_form.name == "text"
     if @transaction #サービスの購入である
-      #@request.service = @service
+      @request.service = @service
       if create_contract
         redirect_to user_request_path(@request.id)
       else
         render  "user/requests/preview"
       end
     else #公開依頼のとき
-      if @request.save
+      if save_models
         flash.notice ="質問を公開しました"
         redirect_to user_request_path(@request.id)
       else
@@ -202,11 +203,11 @@ class User::RequestsController < User::Base
       is_contracted:true,
       contracted_at:DateTime.now,
       )
-    @service.stock_quantity = @service.stock_quantity-1 if @service.stock_quantity
+    #@service.stock_quantity = @service.stock_quantity-1 if @service.stock_quantity
     @request.set_service_values
 
     ActiveRecord::Base.transaction do
-      if @service.save && @request.save && @transaction.save
+      if save_models
         current_user.update_total_points
         Email::TransactionMailer.purchase(@transaction).deliver_now
         create_notification
@@ -214,15 +215,20 @@ class User::RequestsController < User::Base
         true
       else
         puts "失敗 #{@request.items.count}"
-        flash.notice = "購入できませんでした。" +
-        [@service.errors.full_messages,
-         @request.errors.full_messages,
-         @transaction.errors.full_messages].flatten.join("\n")
+        #flash.notice = "購入できませんでした。" +
+        #[@service.errors.full_messages,
+        # @request.errors.full_messages,
+        # @transaction.errors.full_messages].flatten.join("\n")
         @request.set_item_values
         set_preview_values
         false
       end
     end
+  end
+
+  def save_models
+    models_to_save = [@service, @request, @transaction, @item].compact
+    models_to_save.all?(&:save)
   end
 
   def create
@@ -236,7 +242,7 @@ class User::RequestsController < User::Base
       @request.set_service_values
       @transaction.assign_attributes(service:@service, request:@request)
       ActiveRecord::Base.transaction do
-        if @transaction.save && @request.save
+        if @request.save && @transaction.save
           params.dig(:items, :file)&.each do |file|
             @request.items.create(file: file) if @request.request_form.name != "text"
           end
@@ -417,16 +423,16 @@ class User::RequestsController < User::Base
   private def check_service_updated
     if @service && @request
       if @request.created_at < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
-        flash.notice = "サービス内容が更新されました"
-        redirect_to user_service_path(@service.id)
+        flash.notice = "相談室の内容が更新されました。内容を確認してください"
+        #redirect_to user_service_path(@service.id)
       end
     end
   end
 
-  private def check_new_at
+  private def check_accessed_at
     if @service
-      if params[:request][:new_at].to_datetime < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
-        flash.notice = "サービス内容が更新されました"
+      if params[:request][:accessed_at].to_datetime < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
+        flash.notice = "相談室の内容が更新されました"
         redirect_to user_service_path(@service.id)
       end
     end
@@ -461,12 +467,12 @@ class User::RequestsController < User::Base
   private def check_previous_request
     if @service
       ordered_request = nil
-      ordered_requests = @service.requests.where(user: current_user, is_published:false)
-      ordered_requests.each do |request|
-        if request.created_at > @service.renewed_at
-          ordered_request = request
-        end
-      end
+      ordered_request = @service.requests.find_by(user: current_user, is_published:false)
+      #ordered_requests.each do |request|
+      #  if request.created_at > @service.renewed_at
+      #    ordered_request = request
+      #  end
+      #end
 
       if ordered_request.present? #依頼しかけのサービスがある
         @transaction = Transaction.find_by(request: ordered_request, service_id: params[:service_id])

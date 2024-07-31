@@ -5,7 +5,6 @@ class CreatePosts < ActiveRecord::Migration[6.1]
       t.text :body
       t.string :file
       t.integer :total_views, default: 0, index:true
-      t.integer :total_likes, default: 0, index:true
 
       t.timestamps
     end

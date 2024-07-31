@@ -7,7 +7,7 @@
   </div>
 
   <div class="field_area">
-    <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display"%></span><br />
+    <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: request.description_max_length(service)%></span><br />
     <%= f.text_area :description, autocomplete: "new-password", class:"input_field text_area"%>
   </div>
 
@@ -120,7 +120,7 @@
 
   <%if service.present? %>
     <%= f.hidden_field :service_id, value: service.id%>
-    <%= f.hidden_field :new_at, value: DateTime.now%>
+    <%= f.hidden_field :accessed_at, value: DateTime.now%>
   <% end %>
 
   <div class="submit_area">
@@ -131,5 +131,4 @@
 <script>
 <%= render 'user/requests/javascript/extension_controller.js.erb' %>
 <%= render 'user/requests/javascript/youtube_form_controller.js.erb' %>
-<%= render 'user/javascript/character_counter.js.erb', text_max_length: request.description_max_length %>
 </script>

@@ -2,14 +2,10 @@
     <%if transaction.delivered_at.nil? %>
     <%elsif transaction.buyer == current_user %>
         <p class="title">
-        追加質問<%=render "user/shared/total_characters_display"%></br>
-        <%=from_now(transaction.delivered_at.to_datetime + transaction.transaction_message_days)%>
-        (
-        <%=(transaction.delivered_at.to_datetime + transaction.transaction_message_days).strftime("%Y/%m/%d %H:%m")%>
-        まで)
+        追加質問<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters %></br>
         </p>
     <% elsif transaction.seller == current_user %>
-        <p class="title">追加回答<%=render "user/shared/total_characters_display"%></p>
+        <p class="title">追加回答<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters%></p>
     <% end %>
     <div class="transaction_message_form_flame">
         <%= form_with model:TransactionMessage.new, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %>

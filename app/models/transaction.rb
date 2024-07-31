@@ -172,13 +172,9 @@ class Transaction < ApplicationRecord
     end
 
     if will_save_change_to_is_contracted?
-      self.transaction_message_days = self.service.transaction_message_days
+      self.transaction_message_enabled = self.service.transaction_message_enabled
     end
 
-    if will_save_change_to_is_delivered?
-      self.transaction_message_deadline = DateTime.now + self.transaction_message_days
-    end
-    
     self.service_title = self.service.title
     self.service_descriprion = self.service.description
     self.seller = self.service.user
@@ -195,7 +191,7 @@ class Transaction < ApplicationRecord
         errors.add(:base,  "質問形式が違います")
       elsif self.request.category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
-      elsif self.service.request_max_characters < self.request.description.length
+      elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
         errors.add(:base,  "相談室の文字数が足りません")
       else
         nil
@@ -356,13 +352,7 @@ class Transaction < ApplicationRecord
       true
     elsif user != self.buyer
       false
-    elsif self.transaction_message_days.nil?
-      true
-    elsif self.transaction_message_days == 0
-      false
-    elsif self.delivered_at == nil
-      true
-    elsif DateTime.now.to_datetime < self.delivered_at.to_datetime + self.transaction_message_days
+    elsif self.transaction_message_enabled
       true
     else
       false

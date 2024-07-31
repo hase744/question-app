@@ -39,8 +39,13 @@
 
 .main_header{
     margin: 0px;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 5px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-rendering: auto;
+    -webkit-line-clamp: 1;
 }
 .bottom{
     display: none;

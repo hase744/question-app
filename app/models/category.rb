@@ -10,104 +10,131 @@ class Category
         name: 'business',
         japanese_name: 'ビジネス',
         start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
+        child_categories: [
+        ]
       ),
+        new_business = Category.new(
+          id: 1001,
+          parent_category: business,
+          name: 'new_business',
+          japanese_name: '起業・副業',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        marketing = Category.new(
+          id: 1002,
+          parent_category: business,
+          name: 'marketing',
+          japanese_name: 'マーケティング',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        affiliate = Category.new(
+          id: 1003,
+          parent_category: business,
+          name: 'affiliate',
+          japanese_name: 'アフィリエイト',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        social_media = Category.new(
+          id: 1004,
+          parent_category: business,
+          name: 'social_media',
+          japanese_name: 'SNS',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        resale = Category.new(
+          id: 1005,
+          parent_category: business,
+          name: 'resale',
+          japanese_name: '物販',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
       carrier = Category.new(
         id: 2,
         parent_category: nil,
         name: 'carrier',
         japanese_name: 'キャリア',
         start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
+        child_categories: [
+        ]
       ),
-      presentation = Category.new(
+        job_hunting = Category.new(
+          id: 2001,
+          parent_category: carrier,
+          name: 'job_hunting',
+          japanese_name: '就活',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        career_change = Category.new(
+          id: 2002,
+          parent_category: carrier,
+          name: 'career_change',
+          japanese_name: '転職・独立',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        sales_job = Category.new(
+          id: 2003,
+          parent_category: carrier,
+          name: 'sales_job',
+          japanese_name: '営業職',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        technical_job = Category.new(
+          id: 2004,
+          parent_category: carrier,
+          name: 'technical_job',
+          japanese_name: '技術職',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        designer = Category.new(
+          id: 2005,
+          parent_category: carrier,
+          name: 'designer',
+          japanese_name: 'デザイナー',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+      life = Category.new(
         id: 3,
-        parent_category: business,
-        name: 'presentation',
-        japanese_name: 'プレゼン',
+        parent_category: nil,
+        name: 'life',
+        japanese_name: '人生',
         start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
+        child_categories: [
+        ]
       ),
-      document_preparation = Category.new(
-        id: 4,
-        parent_category: business,
-        name: 'document_preparation',
-        japanese_name: '資料作成',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      accounting = Category.new(
-        id: 5,
-        parent_category: business,
-        name: 'accounting',
-        japanese_name: '会計・経理',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      job_application = Category.new(
-        id: 6,
-        parent_category: carrier,
-        name: 'job_application',
-        japanese_name: '面接・ES',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      sales_job = Category.new(
-        id: 7,
-        parent_category: carrier,
-        name: 'sales_job',
-        japanese_name: '営業職',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      technical_job = Category.new(
-        id: 8,
-        parent_category: carrier,
-        name: 'technical_job',
-        japanese_name: '技術職',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      clerical_job = Category.new(
-        id: 9,
-        parent_category: carrier,
-        name: 'clerical_job',
-        japanese_name: '事務職',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      manager_job = Category.new(
-        id: 10,
-        parent_category: carrier,
-        name: 'manager_job',
-        japanese_name: '管理職',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      financial_job = Category.new(
-        id: 11,
-        parent_category: carrier,
-        name: 'financial_job',
-        japanese_name: '経理職',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      freelance = Category.new(
-        id: 12,
-        parent_category: carrier,
-        name: 'freelance',
-        japanese_name: '独立・副業',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
-      sales = Category.new(
-        id: 13,
-        parent_category: business,
-        name: 'sales',
-        japanese_name: '営業',
-        start_at: DateTime.new(2024, 1, 1),
-        child_categories: []
-      ),
+        future_path = Category.new(
+          id: 3001,
+          parent_category: life,
+          name: 'future_path',
+          japanese_name: '進路',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        living = Category.new(
+          id: 3002,
+          parent_category: life,
+          name: 'living',
+          japanese_name: '暮らし',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
+        marrage = Category.new(
+          id: 3003,
+          parent_category: life,
+          name: 'marrage',
+          japanese_name: '結婚',
+          start_at: DateTime.new(2024, 1, 1),
+          child_categories: []
+        ),
     ]
     #all_categories = [business, carrier, presentation, document_preparation, freelance]
     #business.child_categories = [presentation, document_preparation]

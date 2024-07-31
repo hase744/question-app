@@ -112,14 +112,14 @@
                         <span class="far fa-comment-alt"></span>
                         </td>
                         <td class="user_info_name">
-                            <span class="condition_name">追加質問受付期間</span>
+                            <span class="condition_name">追加質問受付</span>
                         </td>
                         <td>
                             <span class="service_condition">
-                            <%if @service.transaction_message_days == 0%>
-                            <%=@service.transaction_message_days%>日（追加質問不可）
+                            <%if @service.transaction_message_enabled %>
+                            可能
                             <% else %>
-                            <%=@service.transaction_message_days%>日
+                            不可
                             <% end %></span>
                         </td>
                     </tr>

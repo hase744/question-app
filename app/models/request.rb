@@ -395,8 +395,12 @@ class Request < ApplicationRecord
     end
   end
 
-  def description_max_length
-    20000
+  def description_max_length(service=nil)
+    if service
+      service.request_max_characters
+    else
+      20000
+    end
   end
 
   def max_price_upper_limit

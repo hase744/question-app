@@ -101,7 +101,8 @@ class User::AccountsController < User::Base
       @services = @services.where(is_published:true, request_id: nil)
     end
     @services = @services.order(id: :DESC).page(params[:page]).per(20)
-    render partial: "user/accounts/services", locals: { contents: @services }
+    render partial: 'user/services/cell', collection: @services, as: :service
+    #render partial: "user/accounts/services", locals: { contents: @services }
   end
   #@services.page(params[:page]).includes(:user).per(10)
   def posts

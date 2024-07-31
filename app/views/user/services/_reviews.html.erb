@@ -1,3 +1,6 @@
 <% contents.each do |transaction|%>
     <%= render "user/reviews/cell", transaction: transaction%>
 <% end %>
+<script>
+<%= render "user/shared/javascript/star_display.js.erb" %>
+</script>

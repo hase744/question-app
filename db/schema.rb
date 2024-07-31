@@ -194,10 +194,8 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.text "body"
     t.string "file"
     t.integer "total_views", default: 0
-    t.integer "total_likes", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["total_likes"], name: "index_posts_on_total_likes"
     t.index ["total_views"], name: "index_posts_on_total_views"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -268,7 +266,6 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.integer "total_files", default: 0
     t.integer "total_views", default: 0
     t.integer "total_services", default: 0
-    t.integer "total_likes", default: 0
     t.integer "transaction_message_days"
     t.bigint "transaction_id"
     t.boolean "is_published", default: false
@@ -288,7 +285,6 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.index ["suggestion_deadline"], name: "index_requests_on_suggestion_deadline"
     t.index ["title"], name: "index_requests_on_title"
     t.index ["total_files"], name: "index_requests_on_total_files"
-    t.index ["total_likes"], name: "index_requests_on_total_likes"
     t.index ["total_services"], name: "index_requests_on_total_services"
     t.index ["total_views"], name: "index_requests_on_total_views"
     t.index ["transaction_id"], name: "index_requests_on_transaction_id"
@@ -348,16 +344,15 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.text "description"
     t.integer "price"
     t.string "image"
-    t.integer "stock_quantity", default: 0
     t.boolean "is_published", default: true
+    t.boolean "is_for_sale", default: true
     t.integer "delivery_days"
     t.integer "request_max_characters"
     t.integer "request_max_duration"
     t.integer "request_max_files"
     t.datetime "renewed_at"
-    t.integer "transaction_message_days", default: 0
+    t.boolean "transaction_message_enabled"
     t.integer "total_views", default: 0
-    t.integer "total_likes", default: 0
     t.integer "total_sales_numbers", default: 0
     t.integer "total_sales_amount", default: 0
     t.integer "total_reviews", default: 0
@@ -370,6 +365,7 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.index ["cancellation_rate"], name: "index_services_on_cancellation_rate"
     t.index ["delivery_days"], name: "index_services_on_delivery_days"
     t.index ["delivery_form_name"], name: "index_services_on_delivery_form_name"
+    t.index ["is_for_sale"], name: "index_services_on_is_for_sale"
     t.index ["is_published"], name: "index_services_on_is_published"
     t.index ["rejection_rate"], name: "index_services_on_rejection_rate"
     t.index ["request_form_name"], name: "index_services_on_request_form_name"
@@ -378,12 +374,10 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.index ["request_max_duration"], name: "index_services_on_request_max_duration"
     t.index ["request_max_files"], name: "index_services_on_request_max_files"
     t.index ["title"], name: "index_services_on_title"
-    t.index ["total_likes"], name: "index_services_on_total_likes"
     t.index ["total_reviews"], name: "index_services_on_total_reviews"
     t.index ["total_sales_amount"], name: "index_services_on_total_sales_amount"
     t.index ["total_sales_numbers"], name: "index_services_on_total_sales_numbers"
     t.index ["total_views"], name: "index_services_on_total_views"
-    t.index ["transaction_message_days"], name: "index_services_on_transaction_message_days"
     t.index ["user_id"], name: "index_services_on_user_id"
   end
 
@@ -449,8 +443,7 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.text "reject_reason"
     t.boolean "is_canceled", default: false
     t.datetime "canceled_at"
-    t.integer "transaction_message_days", default: 0
-    t.datetime "transaction_message_deadline"
+    t.boolean "transaction_message_enabled", default: false
     t.boolean "is_published", default: false
     t.integer "star_rating"
     t.text "review_description"

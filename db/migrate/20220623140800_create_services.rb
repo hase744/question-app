@@ -11,21 +11,22 @@ class CreateServices < ActiveRecord::Migration[6.1]
       t.text :description
       t.integer :price
       t.string :image
-      t.integer :stock_quantity, default: 0
+      #t.integer :stock_quantity, default: 0
       t.boolean :is_published, default: true, index:true
+      t.boolean :is_for_sale, default: true, index:true
       t.integer :delivery_days, index:true
 
-      t.integer :request_max_characters, index:true
+      t.integer :request_max_characters, index:true, default: nil
       t.integer :request_max_duration, index:true
       t.integer :request_max_files, index:true
       t.datetime :renewed_at #サービス内容が更新された
       #t.integer :request_max_length, index:true #依頼できる最大の長さ（動画の長さ、文字数など）
       #t.integer :request_mini_length, index:true #依頼すべき最小の長さ（動画の長さ、文字数など）
 
-      t.integer :transaction_message_days, default: 0, index:true #追加でメッセージを送る質問できる依頼に関するカラム
+      #t.integer :transaction_message_days, default: 0, index:true #追加でメッセージを送る質問できる依頼に関するカラム
+      t.boolean :transaction_message_enabled, nil: false
 
       t.integer :total_views, default: 0, index:true
-      t.integer :total_likes, default: 0, index:true
       t.integer :total_sales_numbers, default: 0, index:true #過去のサービスの売上数
       t.integer :total_sales_amount, default: 0, index:true #過去のサービスの売上額
       t.integer :total_reviews, default: 0, index:true

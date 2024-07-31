@@ -1,5 +1,5 @@
 <div class="service_show_zone">
-    <p class="main_heade one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category_names%></p>
+    <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category_names%></div>
     <div class="service_left_area">
         <%if @transaction %>
             <%= render 'user/shared/common_label', text: '質問', language: 'ja' %>
@@ -28,6 +28,9 @@
                 <% end %>
                     <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
                     <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_delivered: true).count %>件</span>
+                    <%if @service.user == current_user%>
+                    <span class="service_score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
+                    <% end %>
                 </div>
                 <!--
                 <% if @service.user == current_user%>
@@ -78,7 +81,15 @@
                                 <span class="condition_name">質問の字数</span>
                                 </td>
                             <td>
-                                <span class="service_condition"><%=@service.request_max_characters%>字以内</span>
+                                <span class="service_condition">
+                                <%= 
+                                if @service.request_max_characters
+                                    "#{@service.request_max_characters}字以内"
+                                else
+                                    "制限なし"
+                                end
+                                    %>
+                                </span>
                             </td>
                         </tr>
                         <%if @service.request_form.name == "video" %>
@@ -100,16 +111,6 @@
                             <span class="service_condition"><%=@service.price%>円</span>
                         </td>
                     </tr>
-                    <%if @service.stock_quantity != nil %>
-                    <tr>
-                        <td class="user_info_name">
-                            <span class="condition_name">残り</span>
-                        </td>
-                        <td>
-                            <span class="service_condition"><%=@service.stock_quantity%>/<%=sales_number(@service)%></span>
-                        </td>
-                    </tr>
-                    <% end %>
                     <tr>
                         <td class="user_info_name">
                             <span class="condition_name">カテゴリー</span>
@@ -120,14 +121,42 @@
                     </tr>
                     <tr>
                         <td class="user_info_name">
-                            <span class="condition_name">追加質問受付期間</span>
+                            <span class="condition_name">受付状況</span>
                         </td>
                         <td>
                             <span class="service_condition">
-                            <%if @service.transaction_message_days == 0%>
-                            <%=@service.transaction_message_days%>日（追加質問不可）
+                            <%if @service.is_for_sale%>
+                            販売中
                             <% else %>
-                            <%=@service.transaction_message_days%>日
+                            販売停止
+                            <% end %></span>
+                        </td>
+                    </tr>
+                    <%if @service.user == current_user%>
+                    <tr>
+                        <td class="user_info_name">
+                            <span class="condition_name">公開状況</span>
+                        </td>
+                        <td>
+                            <span class="service_condition">
+                            <%if @service.is_published%>
+                            公開中
+                            <% else %>
+                            非公開
+                            <% end %></span>
+                        </td>
+                    </tr>
+                    <% end %>
+                    <tr>
+                        <td class="user_info_name">
+                            <span class="condition_name">追加質問</span>
+                        </td>
+                        <td>
+                            <span class="service_condition">
+                            <%if @service.transaction_message_enabled%>
+                            可能
+                            <% else %>
+                            不可
                             <% end %></span>
                         </td>
                     </tr>
@@ -149,7 +178,9 @@
                         if @transaction&.is_suggestion
                             link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
                         else
-                            link_to "質問を投稿する", new_user_request_path(service_id:@service.id), class:"transaction_button"
+                            link_to(new_user_request_path(service_id:@service.id), class:"transaction_button") do
+                                "質問を投稿する"
+                            end
                         end
                         %>
                     </div>

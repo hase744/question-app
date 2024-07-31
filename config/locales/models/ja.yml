@@ -34,9 +34,11 @@ ja:
         stock_quantity: 供給できるサービスの在庫数
         close_date: 募集終了日
         delivery_days: 回答までにかかる日数
-        is_published: 公開する
+        is_published: 公開設定
+        is_for_sale: 受付状況
         price: 料金
         transaction_message_days: 追加相談室日数
+        transaction_message_enabled: 追加質問
         request_max_length: 質問の最大の長さ
         request_max_minutes: 質問動画の最大時間
         request_max_characters: 質問の最大字数
