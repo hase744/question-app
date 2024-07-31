@@ -15,7 +15,7 @@
         </div>
       
           <div class="field_area">
-            <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display"%><br />
+            <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: Service.description_max_length() %><br />
             <%= f.text_area :description, maxlength:service.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
           </div>
 
@@ -58,9 +58,9 @@
 
         <%if !request.present? %>
           <div class="field_area length_field_area text_field_area">
-            <label>質問の最大文字数</label>（<%=service.mini_request_max_characters%>〜<%=service.max_request_max_characters%>字）<br />
+            <%= f.label :request_max_characters%><br />
             <div class="select_area">
-              <%= f.select 'request_max_characters', options_for_select((service.mini_request_max_characters..service.max_request_max_characters).step(100).map { |num| ["#{num}字", num] }, selected: service.request_max_characters), include_blank: true,  class:"" ,required: true %>
+              <%= f.select 'request_max_characters', options_for_select(Service.max_character_options, selected: service.request_max_characters),  class:"" %>
             </div>
           </div>
 
@@ -86,18 +86,17 @@
         </div>
 
         <div class="field_area">
-          <%= f.label :transaction_message_days, class:"field_label"%>（最大<%=service.max_transaction_message_days%>日）<br/>
+          <%= f.label :transaction_message_enabled, class:"field_label"%><br/>
           <div class="select_area">
-            <%= f.select 'transaction_message_days', options_for_select((0..service.max_transaction_message_days).step(1).map { |num| ["#{num}日", num] }, selected: service.transaction_message_days), include_blank: true,  class:"" ,required: true %>
+            <%= f.select 'transaction_message_enabled', options_for_select([["可能",true],["不可能",false]], selected: service.transaction_message_enabled), include_blank: true,  class:"" ,required: true %>
           </div>
-          <div class="transaction_message_alert" style="color:red;font-size:13px">＊追加質問を受け付けない</div>
         </div>
 
-        <%if request.nil? %>
+        <%if false#request.nil? %>
           <div class="field_area">
             <%= f.label :stock_quantity, class:"field_label"%><br/>
             <div class="select_area">
-              <%= f.select 'stock_quantity', options_for_select((0..service.stock_quantity_max_number).step(1).map { |num| ["#{num}個", num] }, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
+              <%= f.select 'stock_quantity', options_for_select(Service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
             </div>
           </div>
         <% end %>
@@ -105,7 +104,7 @@
         <div class="field_area">
           <%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
           <div class="select_area">
-            <%= f.select 'price', options_for_select((100..Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected: service.price), include_blank: true,  class:"price_field" ,required: true %>
+            <%= f.select 'price', options_for_select((100..Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected: service.price), include_blank: true,  class:"price_field" %>
           </div>
         </div>
 
@@ -118,10 +117,20 @@
         </div>
 
         <%if !request.present? %>
-        <div class="field_area">
-        <%= f.check_box :is_published, class:"", checked:true%>
-          <%= f.label :is_published, class:"field_label"%>
-        </div>
+          <div class="field_area">
+            <%#= f.check_box :is_published, class:"", checked:true%>
+            <%= f.label :is_published, class:"field_label"%></br>
+            <div class="select_area">
+            <%= f.select 'is_published', options_for_select({"公開":true, "非公開":false}, selected: service.is_published),  class:"price_field" ,required: true %>
+            </div>
+          </div>
+
+          <div class="field_area">
+            <%= f.label :is_for_sale, class:"field_label"%></br>
+            <div class="select_area">
+              <%= f.select 'is_for_sale', options_for_select({"販売中":true, "販売停止":false}, selected: service.is_for_sale),  class:"price_field" ,required: true %>
+            </div>
+          </div>
         <%end%>
 
         <%if request.present? %>

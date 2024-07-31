@@ -99,12 +99,18 @@
                         }
                     }
                     .condition_name{
-                        font-size: 13px;
-                        color: gray;
+                        font-size: 15px;
+                        //color: gray;
+                        font-weight: bold;
                         padding-bottom: 0px;
                         border-radius: 5px;
                         display: inline-block;
                         text-decoration: underline;
+                    }
+                    .service_condition{
+                        color: #333333;
+                        margin-left: 10px;
+                        font-size: 14px;
                     }
                 }
             }
@@ -154,6 +160,12 @@
                     padding: 5px 10px;
                     //border-bottom: solid 4px #627295;
                     text-decoration: none;
+                }
+                .transaction_button::before{
+                    content: "Q.";
+                    color: white;
+                    font-size: 20px;
+                    font-weight: 500;
                 }
                 .transaction_button:hover{
                     cursor: pointer;

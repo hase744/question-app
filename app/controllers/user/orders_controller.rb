@@ -67,7 +67,6 @@ class User::OrdersController < User::Base
 
   def edit
     @transaction = Transaction.left_joins(:service).find_by(id: params[:id], service: {user: current_user})
-    gon.text_max_length = @transaction.reject_reason_max_length
   end
 
   def cancel #依頼人がキャンセルするためのaction
@@ -76,7 +75,7 @@ class User::OrdersController < User::Base
     @service = @transaction.service
 
     @transaction.assign_attributes(is_canceled: true, canceled_at: DateTime.now)
-    @service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
+    #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
       if @transaction.save && @service.save && current_user.update_total_points
@@ -100,7 +99,7 @@ class User::OrdersController < User::Base
 
     @transaction.assign_attributes(reject_params)
     @transaction.rejected_at = DateTime.now
-    @service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
+    #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
       if @request.save && @buyer.update_total_points && @service.save && @transaction.save 

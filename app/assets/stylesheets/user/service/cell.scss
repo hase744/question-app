@@ -79,6 +79,8 @@
             display: block;
             height: 50px;
             .service_description{
+                color: #333333;
+                font-weight: bold;
                 display: -webkit-box;
                 margin: 0px;
                 -webkit-box-orient: vertical;
@@ -111,9 +113,10 @@
             }
             .info_name_area{
                 width: 70px;
-                color: gray;
+                //color: gray;
                 .info_name{
                     .condition_name{
+                        font-weight: bold;
                         border-radius: 10px;
                         text-decoration: underline;
                     }

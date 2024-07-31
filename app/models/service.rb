@@ -22,8 +22,8 @@ class Service < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}, presence: true
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :delivery_days, numericality: {only_integer: true, fgreater_than_or_equal_to: :delivery_days_minimum_number, less_than_or_equal_to: :delivery_days_max_number}, presence: true
-  validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}#, presence: true
-  validates :transaction_message_days, numericality: {only_integer: true, greater_than_or_equal_to: :minimum_transaction_message_days, less_than_or_equal_to: :max_transaction_message_days}, presence: true
+  #validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}#, presence: true
+  #validates :transaction_message_days, numericality: {only_integer: true, greater_than_or_equal_to: :minimum_transaction_message_days, less_than_or_equal_to: :max_transaction_message_days}, presence: true
   validate :validate_price
   validate :validate_request_max_length
   validate :validate_request_max_duration
@@ -114,6 +114,7 @@ class Service < ApplicationRecord
       "request_max_duration",
       "request_max_files",
       "transaction_message_days",
+      #"transaction_message_enabled",
     ]
     attributes_to_check.each do |a| #更新判定のattributeが更新されている
       if self.changed.include?(a)
@@ -158,8 +159,8 @@ class Service < ApplicationRecord
   end
 
   def get_unbuyable_message(user)
-    if  self.stock_quantity && self.stock_quantity < 1
-      "売り切れのため購入できません。"
+    if !self.is_for_sale
+      "販売停止中です。"
     elsif !self.is_published
       "サービスが非公開です。"
     elsif !self.user.is_published
@@ -178,8 +179,8 @@ class Service < ApplicationRecord
   end
 
   def get_unsuggestable_message(request)
-    if  self.stock_quantity < 1
-      "在庫が足りません"
+    if  !self.is_for_sale
+      "販売停止中です。"
     elsif request.user.is_deleted
       "アカウントが存在しません。"
     elsif !request.user.is_stripe_customer_valid?
@@ -194,6 +195,7 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
+    self.request_max_characters = nil if self.request_max_characters == 0
     if self.service_categories.length > 1
       if self.categories.length > 1 #カテゴリの種類がたくさんある
         self.service_categories.first.update(
@@ -208,7 +210,7 @@ class Service < ApplicationRecord
     end
     
     if self.request #依頼に対する提案である
-      self.stock_quantity = 1
+      self.is_for_sale = true
       self.category_id = self.request.category.id
       self.request_form_name = self.request.request_form_name
       self.request_max_characters = nil
@@ -289,7 +291,11 @@ class Service < ApplicationRecord
   end
 
   def description_max_length#最大値
-    1000
+    10000
+  end
+
+  def self.description_max_length#最大値
+    10000
   end
 
   
@@ -302,8 +308,27 @@ class Service < ApplicationRecord
     10000
   end
 
+  def self.stock_options
+    array = (0..stock_quantity_max_number)
+      .step(1)
+      .map { |num| ["#{num}個", num] }
+    array.unshift(["無制限",nil])
+    array
+  end
+
+  def self.max_character_options
+    array = []
+    array << ['制限なし', 0]
+    (100..900).step(100) { |i| array << ["#{i}字", i] }
+    (1000..20000).step(1000) { |i| array << ["#{i}字", i] }
+    array
+  end
   #供給数
   def stock_quantity_max_number#最大値
+    100
+  end
+
+  def self.stock_quantity_max_number#最大値
     100
   end
 
@@ -332,7 +357,15 @@ class Service < ApplicationRecord
     Request.new().description_max_length
   end
 
+  def self.max_request_max_characters
+    Request.new().description_max_length
+  end
+
   def mini_request_max_characters
+    100
+  end
+
+  def self.mini_request_max_characters
     100
   end
 

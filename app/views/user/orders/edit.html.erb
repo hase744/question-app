@@ -7,7 +7,7 @@
     <%= form_with model: @transaction, url:user_reject_order_path(@transaction.id), method:"patch" do |f| %>
       
         <div class="field_area">
-          <%= f.label :reject_reason, class:"field_label" %><%=render "user/shared/total_characters_display" %><br />
+          <%= f.label :reject_reason, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: @transaction.reject_reason_max_length %><br />
           <%= f.text_area :reject_reason, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
           <%= f.hidden_field :is_rejected, value:true %>
         </div>

@@ -59,7 +59,6 @@ class User::TransactionsController < User::Base
       .where('transaction_messages.created_at < transactions.delivered_at')
     @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
     gon.tweet_text = @transaction.description
-    gon.text_max_length = TransactionMessage.new.body_max_characters
     @transaction_message = TransactionMessage.new()
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
@@ -245,7 +244,6 @@ class User::TransactionsController < User::Base
 
   private def set_edit_values
     gon.delivery_form = @transaction.service.delivery_form.name
-    gon.text_max_length = @transaction.description_max_length
   end
 
   private def transaction_item_params

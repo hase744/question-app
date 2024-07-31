@@ -131,10 +131,6 @@
             <%if @transaction.buyer == current_user%>
                 <p class="title">
                 追加質問</br>
-                <%=from_now(@transaction.delivered_at.to_datetime + @transaction.transaction_message_days)%>
-                (
-                <%=(@transaction.delivered_at.to_datetime + @transaction.transaction_message_days).strftime("%Y/%m/%d %H:%m")%>
-                まで)
                 </p>
             <% elsif @transaction.seller == current_user %>
                 <p class="title">追加回答</p>

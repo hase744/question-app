@@ -1,8 +1,8 @@
 <div class="request_show_zone">
     <% if @request.is_inclusive %>
-        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_requests_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
+        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_requests_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></div>
     <% else %>
-        <p class="main_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></p>
+        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></div>
     <% end %>
     <div class="request_area">
         <div class="request_flame">
@@ -97,19 +97,6 @@
                         <span class="request_condition"><%=@request.delivery_form.japanese_name%></span>
                     </td>
                 </tr>
-                <% if @request.services == [] %>
-                <tr>
-                    <td class="label_icon">
-                    <span class="far fa-hand-paper"></span>
-                    </td>
-                    <td class="condition_label">
-                        <span class="condition_name ">提案数</span>
-                    </td>
-                    <td>
-                        <span class="request_condition"><%=Transaction.where(request:@request, is_suggestion:true).count%>件</span>
-                    </td>
-                </tr>
-                <% end %>
                 <tr>
                     <td class="label_icon">
                     <span class="fas fa-sitemap"></span>
@@ -141,8 +128,7 @@
             </div>
             <% if user_signed_in? && @request.is_suggestable?(current_user) %>
                 <div class="suggest_button_area">
-                    <%=link_to "今回限定の相談室を提案", new_user_service_path(request_id:@request.id), class:"suggest_button"%>
-                    <p class="modal_open suggest_button">すでにある相談室を提案</p>
+                    <p class="modal_open suggest_button">相談室を提案</p>
                 </div>
             <% end %>
 
@@ -181,26 +167,38 @@
     -->
 </div>
 <%= render "user/shared/javascript/swiper.js.erb" %>
-<div class="modal_content">
-    <div class="service_area">
-    <% current_user&.services&.where(request_id:nil)&.each do |service| %>
-        <%= link_to(user_service_suggest_path(service.id, request_id: @request.id), class: "service_cell", method: :put, data: { confirm: "#{service.title}を提案しますか？" } ) do %>
-            <div class="image_area">
-                <%= image_tag service.thumb_with_default, class:"image" %>
-            </div>
-            <div class="title_area">
-                <span class="two_line_text">
-                    <%= service.title%>
-                </span>
-            </div>
+<div class="modal_window service_select_modal">
+    <div class="modal_window_body">
+        <div class="service_area">
+        <% current_user&.services&.where(request_id:nil)&.each do |service| %>
+            <%= link_to(user_service_suggest_path(service.id, request_id: @request.id), class: "service_cell", method: :put, data: { confirm: "#{service.title}を提案しますか？" } ) do %>
+                <div class="image_area">
+                    <%= image_tag service.thumb_with_default, class:"image" %>
+                </div>
+                <div class="title_area">
+                    <span class="two_line_text">
+                        <%= service.title%>
+                    </span>
+                </div>
+            <% end %>
         <% end %>
-    <% end %>
-    </div>
-    <div modal_delete_area>
-        <p class="modal_delete">閉じる</p>
+        </div>
+        <div class="modal_delete_area">
+            <p class="modal_delete">閉じる</p>
+        </div>
     </div>
 </div>
-<div class="modal_overlay"></div>
+<div class="modal_window suggest_buttons_modal">
+    <div class="modal_window_body">
+        <div class="suggest_button_area">
+            <%=link_to "今回限定の相談室を提案", new_user_service_path(request_id:@request.id), class:"suggest_button button"%>
+            <div class="modal_open existing_services button">すでにある相談室を提案</div>
+        </div>
+        <div class="modal_delete_area">
+            <p class="modal_delete">閉じる</p>
+        </div>
+    </div>
+</div>
 <script>
 over_600_slide_count = <%=@request.items.length.clamp(1, 3) %><%%>
 
@@ -256,19 +254,24 @@ $("#like_button")[0].addEventListener('ajax:error', function(event) {
   like_count.textContent = parseFloat(like_count.textContent) - 1
 });
 $(function(){
-  const modal = $('.modal_content');
-  const overlay = $('.modal_overlay');
-  $('.modal_open').on('click', function(){
-    modal.addClass("open");
-    overlay.addClass("open");
+  const modal = $('.modal_window');
+  const service_select_modal = $('.service_select_modal');
+  const suggest_buttons_modal = $('.suggest_buttons_modal');
+  $('.suggest_button').on('click', function(){
+    suggest_buttons_modal.addClass("open");
+  });
+  $('.existing_services').on('click', function(){
+    modal.removeClass("open");
+    service_select_modal.addClass("open");
   });
   $('.modal_delete').on('click', function(){
     modal.removeClass("open");
-    overlay.removeClass("open");
   });
-  overlay.on('click', function(){
-    modal.removeClass("open");
-    overlay.removeClass("open");
+  $('.modal_window').on('click', function(e){
+    modal.removeClass('open');
   });
+  $('.modal_window_body').on('click', function(event) {
+        event.stopPropagation(); // イベントの伝播を防ぐ
+    });
 });
 </script>

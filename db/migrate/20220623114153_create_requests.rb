@@ -27,7 +27,6 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       t.integer :total_files, default: 0, index:true
       t.integer :total_views, default: 0, index:true
       t.integer :total_services, default: 0, index:true
-      t.integer :total_likes, default: 0, index:true
       t.integer :transaction_message_days, index:true
 
       t.references :transaction, index:true

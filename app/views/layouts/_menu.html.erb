@@ -89,6 +89,14 @@
                     </br>
                 </span>
 
+                <span id="price_field_area" class="service_search_field">
+                    <br/>
+                    <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>
+                        <label class="field_label">受付中</label>
+                    </span>
+                    </br>
+                </span>
+                
                 <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
                     <p>カテゴリー</p>
                     <div>

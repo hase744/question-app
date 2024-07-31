@@ -93,6 +93,7 @@
 
         <div class="submit_area">
           <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+          <%= f.hidden_field :accessed_at, value: DateTime.now%>
           <%= f.hidden_field :transaction_id %>
           <%= f.submit @submit_text, class:"submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"}%>
         </div>

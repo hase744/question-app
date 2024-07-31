@@ -39,7 +39,8 @@ class User::ServicesController < User::Base
     end
 
     if params[:is_available] == "1"
-      @services = @services.where("stock_quantity IS NULL OR stock_quantity >= ?", 1) || @services.stock_quantity.nil?
+      @services = @services.where(is_for_sale: true)
+      #@services = @services.where("stock_quantity IS NULL OR stock_quantity >= ?", 1) || @services.stock_quantity.nil?
     end
     #上限価格が入力されている
     if params[:max_price] != nil && params[:max_price] != ""
@@ -76,8 +77,7 @@ class User::ServicesController < User::Base
     else
       @service = Service.new()
       @service.service_categories.build
-      @service.stock_quantity = nil
-      @service.transaction_message_days = nil
+      #@service.stock_quantity = nil
     end
     set_form_values
   end
@@ -134,7 +134,7 @@ class User::ServicesController < User::Base
   
   def update
     @service = Service.find_by(id: params[:id], user:current_user)
-    if @service.update(service_update_params)
+    if @service.update(service_params)
       if !@service.is_published
         flash.notice = "相談室を非公開にしました。"
         redirect_to user_service_path(params[:id])
@@ -330,7 +330,7 @@ class User::ServicesController < User::Base
       :price,
       :image,
       :category_id,
-      :transaction_message_days,
+      :transaction_message_enabled,
       :stock_quantity,
       :close_date,
       :delivery_days,
@@ -340,27 +340,7 @@ class User::ServicesController < User::Base
       :delivery_form_name,
       :request_id,
       :is_published,
-      service_categories_attributes: [:category_name],
-    )
-  end
-
-  private def service_update_params
-    params.require(:service).permit(
-      :title,
-      :description,
-      :price,
-      :image,
-      :category_id,
-      :transaction_message_days,
-      :stock_quantity,
-      :close_date,
-      :delivery_days,
-      :request_form_name,
-      :delivery_form_name,
-      :request_id,
-      :request_max_minutes,
-      :request_max_characters,
-      :is_published,
+      :is_for_sale,
       service_categories_attributes: [:category_name],
     )
   end
