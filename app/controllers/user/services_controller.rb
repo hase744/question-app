@@ -143,6 +143,9 @@ class User::ServicesController < User::Base
         redirect_to user_service_path(params[:id])
       end
     else
+      @service.service_categories.reject(&:persisted?).each do |category|
+        @service.service_categories.delete(category) #これがないとcateogryフィールドが複数生成される
+      end
       render action: "edit"
     end
   end

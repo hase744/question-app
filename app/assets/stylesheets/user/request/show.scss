@@ -143,11 +143,12 @@
                 object-fit: cover;
             }
 
-            .suggest_button_area{
+            .button_area{
                 text-align: center;
                 margin: 10px;
-                .suggest_button{
-                    width: 200px;
+                .button{
+                    width: 50%;
+                    min-width: 200px;
                     display: inline-block;
                     font-size: 15px;
                     border-radius: 5px 5px 5px 5px;
@@ -158,7 +159,7 @@
                     //border-bottom: solid 4px #627295;
                     text-decoration: none;
                 }
-                .suggest_button:hover{
+                .button:hover{
                     cursor: pointer;
                     background-color: #FFC700;
                     //border-bottom: solid 4px lightgray;

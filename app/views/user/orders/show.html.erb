@@ -10,7 +10,7 @@
         <h3 class="links"><%=link_to "編集", edit_user_transaction_path(@transaction.id) %> <%=link_to "拒否", edit_user_order_path(@transaction.id), class:"button" %></h3></br>
         <% end %>
         <div class="information_component">
-            <label>タイトル</label></br>
+            <label><%= Transaction.human_attribute_name(:title)%></label></br>
             <%if @transaction.title %>
                 <h3 class="margin0px"><%=@transaction.title %></h3>
             <%else%>
@@ -18,7 +18,7 @@
             <% end %>
         </div>
         <div  class="information_component">
-            </label class="title_label">本文</label></br>
+            </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
             <% if @transaction.description %>
                 <h5 class="margin0px break_word"><%=@transaction.description %></h5>
             <% else %>

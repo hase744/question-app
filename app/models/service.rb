@@ -31,7 +31,9 @@ class Service < ApplicationRecord
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :service_categories, allow_destroy: true
 
-  scope :solve_n_plus_1, -> {includes(:user, :requests, :service_categories, :service_category, :transactions)}
+  scope :solve_n_plus_1, -> {
+    includes(:user, :transactions, :requests, :service_categories, :service_category)
+  }
   scope :seeable, -> { 
     left_joins(:user, :service_categories)
     .solve_n_plus_1
@@ -91,8 +93,21 @@ class Service < ApplicationRecord
     self.request_id == nil
   end
 
+  scope :with_minimum_rating, ->(min_rating) {
+    joins(:transactions)
+      .select('services.*, AVG(transactions.star_rating) as average_rating')
+      .group('services.id')
+      .having('AVG(transactions.star_rating) >= ?', min_rating)
+  }
+
   def average_star_rating
-    transactions.where.not(reviewed_at: nil).average(:star_rating).to_f
+    #n+1回避のためwhereなどは、あえて使わない
+    ratings = transactions.select {|transaction| 
+      transaction.star_rating.present?
+    }.map {|transaction|
+      transaction.star_rating
+    }
+    ratings.sum.fdiv(ratings.length)
   end
 
   def exclusive_transaction
@@ -185,7 +200,7 @@ class Service < ApplicationRecord
       "アカウントが存在しません。"
     elsif !request.user.is_stripe_customer_valid?
       "質問者の決済が承認されていません。"
-    elsif request.request_form != self.request_form
+    elsif request.request_form != self.request_form || self.request_form_name != 'free'
       "質問形式が違います"
     elsif self.request_max_characters < request.description.length
       "相談室の文字数が足りません"
@@ -227,16 +242,6 @@ class Service < ApplicationRecord
   end
 
   def update_service_mini_price
-  end
-
-  def validate_price
-    if self.price.nil?
-      errors.add(:price)
-    elsif self.price % 100 != 0
-      errors.add(:price, "は100円ごとにしか設定できません")
-    elsif self.price <= 0
-      errors.add(:price)
-    end
   end
 
   def validate_request_max_duration
@@ -298,17 +303,7 @@ class Service < ApplicationRecord
     10000
   end
 
-  
-  #価格
-  def price_minimum_number#最小値
-    100
-  end
-
-  def price_max_number#最小値
-    10000
-  end
-
-  def self.stock_options
+  def stock_options
     array = (0..stock_quantity_max_number)
       .step(1)
       .map { |num| ["#{num}個", num] }
@@ -316,19 +311,27 @@ class Service < ApplicationRecord
     array
   end
 
-  def self.max_character_options
+  def max_character_options
     array = []
     array << ['制限なし', 0]
     (100..900).step(100) { |i| array << ["#{i}字", i] }
     (1000..20000).step(1000) { |i| array << ["#{i}字", i] }
     array
   end
+
+  def price_options
+    (price_minimum_number..price_max_number)
+      .step(100)
+      .map { |num| 
+        if num == 0
+          ["#{num}円（お試し）", num]
+        else
+          ["#{num}円", num]
+        end
+      }
+  end
   #供給数
   def stock_quantity_max_number#最大値
-    100
-  end
-
-  def self.stock_quantity_max_number#最大値
     100
   end
 
@@ -357,15 +360,7 @@ class Service < ApplicationRecord
     Request.new().description_max_length
   end
 
-  def self.max_request_max_characters
-    Request.new().description_max_length
-  end
-
   def mini_request_max_characters
-    100
-  end
-
-  def self.mini_request_max_characters
     100
   end
 

@@ -19,7 +19,7 @@
                         <% else %>
                             <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
                         <% end %>
-                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
+                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "相談室を削除しますか？"}  %>
                     </div>
                 <% else %>
                     <%= link_to(user_service_likes_path(id: @service.id), class: "like_button #{@service.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
@@ -51,6 +51,14 @@
                 <% end %>
                     -->
                 <table class="service_condition_area">
+                    <tr>
+                        <td class="user_info_name">
+                            <span class="condition_name">料金</span>
+                        </td>
+                        <td>
+                            <span class="service_condition"><%=@service.price%>円</span>
+                        </td>
+                    </tr>
                     <tr>
                         <td class="user_info_name">
                             <span class="condition_name">質問から回答まで</span>
@@ -103,14 +111,6 @@
                         </tr>
                         <% end %>
                     <% end %>
-                    <tr>
-                        <td class="user_info_name">
-                            <span class="condition_name">料金</span>
-                        </td>
-                        <td>
-                            <span class="service_condition"><%=@service.price%>円</span>
-                        </td>
-                    </tr>
                     <tr>
                         <td class="user_info_name">
                             <span class="condition_name">カテゴリー</span>

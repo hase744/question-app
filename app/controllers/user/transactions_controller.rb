@@ -122,21 +122,21 @@ class User::TransactionsController < User::Base
     end
     
     if all_models_valid?([current_user, @transaction, @delivery_item])
-      transfer = Stripe::Transfer.create(
-            amount: @transaction.profit,
-            currency: 'jpy',
-            destination: @transaction.seller.stripe_account_id
-      )
-      if !transfer.reversed
-        @transaction.stripe_transfer_id = transfer.id
-        @transaction.save
-        EmailJob.perform_later(mode: :deliver, model: @transaction)
-        create_notification(@transaction)
-        flash.notice = "回答を納品しました。"
-        redirect_to user_transaction_path(@transaction.id)
+      if @transaction.profit > 0
+        transfer = Stripe::Transfer.create(
+              amount: @transaction.profit,
+              currency: 'jpy',
+              destination: @transaction.seller.stripe_account_id
+        )
+        if !transfer.reversed
+          @transaction.stripe_transfer_id = transfer.id
+          complete_delivery
+        else
+          flash.notice = "回答を納品できませんでした。"
+          redirect_to user_order_path(params[:id])
+        end
       else
-        flash.notice = "回答を納品できませんでした。"
-        redirect_to user_order_path(params[:id])
+        complete_delivery
       end
     else
       detect_models_errors([current_user, @transaction, @delivery_item])
@@ -144,6 +144,14 @@ class User::TransactionsController < User::Base
       flash.notice = "回答を納品できませんでした。"
       render "user/orders/show"
     end
+  end
+
+  def complete_delivery
+    @transaction.save
+    EmailJob.perform_later(mode: :deliver, model: @transaction)
+    create_notification(@transaction)
+    flash.notice = "回答を納品しました。"
+    redirect_to user_transaction_path(@transaction.id)
   end
 
   def like

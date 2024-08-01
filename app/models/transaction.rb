@@ -21,7 +21,7 @@ class Transaction < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}
   validates :star_rating, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, :allow_blank => true}
   validates :review_description, length: {maximum: :review_description_max_length}
-  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: 100}
+  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
   validates :delivery_time, presence: true
   validate :validate_price
@@ -110,6 +110,10 @@ class Transaction < ApplicationRecord
     end
   }
 
+  scope :reviewed, -> {
+    self.where.not(reviewed_at: nil)
+  }
+
   after_initialize do
     set_delivery_content
   end
@@ -187,9 +191,9 @@ class Transaction < ApplicationRecord
         errors.add(:base,  "アカウントが存在しません。")
       elsif !self.request.user.is_stripe_customer_valid?
         errors.add(:base,  "質問者の決済が承認されていません。")
-      elsif self.request.request_form.name != self.service.request_form.name
+      elsif self.request.request_form.name != self.service.request_form.name && self.request_form_name != 'free'
         errors.add(:base,  "質問形式が違います")
-      elsif self.request.category.name != self.service.category.name
+      elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
       elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
         errors.add(:base,  "相談室の文字数が足りません")
@@ -210,12 +214,6 @@ class Transaction < ApplicationRecord
       else
         errors.add(:base, "既に質問済みです")
       end
-    end
-  end
-
-  def validate_price
-    if price % 100 != 0 || price <= 0
-      errors.add(:price, "が10の倍数ではありません。")
     end
   end
 
@@ -316,7 +314,7 @@ class Transaction < ApplicationRecord
 
   def validate_is_delivered
     if self.is_delivered
-      if self.request_form.name != "text"
+      if self.delivery_form.name != "text"
         errors.add(:base, "画像ファイルを入力してください")  if self.items.count < 1
       end
     end
