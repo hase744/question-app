@@ -1,15 +1,15 @@
 class User::RequestsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish ] #ログイン済みである
-  before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
-  before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase] #Stripeのアカウントが有効である
+  before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
+  #before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
   before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
   before_action :check_accessed_at, only:[:create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
-  before_action :check_already_constracted, only:[:new, :create, :publish, :purchase]
+  before_action :check_already_contracted, only:[:new, :create, :publish, :purchase]
   before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
   layout :choose_layout
 
@@ -321,7 +321,7 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id:@service.user_id,
       notifier_id: current_user.id,
-      description: "相談室に質問がされました。",
+      description: "あなたの相談室に相談が依頼されました。",
       action: "show",
       controller: "requests",
       id_number: @request.id
@@ -370,7 +370,7 @@ class User::RequestsController < User::Base
   end
 
   private def check_stripe
-    if !current_user.is_stripe_customer_valid?
+    unless current_user.is_stripe_customer_valid? || @service.price <= 0
       redirect_to  user_cards_path
     end
   end
@@ -389,7 +389,6 @@ class User::RequestsController < User::Base
         request_id: params[:id]
         )
     else
-      @transaction = false
     end
   end
 
@@ -451,7 +450,7 @@ class User::RequestsController < User::Base
     end
   end
 
-  private def check_already_constracted
+  private def check_already_contracted
     if @transaction&.is_contracted
       flash.notice = "購入済みです"
       redirect_to user_service_path(@service.id, transaction_id: @transaction.id)

@@ -1,2 +1,6 @@
-
-<span id="star_rating" class="star5_rating user<%=model.id%>" data-rate="4" name="<%=(model.average_star_rating*20).round(1) %>"></span>&nbsp;<%= "#{model.average_star_rating&.round(1)} (#{model.total_reviews})"%>
+<% if model.total_reviews > 0%>
+<span id="star_rating" class="star5_rating user<%=model.id%>" data-rate="4" name="<%=(model.average_star_rating*20).round(1) %>"></span>
+&nbsp;<%= "#{model.average_star_rating&.round(1)} (#{model.total_reviews})"%>
+<% else %>
+ー
+<% end %>

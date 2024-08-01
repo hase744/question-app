@@ -38,15 +38,18 @@ module CommonConcern
   def detect_models_errors(models)
     begin
       if models.instance_of?(Array) #配列である
-        models.each do |model|
+        models.compact.each do |model|
           if model.invalid? #保存不可
+            puts "だめ"
             model.save
           end
         end
       else
-          models_valid = false if models.invalid? #保存不可
+        models_valid = false if models.invalid? #保存不可
       end
-    rescue
+    rescue => e
+      puts "エラー"
+      puts e
     end
   end
 

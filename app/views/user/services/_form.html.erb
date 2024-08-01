@@ -60,7 +60,7 @@
           <div class="field_area length_field_area text_field_area">
             <%= f.label :request_max_characters%><br />
             <div class="select_area">
-              <%= f.select 'request_max_characters', options_for_select(Service.max_character_options, selected: service.request_max_characters),  class:"" %>
+              <%= f.select 'request_max_characters', options_for_select(service.max_character_options, selected: service.request_max_characters),  class:"" %>
             </div>
           </div>
 
@@ -96,7 +96,7 @@
           <div class="field_area">
             <%= f.label :stock_quantity, class:"field_label"%><br/>
             <div class="select_area">
-              <%= f.select 'stock_quantity', options_for_select(Service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
+              <%= f.select 'stock_quantity', options_for_select(service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
             </div>
           </div>
         <% end %>
@@ -104,7 +104,7 @@
         <div class="field_area">
           <%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
           <div class="select_area">
-            <%= f.select 'price', options_for_select((100..Request.new.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected: service.price), include_blank: true,  class:"price_field" %>
+            <%= f.select 'price', options_for_select(service.price_options, selected: service.price), include_blank: true,  class:"price_field" %>
           </div>
         </div>
 

@@ -17,7 +17,26 @@ class ApplicationRecord < ActiveRecord::Base
       "video/#{extension}"
     }.join(',')
   end
-  
+
+  def validate_price
+    if self.price.nil?
+      errors.add(:price)
+    elsif self.price % 100 != 0
+      errors.add(:price, "は100円ごとにしか設定できません")
+    elsif self.price < 0
+      errors.add(:price)
+    end
+  end
+
+  #価格
+  def price_minimum_number#最小値
+    0
+  end
+
+  def price_max_number#最小値
+    10000
+  end
+
   def self.acceptable_image_extensions
     extensions =  ImageUploader.new.extension_allowlist
     extensions = extensions.map{|extension|

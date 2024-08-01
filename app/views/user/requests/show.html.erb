@@ -127,14 +127,14 @@
                 <% end %>
             </div>
             <% if user_signed_in? && @request.is_suggestable?(current_user) %>
-                <div class="suggest_button_area">
-                    <p class="modal_open suggest_button">相談室を提案</p>
+                <div class="button_area">
+                    <p class="modal_open suggest_button button">相談室を提案</p>
                 </div>
             <% end %>
 
             <%if user_signed_in? && current_user.can_respond_order(@request) %>
-                <div class="suggest_button_area" >
-                    <%=link_to "対応する", user_order_path(@request.transactions.first.id), class:"suggest_button" %>
+                <div class="button_area" >
+                    <%=link_to "対応する", user_order_path(@request.transactions.first.id), class:"button" %>
                 </div>
             <% end %>
         </div>
@@ -168,6 +168,7 @@
 </div>
 <%= render "user/shared/javascript/swiper.js.erb" %>
 <div class="modal_window service_select_modal">
+    <div class="modal_background"></div>
     <div class="modal_window_body">
         <div class="service_area">
         <% current_user&.services&.where(request_id:nil)&.each do |service| %>
@@ -189,6 +190,7 @@
     </div>
 </div>
 <div class="modal_window suggest_buttons_modal">
+    <div class="modal_background"></div>
     <div class="modal_window_body">
         <div class="suggest_button_area">
             <%=link_to "今回限定の相談室を提案", new_user_service_path(request_id:@request.id), class:"suggest_button button"%>
@@ -267,11 +269,8 @@ $(function(){
   $('.modal_delete').on('click', function(){
     modal.removeClass("open");
   });
-  $('.modal_window').on('click', function(e){
+  $('.modal_background').on('click', function(e){
     modal.removeClass('open');
   });
-  $('.modal_window_body').on('click', function(event) {
-        event.stopPropagation(); // イベントの伝播を防ぐ
-    });
 });
 </script>

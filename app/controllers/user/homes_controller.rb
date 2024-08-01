@@ -5,7 +5,8 @@ class User::HomesController < ApplicationController
       .solve_n_plus_1
       .where(request_id: nil)
       .order(:average_star_rating)
-      .order(:total_sales_numbers).limit(10)
+      .order(:total_sales_numbers)
+      .limit(10)
     @users = User.all
       .solve_n_plus_1
       .where(is_seller:true)

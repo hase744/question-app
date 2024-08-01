@@ -5,12 +5,20 @@ class User::NotificationsController < User::Base
   end
 
   def notification_bar
-    @notifications = Notification.includes(:user).where(user_id:current_user.id).order(is_notified: :asc, id: :desc).page(params[:page]).per(15)
+    @notifications = Notification.solve_n_plus_1
+      .where(user: current_user)
+      .order(is_notified: :asc, id: :desc)
+      .page(params[:page])
+      .per(15)
     render partial: "user/notifications/notification_bar", locals: { contents: @notifications}
   end
 
   def notification_cells
-    @notifications = Notification.includes(:user).where(user_id:current_user.id).order(id: :DESC).page(params[:page]).per(15)
+    @notifications = Notification.solve_n_plus_1
+      .where(user: current_user)
+      .order(id: :DESC)
+      .page(params[:page])
+      .per(15)
     render partial: "user/notifications/notification_cells", locals: { contents: @notifications}
   end
   

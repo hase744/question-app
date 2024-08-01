@@ -53,9 +53,9 @@
                                 <td>
                                     <span class="one_line_text">
                                     <% if current_user == transaction.seller %>
-                                        <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: "service_link" %>
+                                        <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: "" %>
                                     <% else %>
-                                        <%= link_to transaction.seller.name, user_account_path(transaction.seller.id), class: "service_link" %>
+                                        <%= link_to transaction.seller.name, user_account_path(transaction.seller.id), class: "" %>
                                     <% end %>
                                     </span>
                                 </td>
