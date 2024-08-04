@@ -46,6 +46,19 @@
     overflow: hidden;
     text-rendering: auto;
     -webkit-line-clamp: 1;
+    color: dimgray;
+    a{
+        color: dimgray;
+    }
+    a:hover{
+        color: dimgray;
+    }
+    .pagination{
+        color: black;
+        a{
+            color: blue;
+        }
+    }
 }
 .bottom{
     display: none;
@@ -75,11 +88,6 @@ body{
     color: blue;
     text-decoration: none;
     display: inline-block;
-}
-.main_header{
-    a{
-        color: blue;
-    }
 }
 .main_bottom{
     a{

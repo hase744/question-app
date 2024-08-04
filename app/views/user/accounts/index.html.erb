@@ -2,7 +2,11 @@
     <%if current_state == "register" %>
         <%= render "user/shared/state_register_alert" %>
     <%else%>
-        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home" %> > 回答者一覧<%= paginate @users %></div>
+        <div class="main_header">
+            <%= link_to "", user_homes_path, class:"fas fa-home" %>
+             > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%>
+            <%= paginate @users %>
+        </div>
         <div class="searched_user_area" id="searched_user_area">
             <div  id="searched_user_area">
                 <% @users.each do |user|%>

@@ -12,7 +12,46 @@
             <%=user.name %>
             <% end %>
         </div>
-        <%= render "user/relationships/follow_message", user: user, relationship:relationship%>
-        <%= render "user/accounts/user_basic_info", user:user, star_rating:3%>
+        <div class="categories_area">
+            <% user.categories.each do |c|%>
+                <span class="name_tag"><%=c.japanese_name%></span>
+            <% end %>
+        </div>
+        <%= render "user/accounts/user_basic_info", user:user, star_rating:3 %>
+        <% if user == current_user %>
+        <% elsif Relationship.exists?(followee: user, follower: current_user, is_blocked:false) %>
+            <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button", method: :patch, remote:true %>
+            <%= link_to "フォロー", user_relationship_path(user.id), class: "fas fa-user-plus follow_button unfollowed_button display_none ", method: :put, remote:true %>
+        <% else %>
+            <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button display_none", method: :patch, remote:true %>
+            <%= link_to "フォロー", user_relationship_path(user.id), class: "fas fa-user-plus follow_button unfollowed_button", method: :put, remote:true %>
+        <% end %>
     </div>
 </div>
+<script>
+$(".follow_button").each(function() {
+    this.addEventListener('ajax:success', function(event) {// 成功時の処理
+    var res = event.detail[0];
+    is_following = $('.followed_button').is(':visible');
+    if(is_following){
+        notify_for_seconds("フォローを解除しました。");
+    }else{
+        notify_for_seconds("フォローしました。");
+    }
+    $('.follow_button').toggleClass('display_none');
+  })
+});
+  
+  $(".follow_button").addEventListener('ajax:error', function(event) {
+    // 失敗時の処理
+    console.log("フォローできませんでした。")
+    var res = event.detail[0];
+    console.log(res["is_followed"]);
+    $(".follow_button").toggleClass("unfollowed_button");
+    if($(".unfollowed_button").length == 0){
+      notify_for_seconds("フォロー解除できませんでした。");
+    }else{
+      notify_for_seconds("フォローできませんでした。");
+    }
+  });
+</script>

@@ -2,7 +2,7 @@
 <%= form_with model: request, url:path, method: method do |f| %>
   
   <div class="field_area">
-    <%= f.label :title, class:"field_label"%>（最大<%= request.title_max_length %>字）<br/>
+    <%= f.label :title, class:"field_label"%>（<%= request.title_max_length %>字以内）<br/>
     <%= f.text_field :title, maxlength: request.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field"%>
   </div>
 

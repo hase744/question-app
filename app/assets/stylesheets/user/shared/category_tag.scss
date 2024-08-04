@@ -1,0 +1,15 @@
+@import "variables";
+.name_tag{
+    color: dimgray;
+    font-size: 9px;
+    padding: 3px 1px;
+    margin-right: 3px;
+    display: inline-block;
+    background-color: #f1f1f1;
+    //background-color: whitesmoke;   
+    color: $text_yellow;
+    //color: #195faa;
+    //padding-right: 2px;
+    //border: 1px solid silver;
+    border-radius: 2px;
+}

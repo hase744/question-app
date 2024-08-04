@@ -2,8 +2,17 @@
   <%= render "user/requests/cell", request: @service.request%>
   <h3 class="service_new_title"><%=@request.user.name%>に相談室を提案</h3>
 <% else %>
-  <h3 class="service_new_title">サービスを新規出品</h3>
+  <h3 class="service_new_title">相談室を新規出品</h3>
 <% end %>
+<div class="caveat_area">
+  <div class="caveat_title">出品するにあたって</div>
+  <div class="caveat_body">
+    ・<%= link_to "相談室の作り方のヒント", abouts_service_guide_path %></br>
+    ・<%= link_to "相談室の出品の仕方", abouts_how_to_sell_path %>
+  </div>
+</div>
+<!--
 <%= render "user/shared/caveat",path: abouts_service_guide_path,label:"出品可能なサービスについて" %>
 <%= render "user/shared/caveat",path: abouts_how_to_sell_path,label:"サービスの各項目の詳細について" %>
+-->
 <%= render "user/services/form", service: @service, request: @request, submit_text: @submit_text %>

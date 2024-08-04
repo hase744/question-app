@@ -1,6 +1,11 @@
 <div class="request_show_zone">
     <% if @request.is_inclusive %>
-        <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_requests_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></div>
+        <div class="main_header">
+        <%= link_to "", user_homes_path, class:"fas fa-home"%>
+         > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link"%>
+         > <%= link_to @request.category.japanese_name, user_requests_path(categories: @request.category.name), class:"main_area_top_link"%>
+         > <%= @request.title %>
+        </div>
     <% else %>
         <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></div>
     <% end %>

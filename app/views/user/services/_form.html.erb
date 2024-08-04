@@ -5,7 +5,7 @@
     <div class="service_new_area input_area">
     <%= form_with model: service, url:[ :user, service] do |f| %>
         <div class="field_area">
-          <%= f.label :title, class:"field_label"%>（最大<%=service.title_max_length%>字）<br />
+          <%= f.label :title, class:"field_label"%>（<%=service.title_max_length%>字以内）<br />
           <%= f.text_field :title, maxlength:service.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
         </div>
         
@@ -86,9 +86,9 @@
         </div>
 
         <div class="field_area">
-          <%= f.label :transaction_message_enabled, class:"field_label"%><br/>
+          <%= f.label :transaction_message_enabled, class:"field_label", id:"transaction_message_enabled"%><br/>
           <div class="select_area">
-            <%= f.select 'transaction_message_enabled', options_for_select([["可能",true],["不可能",false]], selected: service.transaction_message_enabled), include_blank: true,  class:"" ,required: true %>
+            <%= f.select 'transaction_message_enabled', options_for_select([["受け付ける",true],["受け付けない",false]], selected: service.transaction_message_enabled), include_blank: true,  class:"" ,required: true %>
           </div>
         </div>
 
