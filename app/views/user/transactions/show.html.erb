@@ -1,5 +1,10 @@
 <div class="transaction_show_zone">
-    <p class="items_header one_line_text"><%= link_to "", user_transactions_path, class:"fas fa-home" %> > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link"%> > <%=@transaction.category.japanese_name%></p>
+    <div class="main_header">
+        <%= link_to "", user_homes_path, class:"fas fa-home" %>
+         > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link"%>
+         > <%= link_to @transaction.category.japanese_name, user_transactions_path(categories: @transaction.category.name), class:"main_area_top_link"%>
+         > <%= @transaction.title%>
+    </div>
     <div class="transaction_show_left_side">
     <%= render 'user/shared/common_label', text: 'Question', language: 'en'%>
         <div class="transaction_area">
@@ -117,7 +122,7 @@
                 </div></br>
                 <div class="service_link_area">
                     <div>
-                        <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>
+                        <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>より
                     </div>
                 </div>
                 <%= render "/user/shared/share_buttons", text: @transaction.description %>

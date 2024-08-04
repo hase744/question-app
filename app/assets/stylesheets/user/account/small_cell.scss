@@ -170,28 +170,16 @@
                 display: -webkit-box;
                 -webkit-box-orient: vertical;
                 overflow: hidden;
-                -webkit-line-clamp: 2;
+                -webkit-line-clamp: 1;
                 color: #333333;
             }
             .categories{
                 position: absolute;
-                top: 35px;
-                color: dimgray;
-                font-size: 9px;
-                //top: 0px;
+                top: 28px;
                 bottom: 0px;
                 width: 100%;
                 overflow: hidden;
                 white-space: nowrap;
-                .name_tag{
-                    padding: 2px 2px;
-                    display: inline-block;
-                    background-color: #f1f1f1;   
-                    //color: $text_yellow;
-                    //padding-right: 2px;
-                    //border: 1px solid silver;
-                    border-radius: 2px;
-                }
             }
         }
         .introduction{

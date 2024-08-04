@@ -3,10 +3,13 @@
     //display: inline-block;
     display: block;
 }
-.user_link:hover{
-    color: grey;
-    //display: inline-block;
-    display: block;
+.user_link:hover,
+.user_link:hover .record_name {
+    color: grey !important;
+}
+.user_link:hover .day_form_logout,
+.user_link:hover .last_login p {
+    color: darkgrey !important;
 }
 .user_cell_zone{
     max-width: 1300px;
@@ -133,6 +136,12 @@
                     top: 75px;
                 }
             }
+            .categories_area{
+                position: relative;
+                height: 20px;
+                width: 100%;
+                display: inline-block;
+            }
         }
     }
 }
@@ -201,6 +210,10 @@
                     margin: 5px;
                     position: absolute;
                 }
+            }
+
+            .categories_area{
+                margin-bottom: 5px;
             }
             
             .user_record_area{
@@ -276,10 +289,14 @@
             .user_name{
                 font-size: 30px;
             }
-            
+            .categories_area{
+                left: 10px;
+                width: calc(100% - 100px);
+            }
             .introduction{
                 width: calc(100% - 110px);
                 min-width: 300px;
+                left: 0px;
             }
             .user_record_area{
                 width: 300px;
@@ -297,20 +314,23 @@
             .user_name{
                 font-size: 30px;
             }
-            
+            .categories_area{
+                left: 10px;
+                width: calc(100% - 110px);
+            }
             .introduction{
-                width: calc(100% - 410px);
+                width: calc(100% - 310px);
                 min-width: 300px;
             }
             .user_record_area{
-                width: 290px;
-                
+                width: 190px;
+                //left: calc(100% - 410px);
             }
             .user_description_area{
                 margin-left: 10px;
             }
             .user_description{
-                font-size: 16px !important;
+                font-size: 15px !important;
             }
         }
     }

@@ -1,5 +1,9 @@
 <div class="post_show_zone">
-    <p class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "投稿一覧", user_account_path(@post.user.id), class:"main_area_top_link" %> > <%=@post.body%></p>
+    <div class="main_header">
+        <%= link_to "", user_homes_path, class:"fas fa-home"%>
+         > <%= link_to "投稿一覧", user_account_path(@post.user.id), class:"main_area_top_link" %>
+         > <%=@post.body%>
+    </div>
     <div class="post_area">
         <div class="post_flame">
             <div class="user_image_name">

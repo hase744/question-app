@@ -4,7 +4,7 @@
   <div class="account_edit_area input_area">
     <%= form_with model: @user, url: user_accounts_path do |f| %>
         <div class="field_area">
-          <%= f.label :name, class:"field_label"%>（最大<%=@user.name_max_length%>字）<br />
+          <%= f.label :name, class:"field_label"%>（<%=@user.name_max_length%>字以内）<br />
           <%= f.text_field :name, maxlength:@user.name_max_length, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
         </div>
         <div class="field_area">

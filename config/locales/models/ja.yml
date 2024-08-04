@@ -3,7 +3,7 @@ ja:
     models:
       user: ユーザー
       service: 相談室
-      request: 依頼
+      request: 質問
       admin: 管理者
       admin_user: 管理者
       post: 投稿

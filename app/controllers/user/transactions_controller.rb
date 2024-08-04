@@ -62,7 +62,7 @@ class User::TransactionsController < User::Base
     @transaction_message = TransactionMessage.new()
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
-    @transactions = Transaction.all
+    @transactions = Transaction.solve_n_plus_1
       .left_joins(:transaction_categories)
       .distinct
       .includes(:seller, :service, :request, :items, :transaction_categories)

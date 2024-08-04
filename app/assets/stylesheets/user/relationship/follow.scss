@@ -54,3 +54,33 @@
         background-color: red;
     }
 }
+.follow_button{
+    text-decoration: none;
+    border: 1px solid grey;
+    width: calc(100% - 10px);
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+}
+.followed_button{
+    color: white;
+    background-color: gray;
+    border: 1px solid grey;
+}
+.unfollowed_button{
+    color: gray;
+}
+.follow_button:hover{
+    text-decoration: none;
+    border: 1px solid darkgray;
+}
+.followed_button:hover{
+    text-decoration: none;
+    background-color: darkgray;
+    color: white;
+}
+.unfollowed_button:hover{
+    text-decoration: none;
+    color: darkgray;
+    border: 1px solid darkgray;
+}

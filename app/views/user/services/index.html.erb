@@ -3,7 +3,9 @@
         <%= render "user/shared/state_register_alert" %>
     <%else%>
         <div class="main_header">
-            <%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%=Service.model_name.human %>一覧 <%= paginate @services %>
+            <%= link_to "", user_homes_path, class:"fas fa-home"%>
+             > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%>
+            <%= paginate @services %>
         </div>
         <div class="service_index_flame service_cell_zone">
             <% @services.each do |service| %>

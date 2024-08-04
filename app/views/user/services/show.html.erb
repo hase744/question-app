@@ -1,5 +1,10 @@
 <div class="service_show_zone">
-    <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%> > <%= @service.category_names%></div>
+    <div class="main_header">
+        <%= link_to "", user_homes_path, class:"fas fa-home"%>
+         > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link"%>
+         > <%= link_to @service.category_names, user_services_path(categories: @service.category.name), class:"main_area_top_link"%>
+         > <%= @service.title%>
+    </div>
     <div class="service_left_area">
         <%if @transaction %>
             <%= render 'user/shared/common_label', text: '質問', language: 'ja' %>
@@ -29,7 +34,7 @@
                     <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
                     <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_delivered: true).count %>件</span>
                     <%if @service.user == current_user%>
-                    <span class="service_score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
+                        <span class="service_score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
                     <% end %>
                 </div>
                 <!--
