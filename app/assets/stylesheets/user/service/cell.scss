@@ -1,4 +1,4 @@
-
+@import 'variables';
 .service_cell_area{
     float: left;
     display: inline-block;
@@ -64,7 +64,7 @@
                 width: calc(100% - 60px);
                 margin-top: 5px;
                 .user_name{
-                    color: gray;
+                    color: $text_grey;
                     margin-top: 40px;
                     display: -webkit-box;
                     margin: 0px;

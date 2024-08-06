@@ -177,6 +177,27 @@
         font-size:20px;
     }
 }
+.small_label_area{
+    display: flex;
+    .label{
+        font-size: 17px;
+        position: relative;
+        margin-bottom: 0px;
+    }
+    .label_line{
+        display: inline-block;
+        height: 1.5px;
+        width: 100%;
+        background-color: lightgrey;
+        //position: absolute;
+        margin-top: 29px;
+    }
+}
+.component_line{
+    height: 1px;
+    border: none;
+    border-top: 1.5px lightgray solid;
+}
 .h3_description{
     margin-top: 0px;
 }
@@ -220,6 +241,55 @@
     border-right: 6px solid transparent;
     border-top: 6px solid gray;
     pointer-events: none;
+}
+.name_tag{
+    color: dimgray;
+    font-size: 9px;
+    padding: 3px 1px;
+    margin-right: 3px;
+    display: inline-block;
+    background-color: #f1f1f1;
+    //background-color: whitesmoke;   
+    color: $text_yellow;
+    background-color: $text_yellow;
+    color: white;
+    font-weight: bold;
+    //color: #195faa;
+    //padding-right: 2px;
+    //border: 1px solid silver;
+    border-radius: 2px;
+}
+.big_name_tag{
+    background-color: $text_yellow;
+    font-size: 12px;
+    padding: 2px 5px;
+    margin-right: 3px;
+    border-radius: 3px;
+    font-weight: bold;
+    color: white;
+    display: inline-block;
+}
+.specifics_area{
+    .specific{
+        display: inline-block;
+        padding-left: 5px;
+        margin-bottom: 2px;
+        color: $text_grey;
+        label{
+            background-color: #EEEEEE;
+            padding: 4px 1px;
+            color: black;
+            font-size: 13px;
+            margin-right: 5px;
+        }
+        span{
+            margin: 0px;
+        }
+        .fa-star{
+            font-size: 13px;
+            color: $text_yellow;
+        }
+    }
 }
 //.select_area {
 //    position: relative;

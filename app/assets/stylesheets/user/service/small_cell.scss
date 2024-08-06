@@ -17,7 +17,7 @@
   height: calc(100% - 10px);
   max-width: calc(250px * 1.5 -10px);
   text-decoration: none;
-  color: black;
+  color: $text_grey;
   .service_image_area{
       height: 100px;
       width: 100%;
@@ -96,8 +96,11 @@
   .price_and_star_area{
     padding-left: 5px;
     font-size: 15px;
+    color: $text_grey;
     .star_logo{
+      font-size: 12px;
       color: $text_yellow;
+      margin-right: 2px;
     }
   }
   .service_condition_area{

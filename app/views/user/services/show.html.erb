@@ -55,6 +55,32 @@
                     </div>
                 <% end %>
                     -->
+                <div class="user_label">
+                    <%= render "user/shared/small_label", text:"回答者"%>
+                </div>
+                <%= link_to(user_account_path(@service.user.id), class:"user_area") do %>
+                    <%= image_tag @service.user.image.thumb.url, class:"user_image" %>
+                    <div class="user_name">
+                        <%=@service.user.name%>
+                    </div>
+                    <div class="specifics_area">
+                        <span class="specific">
+                            <label>評価</label>
+                            <span class="star fas fa-star"></span><%=(@service.user.average_star_rating).round(1)%> (<%=@service.user.total_reviews%>)
+                        </span>
+                        <span class="specific">
+                            <label>最低単価</label>
+                            <%=@service.user.mini_price%><span class="unit">円</span>
+                        </span>
+                        <span class="specific">
+                            <label>回答数</label>
+                            <%=@service.user.total_sales_numbers%><span class="unit">件</span>
+                        </span>
+                    </div>
+                <% end %>
+                <div class="user_label">
+                <%= render "user/shared/small_label", text:"条件"%>
+                </div>
                 <table class="service_condition_area">
                     <tr>
                         <td class="user_info_name">
@@ -174,7 +200,7 @@
                     <% end %>
                 </div>
                 <div class="service_detail_area">
-                    <h3 class="service_detail_label"><%= Service.human_attribute_name(:description)%></h3>
+                <%= render "user/shared/small_label", text: Service.human_attribute_name(:description) %>
                     <p class="service_detail"><%=@service.description%></p>
                 </div>
                 <%if can_purchase %>

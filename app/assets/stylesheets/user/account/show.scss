@@ -1,3 +1,4 @@
+@import "variables";
 .user_show_zone{
     display: block;
     
@@ -18,7 +19,7 @@
             .header_image_area{
                 border-radius: 10px;
                 margin-top: 0px;
-                background-color: blue;
+                background-color: $text_yellow;
                 .header_image{
                     width: 100%;
                     height: 100%;
@@ -213,6 +214,22 @@
                     margin-top: 0px;
                     margin-bottom: 0px;
                 }
+            }
+            .specifics_area{
+                margin: 5px;
+                font-size: 20px;
+                .specific{
+                    margin-right: 15px;
+                }
+                .star{
+                    font-size: 16px;
+                }
+                .unit{
+                    font-size: 15px;
+                }
+            }
+            .category_area{
+                margin: 5px 10px;
             }
             .user_basic_info{
                 margin-left: 10px;
