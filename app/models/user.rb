@@ -18,8 +18,8 @@ class User < ApplicationRecord
   has_many :notifications, class_name: "Notification", foreign_key: :user_id, dependent: :destroy
   has_many :notifications, class_name: "Notification", foreign_key: :notifier_id, dependent: :destroy
   has_many :posts, class_name: "Post", foreign_key: :user_id, dependent: :destroy
-  has_many :relationships, class_name: "Relationship", foreign_key: :followee_id, dependent: :destroy
-  has_many :relationships, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
+  has_many :followers, class_name: "Relationship", foreign_key: :followee_id, dependent: :destroy
+  has_many :followees, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy

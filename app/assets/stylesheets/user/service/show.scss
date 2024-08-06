@@ -127,19 +127,6 @@
                 }
             }
             .service_detail_area{
-                .service_detail_label_area{
-                    text-decoration: underline;
-                    width: 100%;
-                }
-                .service_detail_label{
-                    //border-bottom: solid 2px lightgray;
-                    margin: 0px;
-                    //background-color: $background-color;
-                    //color: dimgrey;
-                    //background-color: whitesmoke;
-                    //border-radius: 5px;
-                    //text-decoration: underline;
-                }
                 .service_detail{
                     margin-top: 0px;
                     white-space: pre-line;
@@ -179,6 +166,44 @@
                 //    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);/*影を小さく*/
                 //    border-bottom: none;
                 //  }
+            }
+            .user_label{
+                display: none;
+                @media (max-width: 1000px) {
+                    display: block;
+                }
+            }
+            .user_area{
+                //height: 60px;
+                display: none;
+                @media (max-width: 1000px) {
+                    display: inline-block;
+                }
+                height: 100%;
+                width: 100%;
+                text-decoration: none;
+                color: $text_grey;
+                .user_image{
+                    float: left;
+                    display: inline-block;
+                    height: 50px;
+                    width: 50px;
+                    object-fit: cover;
+                    margin: 5px;
+                    border-radius: 50%;
+                }
+                .user_name{
+                    margin: 5px 5px 0px 5px ;
+                    float: left;
+                    display: inline-block;
+                    width: calc(100% - 70px);
+                    height: 25px;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                .specifics_area{
+                    color: black;
+                }
             }
         }
         .service_info_menu{

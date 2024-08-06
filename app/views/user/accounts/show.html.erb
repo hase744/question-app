@@ -37,11 +37,30 @@
                     </h2 class="user_name">
                 </div>
                 <% if @user.is_seller %>
-                    <div class="user_basic_info">
-                        <%=render "user/accounts/user_basic_info", user:@user, star_rating: @user.id%>
+                    <div class="specifics_area">
+                        <span class="specific">
+                            <label>評価</label>
+                            <span class="star fas fa-star"></span>
+                            <%=(@user.average_star_rating)&.round(1)%> <span class="unit">(<%=@user.total_reviews%>)</span></span>
+                        <span class="specific">
+                            <label>最低単価</label>
+                            <%=@user.mini_price%><span class="unit">円</span>
+                        </span>
+                        <span class="specific">
+                            <label>回答数</label>
+                            <%=@user.total_sales_numbers%><span class="unit">件</span>
+                        </span>
+                        <span class="specific">
+                            <label>フォロワー数</label>
+                            <%=@user.followers.count%><span class="unit">人</span>
+                        </span>
                     </div>
                 <% end %>
-               
+                <div class="category_area">
+                    <% @user.categories.each do |category| %>
+                        <div class="big_name_tag"><%=category.japanese_name%></div>
+                    <% end %>
+                </div>
             </div>
             <span></span>
             

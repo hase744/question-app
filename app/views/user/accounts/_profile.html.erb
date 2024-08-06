@@ -12,12 +12,12 @@
             <%=user.name %>
             <% end %>
         </div>
+        <%= render "user/accounts/user_basic_info", user:user, star_rating:3 %>
         <div class="categories_area">
             <% user.categories.each do |c|%>
-                <span class="name_tag"><%=c.japanese_name%></span>
+                <span class="big_name_tag"><%=c.japanese_name%></span>
             <% end %>
         </div>
-        <%= render "user/accounts/user_basic_info", user:user, star_rating:3 %>
         <% if user == current_user %>
         <% elsif Relationship.exists?(followee: user, follower: current_user, is_blocked:false) %>
             <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button", method: :patch, remote:true %>

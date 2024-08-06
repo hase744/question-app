@@ -9,7 +9,7 @@
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name one_line_text"><%= content.sender.name%></h2>
+                <h2 class="user_name one_line_text"><%=link_to content.sender.name, user_account_path(content.sender.id), class:"user_link" %></h2>
                 <%=readable_datetime(content.created_at)%>
             </div>
         </div>
