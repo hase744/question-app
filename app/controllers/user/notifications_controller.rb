@@ -36,6 +36,13 @@ class User::NotificationsController < User::Base
     end
   end
 
+  def all_notified
+    Notification.all
+      .where(user: current_user, is_notified: false)
+      .update_all(is_notified: true)
+    redirect_back(fallback_location: root_path)
+  end
+
   private def identify_user
     notification = Notification.find(params[:id])
     if notification.user != current_user

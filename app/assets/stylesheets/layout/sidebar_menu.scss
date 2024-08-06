@@ -81,19 +81,6 @@
             }
         }
     }
-    .sidebar_menu_margin{
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        height: 100%;
-        width: calc(100% - 200px);
-        opacity: 0.5;
-        background-color: gray;
-        color: white;
-        padding-left: 10px;
-        font-size: 50px;
-        cursor: pointer;
-    }
     @media(min-width:1000px){
         .search_link{
             display: none;
@@ -110,4 +97,17 @@
     .not_signined_menu{
         display: none;
     }
+}
+.sidebar_menu_margin{
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    height: 100%;
+    width: calc(100% - 200px);
+    opacity: 0.5;
+    background-color: gray;
+    color: white;
+    padding-left: 10px;
+    font-size: 50px;
+    cursor: pointer;
 }

@@ -1,3 +1,7 @@
 console.log("成功")
 menu_notification_cells_area = document.getElementById("menu_notification_cells_area")
-menu_notification_cells_area.innerHTML = `<%= render partial:  "user/notifications/notification_flame", locals: {contents:contents}%>`;
+menu_notification_cells_area.innerHTML = 
+`
+<%= link_to " 全て既読にする", user_all_notified_path, method: :patch, class:"fas fa-check all_notified"%>
+<%= render partial:  "user/notifications/notification_flame", locals: {contents:contents}%>
+`;
