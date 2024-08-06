@@ -58,6 +58,7 @@ namespace :user do
     get "notifications/notification_bar", to: "notifications#notification_bar"
     get "notifications/notification_cells", to: "notifications#notification_cells"
     get "notifications/get_data"
+    patch "notifications/all_notified", to: "notifications#all_notified", as:"all_notified"
 
 
     root to: 'transactions#index'

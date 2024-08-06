@@ -1,7 +1,6 @@
 <%begin%>
     <% contents.each do |n|%>
-        <%= link_to(user_notification_path(n.id), class: 'message_show_button') do %>
-            <div class="notification_cell">
+        <%= link_to(user_notification_path(n.id), class: 'notification_cell') do %>
                 <div class="image_area">
                     <%if n.notifier_id && n.notifier.image_url%>
                         <%=image_tag n.notifier.image_url, class:"image"%>
@@ -15,7 +14,6 @@
                     </span>
                     <span class="datetime"><%=from_now(n.created_at)%></span>
                 </div>
-            </div>
         <% end %>
     <% end %>
 <% rescue => e%>

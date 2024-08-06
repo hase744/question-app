@@ -1,3 +1,4 @@
+@import "variables";
 .sidebar_notification_zone{
     z-index: 2;
     background-color: green;
@@ -17,6 +18,18 @@
         background-color: white;
         box-shadow: 0px 0px 2px lightgray;
         overflow: scroll;
+        .all_notified{
+            width: 100%;
+            display: inline-block;
+            padding: 5px 0px;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+        }
+        .all_notified:hover{
+            color: #195faa;
+        }
         .menu_notification_cells_flame{
             position: relative;
             width:200px;
@@ -24,7 +37,8 @@
             //overflow: scroll;
             .notification_cell{
                 min-height: 50px;
-                margin-bottom: 10px;
+                padding-bottom: 10px;
+                color: $text_grey;
                 .image_area{
                     display: inline-block;
                     width: 40px;
@@ -40,6 +54,15 @@
                 .description_area{
                     display: inline-block;
                     width: calc(100% - 40px);
+                    .new{
+                        color: white;
+                        font-weight: bold;
+                        background-color: lightgreen;
+                        border-radius: 2px;
+                        padding: 0px 1px;
+                        margin-right: 2px;
+                        border: solid lightgreen 1px;
+                    }
                     .description{
                         display: -webkit-box;
                         margin: 0px;
@@ -60,14 +83,6 @@
         }
     }
     .notification_margin{
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        height: 100%;
-        width: calc(100% - 200px);
-        opacity: 0.5;
-        background-color: gray;
-        font-size: 30px;
     }
 }
 .open_notification{

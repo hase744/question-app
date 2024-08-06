@@ -11,8 +11,10 @@
                         <% end %>
                     </div>
                     <div class="description_area">
-                        <span class="description">
-                            <%= "NEW\n" if !n.is_notified%><%= n.description%>
+                    <span class="description">
+                    <%if !n.is_notified%>
+                            <span class="new"><%= "NEW" %></span>
+                    <% end %><%= n.description%>
                         </span>
                         <span class="datetime"><%=from_now(n.created_at)%></span>
                     </div>
