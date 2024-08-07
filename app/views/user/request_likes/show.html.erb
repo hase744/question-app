@@ -1,5 +1,5 @@
 <div class="request_like_show">
-    <div class="main_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした質問 <%= paginate @requests %></div>
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> ＞ いいねした質問 <%= paginate @requests %></h3>
   	<% @requests.each do |request| %>
 		  <%= render "user/requests/cell", request: request %>
   	<% end %>

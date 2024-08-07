@@ -21,17 +21,16 @@ class User::OrdersController < User::Base
       .where.not(contracted_at: nil)
     @transactions = @transactions.page(params[:page]).per(10)
     #パラメーターが空の時、ユーザー情報からデフォルトとしてパラメーターを設定
-    if !params[:user].present?
+    unless params[:user].present?
       if current_user.stripe_account_id.present?
         params[:user] = "seller"
-        params[:scope] = "ongoing"
+        params[:scope] = "all"
       else
         params[:user] = "buyer"
-        params[:scope] = "ongoing"
+        params[:scope] = "all"
       end
     end
 
-    #
     if params[:user] == "buyer"
       @transactions = @transactions.where(
         request:{user:current_user}
@@ -41,15 +40,18 @@ class User::OrdersController < User::Base
         service:{user:current_user}
       )
     end
-    
-    if params[:scope] == "ongoing"
+
+    case params[:scope]
+    when "all" then
+      @transactions = @transactions
+    when "ongoing" then
       @transactions = @transactions.ongoing
-    elsif params[:scope] == "rejected"
+    when "rejected" then
       @transactions = @transactions.rejected
-    elsif params[:scope] == "undelivered"
-      @transactions = @transactions.undelivered
-    else
+    when "delivered" then
       @transactions = @transactions.delivered
+    when "undelivered" then
+      @transactions = @transactions.undelivered
     end
   end
 
