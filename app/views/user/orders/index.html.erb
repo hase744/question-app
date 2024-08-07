@@ -2,7 +2,7 @@
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: current_user%>
 <%= render "user/shared/error_message", model: @service%>
-<div class="main_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 取引一覧 <%= paginate @transactions %></div>
+<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞</span> 取引一覧 </h3>
     <%= render "user/orders/header"%>
     <div class="order_index_flame">
         <% @transactions.each do |transaction| %>

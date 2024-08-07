@@ -1,5 +1,5 @@
 <div class="transaction_like_show">
-  	<div class="main_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした回答 <%= paginate @transactions %></div>
+  	<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> ＞ いいねした回答 <%= paginate @transactions %></h3>
   	<% @transactions.each do |transaction| %>
 		<%= render "user/transactions/cell", transaction: transaction %>
   	<% end %>
