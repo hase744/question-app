@@ -1,0 +1,41 @@
+.transaction_message_form_flame{
+  height: calc(100% - 150px);
+}
+.transaction_message_submit_form{
+  text-align: left;
+  padding: 10px;
+  height: 100%;
+  .title{
+    margin: 0px;
+  }
+  .text_field{
+    min-width: calc(100% - 5px);
+    max-width: calc(100% - 5px);
+    height: 100px;
+    height: 100%;
+    border-radius: 5px;
+  }
+  .transaction_message_submit_area{
+    text-align: center;
+  }
+  .transaction_message_submit{
+    height: 30px;
+    width: 200px;
+    font-size: 15px;
+    border-radius: 3px;
+    border: 1px solid gray;
+    background-color: orange;
+    color: white;
+  }
+  .transaction_message_submit:hover{
+    cursor: pointer;
+  }
+}
+.new_message_modal .modal_window_body{
+  height: 100%;
+}
+.new_message_modal .modal_delete_area{
+  position: absolute;
+  width: 100%;
+  bottom: 0px;
+}

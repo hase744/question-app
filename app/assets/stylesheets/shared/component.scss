@@ -291,6 +291,48 @@
         }
     }
 }
+.bottom_button_area{
+    position: fixed;
+    bottom: 0px;
+    z-index: 1;
+    background-color: white;
+    height: 50px;
+    position: fixed;
+    text-align: center;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 2px lightgray;
+    .bottom_button_flame{
+        margin: auto;
+        left: 0;
+        right: 0;
+        max-width: 320px;
+        width: 100%;
+    }
+    .bottom_button{
+        background-color: orange;
+        max-width: 300px;
+        width: calc(100% - 20px);
+        //height: 40px;
+        margin: 7.5px 5px;
+        padding: 5px;
+        color: white;
+        font-size: 15px;
+        //font-weight: bold;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+    .label_area{
+        display: inline-block;
+    }
+    a{
+        color: white;
+        text-decoration: none;
+    }
+    .bottom_button:hover{
+        background-color: #FFC700;
+    }
+}
 //.select_area {
 //    position: relative;
 //    border-radius: 4px;

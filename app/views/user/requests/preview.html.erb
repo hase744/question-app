@@ -8,7 +8,7 @@
   <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
   <h3 class="service_new_title">依頼内容</h3>
 <% else %>
-  <h3 class="service_new_title">質問を新規作成</h3>
+  <h3 class="service_new_title">質問のプレビュー</h3>
 <% end %>
 <div class="service_new_zone">
     <div class="service_new_area input_area">
@@ -132,7 +132,7 @@ function reload_description_image(){
     }
 }
 if(gon.request_form == "text"){
-    window.setTimeout(reload_description_image, 5000);
+    //window.setTimeout(reload_description_image, 5000);
 }
 //awaitのためにasync追加
 </script>
