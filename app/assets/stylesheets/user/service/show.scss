@@ -240,6 +240,30 @@
         }
     }
 }
+.purchase_button_area{
+    float: left;
+    .label_area{
+        display: inline-block;
+        width: calc(50% - 65px);
+        height: 100%;
+        font-size: 25px;
+        .yen{
+            font-size: 15px;
+        }
+    }
+    .bottom_button{
+        display: inline-block;
+        width: 50%;
+        font-size: 15px;
+        padding: 5px;
+    }
+    .transaction_button::before{
+        content: "Q.";
+        color: white;
+        font-size: 20px;
+        font-weight: 500;
+    }
+}
 @media(max-width:1000px){
     .service_show_zone{
         max-width: 700px;
@@ -247,6 +271,7 @@
         margin-left: auto;
         .service_left_area{
             width: calc(100%);
+
         }
     }
 }

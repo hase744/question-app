@@ -56,29 +56,6 @@
                 <% end %>
                     -->
                 <div class="user_label">
-                    <%= render "user/shared/small_label", text:"回答者"%>
-                </div>
-                <%= link_to(user_account_path(@service.user.id), class:"user_area") do %>
-                    <%= image_tag @service.user.image.thumb.url, class:"user_image" %>
-                    <div class="user_name">
-                        <%=@service.user.name%>
-                    </div>
-                    <div class="specifics_area">
-                        <span class="specific">
-                            <label>評価</label>
-                            <span class="star fas fa-star"></span><%=(@service.user.average_star_rating).round(1)%> (<%=@service.user.total_reviews%>)
-                        </span>
-                        <span class="specific">
-                            <label>最低単価</label>
-                            <%=@service.user.mini_price%><span class="unit">円</span>
-                        </span>
-                        <span class="specific">
-                            <label>回答数</label>
-                            <%=@service.user.total_sales_numbers%><span class="unit">件</span>
-                        </span>
-                    </div>
-                <% end %>
-                <div class="user_label">
                 <%= render "user/shared/small_label", text:"条件"%>
                 </div>
                 <table class="service_condition_area">
@@ -203,6 +180,30 @@
                 <%= render "user/shared/small_label", text: Service.human_attribute_name(:description) %>
                     <p class="service_detail"><%=@service.description%></p>
                 </div>
+                <div class="user_label">
+                    <%= render "user/shared/small_label", text:"回答者"%>
+                </div>
+                <%= link_to(user_account_path(@service.user.id), class:"user_area") do %>
+                    <%= image_tag @service.user.image.thumb.url, class:"user_image" %>
+                    <div class="user_name">
+                        <%=@service.user.name%>
+                    </div>
+                    <div class="specifics_area">
+                        <span class="specific">
+                            <label>評価</label>
+                            <span class="star fas fa-star"></span><%=(@service.user.average_star_rating).round(1)%> (<%=@service.user.total_reviews%>)
+                        </span>
+                        <span class="specific">
+                            <label>最低単価</label>
+                            <%=@service.user.mini_price%><span class="unit">円</span>
+                        </span>
+                        <span class="specific">
+                            <label>回答数</label>
+                            <%=@service.user.total_sales_numbers%><span class="unit">件</span>
+                        </span>
+                    </div>
+                <% end %>
+                <!--
                 <%if can_purchase %>
                     <div class="transaction_button_area">
                         <%=
@@ -216,6 +217,7 @@
                         %>
                     </div>
                 <% end %>
+                -->
                 <%= render "/user/shared/share_twitter"%>
             </div>
             <% if !@service.request.present?%>
@@ -240,6 +242,27 @@
     </div>
     <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
+<% unless user_signed_in? && @service.user == current_user  %>
+<div class="bottom_button_area purchase_button_area">
+    <div class="bottom_button_flame">
+        <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
+        <div class="bottom_button">
+        <%=
+        if @transaction&.is_suggestion
+            link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
+        else
+            link_to(new_user_request_path(service_id:@service.id), class:"transaction_button") do
+                "質問を投稿する"
+            end
+        end
+        %>
+        </div>
+    </div>
+</div>
+<script>
+$('.main_area').css('padding-bottom','50px');
+</script>
+<% end %>
 <%= javascript_pack_tag "user/services/show" %>
 <script>
 var like_count = document.getElementById("like_count");

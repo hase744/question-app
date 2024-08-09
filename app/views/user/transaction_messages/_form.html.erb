@@ -1,0 +1,18 @@
+
+<div class="transaction_message_form_flame">
+	<%= form_with model:TransactionMessage.new, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %>
+	    <%if transaction.buyer == current_user %>
+	        <div class="title">
+	        追加質問<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters %></br>
+	        </div>
+	    <% elsif transaction.seller == current_user %>
+	        <div class="title">追加回答<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters%></div>
+	    <% end %>
+	    <%=f.text_area :body, id:"transaction_message_body", class:"text_field text_area", required: true%>
+	    <%=f.hidden_field :transaction_id, value:transaction.id, id:"transaction_id", class:"text_field", required: true%>
+	    <%= f.file_field :file %>
+	    <div class="transaction_message_submit_area">
+	        <%= f.submit "送信",class:"transaction_message_submit", placeholder:"" %>
+	    </div>
+	<% end %>
+</div>

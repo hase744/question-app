@@ -350,30 +350,6 @@
     }
 }
 .transaction_message_form_area{
-    .title{
-        margin: 0px;
-    }
-    .text_field{
-        width: calc(100% - 5px);
-        min-width: calc(100% - 5px);
-        max-width: calc(100% - 5px);
-        height: 100px;
-    }
-    .transaction_message_submit_area{
-        text-align: center;
-    }
-    .transaction_message_submit{
-        height: 30px;
-        width: 200px;
-        font-size: 15px;
-        border-radius: 3px;
-        border: 1px solid gray;
-        background-color: orange;
-        color: white;
-    }
-    .transaction_message_submit:hover{
-        cursor: pointer;
-    }
 }
 .total_transaction_message{
     text-align: center;

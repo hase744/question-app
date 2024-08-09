@@ -1,11 +1,11 @@
 <div class="transaction_message_form_area component_area">
     <%if transaction.delivered_at.nil? %>
     <%elsif transaction.buyer == current_user %>
-        <p class="title">
+        <div class="title">
         追加質問<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters %></br>
-        </p>
+        </div>
     <% elsif transaction.seller == current_user %>
-        <p class="title">追加回答<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters%></p>
+        <div class="title">追加回答<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters%></div>
     <% end %>
     <div class="transaction_message_form_flame">
         <%= form_with model:TransactionMessage.new, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %>

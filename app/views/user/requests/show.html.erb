@@ -115,7 +115,7 @@
                 </tr>
             </table>
             <div class="request_detail">
-                <h3 class="request_detail_label">本文</h3>
+                <%= render "user/shared/small_label", text:"本文"%>
                 <div class="request_detail_content" id="request_detail_content">
                     <p id="request_detail_text" class="request_detail_text"><%=@request.description%></p>
                 </div>
@@ -131,11 +131,6 @@
                     <% end %>
                 <% end %>
             </div>
-            <% if user_signed_in? && @request.is_suggestable?(current_user) %>
-                <div class="button_area">
-                    <p class="modal_open suggest_button button">相談室を提案</p>
-                </div>
-            <% end %>
 
             <%if user_signed_in? && current_user.can_respond_order(@request) %>
                 <div class="button_area" >
@@ -171,6 +166,18 @@
     <%= render "user/accounts/profile", user: @request.user, relationship:@relationship %>
     -->
 </div>
+<% if user_signed_in? && @request.is_suggestable?(current_user) %>
+<div class="bottom_button_area">
+    <div class="bottom_button_flame button_area">
+        <div class="bottom_button modal_open suggest_button button"">
+        相談室を提案
+        </div>
+    </div>
+</div>
+<script>
+$('.main_area').css('padding-bottom','50px');
+</script>
+<% end %>
 <%= render "user/shared/javascript/swiper.js.erb" %>
 <div class="modal_window service_select_modal">
     <div class="modal_background"></div>
