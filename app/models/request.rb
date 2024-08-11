@@ -59,6 +59,10 @@ class Request < ApplicationRecord
     )
   }
 
+  scope :from_service, ->(service){
+    self.left_joins(:services).where(services: service, is_published: true)
+  }
+
   scope :filter_categories, -> (names){
     if names.present?
       names = names.split(',')

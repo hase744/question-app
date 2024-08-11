@@ -226,7 +226,21 @@
             }
             li:hover{
                 cursor: pointer;
-                background-color: gainsboro;
+            }
+            .gray{
+                border-bottom: none;
+                a{
+                    color: gray;
+                }
+            }
+            .blue{
+                border-bottom: 2px solid blue;
+                a{
+                    color: blue;
+                }
+            }
+            .gray:hover .user_content_link{
+                color: darkgray;
             }
             .user_content_link{
                 height: 40px;

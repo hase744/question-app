@@ -31,27 +31,27 @@
 <script>
 $(".follow_button").each(function() {
     this.addEventListener('ajax:success', function(event) {// 成功時の処理
-    var res = event.detail[0];
-    is_following = $('.followed_button').is(':visible');
-    if(is_following){
-        notify_for_seconds("フォローを解除しました。");
-    }else{
-        notify_for_seconds("フォローしました。");
-    }
-    $('.follow_button').toggleClass('display_none');
-  })
+        var res = event.detail[0];
+        is_following = $('.followed_button').is(':visible');
+        if(is_following){
+            notify_for_seconds("フォローを解除しました。");
+        }else{
+            notify_for_seconds("フォローしました。");
+        }
+        $('.follow_button').toggleClass('display_none');
+    })
+
+    this.addEventListener('ajax:error', function(event) {// 成功時の処理
+        console.log("フォローできませんでした。")
+        var res = event.detail[0];
+        console.log(res["is_followed"]);
+        $(".follow_button").toggleClass("unfollowed_button");
+        if($(".unfollowed_button").length == 0){
+          notify_for_seconds("フォロー解除できませんでした。");
+        }else{
+          notify_for_seconds("フォローできませんでした。");
+        }
+    })
 });
   
-  $(".follow_button").addEventListener('ajax:error', function(event) {
-    // 失敗時の処理
-    console.log("フォローできませんでした。")
-    var res = event.detail[0];
-    console.log(res["is_followed"]);
-    $(".follow_button").toggleClass("unfollowed_button");
-    if($(".unfollowed_button").length == 0){
-      notify_for_seconds("フォロー解除できませんでした。");
-    }else{
-      notify_for_seconds("フォローできませんでした。");
-    }
-  });
 </script>

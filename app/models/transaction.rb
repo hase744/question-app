@@ -60,6 +60,25 @@ class Transaction < ApplicationRecord
     includes(:seller, :buyer, :request, :service, :items, {request: :items})
   }
 
+  scope :from_seller, -> (user){
+    self.solve_n_plus_1
+      .left_joins(:service)
+      .where(
+        service: {user: user}, 
+        is_delivered: true
+        )
+  }
+
+  scope :from_buyer, -> (user){
+    self
+      .solve_n_plus_1
+      .left_joins(:request)
+      .where(
+        request: {user: user}, 
+        is_delivered: true
+        )
+  }
+
   scope :ongoing, -> {
     self.where(
       is_rejected: false,

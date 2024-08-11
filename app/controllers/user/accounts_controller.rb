@@ -1,11 +1,14 @@
 class User::AccountsController < User::Base
   before_action :check_login, only:[:edit, :update]
   before_action :check_published, only: [:show]
+  before_action :define_page_count
   after_action :create_access_log
   layout :choose_layout
 
   private def choose_layout
     case action_name
+    when 'edit'
+      'medium_layout'
     when "index"
       "search_layout"
     end
@@ -39,24 +42,39 @@ class User::AccountsController < User::Base
   end
 
   def show
-    gon.user_id = params[:id]
-    id = params[:id].to_i
-    @user = User.find(id)
-    puts "パス"
-    puts user_account_posts_path(@user.id)
+    @user = User.find(params[:id])
     @bar_elements = [
-      {path:"posts",japanese_name:"投稿", link:user_account_posts_path(@user.id), page:5, for_seller:false},
-      {path:"requests",japanese_name:"質問", link:user_account_requests_path(@user.id), page:5, for_seller:false},
-      {path:"likes",japanese_name:"お気に入り", link:user_account_likes_path(@user.id), page:10, for_seller:false},
-      {path:"purchases",japanese_name:"回答された質問", link:user_account_purchases_path(@user.id), page:5, for_seller:false},
-      {path:"sales",japanese_name:"回答", link:user_account_sales_path(@user.id), page:5, for_seller:true},
-      {path:"services",japanese_name:Service.model_name.human, link:user_account_services_path(@user.id), page:20, for_seller:true},
-      {path:"followees",japanese_name:"フォロー", link:user_account_followees_path(@user.id), page:5, for_seller:true}
+      {item:'posts', japanese_name:'投稿', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
+      {item:'requests', japanese_name:'質問', link:user_account_requests_path(@user.id, nav_item:'requests'), page: @request_page, for_seller:false},
+      {item:'sales', japanese_name:'回答', link:user_account_sales_path(@user.id, nav_item:'sales'), page: @sales_page, for_seller:true},
+      {item:'services', japanese_name:Service.model_name.human, link:user_account_services_path(@user.id, nav_item:'services'), page: @service_page, for_seller:true},
+      {item:'reviews',japanese_name:'レビュー', link:user_account_reviews_path(@user.id, nav_item:'reviews'), page:@review_page, for_seller:true},
     ]
-    @last_login = DateTime.now - id
 
-    posts = Post.where(user: User.find(params[:id])).includes(:user).order("id DESC")
-    @posts = Kaminari.paginate_array(posts).page(params[:page]).per(5)
+    case current_nav_item
+    when 'posts'
+      @models = Post.where(user: User.find(params[:id]))
+    when 'requests'
+      @models = Request.where(user: User.find(params[:id]))
+    when 'sales'
+      @models = Transaction.from_seller(User.find(params[:id]))
+    when 'services'
+      @models = Service.where(user: User.find(params[:id]))
+    when 'reviews'
+      @models = Transaction.from_seller(current_user)
+        .where(is_delivered: true)
+        .where.not(reviewed_at: nil)
+    end
+
+    current_element = @bar_elements.find{|e| 
+      e[:item] == current_nav_item
+    }
+
+    @models = @models
+      .solve_n_plus_1
+      .order(id: :DESC)
+      .page(params[:page])
+      .per(current_element[:page])
 
     @relationship = Relationship.find_by(followee: @user, follower_id: current_user.id) if user_signed_in?
     if @user == current_user
@@ -100,45 +118,31 @@ class User::AccountsController < User::Base
     if !user_signed_in? || current_user.id != params[:id].to_i
       @services = @services.where(is_published:true, request_id: nil)
     end
-    @services = @services.order(id: :DESC).page(params[:page]).per(20)
+    @services = @services.order(id: :DESC).page(params[:page]).per(@service_page)
     render partial: 'user/services/cell', collection: @services, as: :service
-    #render partial: "user/accounts/services", locals: { contents: @services }
   end
   #@services.page(params[:page]).includes(:user).per(10)
   def posts
-    posts = Post.where(user: User.find(params[:id])).includes(:user).order(id: :DESC)
-    #posts = Kaminari.paginate_array(posts).page(params[:page]).per(5)
-    @posts = posts.page(params[:page]).per(5)
-    render partial: "user/accounts/posts", locals: { contents: @posts }
-  end
-
-  def likes
-    @transaction_likes = TransactionLike.where(user_id: params[:id])
-    @transaction_likes = @transaction_likes.order(id: :DESC)
-    @transaction_likes = @transaction_likes.page(params[:page]).per(10)
-    
-    @transactions = Transaction.all
-    @transactions = @transactions.where(id: @transaction_likes.pluck(:id))
-    @transactions = @transactions.solve_n_plus_1
-    render partial: "user/accounts/transactions", locals: { contents: @transactions }
+    @posts = Post.where(user: User.find(params[:id])).includes(:user).order(id: :DESC).page(params[:page]).per(@post_page)
+    render partial: 'user/posts/cell', collection: @posts, as: :post
   end
 
   def purchases
-    purchases = Transaction.left_joins(:request).where(request: {user: User.find(params[:id])}, is_delivered: true).order(id: :DESC).includes(:buyer, :seller, :request, :service, :items).order(id: :DESC)
+    purchases = Transaction.left_joins(:request).where(request: {user: User.find(params[:id])}, is_delivered: true).includes(:buyer, :seller, :request, :service, :items).order(id: :DESC)
     @purchases = purchases.page(params[:page]).per(5)
     render partial: "user/accounts/transactions", locals: { contents: @purchases }
   end
 
   def sales
     sales = Transaction.left_joins(:service).where(service: {user: User.find(params[:id])}, is_delivered: true).includes(:seller, :seller, :request, :service, :items).order(id: :DESC)
-    @sales = sales.page(params[:page]).per(5)
-    render partial: "user/accounts/transactions", locals: { contents: @sales }
+    @sales = sales.page(params[:page]).per(@sales_page)
+    render partial: 'user/transactions/cell', collection: @sales, as: :transaction
   end
 
   def requests
-    @requests = Request.where(user:User.find(params[:id]), is_published:true).order(id: :DESC).page(params[:page]).per(5)
+    @requests = Request.where(user:User.find(params[:id]), is_published:true).order(id: :DESC).page(params[:page]).per(@request_page)
     @requests.count
-    render partial: 'user/accounts/requests', locals: { contents: @requests }
+    render partial: 'user/requests/cell', collection: @requests, as: :request
   end
 
   def followees
@@ -172,6 +176,17 @@ class User::AccountsController < User::Base
     end
   end
   
+  def reviews
+    @transactions = Transaction.includes(:seller, :seller, :request)
+      .from_seller(current_user)
+      .where(is_delivered: true)
+      .where.not(reviewed_at: nil)
+      .order(id: :DESC)
+      .page(params[:page])
+      .per(@review_page)
+    render partial: 'user/reviews/cell', collection: @transactions, as: :transaction
+  end
+
   def renew
     @user = User.new
   end
@@ -186,6 +201,14 @@ class User::AccountsController < User::Base
       flash.notice = "アカウントが再登録できませんでした"
       redirect_to user_renew_account_path
     end
+  end
+
+  private def define_page_count
+    @post_page = 5
+    @request_page = 5
+    @sales_page = 5
+    @service_page = 20
+    @review_page = 5
   end
 
   private def check_published

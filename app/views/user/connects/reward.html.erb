@@ -56,7 +56,7 @@
 			      <th>ステータス</th>
 			      <th>日時</th>
 			    </tr>
-				<%@payouts.each do |payout|%>
+				<% @payouts.each do |payout|%>
 					<%= render "user/connects/payout", payout: payout%>
 				<% end %>
 			</table>
