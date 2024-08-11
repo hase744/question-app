@@ -1,0 +1,22 @@
+var like_count = document.getElementById("like_count");
+$("#like_button")[0].addEventListener('ajax:success', function(event) {
+  // 成功時の処理
+  var res = event.detail[0];
+  $("#like_button").toggleClass("liked_button");
+  if(res){
+    notify_for_seconds("いいねしました。");
+    like_count.textContent = parseFloat(like_count.textContent) + 1
+  }else{
+    notify_for_seconds("いいねを解除しました。");
+    like_count.textContent = parseFloat(like_count.textContent) - 1
+  }
+  
+});
+
+$("#like_button")[0].addEventListener('ajax:error', function(event) {
+  // 失敗時の処理
+  var res = event.detail[0];
+  //$(".like_button").toggleClass("liked_button");
+  notify_for_seconds("いいねできませんでした。");
+  like_count.textContent = parseFloat(like_count.textContent) - 1
+});

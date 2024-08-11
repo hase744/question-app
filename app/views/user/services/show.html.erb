@@ -30,6 +30,9 @@
                     <%= link_to(user_service_likes_path(id: @service.id), class: "like_button #{@service.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
                         <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
                     <% end %>
+                    <script>
+                    <%= render "user/services/javascript/like.js.erb" %>
+                    </script>
                 <% end %>
                     <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
                     <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_delivered: true).count %>件</span>
@@ -222,69 +225,138 @@
             </div>
             <% if !@service.request.present?%>
             <div class="service_info_menu" id="request_ajax_update">
-                <li class="menu_element"><%= link_to "回答", user_service_transactions_path(@service.id), remote: true, class:"user_content_link user_transactions_link"%></li>
-                <li class="menu_element"><%= link_to "質問", user_service_requests_path(@service.id), remote: true, class:"user_content_link user_requests_link"%></li>
-                <li class="menu_element"><%= link_to "レビュー", user_service_reviews_path(@service.id), remote: true, class:"user_content_link user_reviews_link"%></li>
+                <% @bar_elements.each do |element| %>
+                    <% 
+                    if current_nav_item == element[:item]
+                        puts "現在#{current_nav_item}"
+                        additional_class = "blue"  
+                    else
+                        additional_class = "gray"
+                    end
+                    %>
+                    <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
+                        <%= link_to element[:japanese_name], user_service_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
+                    </li>
+                <% end %>
             </div>
             <% end %>
         </div>
-        <%if false #@service.requests.present?%>
-        <h3 class="zone_title">依頼</h3>
-            <% @service.requests.each do |request| %>
-            <%= render "user/requests/cell", request:request %>
-            <% end %>
-        <% end %>
         <div class="service_hitsory" id="updated_by_ajax">
-            <% @service.transactions.solve_n_plus_1.where(is_delivered:true).page(params[:page]).per(5).each do |transaction|%>
-                <%= render "user/transactions/cell", transaction:transaction %>
-            <% end %>
+            <%=
+                case current_nav_item
+                when 'transactions'
+                    render partial: 'user/transactions/cell', collection: @models, as: :transaction
+                when 'requests'
+                    render partial: 'user/requests/cell', collection: @models, as: :request
+                when 'reviews'
+                    render partial: 'user/reviews/cell', collection: @models, as: :transaction
+                end
+            %>
         </div>
+	    <%= render "user/shared/loading_animation" %>
     </div>
     <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
 <% unless user_signed_in? && @service.user == current_user  %>
-<div class="bottom_button_area purchase_button_area">
-    <div class="bottom_button_flame">
-        <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
-        <div class="bottom_button">
-        <%=
-        if @transaction&.is_suggestion
-            link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
-        else
-            link_to(new_user_request_path(service_id:@service.id), class:"transaction_button") do
-                "質問を投稿する"
+    <div class="bottom_button_area purchase_button_area">
+        <div class="bottom_button_flame">
+            <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
+            <div class="bottom_button">
+            <%=
+            if @transaction&.is_suggestion
+                link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
+            else
+                link_to(new_user_request_path(service_id:@service.id), class:"transaction_button") do
+                    "質問を投稿する"
+                end
             end
-        end
-        %>
+            %>
+            </div>
         </div>
     </div>
-</div>
-<script>
-$('.main_area').css('padding-bottom','50px');
-</script>
+    <script>
+        $('.main_area').css('padding-bottom','50px');
+    </script>
 <% end %>
-<%= javascript_pack_tag "user/services/show" %>
 <script>
-var like_count = document.getElementById("like_count");
-$("#like_button")[0].addEventListener('ajax:success', function(event) {
-  // 成功時の処理
-  var res = event.detail[0];
-  $("#like_button").toggleClass("liked_button");
-  if(res){
-    notify_for_seconds("いいねしました。");
-    like_count.textContent = parseFloat(like_count.textContent) + 1
-  }else{
-    notify_for_seconds("いいねを解除しました。");
-    like_count.textContent = parseFloat(like_count.textContent) - 1
-  }
-  
+function register_callback() {
+  $("#request_ajax_update").on(
+      "ajax:complete",
+      function(event) {
+        var res = event.detail[0].response
+        $('#updated_by_ajax').html(res)
+        console.log(res)
+        console.log("register")
+      }
+  );
+}
+$("#request_ajax_update")[0].addEventListener('ajax:error', function(event) {
+  // 失敗時の処理
+  console.log("受信できません。")
+  notify_for_seconds("受信できません。");
 });
 
-$("#like_button")[0].addEventListener('ajax:error', function(event) {
-  // 失敗時の処理
-  var res = event.detail[0];
-  //$(".like_button").toggleClass("liked_button");
-  notify_for_seconds("いいねできませんでした。");
-  like_count.textContent = parseFloat(like_count.textContent) - 1
+var menu_element = document.getElementsByClassName('menu_element');
+var service_hitsory = document.getElementsByClassName("service_hitsory")[0]
+var menu_elements = Array.from(menu_element)
+var paths = ["transactions","requests","reviews"]
+var bar_elements = <%=raw @bar_elements.to_json %><%=%>
+var item = "<%=current_nav_item%>"
+var service_id = <%= @service.id %><%=%>
+var loaded_pages  = []
+
+$(".search_detail").css("display","none")
+console.log("params")
+
+function item_to_page(name){
+  return bar_elements.find(
+    ({element}) => item == name
+  ).page
+}
+
+function update_menu_color(element){
+    $('.menu_element').addClass('gray');
+    $('.menu_element').removeClass('blue');
+    //何度か要素を選択するとなぜか他の場所の色が変わる
+    //element.classList.remove('gray');
+    //element.classList.add('blue');
+}
+//横スクロールメニューの要素が押された時
+menu_elements.forEach(element => element.addEventListener("click", ()=>{
+    	$('#loading_animation').css('display','block');
+        $('#updated_by_ajax').empty();
+        update_menu_color(element);
+        item = element.getAttribute('item');
+        var loaded_element_count = service_hitsory.childElementCount+1; //現在取得済みの要素数
+        //繰り上げ（現在取得済みの要素数 / 取得するページの要素数）＋１
+        page = Math.ceil(loaded_element_count/item_to_page(item)) + 1;
+    }
+));
+
+var insert_elements = function(response, scroll_element){
+    scroll_element.insertAdjacentHTML('beforeend', response)
+    $('#loading_animation').css('display','none');
+}
+
+//スクロールをした判定
+$(window).on('scroll', function(){
+    var service_hitsory = document.getElementsByClassName("service_hitsory")[0]
+    var token = document.getElementsByName("csrf-token")[0].content;
+    var docHeight = $(document).innerHeight(), //ドキュメントの高さ
+    windowHeight = $(window).innerHeight(), //ウィンドウの高さ
+    pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+    page = Math.ceil(service_hitsory.childElementCount/item_to_page(item))+1
+    
+    //ウィンドウの一番下までスクロールした時 && スクロール位置が変化した
+    if(check_scroll() && !loaded_pages.includes(page)) {
+        console.log("page : "+page)
+        loaded_pages.unshift(page)
+        scrollTo(0, pageBottom + 10);
+        xml_request(`${item}/${service_id}`, page, service_hitsory,  insert_elements, null);
+        $('#loading_animation').css('display','block');
+    }
 });
+
+//window.register_callback = register_callback;
+//register_callback();
 </script>

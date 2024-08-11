@@ -66,24 +66,47 @@
             
             <%= render "user/shared/description", text:@user %>
             <div class="user_profile_menu" id="request_ajax_update">
-            <% @bar_elements.each do |element| %>
-                <%if !(!@user.is_seller && element[:for_seller]) %>
-                    <li class="menu_element" path=<%="#{element[:path]}"%>>
-                        <%= link_to element[:japanese_name], element[:link], remote: true, class:"user_content_link user_#{element[:path]}_link"%>
-                    </li>
+                <% @bar_elements.each do |element| %>
+                    <% unless !@user.is_seller && element[:for_seller] %>
+                        <% 
+                        if current_nav_item == element[:item]
+                            additional_class = "blue"  
+                        else
+                            additional_class = "gray"
+                        end
+                        %>
+                        <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
+                            <%= link_to element[:japanese_name], user_account_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
+                        </li>
+                    <% end %>
                 <% end %>
-            <% end %>
             </div>
         </div>
     </div>
     
     <div class="user_detail" id="updated_by_ajax">
-        <%= render partial: "user/accounts/posts", locals: { contents: @posts}%>
+        <%=
+            case current_nav_item
+            when 'posts'
+                render partial: 'user/posts/cell', collection: @models, as: :post
+            when 'requests'
+                render partial: 'user/requests/cell', collection: @models, as: :request
+            when 'sales'
+                render partial: 'user/transactions/cell', collection: @models, as: :transaction
+            when 'services'
+                render partial: 'user/services/cell', collection: @models, as: :service
+            when 'reviews'
+                render partial: 'user/reviews/cell', collection: @models, as: :transaction
+            end
+        %>
+        <%#= render partial: "user/accounts/posts", locals: { contents: @posts}%>
     </div>
+	<%= render "user/shared/loading_animation" %>
 </div>
 <%= javascript_pack_tag "shared/xml_request" %>
 <%= javascript_pack_tag "shared/check_scroll" %>
 <script>
+<%= render "user/services/javascript/cell.js.erb" %>
 <%= render "user/accounts/show.js.erb" %>
 <% flash.each do |type, message| %>
     // Bootstrapを導入しているため、`class="alert alert-success"`としています

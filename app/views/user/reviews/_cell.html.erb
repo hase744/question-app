@@ -24,19 +24,18 @@
             </div>
         </div>
     </div>
+    <script>
+    var description_text_area = document.getElementById("description_text_area");
+    var open_review_text<%=transaction.id%> = document.getElementById("open_review_text<%=transaction.id%>");
+    var review_text<%=transaction.id%> = document.getElementById("review_text<%=transaction.id%>");
+
+    open_review_text<%=transaction.id%>.addEventListener('click', (event) => {
+        open_review_text<%=transaction.id%>.classList.toggle("open_review_text");
+        open_review_text<%=transaction.id%>.classList.toggle("close_text");
+
+        review_text<%=transaction.id%>.classList.toggle("opening_text");
+        review_text<%=transaction.id%>.classList.toggle("closing_text");
+        console.log("description")
+    });
+    </script>
 </div>
-
-<script>
-var description_text_area = document.getElementById("description_text_area");
-var open_review_text<%=transaction.id%> = document.getElementById("open_review_text<%=transaction.id%>");
-var review_text<%=transaction.id%> = document.getElementById("review_text<%=transaction.id%>");
-
-open_review_text<%=transaction.id%>.addEventListener('click', (event) => {
-    open_review_text<%=transaction.id%>.classList.toggle("open_review_text");
-    open_review_text<%=transaction.id%>.classList.toggle("close_text");
-    
-    review_text<%=transaction.id%>.classList.toggle("opening_text");
-    review_text<%=transaction.id%>.classList.toggle("closing_text");
-    console.log("description")
-});
-</script>

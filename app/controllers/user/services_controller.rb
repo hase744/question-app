@@ -8,6 +8,7 @@ class User::ServicesController < User::Base
   before_action :check_request_valid, only:[:new, :create, :edit, :update]
   before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
   before_action :check_can_suggest, only:[:new, :create]
+  before_action :define_page_count
   after_action :update_total_views, only:[:show]
   layout :choose_layout
 
@@ -55,20 +56,45 @@ class User::ServicesController < User::Base
   end
 
   def show
-    @relationship = nil
     if @service.user == current_user
       gon.tweet_text = "サービスを出品しました。気になる方は以下のリンクへ！"
     else
       gon.tweet_text = "#{@service.user.name}さんのサービスはこちら。気になる方は以下のリンクへ！"
     end
-    gon.env = Rails.env
     if @service.image.url
       @og_image = @service.image.url
     end
-    gon.service_id = @service.id
     @og_title = @service.title
     @og_description = @service.description
-    @relationship = Relationship.find_by(followee:@service.user, follower_id: current_user.id) if user_signed_in?
+
+    set_current_nav_item_for_service
+    @bar_elements = [
+      {item:'transactions',japanese_name:'回答', link:user_service_transactions_path(@service.id, nav_item:'transactions'), page:@transaction_page, for_seller:true},
+      {item:'requests',japanese_name:'質問', link:user_service_requests_path(@service.id, nav_item:'requests'), page:@request_page, for_seller:false},
+      {item:'reviews',japanese_name:'レビュー', link:user_service_reviews_path(@service.id, nav_item:'reviews'), page:@review_page, for_seller:true},
+    ]
+
+    case current_nav_item
+    when 'transactions'
+      @models = Transaction.where(service: @service, is_delivered: true)
+    when 'requests'
+      @models = Request.from_service(@service)
+    when 'reviews'
+      @models = Transaction
+        .where.not(reviewed_at: nil)
+        .where.not(star_rating: nil)
+        .where(service: @service, is_delivered: true)
+    end
+
+    current_element = @bar_elements.find{|e| 
+      e[:item] == current_nav_item
+    }
+
+    @models = @models
+      .solve_n_plus_1
+      .order(id: :DESC)
+      .page(params[:page])
+      .per(current_element[:page])
   end
 
   def new
@@ -174,21 +200,21 @@ class User::ServicesController < User::Base
     @requests = @requests.solve_n_plus_1
     @requests = @requests.where(services: Service.find(params[:id]), is_published: true)
     @requests = @requests.order(id: :DESC)
-    @requests = @requests.page(params[:page]).per(5)
-    render partial: 'user/services/requests', locals: { contents: @requests }
+    @requests = @requests.page(params[:page]).per(@request_page)
+    render partial: 'user/requests/cell', collection: @requests, as: :request
   end
 
   def transactions
     @transactions = Transaction.includes(:seller, :service, :request, :items).order(id: :DESC)
     @transactions = @transactions.where(service_id:params[:id], is_delivered: true)
-    @transactions = @transactions.page(params[:page]).per(5)
-    render partial: "user/services/transactions", locals: { contents: @transactions }
+    @transactions = @transactions.page(params[:page]).per(@transaction_page)
+    render partial: 'user/transactions/cell', collection: @transactions, as: :transaction
   end
 
   def reviews
     transactions = Transaction.where(service_id:params[:id], is_delivered: true).where.not(reviewed_at: nil).includes(:seller, :seller, :request).order(id: :DESC)
-    @transactions = transactions.page(params[:page]).per(5)
-    render partial: "user/services/reviews", locals: { contents: @transactions }
+    @transactions = transactions.page(params[:page]).per(@review_page)
+    render partial: 'user/reviews/cell', collection: @transactions, as: :transaction
   end
 
   def suggest
@@ -267,6 +293,12 @@ class User::ServicesController < User::Base
         redirect_to user_account_path(current_user.id)
         flash.notice = "出品できるサービス数が上限に達しています。"
     end
+  end
+
+  private def define_page_count
+    @request_page = 5
+    @transaction_page = 5
+    @review_page = 5
   end
 
   private def define_service

@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   before_action :set_view_value
   before_action :check_user_state
   before_action :check_session_point
+  before_action :set_current_nav_item
   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
   def create_error_log(e)

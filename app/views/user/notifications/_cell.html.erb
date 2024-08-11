@@ -1,0 +1,19 @@
+<%= link_to(user_notification_path(notification.id), class: 'message_show_button') do %>
+  <div class="notification_cell">
+      <div class="image_area">
+          <%if notification.notifier_id && notification.notifier.image_url%>
+              <%=image_tag notification.notifier.image_url, class:"image"%>
+          <% else %>
+              <%=image_tag "/profile.jpg", class:"image"%>
+          <% end %>
+      </div>
+      <div class="description_area">
+      <span class="description">
+      <%if !notification.is_notified%>
+              <span class="new"><%= "NEW" %></span>
+      <% end %><%= notification.description%>
+          </span>
+          <span class="datetime"><%=from_now(notification.created_at)%></span>
+      </div>
+  </div>
+<% end %>

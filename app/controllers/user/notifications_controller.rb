@@ -16,7 +16,7 @@ class User::NotificationsController < User::Base
   def notification_cells
     @notifications = Notification.solve_n_plus_1
       .where(user: current_user)
-      .order(id: :DESC)
+      .order(is_notified: :asc, id: :desc)
       .page(params[:page])
       .per(15)
     render partial: "user/notifications/notification_cells", locals: { contents: @notifications}
