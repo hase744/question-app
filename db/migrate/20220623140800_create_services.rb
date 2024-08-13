@@ -10,7 +10,6 @@ class CreateServices < ActiveRecord::Migration[6.1]
       t.string :title, index:true
       t.text :description
       t.integer :price
-      t.string :image
       #t.integer :stock_quantity, default: 0
       t.boolean :is_published, default: true, index:true
       t.boolean :is_for_sale, default: true, index:true

@@ -125,7 +125,7 @@
                     </tr>
                 </table>
                 <div class="service_image_area">
-                    <%if @service.image.url == nil%>
+                    <%if @service.item&.file&.url == nil%>
                         <%=image_tag "/corretech_large_icon.png", class:"service_image"%>
                     <% else %>
                         <%=image_tag @service.image_url, class:"service_image",id:"service_image"%>

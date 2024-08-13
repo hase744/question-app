@@ -11,7 +11,8 @@
         
         <div class="field_area">
           <%= f.label :image, class:"field_label" %><br />
-          <%= f.file_field :image, autocomplete: "image", class:"input_field" %>
+          <%#= f.file_field :image, autocomplete: "image", class:"input_field" %>
+          <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "item[file][]", multiple: true %>
         </div>
       
           <div class="field_area">

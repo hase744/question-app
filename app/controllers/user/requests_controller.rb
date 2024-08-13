@@ -3,14 +3,15 @@ class User::RequestsController < User::Base
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
-  #before_action :check_stripe, only:[:new, :create, :destroy, :update, :preview, :publish] #Stripeのアカウントが有効である
+  before_action :check_stripe_customer, only:[:publish] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
   before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
   before_action :check_accessed_at, only:[:create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_already_contracted, only:[:new, :create, :publish, :purchase]
-  before_action :check_budget_sufficient, only:[:new, :create, :publish, :purchase]
+  before_action :check_budget_sufficient, only:[:publish, :purchase]
+  before_action :check_
   layout :choose_layout
 
   private def choose_layout
@@ -222,11 +223,6 @@ class User::RequestsController < User::Base
     end
   end
 
-  def save_models
-    models_to_save = [@service, @request, @transaction, @item].compact
-    models_to_save.all?(&:save)
-  end
-
   def create
     @request = Request.new(request_new_params)
     #@request_item = @request.items.new(request_item_params)
@@ -250,7 +246,7 @@ class User::RequestsController < User::Base
       end
     else
       @request.is_inclusive = true
-      if @request.save!
+      if @request.save
         #params[:items][:file].each do |file|
         params.dig(:items, :file)&.each do |file|
           @request.items.create(file: file)
@@ -279,19 +275,8 @@ class User::RequestsController < User::Base
   end
   
   def set_preview_values
-    @request_published = false
-    
-    gon.request_form = @request.request_form.name
-    gon.request_id = @request.id
-    gon.use_youtube = @request.use_youtube
     if @service
-      if @request.file.present? #依頼がファイルがある
-        gon.is_file_nil = false
-      else
-        gon.is_file_nil = true
-      end
       if @transaction.is_suggestion
-        @request_published = true
         @path = user_request_purchase_path(transaction_id: @transaction.id)
       else
         @path = user_request_publish_path
@@ -310,7 +295,6 @@ class User::RequestsController < User::Base
     else
       @edit_path = edit_user_request_path(@request.id)
     end
-    gon.request_published = @request_published
   end
   
   private def create_notification
@@ -365,7 +349,7 @@ class User::RequestsController < User::Base
     kit.to_file("./app/assets/images/#{name}.png")
   end
 
-  private def check_stripe
+  private def check_stripe_customer
     unless current_user.is_stripe_customer_valid? || @service.price <= 0
       redirect_to  user_cards_path
     end
@@ -549,4 +533,3 @@ class User::RequestsController < User::Base
     )
   end
 end
-
