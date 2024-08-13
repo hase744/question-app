@@ -1,10 +1,11 @@
 class Service < ApplicationRecord
-  mount_uploader :image, ImageUploader
   has_many :requests
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
   has_one :service_category
+  has_one :item, class_name: "ServiceItem", dependent: :destroy
+  has_many :items, class_name: "ServiceItem", dependent: :destroy
   has_many :requests, through: :transactions
   has_many :likes, class_name: "ServiceLike"
   belongs_to :request, optional: true
@@ -27,13 +28,16 @@ class Service < ApplicationRecord
   validate :validate_price
   validate :validate_request_max_length
   validate :validate_request_max_duration
+  validate :validate_service_category
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+  accepts_nested_attributes_for :items, allow_destroy: true
   accepts_nested_attributes_for :service_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
     includes(:user, :transactions, :requests, :service_categories, :service_category)
   }
+
   scope :seeable, -> { 
     left_joins(:user, :service_categories)
     .solve_n_plus_1
@@ -47,7 +51,7 @@ class Service < ApplicationRecord
       }
     )
   }
-  
+
   scope :filter_categories, -> (names){
     if names.present?
       names = names.split(',')
@@ -107,6 +111,7 @@ class Service < ApplicationRecord
     }.map {|transaction|
       transaction.star_rating
     }
+    return nil if ratings.empty? #ratings.lengthが0の時NoNを返すのを回避するため
     ratings.sum.fdiv(ratings.length)
   end
 
@@ -140,13 +145,13 @@ class Service < ApplicationRecord
   end
 
   def thumb_with_default
-    if self.image.thumb.url == nil
+    if self.item&.file&.thumb&.url == nil
       "/corretech_icon.png"
     else 
-      self.image.thumb.url
+      self.item.file.thumb.url
     end 
   end
-  
+
   def update_average_star_rating
     transactions =  Transaction.where(service: self).where.not(star_rating: nil)
     self.update(average_star_rating: transactions.average(:star_rating).to_f)
@@ -210,6 +215,15 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
+    if self.service_categories.length > 1
+      if self.categories.length > 1 #カテゴリの種類がたくさんある
+        self.service_categories.first.update(
+          category_name: self.service_categories.last.category_name
+        )
+      end
+      self.service_categories.last.destroy
+    end
+    
     self.request_max_characters = nil if self.request_max_characters == 0
     if self.service_categories.length > 1
       if self.categories.length > 1 #カテゴリの種類がたくさんある
@@ -238,6 +252,13 @@ class Service < ApplicationRecord
   def update_total_services
     if self.request.present?
       self.request.update(total_services: self.request.services.count)
+    end
+  end
+
+  def validate_service_category
+    unless self.service_categories.present?
+      errors.add(:base, 'カテゴリーが選択されていません')
+      throw(:abort)
     end
   end
 

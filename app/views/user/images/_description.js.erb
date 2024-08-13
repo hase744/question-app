@@ -59,7 +59,8 @@ function create_description_image(){
   $("#display_setting").css("display","block");
   document.getElementById("submit").disabled = true; //送信できなくする
     var formData = new FormData();
-      html2canvas(document.querySelector("#canvas-box")).then(canvas => { 
+      html2canvas(document.querySelector("#canvas-box")).then(canvas => {
+        console.log("キャンバス")
         var imageBlob = canvas.toBlob(function(blob) {
           formData.append("request[file]",blob, `picture${datetime}.${extension}`);
           const file = new File([blob], `description_image${datetime}.${extension}`, {type: `image/${extension}`});

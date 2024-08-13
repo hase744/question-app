@@ -6,10 +6,10 @@
             <% end %>
             <div class="service_user_condition_image">
                 <div class="service_image_area">
-                    <%if service.image.url == nil%>
+                    <%if service.item&.file&.url == nil%>
                         <%=image_tag "/corretech_icon.png", class:"service_image"%>
                     <% else %>
-                        <%=image_tag service.image.thumb.url, class:"service_image"%>
+                        <%=image_tag service.item&.file&.thumb&.url, class:"service_image"%>
                     <% end %>
                 </div>
                 <div class="service_condition_user">

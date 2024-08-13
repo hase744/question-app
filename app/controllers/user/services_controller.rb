@@ -61,8 +61,8 @@ class User::ServicesController < User::Base
     else
       gon.tweet_text = "#{@service.user.name}さんのサービスはこちら。気になる方は以下のリンクへ！"
     end
-    if @service.image.url
-      @og_image = @service.image.url
+    if @service.item&.file&.url
+      @og_image = @service.item&.file&.url
     end
     @og_title = @service.title
     @og_description = @service.description
@@ -119,6 +119,7 @@ class User::ServicesController < User::Base
     @service = Service.new(service_params)
     @service.user = current_user
     @service.total_views = 0
+    @item = @service.items.new(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
     if @request
       @transaction = Transaction.new(
         service: @service, 
@@ -130,9 +131,10 @@ class User::ServicesController < User::Base
       end
       #@service.service_categories
       ActiveRecord::Base.transaction do
-        if @service.save && @request.save && @transaction.save
+        if save_models
           after_suggest
           redirect_to user_service_path(@service.id)
+          @service.items.create(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
         else
           @request = @service.request
           set_form_values
@@ -144,16 +146,19 @@ class User::ServicesController < User::Base
         end
       end
     else
-      if @service.save
-        create_notification(@service, "相談室を出品されました。")
-        flash.alert = "相談室を出品しました。"
-        service = Service.find_by(user: current_user)
-        redirect_to user_service_path(Service.last.id)
-      else
-        @request = @service.request
-        set_form_values
-        render action: "new"
-        flash.alert = "相談室を出品できませんでした。"
+       user_service_path(Service.last.id) if @service.service_categories.length == 0
+      ActiveRecord::Base.transaction do
+        if save_models
+          create_notification(@service, "相談室を出品されました。")
+          flash.alert = "相談室を出品しました。"
+          service = Service.find_by(user: current_user)
+          redirect_to user_service_path(Service.last.id)
+        else
+          @request = @service.request
+          set_form_values
+          render action: "new"
+          flash.alert = "相談室を出品できませんでした。"
+        end
       end
     end
   end
@@ -161,6 +166,11 @@ class User::ServicesController < User::Base
   def update
     @service = Service.find_by(id: params[:id], user:current_user)
     if @service.update(service_params)
+      if @service.item
+        @service.items.update(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
+      else
+        @service.items.create(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
+      end
       if !@service.is_published
         flash.notice = "相談室を非公開にしました。"
         redirect_to user_service_path(params[:id])
@@ -363,7 +373,6 @@ class User::ServicesController < User::Base
       :title,
       :description,
       :price,
-      :image,
       :category_id,
       :transaction_message_enabled,
       :stock_quantity,

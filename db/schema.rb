@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_16_075918) do
+ActiveRecord::Schema.define(version: 2024_08_12_095023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -326,6 +326,16 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.index ["service_id"], name: "index_service_files_on_service_id"
   end
 
+  create_table "service_items", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.string "file"
+    t.string "youtube_id"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["service_id"], name: "index_service_items_on_service_id"
+  end
+
   create_table "service_likes", force: :cascade do |t|
     t.bigint "service_id", null: false
     t.bigint "user_id", null: false
@@ -343,7 +353,6 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.string "title"
     t.text "description"
     t.integer "price"
-    t.string "image"
     t.boolean "is_published", default: true
     t.boolean "is_for_sale", default: true
     t.integer "delivery_days"
@@ -542,6 +551,7 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
     t.integer "mini_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "image_tmp"
     t.index ["average_star_rating"], name: "index_users_on_average_star_rating"
     t.index ["cancellation_rate"], name: "index_users_on_cancellation_rate"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -587,6 +597,7 @@ ActiveRecord::Schema.define(version: 2024_07_16_075918) do
   add_foreign_key "requests", "users"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
+  add_foreign_key "service_items", "services"
   add_foreign_key "service_likes", "services"
   add_foreign_key "service_likes", "users"
   add_foreign_key "services", "requests"

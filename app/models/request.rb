@@ -36,6 +36,7 @@ class Request < ApplicationRecord
   validate :validate_delivery_days
   validate :validate_suggestion_deadline
   validate :validate_is_published
+  validate :validate_request_category
   #validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
@@ -150,6 +151,9 @@ class Request < ApplicationRecord
     end
 
     if self.service
+      self.service.service_categories.each do |sc|
+        self.request_categories.new(category_name: sc.category_name)
+      end
       #self.request_form = self.service.request_form
       #self.delivery_form = self.service.delivery_form
       #self.category_id = self.service.category.id
@@ -248,6 +252,13 @@ class Request < ApplicationRecord
       else
         "回答待ち"
       end
+    end
+  end
+
+  def validate_request_category
+    unless self.request_categories.present?
+      errors.add(:base, 'カテゴリーが選択されていません')
+      throw(:abort)
     end
   end
 

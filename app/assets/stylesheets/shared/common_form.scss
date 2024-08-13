@@ -43,10 +43,10 @@
           transform: scale(1.5);
         }
         .submit-btn {
-            -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
+          -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
           display: block;
           width: 100%;
-          padding: 10px;
+          padding: 10px 0px;
           font-size: 16px;
           text-align: center;
           background-color: orange;
@@ -54,6 +54,12 @@
           border: none;
           border-radius: 5px;
           cursor: pointer;
+        }
+        .fake_submit{
+          display: block;
+        }
+        .submit{
+          display: none;
         }
         .submit-btn:hover {
           background-color: darkgoldenrod;

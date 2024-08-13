@@ -70,6 +70,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def save_models
+    models_to_save = [@service, @request, @transaction, @item].compact
+    models_to_save.all?(&:save)
+  end
+
   def revive
     user = Usse.find_by(reset_password_token: params[:reset_password_token])
   

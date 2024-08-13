@@ -50,7 +50,7 @@ class User::TransactionsController < User::Base
     if @transaction.request_form.name == "text"
       @og_image = @transaction.request.items.first.file.url
     elsif @transaction.service.image
-      @og_image = @transaction.service.image.url
+      @og_image = @transaction.service.item&.file&.url
     end
     gon.env = Rails.env
     @transaction_along_messages =  TransactionMessage

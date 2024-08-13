@@ -7,12 +7,12 @@
       
         <div class="form_group">
           <%= f.label :name %><span>（15字以内）</span></br>
-          <%= f.text_field :name, class: "form-control",value:"", class:"form_input" %>
+          <%= f.text_field :name, class: "form-control",value:"", class:"form_input",request:true %>
         </div>
       
         <div class="form_group">
           <%= f.label :email %></br>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form_input" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class:"form_input", request:true %>
         </div>
         
         <div class="form_group">
@@ -20,19 +20,20 @@
           <% if @minimum_password_length %>
           <em>(<%= @minimum_password_length %>字以上)</em>
           <% end %></br>
-          <%= f.password_field :password, autocomplete: "new-password", class:"form_input" %>
+          <%= f.password_field :password, autocomplete: "new-password", class:"form_input", request:true %>
         </div>
       
         <div class="form_group">
           <%= f.label :password_confirmation %></br>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form_input" %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class:"form_input", request:true %>
         </div>
       
-        <input type="checkbox" class="checkbox">
-        <span><%= link_to "利用規約", abouts_term_of_service_path, target: :_blank %>に同意します。</span>
+        <input type="checkbox" class="checkbox", id="terms_checkbox", request=true>
+        <span><%= link_to "利用規約", abouts_term_of_service_path, target: :_blank%>に同意します。</span>
         </br>
         <div class="actions"></br>
-          <%= f.submit "登録", disabled:"true", class:"submit-btn submit" %>
+          <div class="submit-btn fake_submit">登録</div>
+          <%= f.submit "登録", class:"submit-btn submit" %>
         </div>
       
       
@@ -43,7 +44,18 @@
     </div>
   </div>
 <script>
-$(".checkbox").click(function() {
-  $(".submit").prop("disabled", $(this).prop("checked")==false);
+$('#terms_checkbox').on('change', function() {
+  if ($(this).is(':checked')) {
+    console.log("チェック")
+    $('.submit').css('display','block');
+    $('.fake_submit').css('display','none');
+  }else{
+    console.log("チェックじゃない")
+    $('.submit').css('display','none');
+    $('.fake_submit').css('display','block');
+  }
+});
+$('.fake_submit').click(function() {
+  alert('利用規約に同意する必要があります。');
 })
 </script>

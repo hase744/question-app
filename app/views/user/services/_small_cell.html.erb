@@ -2,10 +2,10 @@
     <div class="service_small_cell_flame">
         <%= link_to(user_service_path(service.id), class:"service_show_link") do%>
             <div class="service_image_area">
-                <%if service.image.thumb.url == nil%>
+                <%if service.item&.file&.thumb&.url.nil?%>
                 <%=image_tag "/corretech_icon.png", class:"service_image"%>
                 <% else %>
-                <%=image_tag service.image.thumb.url, class:"service_image"%>
+                <%=image_tag service.item&.file&.thumb&.url, class:"service_image"%>
                 <% end %>
             </div>
             <div class="service_description_area">

@@ -101,7 +101,9 @@
         %>
         <%#= render partial: "user/accounts/posts", locals: { contents: @posts}%>
     </div>
-	<%= render "user/shared/loading_animation" %>
+    <div>
+	    <%= render "user/shared/loading_animation" %>
+    </div>
 </div>
 <%= javascript_pack_tag "shared/xml_request" %>
 <%= javascript_pack_tag "shared/check_scroll" %>
