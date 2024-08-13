@@ -59,7 +59,7 @@ class User::AccountsController < User::Base
     when 'sales'
       @models = Transaction.from_seller(User.find(params[:id]))
     when 'services'
-      @models = Service.where(user: User.find(params[:id]))
+      @models = Service.where(user: User.find(params[:id])).displayable(current_user)
     when 'reviews'
       @models = Transaction.from_seller(current_user)
         .where(is_delivered: true)
@@ -115,9 +115,7 @@ class User::AccountsController < User::Base
     @services = Service.all
     @services = @services.solve_n_plus_1
     @services = @services.where(user: User.find(params[:id]))
-    if !user_signed_in? || current_user.id != params[:id].to_i
-      @services = @services.where(is_published:true, request_id: nil)
-    end
+    @services = @services.displayable(current_user)
     @services = @services.order(id: :DESC).page(params[:page]).per(@service_page)
     render partial: 'user/services/cell', collection: @services, as: :service
   end

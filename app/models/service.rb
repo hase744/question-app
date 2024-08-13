@@ -64,6 +64,14 @@ class Service < ApplicationRecord
     end
   }
 
+  scope :displayable, -> (user=nil){
+    if user
+      self
+    else
+      self.where(is_published:true, request_id: nil)
+    end
+  }
+
   after_initialize do
     if self.request_form_name == 'video'
       self.request_max_minutes = self.request_max_minutes.to_i if self.request_max_minutes
