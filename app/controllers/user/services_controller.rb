@@ -8,6 +8,7 @@ class User::ServicesController < User::Base
   before_action :check_request_valid, only:[:new, :create, :edit, :update]
   before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
   before_action :check_can_suggest, only:[:new, :create]
+  before_action :check_account_description, only: [:new, :create, :edit, :update]
   before_action :define_page_count
   after_action :update_total_views, only:[:show]
   layout :choose_layout
@@ -365,6 +366,13 @@ class User::ServicesController < User::Base
         controller: "services",
         id_number: service.id
         )
+    end
+  end
+
+  def check_account_description
+    if current_user.description.length < 100
+      flash.notice = message = "プロフィールの説明を100字以上入力してください"
+      redirect_to edit_user_accounts_path
     end
   end
   
