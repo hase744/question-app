@@ -5,6 +5,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :confirmable
   mount_uploader :image, ImageUploader
   mount_uploader :header_image, ImageUploader
+  store_in_background :image
+  store_in_background :header_image
 
   has_many :access_logs, class_name: "AccessLog", foreign_key: :user_id, dependent: :destroy
   has_many :contacts, class_name: "Contact", foreign_key: :user_id, dependent: :destroy
@@ -229,7 +231,6 @@ class User < ApplicationRecord
   end
 
   def validate_is_seller
-    puts "出品者登録変更 #{will_save_change_to_is_seller?}"
     if will_save_change_to_is_seller? && is_dammy == false
       if self.is_seller && !is_stripe_account_valid?
         errors.add(:is_seller, "登録をできません")

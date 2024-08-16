@@ -91,16 +91,14 @@ class User::AccountsController < User::Base
 
   def update
     @user = current_user
+    @user.process_image_upload = true
+    @user.process_header_image_upload = true
     @user.assign_attributes(user_params)
     puts @user.categories
     UserCategory.where(user:@user).each do |uc|
       uc.destroy
     end
 
-    params[:user][:category_ids].split(',').each do |c|
-      @user.user_categories.create(category_id: c.to_i) if c != ""
-    end
-    
     if @user.save
         flash.notice = "ユーザー情報を更新しました"
         redirect_to user_account_path(@user.id)

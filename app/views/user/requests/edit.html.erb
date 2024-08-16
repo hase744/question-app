@@ -3,7 +3,7 @@
   <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
   <h3 class="service_new_title">質問内容</h3>
 <% else %>
-  <h3 class="service_new_title">質問を編集</h3>
+  <h3 class="service_new_title"><%=link_to "プレビュー", user_request_preview_path(@request.id) %> > 質問を編集</h3>
 <% end %>
 <%= render "user/shared/error_message", model: @request%>
 <%= render "user/shared/error_message", model: @request_item%>

@@ -93,6 +93,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   create_table "delivery_items", force: :cascade do |t|
     t.bigint "transaction_id", null: false
     t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -193,6 +195,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.bigint "user_id", null: false
     t.text "body"
     t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
     t.integer "total_views", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -233,6 +237,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   create_table "request_items", force: :cascade do |t|
     t.bigint "request_id", null: false
     t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -329,6 +335,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   create_table "service_items", force: :cascade do |t|
     t.bigint "service_id", null: false
     t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -413,6 +421,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.bigint "sender_id", null: false
     t.bigint "receiver_id", null: false
     t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
     t.text "body"
     t.integer "total_likes", default: 0
     t.datetime "created_at", precision: 6, null: false
@@ -513,7 +523,11 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.integer "state", null: false
     t.string "name"
     t.string "image"
+    t.string "image_tmp"
     t.string "header_image"
+    t.string "header_image_tmp"
+    t.boolean "image_processing", default: false, null: false
+    t.boolean "header_image_processing", default: false, null: false
     t.boolean "is_seller", default: false
     t.boolean "is_published", default: true
     t.text "admin_description"
@@ -549,15 +563,16 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.float "rejection_rate"
     t.float "cancellation_rate"
     t.integer "mini_price"
+    t.integer "max_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "image_tmp"
     t.index ["average_star_rating"], name: "index_users_on_average_star_rating"
     t.index ["cancellation_rate"], name: "index_users_on_cancellation_rate"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["is_published"], name: "index_users_on_is_published"
     t.index ["is_seller"], name: "index_users_on_is_seller"
     t.index ["last_login_at"], name: "index_users_on_last_login_at"
+    t.index ["max_price"], name: "index_users_on_max_price"
     t.index ["mini_price"], name: "index_users_on_mini_price"
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

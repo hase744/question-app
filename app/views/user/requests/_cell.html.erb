@@ -30,14 +30,13 @@
                     <%= link_to(request.image.url, class: 'request_link') do %>
                         <%= image_tag request.image.thumb.url, class:"image"%>
                     <% end %>
-                <% elsif (request.request_form.name == "image") && request.items.present? %>
+                <% else (request.request_form.name == "image") && request.items.present? %>
                     <%= render "user/shared/swiper_images", model: request, use_thumb:true %>
-                <% elsif request.request_form.name == "video" %>
-                    <%#= link_to(request.thumbnail, class: 'request_link') do %>
-                        <%#= image_tag request.thumbnail.url, class:"image"%>
-                    <%# end %>
-                    <%= video_tag request.file.url, poster:request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                 <% end %>
+                <%#= link_to(request.thumbnail, class: 'request_link') do %>
+                    <%#= image_tag request.thumbnail.url, class:"image"%>
+                <%# end %>
+                <%#= video_tag request.file.url, poster:request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
             <% end %>
         </div>
         <div class="request_condition_area vertical_condition_area">

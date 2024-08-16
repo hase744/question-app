@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def save_models
-    models_to_save = [@service, @request, @transaction, @item].compact
+    models_to_save = [@service, @request, @transaction, @item, @items].flatten.compact
     models_to_save.all?(&:save)
   end
 

@@ -261,7 +261,7 @@
             <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
             <%=
             if @transaction&.is_suggestion
-                link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"transaction_button"
+                link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"bottom_button transaction_button"
             else
                 link_to(new_user_request_path(service_id:@service.id), class:"bottom_button transaction_button") do
                     "質問を投稿する"

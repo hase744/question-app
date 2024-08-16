@@ -1,6 +1,7 @@
 class Post < ApplicationRecord
   belongs_to :user
   mount_uploader :file, ImageUploader
+  store_in_background :file
   validates :body, length: {maximum: :body_max_length}
   scope :solve_n_plus_1, -> {
     includes(:user)

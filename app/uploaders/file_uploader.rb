@@ -1,5 +1,6 @@
 class FileUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
+  include ::CarrierWave::Backgrounder::Delay
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
@@ -7,6 +8,7 @@ class FileUploader < CarrierWave::Uploader::Base
   # Choose what kind of storage to use for this uploader:
   storage :fog
   # storage :fog
+  cache_storage CarrierWave::Storage::File
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -44,15 +46,15 @@ class FileUploader < CarrierWave::Uploader::Base
   # Add an allowlist of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   def image?(new_file)
-    %w(jpg jpeg gif png).include?(new_file.extension.downcase)
+    %w(jpg jpeg gif png).include?(new_file&.extension&.downcase)
   end
   
   def is_image?
-    %w(jpg jpeg gif png).include?(file.extension.downcase)
+    %w(jpg jpeg gif png).include?(file&.extension&.downcase)
   end
 
   def is_video?
-    %w(MOV mov wmv mp4).include?(file.extension.downcase)
+    %w(MOV mov wmv mp4).include?(file&.extension&.downcase)
   end
 
   def extension_allowlist
