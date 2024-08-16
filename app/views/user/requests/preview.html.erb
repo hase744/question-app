@@ -52,7 +52,7 @@
                 <% end %>
                 <% if @request.request_form_name == "text" && @request.items %>
                   <% @request.items.each do |item|%>
-                    <%= image_tag item.file.url, class:"image"%>
+                    <%= image_tag item.file.normal_size.url, class:"image"%>
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text"%>
@@ -102,6 +102,7 @@
       <% end %>
     </div>
 </div>
+<%if @request.request_form.name == "text"%>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 <canvas id="canvas"></canvas>
 <%= render "/user/images/description.html.erb", text:@request.description, image_width: 500%>
@@ -128,20 +129,20 @@ try{
       // タイムアウト時の処理をここに追加
     }
   }, 3000); // 5秒のタイムアウト
-  
+
   // タイムアウトをクリアするための処理
   window.addEventListener('unload', () => {
     //service/showからrequest/previeに遷移するWindowのロードに失敗する
     clearTimeout(timeout);
   });
-  
+
   video_display = document.getElementById("video_display")
   if(video_display != null){
     video_display.addEventListener('loadeddata', function() {//フォームに値を代入
     $("#file_duration").val(Math.floor(this.duration))
     });
   }
-  
+
   //create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
   function reload_description_image(){
       if($("#desctiption_to_image_text").css("display") == "none"){
@@ -157,3 +158,4 @@ try{
   window.location.reload();
 }
 </script>
+<% end %>

@@ -11,7 +11,6 @@ class User::RequestsController < User::Base
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_already_contracted, only:[:new, :create, :publish, :purchase]
   before_action :check_budget_sufficient, only:[:publish, :purchase]
-  before_action :check_
   layout :choose_layout
 
   private def choose_layout
@@ -112,29 +111,30 @@ class User::RequestsController < User::Base
 
   def update
     @transactions = Transaction.where(request:@request) #サービスの購入である
-    puts "存在：#{@transactions.present?}"
     if @transactions.present? #サービスの購入である
       @request.assign_attributes(request_service_params)
       @request.service = @service
     end
-    if @request.update(request_params)
-      params.dig(:items, :file)&.each do |file|
-        @request.items.create(file: file)
-      end
-      if @request.request_form.name == "text" && !@request.is_published
-        @request.items.delete_all
-      end
-      if @transactions.present?
-        redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
+
+    @request.assign_attributes(request_params)
+    @items = generate_items&.flatten
+    ActiveRecord::Base.transaction do
+      if save_models
+        if @request.request_form.name == "text" && !@request.is_published
+          @request.items.delete_all
+        end
+        if @transactions.present?
+          redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
+        else
+          redirect_to user_request_preview_path(@request.id)
+        end
       else
-        redirect_to user_request_preview_path(@request.id)
+        puts "保存失敗"
+        if @request.service
+          @service = @request.service
+        end
+        render "user/requests/edit"
       end
-    else
-      puts "保存失敗"
-      if @request.service
-        @service = @request.service
-      end
-      render "user/requests/edit"
     end
   end
 
@@ -164,7 +164,10 @@ class User::RequestsController < User::Base
 
   def publish
     @request.set_publish
-    @item = @request.items.new(file: params[:request][:file]) if @request.request_form.name == "text"
+    if @request.request_form.name == "text"
+      @item = @request.items.new(file: params[:request][:file])
+      @item.process_file_upload = false
+    end
     if @transaction #サービスの購入である
       @request.service = @service
       if create_contract
@@ -227,6 +230,7 @@ class User::RequestsController < User::Base
     @request = Request.new(request_new_params)
     #@request_item = @request.items.new(request_item_params)
     @request.user = current_user
+    @items = generate_items&.flatten
     if @request.service_id
       @request.is_inclusive = false
       @service = @request.service
@@ -234,10 +238,7 @@ class User::RequestsController < User::Base
       @request.set_service_values
       @transaction.assign_attributes(service:@service, request:@request)
       ActiveRecord::Base.transaction do
-        if @request.save && @transaction.save
-          params.dig(:items, :file)&.each do |file|
-            @request.items.create(file: file) if @request.request_form.name != "text"
-          end
+        if save_models
           redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
         else
           detect_models_errors([@transaction, @request])
@@ -246,14 +247,12 @@ class User::RequestsController < User::Base
       end
     else
       @request.is_inclusive = true
-      if @request.save
-        #params[:items][:file].each do |file|
-        params.dig(:items, :file)&.each do |file|
-          @request.items.create(file: file)
+      ActiveRecord::Base.transaction do
+        if save_models
+          redirect_to user_request_preview_path(@request.id)
+        else
+          render "user/requests/new"
         end
-        redirect_to user_request_preview_path(@request.id)
-      else
-        render "user/requests/new"
       end
     end
   end
@@ -261,6 +260,7 @@ class User::RequestsController < User::Base
   def destroy
     #Transactionが存在していないかどうか
     if !Transaction.exists?(request_id:params[:id])
+      @request = Request.find_by(id:params[:id], user: current_user)
       if @request.destroy
         flash.notice = "削除しました。"
         redirect_to user_requests_path
@@ -271,6 +271,17 @@ class User::RequestsController < User::Base
     else
       flash.notice = "取引・提案のある質問は削除できません。"
       redirect_to user_request_path(params[:id])
+    end
+  end
+
+  def generate_items
+    params.dig(:items, :file)&.map do |file|
+      item = @request.items.new()
+      item.process_file_upload = true
+      item.assign_attributes(
+        file: file
+      )
+      item if @request.request_form.name != "text"
     end
   end
   

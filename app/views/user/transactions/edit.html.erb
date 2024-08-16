@@ -1,4 +1,4 @@
-<h2 class="transaction_new_title">回答を編集</h2>
+<h3 class="transaction_new_title"><%= link_to "プレビュー", user_order_path(@transaction.id) %> > 回答を編集</h3>
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: @transaction_item%>
 <%= render "user/requests/cell", request:@transaction.request%>
@@ -44,7 +44,7 @@
             	  	<%= f.fields_for :items do |item_form| %>
             	  	  	<% if item_form.object.file.present? %>
             	  	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
-            	  	  	  	<%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+            	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
             	  	  	  	<%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
             	  	  	  	</br></br>
             	  	  	<% end %>

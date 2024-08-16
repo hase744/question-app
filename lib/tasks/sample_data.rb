@@ -9,7 +9,7 @@ class SampleData
         image_path = Rails.root.join('public', 'sample', "#{users[n]['image']}.jpg")
         header_image_path = Rails.root.join('public', 'sample', "header_image (#{n}).jpg")
         user = User.find_by(email: "seller#{category.name}#{n}@exmaple.com")
-        user = User.create!(
+        user = User.new(
           email: "seller#{category.name}#{n}@exmaple.com",
           name: users[n]['name'],
           image: File.open(image_path),
@@ -22,11 +22,18 @@ class SampleData
           description: users[n]['description'],
           last_login_at:DateTime.now
         ) if !user.present?
-        puts "売主 #{user.present?}"
+        user.process_image_upload = true
+        user.process_header_image_upload = true
+        user.assign_attributes(
+          image: File.open(image_path),
+          header_image: File.open(header_image_path),
+          )
+        user.save
+        puts "creating seller No.#{n}"
         user.user_categories.create(category_name: category.name)
 
         user = User.find_by(email: "buyer#{category.name}#{n}@exmaple.com")
-        user = User.create!(
+        user = User.new(
           email: "buyer#{category.name}#{n}@exmaple.com",
           name: users[n]['name'],
           password: "password",
@@ -37,7 +44,8 @@ class SampleData
           description: users[n]['description'],
           last_login_at:DateTime.now
         ) if !user.present?
-        puts "買手 #{user.present?}"
+        user.save
+        puts "creating buyer No.#{n}"
         #user = User.find_by(email: "buyer#{n}@exmaple.com") if !user.present?
         user.user_categories.create(category_name: category.name)
         rescue => e
@@ -53,6 +61,7 @@ class SampleData
       services = JSON.parse(File.read(file_path))
       #10.times do |n|
       Parallel.each(0..9) do |n|
+        puts "creating service No.#{n}"
         service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
         service = Service.create_or_find_by!(
           user: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
@@ -68,9 +77,13 @@ class SampleData
           request_max_characters: (n+1)*200,
           request_max_minutes: n,
           request_max_files: 0,
-          image: File.open(service_image_path)
+          service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
-        service.service_categories.create(category_name: category.name)
+        item = service.items.new()
+        item.process_file_upload = true
+        item.assign_attributes(file: File.open(service_image_path))
+        item.save
+        #service.service_categories.create(category_name: category.name)
       end
     end
   end
@@ -97,12 +110,14 @@ class SampleData
             is_published: false,
             published_at:DateTime.now - n + 2,
             total_views:0,
-            is_inclusive: true
+            is_inclusive: true,
+            request_categories_attributes: {"0"=>{"category_name"=>category.name}}
           )
-          request.request_categories.create(category_name: category.name)
-          request.items.create(
-            file: File.open(image_path),
-          )
+          #request.request_categories.create(category_name: category.name)
+          item = request.items.new()
+          item.process_file_upload = true
+          item.assign_attributes(file: File.open(image_path))
+          item.save
           request.update(is_published: true)
         else
           # ファイルが存在しない場合の処理
@@ -139,12 +154,14 @@ class SampleData
           is_published: false,
           published_at:DateTime.now - n + 2,
           total_views:0,
-          is_inclusive: false
+          is_inclusive: false,
+          request_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
-        request.request_categories.create(category_name: category.name)
-        request.items.create(
-          file: File.open(image_path),
-        )
+        #request.request_categories.create(category_name: category.name)
+        item = request.items.new()
+        item.process_file_upload = true
+        item.assign_attributes(file: File.open(image_path))
+        item.save
         request.update(is_published: true)
         puts "seller#{n}@exmaple.com"
         service = Service.create_or_find_by!(
@@ -160,8 +177,9 @@ class SampleData
           request_max_characters: (n+1)*50,
           request_max_minutes: n,
           request_max_files: 0,
+          service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
-        service.service_categories.create(category_name: category.name)
+        #service.service_categories.create(category_name: category.name)
         transaction = Transaction.create_or_find_by!(
           title: transactions[n]['answer']['title'],
           description: transactions[n]['answer']['description'],

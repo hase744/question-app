@@ -3,6 +3,7 @@ class DeliveryItem < ApplicationRecord
     attr_accessor :use_youtube
     attr_accessor :video_second
     mount_uploader :file, FileUploader
+    store_in_background :file
     validate :validate_youtube_id
     validate :validate_file
     before_validation :set_default_values

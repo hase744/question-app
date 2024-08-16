@@ -3,6 +3,8 @@ class CreateRequestItems < ActiveRecord::Migration[6.1]
     create_table :request_items do |t|
       t.references :request, null: false, foreign_key: true, index:true
       t.string :file
+      t.string :file_tmp
+      t.boolean :file_processing, null: false, default: false
       t.string :youtube_id
       t.text :description
       

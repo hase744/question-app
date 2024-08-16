@@ -120,7 +120,11 @@ class User::ServicesController < User::Base
     @service = Service.new(service_params)
     @service.user = current_user
     @service.total_views = 0
-    @item = @service.items.new(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
+    if params.dig(:item, :file)
+      @item = @service.items.new()
+      @item.process_file_upload = true
+      @item.assign_attributes(file: params.dig(:item, :file)[0])
+    end
     if @request
       @transaction = Transaction.new(
         service: @service, 
@@ -130,12 +134,10 @@ class User::ServicesController < User::Base
       if @service.service_categories.length == 0
         @service.service_categories.new(category_name: @request.category.name)
       end
-      #@service.service_categories
       ActiveRecord::Base.transaction do
         if save_models
           after_suggest
           redirect_to user_service_path(@service.id)
-          @service.items.create(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
         else
           @request = @service.request
           set_form_values
@@ -147,7 +149,7 @@ class User::ServicesController < User::Base
         end
       end
     else
-       user_service_path(Service.last.id) if @service.service_categories.length == 0
+      user_service_path(Service.last.id) if @service.service_categories.length == 0
       ActiveRecord::Base.transaction do
         if save_models
           create_notification(@service, "相談室を出品されました。")
@@ -167,16 +169,21 @@ class User::ServicesController < User::Base
   def update
     @service = Service.find_by(id: params[:id], user:current_user)
     if @service.update(service_params)
-      if @service.item
-        @service.items.update(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
-      else
-        @service.items.create(file: params.dig(:item, :file)[0]) if params.dig(:item, :file)
+      if params.dig(:item, :file).present?
+        item = @service.item
+        unless item.present?
+          item = @service.items.new
+        end
+        item.process_file_upload = true
+        item.assign_attributes(file: params.dig(:item, :file)[0])
+        item.save
       end
+
       if !@service.is_published
         flash.notice = "相談室を非公開にしました。"
         redirect_to user_service_path(params[:id])
       else
-        flash.notice = "相談室内容を更新しました。"
+        flash.notice = "相談室を更新しました。"
         redirect_to user_service_path(params[:id])
       end
     else
@@ -354,7 +361,6 @@ class User::ServicesController < User::Base
     @service.update(total_views:@service.total_views + 1)
   end
 
-  
   def create_notification(service, text)
     relationships = Relationship.where(followee: current_user)
     relationships.each do |relationship|
@@ -371,7 +377,7 @@ class User::ServicesController < User::Base
 
   def check_account_description
     if current_user.description.length < 100
-      flash.notice = message = "プロフィールの説明を100字以上入力してください"
+      flash.notice = message = "プロフィールの自己紹介を100字以上入力してください"
       redirect_to edit_user_accounts_path
     end
   end

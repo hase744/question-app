@@ -1,7 +1,8 @@
 <% if model.items.map{|item| item.file.is_image? }.count == 1%>
     <%= link_to(model.items.last.file.url, class: 'link') do %>
         <%= 
-		if use_thumb
+		if model.items.last.file_processing
+		elsif use_thumb
 			image_tag model.items.last.file.thumb.url, class:"image"
 		else
 			image_tag model.items.last.file.url, class:"image"
@@ -14,7 +15,8 @@
             <% model.items.select{|item| item.file.is_image? }.each do |item| %>
                 <%= link_to(item.file.url, class: 'link swiper-slide') do %>
 					<%=
-					if use_thumb
+					if item.file_processing
+					elsif use_thumb
 						image_tag item.file.thumb.url, class:"image"
 					else
 						image_tag item.file.url, class:"image"

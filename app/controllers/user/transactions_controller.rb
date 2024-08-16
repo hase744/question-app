@@ -49,7 +49,7 @@ class User::TransactionsController < User::Base
   def show
     if @transaction.request_form.name == "text"
       @og_image = @transaction.request.items.first.file.url
-    elsif @transaction.service.image
+    elsif @transaction.service.item
       @og_image = @transaction.service.item&.file&.url
     end
     gon.env = Rails.env
@@ -92,19 +92,30 @@ class User::TransactionsController < User::Base
 
   def update
     @transaction.assign_attributes(transaction_params)
-    if  @transaction.save#save_transaction_and_items
-      params.dig(:items, :file)&.each do |file|
-        @transaction.items.create(file: file) if @transaction.delivery_form.name != "text"
+    @items = generate_items&.flatten
+    ActiveRecord::Base.transaction do
+      if save_models
+        flash.notice = "回答を編集しました"
+        redirect_to user_order_path(params[:id])
+      else
+        detect_models_errors([@transaction.item, @transaction])
+        set_edit_values
+        render "user/transactions/edit"
       end
-      flash.notice = "回答を編集しました"
-      redirect_to user_order_path(params[:id])
-    else
-      detect_models_errors([@transaction.item, @transaction])
-      set_edit_values
-      render "user/transactions/edit"
     end
   end
 
+  def generate_items
+    params.dig(:items, :file)&.map do |file|
+      item = @transaction.items.new()
+      item.process_file_upload = true
+      item.assign_attributes(
+        file: file
+      )
+      item if @transaction.delivery_form.name != "text"
+    end
+  end
+  
   def remove_file
     @delivery_item = DeliveryItem.find(params[:id])
     @transaction = @delivery_item.deal

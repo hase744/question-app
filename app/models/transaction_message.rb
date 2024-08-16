@@ -1,5 +1,6 @@
 class TransactionMessage < ApplicationRecord
   mount_uploader :file, ImageUploader
+  store_in_background :file
   
   belongs_to :deal, class_name: "Transaction", foreign_key: :transaction_id
   belongs_to :sender, class_name: "User", foreign_key: "sender_id"

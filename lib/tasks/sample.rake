@@ -7,6 +7,7 @@ namespace :sample do
 
   task create_services: :environment do
     SampleData.create_services
+    sleep 20
   end
 
   task create_requests: :environment do
@@ -22,5 +23,6 @@ namespace :sample do
     SampleData.create_services
     SampleData.create_requests
     SampleData.create_transactions
+    sleep 30
   end
 end

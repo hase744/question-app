@@ -29,8 +29,10 @@ class User::TransactionMessagesController < User::Base
   end
 
   def create
-    @transaction_message = TransactionMessage.new(transaction_message_params)
+    @transaction_message = TransactionMessage.new
+    @transaction_message.process_file_upload = true
     @transaction_message.sender = current_user
+    @transaction_message.assign_attributes(transaction_message_params)
     @transaction = @transaction_message.deal
     if @transaction_message.save
       EmailJob.perform_later(mode: :message, model: @transaction_message)

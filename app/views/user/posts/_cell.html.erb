@@ -13,12 +13,12 @@
             <%= from_now(post.created_at)%>
         </span>
         <%= link_to(user_post_path(post.id), class: 'post_link') do %>
-        <div class="user_description_area"><%= post.body%></div>
-        <% if post.file.url %>
-        <div class="post_file_area">
-            <%=image_tag post.file.url, class:"post_file", post: post%>
-        </div>
-        <% end %>
+            <div class="user_description_area"><%= post.body%></div>
+            <% if post.file.url %>
+                <div class="post_file_area">
+                    <%=image_tag post.file.normal_size.url, class:"post_file", post: post%>
+                </div>
+            <% end %>
         <% end %>
         <% if post.user == current_user%>
         <%= link_to "削除", user_post_path(post.id), method: :delete, data: {confirm: "削除しますか？"}%>

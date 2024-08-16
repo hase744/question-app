@@ -107,9 +107,11 @@
 </div>
 <%= javascript_pack_tag "shared/xml_request" %>
 <%= javascript_pack_tag "shared/check_scroll" %>
+<%= render "user/shared/javascript/swiper.js.erb" %>
 <script>
 <%= render "user/services/javascript/cell.js.erb" %>
 <%= render "user/accounts/show.js.erb" %>
+<%= render "user/requests/javascript/cell.js.erb" %>
 <% flash.each do |type, message| %>
     // Bootstrapを導入しているため、`class="alert alert-success"`としています
       $("#added-message").html('<p class="alert alert-success"><%= type %><%= message %></p>')

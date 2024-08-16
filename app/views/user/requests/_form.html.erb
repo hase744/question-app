@@ -63,7 +63,7 @@
       <%= f.fields_for :items do |item_form| %>
         <% if item_form.object.file.present? %>
           <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
-          <%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
           <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete %>
           </br></br>
         <% end %>

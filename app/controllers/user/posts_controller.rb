@@ -28,8 +28,10 @@ class User::PostsController < User::Base
   end
 
   def create
-    @post = Post.new(post_params)
+    @post = Post.new
     @post.user = current_user
+    @post.process_file_upload = true
+    @post.assign_attributes(post_params)
     if @post.save
       flash.notice = "投稿しました。"
       redirect_to user_account_path(current_user.id)

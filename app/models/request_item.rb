@@ -6,6 +6,7 @@ class RequestItem < ApplicationRecord
     attr_accessor :duration
     attr_accessor :youtube_id_valid
     mount_uploader :file, FileUploader
+    store_in_background :file
     before_validation :set_default_values
   
     validate :validate_youtube_id
