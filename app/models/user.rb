@@ -128,6 +128,18 @@ class User < ApplicationRecord
     end
   end
 
+  def delete_temp_file
+    # Requestなどの親モデルの保存に成功してもrequest_categoryなどの子モデルの保存に失敗すると
+    # 保存が失敗した場合のみファイルを削除
+    relative_path = self.file.url
+    splited_path = relative_path.split('/')
+    path_length = splited_path.length
+    root_temp_path = Rails.root.to_s + "/tmp/" + splited_path[-2]
+    public_temp_path = Rails.root.to_s + "/public/uploads/tmp/" + splited_path[-2]
+    delete_folder(root_temp_path)
+    delete_folder(public_temp_path)
+  end
+
   def update_total_points
     total_charged_points = 0
     Payment.where(user:self).each do |payment|

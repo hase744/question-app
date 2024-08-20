@@ -7,7 +7,10 @@
         <% elsif @transaction.is_delivered %>
         <h3>納品済み</h3>
         <% else %>
-        <h3 class="links"><%=link_to "編集", edit_user_transaction_path(@transaction.id) %> <%=link_to "拒否", edit_user_order_path(@transaction.id), class:"button" %></h3></br>
+        <h3 class="links">
+            <%=link_to "編集", edit_user_transaction_path(@transaction.id) %> ｜
+            <%=link_to "拒否", edit_user_order_path(@transaction.id), class:"button" %>
+        </h3></br>
         <% end %>
         <div class="information_component">
             <label><%= Transaction.human_attribute_name(:title)%></label></br>
@@ -34,7 +37,7 @@
                     <% else %>
                         <% if @transaction.delivery_form_has_image? %>
                             <% @transaction.items.each do |item|%>
-                                <%= image_tag item.file.url, class:"image" if item.file.is_image?%>
+                                <%= image_tag item.file.normal_size.url, class:"image" if item.file.is_image?%>
                             <% end %>
                         <% elsif @transaction.service.delivery_form.name == "video" %>
                             <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>

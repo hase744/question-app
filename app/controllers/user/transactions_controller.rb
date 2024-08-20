@@ -92,12 +92,15 @@ class User::TransactionsController < User::Base
 
   def update
     @transaction.assign_attributes(transaction_params)
+    @transaction.category.name
     @items = generate_items&.flatten
+    @transaction.transaction_categories.build(category_name:"business")
     ActiveRecord::Base.transaction do
       if save_models
         flash.notice = "回答を編集しました"
         redirect_to user_order_path(params[:id])
       else
+        delete_temp_file_items
         detect_models_errors([@transaction.item, @transaction])
         set_edit_values
         render "user/transactions/edit"

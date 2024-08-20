@@ -139,6 +139,7 @@ class User::ServicesController < User::Base
           after_suggest
           redirect_to user_service_path(@service.id)
         else
+          delete_temp_file_items
           @request = @service.request
           set_form_values
           render action: "new"
@@ -158,6 +159,7 @@ class User::ServicesController < User::Base
           redirect_to user_service_path(Service.last.id)
         else
           @request = @service.request
+          delete_temp_file_items 
           set_form_values
           render action: "new"
           flash.alert = "相談室を出品できませんでした。"
@@ -168,29 +170,31 @@ class User::ServicesController < User::Base
   
   def update
     @service = Service.find_by(id: params[:id], user:current_user)
-    if @service.update(service_params)
-      if params.dig(:item, :file).present?
-        item = @service.item
-        unless item.present?
-          item = @service.items.new
+    @service.assign_attributes(service_params)
+    if params.dig(:item, :file).present?
+      @item = @service.item
+      unless @item.present?
+        @item = @service.items.new
+      end
+      @item.process_file_upload = true
+      @item.assign_attributes(file: params.dig(:item, :file)[0])
+    end
+    ActiveRecord::Base.transaction do
+      if save_models
+        if !@service.is_published
+          flash.notice = "相談室を非公開にしました。"
+          redirect_to user_service_path(params[:id])
+        else
+          flash.notice = "相談室を更新しました。"
+          redirect_to user_service_path(params[:id])
         end
-        item.process_file_upload = true
-        item.assign_attributes(file: params.dig(:item, :file)[0])
-        item.save
-      end
-
-      if !@service.is_published
-        flash.notice = "相談室を非公開にしました。"
-        redirect_to user_service_path(params[:id])
       else
-        flash.notice = "相談室を更新しました。"
-        redirect_to user_service_path(params[:id])
+        delete_temp_file_items
+        @service.service_categories.reject(&:persisted?).each do |category|
+          @service.service_categories.delete(category) #これがないとcateogryフィールドが複数生成される
+        end
+        render action: "edit"
       end
-    else
-      @service.service_categories.reject(&:persisted?).each do |category|
-        @service.service_categories.delete(category) #これがないとcateogryフィールドが複数生成される
-      end
-      render action: "edit"
     end
   end
 

@@ -217,6 +217,13 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def delete_temp_file_items
+    @item&.delete_temp_file
+    @items&.each do |item|
+      item.delete_temp_file
+    end
+  end
+
   def check_session_point
     unless controller_name == "payments"
       session[:point] == nil

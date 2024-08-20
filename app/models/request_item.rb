@@ -20,13 +20,15 @@ class RequestItem < ApplicationRecord
       else
         self.use_youtube = false
       end
+      if !self.file_processing && self.file.url
+        self.delete_temp_file 
+      end
     end
 
     def request_form
       self.request.request_form
     end
 
-  
     def is_published
       self.request.is_published
     end
@@ -103,13 +105,14 @@ class RequestItem < ApplicationRecord
       end
     end
   
+    #process_file_upload=trueにするとfileとfile_tmpはnilになるがなぜか保存できるためアップロード後にvalidation
     def validate_file
       if  self.request_form.name == "text" && self.is_published
-        errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+        errors.add(:file, "をアップロードして下さい") if !self.file.present?#&& self.validate_published
         #errors.add(:file, "のフォーマットが正しくありません") if !is_image_extension #&& self.validate_published
-      elsif self.request_form.name == "image"
-        errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
-      elsif self.request_form.name == "video"
+      elsif self.request_form.name == "image" && self.is_published 
+        errors.add(:file, "をアップロードして下さい") if !self.file.present?#&& self.validate_published
+      elsif self.request_form.name == "video" && self.is_published
         if !self.use_youtube
           errors.add(:file, "のフォーマットが正しくありません") if !is_video_extension #&& self.validate_published
           errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published

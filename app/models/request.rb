@@ -29,7 +29,7 @@ class Request < ApplicationRecord
   validates :title, :description, presence: true
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
-  validates :max_price, numericality: {only_integer: true, greater_than_or_equal_to: 100, allow_nil: true}
+  validates :max_price, numericality: {only_integer: true, greater_than_or_equal_to: 100}
   validate :validate_max_price
   validate :validate_title
   validate :validate_description
@@ -87,12 +87,12 @@ class Request < ApplicationRecord
       self.service_id = self.service.id
     end
 
-    if self.suggestion_deadline
-      self.delivery_days ||= ((self.suggestion_deadline - Time.current)/60/60/24).round(0)
+    if self.suggestion_acceptable_duration
+      self.delivery_days ||= self.suggestion_acceptable_duration/1.day.to_i
     end
 
-    if self.suggestion_acceptance_duration
-      self.suggestion_deadline ||= DateTime.now + suggestion_acceptance_duration
+    if self.delivery_days
+      self.suggestion_acceptable_duration ||= self.delivery_days*1.day.to_i
     end
 
     if original_request_exists?
@@ -124,13 +124,13 @@ class Request < ApplicationRecord
     self.likes.count
   end
 
-  def acceptance_duration_in_days
-    suggestion_acceptance_duration / 86400
+  def acceptable_duration_in_days
+    suggestion_acceptable_duration / 1.day.to_i
   end
 
-  # 日数を秒数に変換して acceptance_duration に設定
-  def acceptance_duration_in_days=(days)
-    self.suggestion_acceptance_duration = (days.to_f * 86400).to_i
+  # 日数を秒数に変換して acceptable_duration に設定
+  def acceptable_duration_in_days=(days)
+    self.suggestion_acceptable_duration = (days.to_f * 1.day.to_i).to_i
   end
   
   def set_publish
@@ -185,8 +185,11 @@ class Request < ApplicationRecord
 
 
     if self.delivery_days
-      self.acceptance_duration_in_days=(delivery_days)
-      self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
+      self.acceptable_duration_in_days=(delivery_days)
+    end
+
+    if self.is_inclusive && self.is_published
+      #self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
     end
   end
 
@@ -260,6 +263,11 @@ class Request < ApplicationRecord
       errors.add(:base, 'カテゴリーが選択されていません')
       throw(:abort)
     end
+
+    if self.request_categories.count > 1
+      errors.add(:base)
+      throw(:abort)
+    end
   end
 
   def set_item_values
@@ -315,7 +323,7 @@ class Request < ApplicationRecord
 
   def validate_suggestion_deadline
     #公開依頼である
-    if self.is_inclusive && !self.suggestion_deadline.present?
+    if self.is_inclusive && !self.suggestion_deadline.present? && self.is_published
       errors.add(:suggestion_deadline)
     end
   end
@@ -358,8 +366,9 @@ class Request < ApplicationRecord
   end
 
   def validate_is_published
-    if  self.is_published && !self.items.present?
-      errors.add(:items)
+    if  self.is_published
+      errors.add(:items, "が存在しません") if !self.items.present?
+      errors.add(:items, "が処理中です") unless all_items_processed?
     end
   end
   
@@ -376,9 +385,9 @@ class Request < ApplicationRecord
   end
 
   def validate_delivery_days
-    if self.delivery_days && self.will_save_change_to_suggestion_acceptance_duration?
-      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptance_duration_in_days > 30
-      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptance_duration_in_days < 1
+    if self.delivery_days && self.will_save_change_to_suggestion_acceptable_duration?
+      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptable_duration_in_days > 30
+      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
   end
 
