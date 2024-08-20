@@ -129,7 +129,10 @@ class User::RequestsController < User::Base
           redirect_to user_request_preview_path(@request.id)
         end
       else
-        puts "保存失敗"
+        delete_temp_file_items
+        @request.request_categories.reject(&:persisted?).each do |category|
+          @request.request_categories.delete(category) #これがないとcateogryフィールドが複数生成される
+        end
         if @request.service
           @service = @request.service
         end
@@ -165,8 +168,9 @@ class User::RequestsController < User::Base
   def publish
     @request.set_publish
     if @request.request_form.name == "text"
-      @item = @request.items.new(file: params[:request][:file])
-      @item.process_file_upload = false
+      @item = @request.items.new()
+      @item.process_file_upload = true
+      @item.assign_attributes(file: params[:request][:file])
     end
     if @transaction #サービスの購入である
       @request.service = @service
@@ -176,6 +180,7 @@ class User::RequestsController < User::Base
         render  "user/requests/preview"
       end
     else #公開依頼のとき
+      @request.suggestion_deadline = Time.now + @request.suggestion_acceptable_duration
       if save_models
         flash.notice ="質問を公開しました"
         redirect_to user_request_path(@request.id)
@@ -237,10 +242,13 @@ class User::RequestsController < User::Base
       @transaction = Transaction.new
       @request.set_service_values
       @transaction.assign_attributes(service:@service, request:@request)
+      #↓なぜか出来ないのでafter_createで生成
+      #@transaction.transaction_categories.build(category_name: @service.category.name)
       ActiveRecord::Base.transaction do
         if save_models
           redirect_to user_request_preview_path(@request.id, transaction_id:@transaction.id)
         else
+          delete_temp_file_items
           detect_models_errors([@transaction, @request])
           render "user/requests/new"
         end
@@ -275,13 +283,12 @@ class User::RequestsController < User::Base
   end
 
   def generate_items
+    return [] unless params.dig(:items, :file).present?
     params.dig(:items, :file)&.map do |file|
       item = @request.items.new()
       item.process_file_upload = true
-      item.assign_attributes(
-        file: file
-      )
-      item if @request.request_form.name != "text"
+      item.file = file
+      item 
     end
   end
   
@@ -307,7 +314,7 @@ class User::RequestsController < User::Base
       @edit_path = edit_user_request_path(@request.id)
     end
   end
-  
+
   private def create_notification
     Notification.create(
       user_id:@service.user_id,
@@ -361,7 +368,7 @@ class User::RequestsController < User::Base
   end
 
   private def check_stripe_customer
-    unless current_user.is_stripe_customer_valid? || @service.price <= 0
+    unless current_user.is_stripe_customer_valid? || @service&.price == 0
       redirect_to  user_cards_path
     end
   end

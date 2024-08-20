@@ -82,8 +82,8 @@
         </div>
 
         <div class="field_area">
-          <%= f.label :suggestion_deadline, class:"field_label"%><br/>
-          <h3 class="request_content"><%=readable_datetime(@request.suggestion_deadline)%></h3>
+          <%= f.label :delivery_days, class:"field_label"%><br/>
+          <h3 class="request_content"><%=@request.delivery_days%>日</h3>
         </div>
         <% else %>
         <%= f.hidden_field :service_id, value: @service.id %>

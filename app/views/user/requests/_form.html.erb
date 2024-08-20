@@ -61,16 +61,17 @@
     <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.image_display_style %>">
       <%= f.label :file, class:"field_label" %><br />
       <%= f.fields_for :items do |item_form| %>
-        <% if item_form.object.file.present? %>
-          <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
+        <% if item_form&.object&.id.present? %>
+          <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.is_image? %>
           <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
-          <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete %>
+          <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete, data: {confirm:"削除しますか？"}%>
           </br></br>
         <% end %>
         <% if !item_form.object.file.present? %>
-          <%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
         <% end %>
       <% end %>
+      <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
 
       <%= f.hidden_field :file_duration, id:"file_duration" %>
       <div class="file_discription" id="file_discription"></div>

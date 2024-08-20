@@ -5,6 +5,8 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.references :buyer, index:true, foreign_key: { to_table: :users}
       t.references :service, null: false, index:true, foreign_key: true
       t.references :request, null: false, index:true, foreign_key: true
+      t.integer :request_form_name, null: false, index:true
+      t.integer :delivery_form_name, null: false, index:true
 
       t.datetime :delivery_time
       #t.references :category, index:true

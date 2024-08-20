@@ -5,5 +5,6 @@ class ServiceCategory < ApplicationRecord
   def category
     Category.find_by(name: category_name)
   end
+
   #belongs_to :category, primary_key: :name, foreign_key: :category_name, class_name: 'Category'
 end

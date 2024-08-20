@@ -15,8 +15,6 @@ class Transaction < ApplicationRecord
   has_one :category, through: :transaction_category
 
   delegate :user, to: :service
-  delegate :request_form_name, to: :service
-  delegate :delivery_form_name, to: :service
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
   validates :star_rating, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, :allow_blank => true}
@@ -35,6 +33,7 @@ class Transaction < ApplicationRecord
   validate :validate_is_suggestion
   validate :previous_transaction
   validate :validate_is_delivered
+  #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
 
   after_save :create_transaction_category
@@ -45,16 +44,18 @@ class Transaction < ApplicationRecord
   attr_accessor :youtube_id
   attr_accessor :file
   attr_accessor :item
+  enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
+  enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
 
   after_initialize do
   end
 
-  def set_default_values
-    if Rails.env.development?
-      self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
-    end
-  end
+  #def set_default_values
+  #  if Rails.env.development?
+  #    self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
+  #  end
+  #end
 
   scope :solve_n_plus_1, -> {
     includes(:seller, :buyer, :request, :service, :items, {request: :items})
@@ -148,14 +149,6 @@ class Transaction < ApplicationRecord
       .count
   end
 
-  def request_form
-    Form.find_by(name: self.request_form_name)
-  end
-
-  def delivery_form
-    Form.find_by(name: self.delivery_form_name)
-  end
-
   def set_publish
     self.assign_attributes(is_published:true, published_at:DateTime.now)
   end
@@ -168,6 +161,9 @@ class Transaction < ApplicationRecord
   end
 
   def set_default_values
+    if Rails.env.development? && self.is_delivered && !will_save_change_to_is_delivered?
+      self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
+    end
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
@@ -180,7 +176,9 @@ class Transaction < ApplicationRecord
       )
     end
 
-    if will_save_change_to_request_id?
+    if new_record?
+      self.request_form_name = self.service.request_form.name
+      self.delivery_form_name = self.service.delivery_form.name
       if self.is_suggestion
         self.service.category_id = self.request.category_id
       else
@@ -188,9 +186,6 @@ class Transaction < ApplicationRecord
         self.request.set_service_values
         self.request.request_form_name = self.service.request_form_name
         self.request.delivery_form_name = self.service.delivery_form_name
-        self.request.max_price = self.service.price
-        self.request.category_id = self.service.category_id
-        self.request.suggestion_deadline = DateTime.now + self.service.delivery_days.to_i
       end
     end
 
@@ -210,7 +205,7 @@ class Transaction < ApplicationRecord
         errors.add(:base,  "アカウントが存在しません。")
       elsif !self.request.user.is_stripe_customer_valid?
         errors.add(:base,  "質問者の決済が承認されていません。")
-      elsif self.request.request_form.name != self.service.request_form.name && self.request_form_name != 'free'
+      elsif self.request.request_form.name != self.service.request_form.name && self.request_form.name != 'free'
         errors.add(:base,  "質問形式が違います")
       elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
@@ -233,6 +228,18 @@ class Transaction < ApplicationRecord
       else
         errors.add(:base, "既に質問済みです")
       end
+    end
+  end
+
+  def validate_transaction_category
+    unless self.transaction_categories.present?
+      errors.add(:base, 'カテゴリーが選択されていません')
+      throw(:abort)
+    end
+
+    if self.transaction_categories.count > 1
+      errors.add(:base)
+      throw(:abort)
     end
   end
 
@@ -376,6 +383,26 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def request_form
+    Form.find_by(name: self.request_form_name)
+  end
+
+  def delivery_form
+    Form.find_by(name: self.delivery_form_name)
+  end
+
+  def delete_temp_image
+    # Requestなどの親モデルの保存に成功してもrequest_categoryなどの子モデルの保存に失敗すると
+    # 保存が失敗した場合のみファイルを削除
+    relative_path = self.image.url
+    splited_path = relative_path.split('/')
+    path_length = splited_path.length
+    root_temp_path = Rails.root.to_s + "/tmp/" + splited_path[-2]
+    public_temp_path = Rails.root.to_s + "/public/uploads/tmp/" + splited_path[-2]
+    delete_folder(root_temp_path)
+    delete_folder(public_temp_path)
+  end
+
   def title_max_length
     30
   end
@@ -429,9 +456,8 @@ class Transaction < ApplicationRecord
   end
 
   def validate_review
-    #レビューに関する情報がひとつでもあるのに、どれかがない == 全て空でもないand全て埋まってるわけでもない == (全て空or全て埋まってる)じゃない
-    puts "レビュー #{(all_review_present? || all_review_empty?)} #{all_review_present?} #{all_review_empty?}"
-    if self.is_delivered? && !all_review_present? && !all_review_empty?
+    if all_review_present? || all_review_empty?
+    elsif self.is_delivered?
       errors.add(:review_description, "がありません") if !self.review_description.present?
       errors.add(:star_rating, "がありません") if !self.star_rating.present?
       errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?
