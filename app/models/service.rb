@@ -15,7 +15,7 @@ class Service < ApplicationRecord
 
   delegate :category, to: :service_category, allow_nil: true
   after_save :update_total_services
-  after_save :update_user_service_mini_price
+  #after_save :update_user_service_mini_price
   attr_accessor :request_max_minutes
   attr_accessor :category_id
 
@@ -38,7 +38,16 @@ class Service < ApplicationRecord
     includes(:user, :transactions, :requests, :service_categories, :service_category)
   }
 
-  scope :seeable, -> { 
+  scope :buyable, -> {
+    solve_n_plus_1
+    .where(
+      request_id: nil,
+      is_published: true,
+      is_for_sale: true,
+    )
+  }
+
+  scope :seeable, -> {
     left_joins(:user, :service_categories)
     .solve_n_plus_1
     .where(

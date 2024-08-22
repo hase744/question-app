@@ -78,8 +78,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.float :rejection_rate, default: nil, index:true
       t.float :cancellation_rate, default: nil, index:true
 
-      t.integer :mini_price, index:true
-      t.integer :max_price, index:true
       ## Lockable
       # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both

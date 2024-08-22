@@ -24,6 +24,7 @@ class User < ApplicationRecord
   has_many :followees, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
+  has_many :buyable_services, -> { buyable }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
   #has_many :categories, class_name: "UserCategory", dependent: :destroy
   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
@@ -74,7 +75,13 @@ class User < ApplicationRecord
   enum state: CommonConcern.user_states
 
   scope :solve_n_plus_1, -> {
-    includes(:service_categories)
+    includes(:service_categories, :services)
+  }
+
+  scope :include_price, -> {
+      left_outer_joins(:buyable_services) #joinsだとserviceが一件もないuserが外れるため
+      .select('users.*, MAX(services.price) AS max_price, MIN(services.price) AS mini_price')
+      .group('users.id')
   }
   
   scope :is_sellable, -> {
@@ -272,5 +279,13 @@ class User < ApplicationRecord
         errors.add(:is_published)
       end
     end
+  end
+
+  def max_service_price
+    buyable_services.maximum(:price)
+  end
+
+  def mini_service_price
+    buyable_services.minimum(:price)
   end
 end

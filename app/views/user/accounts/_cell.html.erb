@@ -47,13 +47,9 @@
                         </td>
                     </tr>
                     <tr class="category user_record">
-                        <td><span class="record_name">最低単価</span>　</td>
+                        <td><span class="record_name">価格帯</span>　</td>
                         <td class="record_content">
-                            <% if user.mini_price%>
-                            <span class="user_id"><%=user.mini_price%>円/件</span>
-                            <% else %>
-                            <span class="user_id"></span>
-                            <% end %>
+                            <%= render "user/accounts/price_range", user:user %>
                         </td>
                     </tr>
                 </table>

@@ -265,7 +265,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.integer "max_price"
     t.integer "mini_price"
     t.boolean "is_inclusive"
-    t.integer "suggestion_acceptance_duration"
+    t.integer "suggestion_acceptable_duration"
     t.datetime "suggestion_deadline"
     t.integer "description_total_characters", default: 0
     t.integer "file_duration"
@@ -287,7 +287,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["mini_price"], name: "index_requests_on_mini_price"
     t.index ["published_at"], name: "index_requests_on_published_at"
     t.index ["request_form_name"], name: "index_requests_on_request_form_name"
-    t.index ["suggestion_acceptance_duration"], name: "index_requests_on_suggestion_acceptance_duration"
+    t.index ["suggestion_acceptable_duration"], name: "index_requests_on_suggestion_acceptable_duration"
     t.index ["suggestion_deadline"], name: "index_requests_on_suggestion_deadline"
     t.index ["title"], name: "index_requests_on_title"
     t.index ["total_files"], name: "index_requests_on_total_files"
@@ -438,6 +438,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.bigint "buyer_id"
     t.bigint "service_id", null: false
     t.bigint "request_id", null: false
+    t.integer "request_form_name", null: false
+    t.integer "delivery_form_name", null: false
     t.datetime "delivery_time"
     t.integer "price"
     t.text "service_title"
@@ -474,6 +476,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["canceled_at"], name: "index_transactions_on_canceled_at"
     t.index ["contracted_at"], name: "index_transactions_on_contracted_at"
     t.index ["delivered_at"], name: "index_transactions_on_delivered_at"
+    t.index ["delivery_form_name"], name: "index_transactions_on_delivery_form_name"
     t.index ["is_contracted"], name: "index_transactions_on_is_contracted"
     t.index ["is_delivered"], name: "index_transactions_on_is_delivered"
     t.index ["is_rejected"], name: "index_transactions_on_is_rejected"
@@ -482,6 +485,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["price"], name: "index_transactions_on_price"
     t.index ["profit"], name: "index_transactions_on_profit"
     t.index ["rejected_at"], name: "index_transactions_on_rejected_at"
+    t.index ["request_form_name"], name: "index_transactions_on_request_form_name"
     t.index ["request_id"], name: "index_transactions_on_request_id"
     t.index ["seller_id"], name: "index_transactions_on_seller_id"
     t.index ["service_id"], name: "index_transactions_on_service_id"
@@ -562,8 +566,6 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.float "average_star_rating"
     t.float "rejection_rate"
     t.float "cancellation_rate"
-    t.integer "mini_price"
-    t.integer "max_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["average_star_rating"], name: "index_users_on_average_star_rating"
@@ -572,8 +574,6 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["is_published"], name: "index_users_on_is_published"
     t.index ["is_seller"], name: "index_users_on_is_seller"
     t.index ["last_login_at"], name: "index_users_on_last_login_at"
-    t.index ["max_price"], name: "index_users_on_max_price"
-    t.index ["mini_price"], name: "index_users_on_mini_price"
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["state"], name: "index_users_on_state"
