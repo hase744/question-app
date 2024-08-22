@@ -43,8 +43,8 @@
                             <span class="star fas fa-star"></span>
                             <%=(@user.average_star_rating)&.round(1)%> <span class="unit">(<%=@user.total_reviews%>)</span></span>
                         <span class="specific">
-                            <label>最低単価</label>
-                            <%=@user.mini_price%><span class="unit">円</span>
+                            <label>価格帯</label>
+                            <%= render "user/accounts/service_price_range", user:@user %>
                         </span>
                         <span class="specific">
                             <label>回答数</label>

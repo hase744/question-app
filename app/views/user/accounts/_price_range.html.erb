@@ -1,0 +1,8 @@
+<%=
+if user.mini_price == user.max_price
+  	"#{user.mini_price}"
+else
+  	"#{user.mini_price} 〜 #{user.max_price}"
+end
+%>
+<span class="unit">円</span>

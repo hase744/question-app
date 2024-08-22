@@ -11,9 +11,9 @@
       </td>
     </tr>
     <tr>
-      <td class="user_info_name"><label>最低単価</label></td>
+      <td class="user_info_name"><label>価格帯</label></td>
       <td>
-        <span class="user_info"><%=user.mini_price%>円</span>
+        <span class="user_info"><%= render "user/accounts/service_price_range", user:user %></span>
       </td>
     </tr>
     <tr>
