@@ -1,4 +1,5 @@
-<h3 class="zone_title"><%= link_to "設定", user_configs_path, class:"main_area_top_link" %> ＞ 電話番号登録</h3>
+<h3 class="zone_title"><%= link_to "回答者情報", user_connects_path, class:"main_area_top_link" %> > 電話番号の登録</h3>
+<%= render "user/connects/flow", number:1%>
 <div class="connect_new_zone component_area connect_new_area">
     <div class="connect_new_area component_flame connect_new_flame">
         <%= form_with url: user_post_certify_phone_path do |form| %>

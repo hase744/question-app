@@ -187,7 +187,7 @@
     .label_line{
         display: inline-block;
         height: 1.5px;
-        width: 100%;
+        width: calc(100% - 70px);
         background-color: lightgrey;
         //position: absolute;
         margin-top: 29px;

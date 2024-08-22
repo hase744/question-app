@@ -1,105 +1,169 @@
-<h3 class="zone_title"><%= link_to "回答者情報", user_connects_path, class:"main_area_top_link" %> > 個人情報の入力</h3>
-    <%= render "user/connects/flow", number:2%>
-<script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+<h3 class="zone_title"><%= link_to "個人情報", user_connects_path, class:"main_area_top_link" %> > 確認と登録</h3>
+<%= render "user/connects/flow", number:3%>
 <div class="common_register_area">
     <div class="common_register_flame">
-        <%= form_with url: user_connects_confirm_path, method:"PUT", model:@user,class:"h-adr" do |form| %>
-            <span class="p-country-name" style="display:none;">Japan</span>
+        <%= form_with url: user_connects_path, method:"PUT", model:@user do |form| %>
             <div class="form_container">
-                <h3><label class="field_area_title" for="certification">身分証</label></h3></br>
+                <h3 class="field_area_title">身分証</h3></br>           
+                <div id="file-display"></div>
                 <div class="form_group">
                     <%=form.file_field :certification, class:"form_input", required:true, accept: "image/jpeg,image/jpg,image/png,image/gif"%></br>
-                    <div>以下の内いずれかのカラー写真をアップロードしてください。</div>
-                    <li>パスポート</li>
-                    <li>運転免許証</li>
-                    <li>在留カード・特別永住者証明書</li>
-                    <li>マイナンバーカード (顔写真付き)</li>
-                    <li>住民票</li>
                 </di>
-                <span class="p-country-name" style="display:none;">Japan</span>
-                <!--nameとすると送信するパラメーターのキーがnameの値になってしまうため、とりあえずnamesにしている-->
                 <h3 class="form_title">本名</h3>
                 <div class="form_group">
                     <label for="last-name">姓</label></br>
+                    <%=@user.last_name_kanji%>
+                    （<%=@user.last_name_kana%>）
                     <%=form.text_field :last_name_kanji, class:"form_input", id:"last-name", names:"last-name", placeholder:"漢字", required:true%>
                     <%=form.text_field :last_name_kana, class:"form_input", id:"last-name", names:"last-name", placeholder:"カナ", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="first-name">名</label></br>
+                    <%=@user.first_name_kanji%>
+                    （<%=@user.first_name_kana%>）
                     <%=form.text_field :first_name_kanji, class:"form_input", id:"first-name", names:"first-name", placeholder:"漢字", required:true%>
                     <%=form.text_field :first_name_kana, class:"form_input", id:"first-name", names:"first-name", placeholder:"カナ", required:true%>
                 </div>
                 <div class="form_group">
-                    <label for="birthdate">生年月日</label></br>
-                    <%=form.date_field :birth_date, class:"form_input", id:"birthdate", names:"birthdate",  required:true%>
-                </div>
-                <div class="form_group">
                     <label for="first-name">性別</label></br>
-                    <%=form.hidden_field :gender, class:"form_input", id:"gender", required:true%>
-                    <%=form.check_box :is_male, class:"checkbox",id:"male_checkbox" %><span>男性</span>
-                    <%=form.check_box :is_female, class:"checkbox",id:"female_checkbox" %><span>女性</span>
+                    <%=if@user.gender == 'male'
+                      "男性"
+                    else 
+                      "女性"
+                    end
+                      %>
+                    <%=form.text_field :gender, class:"form_input", id:"gender", required:true%>
+                    <%=form.check_box :is_male, class:"checkbox",id:"male_checkbox", class:"form_input" %>
+                    <%=form.check_box :is_female, class:"checkbox",id:"female_checkbox", class:"form_input" %>
                 </div>
                 <h3 class="form_title">住所</h3>
                 <div class="form_group">
-                    <label for="zipcode">郵便番号</label></br>
-                    <%=form.text_field :first_postal_code, class:"p-postal-code form_input",id:"first_postal_code", names:"zipcode", maxlength:"3",size:"3",  required:true%> -
-                    <%=form.text_field :last_postal_code, class:"p-postal-code form_input",id:"last_postal_code", names:"zipcode", maxlength:"4",size:"4",  required:true%>
-                    
-                    <%=form.text_field :postal_code, class:"form_input display_none",id:"postal_code", names:"zipcode", placeholder:"例：123-4567", maxlength:"8",  required:true%>
-                </div>
-                <div class="form_group">
                     <label for="prefecture">都道府県</label></br>
-                    <%=form.text_field :state_kanji, class:"form_input p-region", id:"prefecture", names:"prefecture", placeholder:"漢字", required:true%>
+                    <%=@user.state_kanji%>
+                    （<%=@user.state_kana%>）
+                    <%=form.text_field :state_kanji, class:"form_input", id:"prefecture", names:"prefecture", placeholder:"漢字", required:true%>
                     <%=form.text_field :state_kana, class:"form_input", id:"prefecture", names:"prefecture", placeholder:"カナ", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="city">市区町村</label></br>
-                    <%=form.text_field :city_kanji, class:"form_input p-locality",id:"city", names:"city", placeholder:"漢字",  required:true%>
+                    <%=@user.city_kanji%>
+                    （<%=@user.city_kana%>）
+                    <%=form.text_field :city_kanji, class:"form_input",id:"city", names:"city", placeholder:"漢字",  required:true%>
                     <%=form.text_field :city_kana, class:"form_input",id:"city", names:"city", placeholder:"カナ",  required:true%>
                 </div>
                 <div class="form_group">
                     <label for="town">町域</label></br>
-                    <%=form.text_field :town_kanji, class:"form_input p-street-address", id:"town", names:"town", placeholder:"漢字", required:true%>
+                    <%=@user.town_kanji%>
+                    （<%=@user.town_kana%>）
+                    <%=form.text_field :town_kanji, class:"form_input", id:"town", names:"town", placeholder:"漢字", required:true%>
                     <%=form.text_field :town_kana, class:"form_input", id:"town", names:"town", placeholder:"カナ", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="address">丁目・番地・号</label></br>
+                    <%=@user.line1_kanji%>
                     <%=form.text_field :line1_kanji, class:"form_input", id:"address", names:"address", placeholder:"例：1-2-3", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="apartment">マンション・アパート名・部屋番号（任意）</label></br>
+                    <%=@user.line2_kanji%>
+                    （<%=@user.line2_kana%>）
                     <%=form.text_field :line2_kanji, class:"form_input", id:"apart", names:"apart", placeholder:"漢字" %>
                     <%=form.text_field :line2_kana, class:"form_input", id:"apart", names:"apart", placeholder:"カナ" %>
+                </div>
+                <div class="form_group">
+                    <label for="birthdate">生年月日</label></br>
+                    <%=@user.birth_date%>
+                    <%=form.date_field :birth_date, class:"form_input", id:"birthdate", names:"birthdate",  required:true%>
+                </div>
+                <div class="form_group">
+                    <label for="zipcode">郵便番号</label></br>
+                    <%=@user.postal_code%>
+                    <%=form.text_field :postal_code, class:"form_input",id:"zipcode", names:"zipcode", placeholder:"例：123-4567", maxlength:"8",  required:true%>
                 </div>
                 <h3 class="form_title">振込先情報</h3>
                 <div class="form_group">
                     <label for="full-name">口座名義</label></br>
+                    <%=@user.account_holder_name%>
                     <%=form.text_field :account_holder_name, class:"form_input", id:"full-name", names:"full-name", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="bank_number">金融機関コード</label></br>
+                    <%=@user.bank_number%>
                     <%=form.text_field :bank_number, class:"form_input",id:"bank_number", names:"bank_number", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="branch_number">支店番号</label></br>
+                    <%=@user.branch_number%>
                     <%=form.text_field :branch_number, class:"form_input",id:"branch_number", names:"branch_number", required:true%>
                 </div>
                 <div class="form_group">
                     <label for="account_number">口座番号</label></br>
+                    <%=@user.account_number%>
                     <%=form.text_field :account_number, class:"form_input",id:"account_number", names:"account_number", required:true%>
                 </div>
                 <div class="form-group">
-                  <%= form.check_box :is_seller, checked:true %>
-                  <%= form.label :is_seller, "回答者として登録" %>
+                  <%= form.check_box :is_seller, class:"form_input" %>
+                  <%= form.label :is_seller, "回答者として登録" %></br>
+                  <%=if @user.is_seller
+                    "する"
+                    else
+                    "しない"
+                    end
+                  %>
                 </div>
             </div>
             <div class="submit_area">
-                <%= form.submit '確認',class:"submit-btn display_none", placeholder:""  %>
-                <div class="submit-btn">確認</div>
+                <%= link_to "修正", edit_user_connects_path,class:"submit-btn back_button" %>
+            </div>
+			</br>
+            <div class="submit_area">
+                <%= form.submit '登録',class:"submit-btn", placeholder:"", data:{confirm: "登録しますか？"}  %>
             </div>
         <% end %>
     </div>
 </div>
+<style>
+#file-display {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+#file-display img {
+  width: 100%;
+  height: 100%;
+}
+.form_input{
+	display: none;
+}
+</style>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // コントローラから渡された Blob データ (Base64 エンコードされたもの)
+    var base64BlobData = "<%= j @blob_data %>";
+	var file_name = "<%= @file_name %>";
+	var extension = "<%= @extension %>";
+    var byteCharacters = atob(base64BlobData); // Base64をデコード
+    var byteNumbers = new Array(byteCharacters.length);
+
+    var imgElement = document.createElement("img");
+    imgElement.src = "data:image/png;base64," + base64BlobData;
+    document.getElementById("file-display").appendChild(imgElement);
+
+
+    for (var i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+    var blob = new Blob([byteArray], {type: `image/${extension}`}); // MIME タイプを適切に設定
+    var file = new File([blob], file_name, {type: `image/${extension}`});
+    var dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    var inputElement = document.getElementById('user_certification');
+    inputElement.files = dataTransfer.files;
+  });
+</script>
 <script>
 var maleCheckbox = document.getElementById('male_checkbox');
 var femaleCheckbox = document.getElementById('female_checkbox');
@@ -117,47 +181,5 @@ femaleCheckbox.addEventListener('change', function() {
     maleCheckbox.checked = false;
     genderField.value = 'female';
   }
-});
-
-//前半と後半に分けた郵便番号inputを郵便番号全体のフォームに入力
-$('.p-postal-code').on('input', function() {
-    var firstPostalCode = $('#first_postal_code').val();
-    var lastPostalCode = $('#last_postal_code').val();
-    var fullPostalCode = firstPostalCode + '-' + lastPostalCode;
-    $('#postal_code').val(fullPostalCode);
-});
-
-//フェイクの確認ボタンが押されたら抜けている入力箇所を指摘
-$('.submit_area div').on('click', function() {
-    let isValid = true;
-    $('input[required]').each(function() {
-      if ($(this).val() === '') {
-        isValid = false;
-        let idFragment = $(this).attr('id').split('_').pop();
-         label = $("label[for='" + idFragment + "']").text();
-        alert(label + 'を入力してください');
-        $(this).focus();
-        return false; // break the loop
-      }
-    });
-});
-
-
-//全ての必須の入力箇所が満たされたら正規の入力ボタンが出現
-$('input').on('input', function() {
-    let isValid = true;
-    $('input[required]').each(function() {
-      if ($(this).val() === '') {
-        isValid = false;
-        return false; // break the loop
-      }
-    });
-    if (isValid) {
-      $('.submit_area div').addClass('display_none');
-      $('.submit_area input').removeClass('display_none');
-    }else{
-        $('.submit_area div').removeClass('display_none');
-        $('.submit_area input').addClass('display_none');
-    }
 });
 </script>

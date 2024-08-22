@@ -19,7 +19,11 @@ module StripeMethods
       }, {
         stripe_account: current_user.stripe_account_id # ConnectアカウントIDを指定
       })
-      last_credited_at = Time.at(@payouts.first.created)
+      if @payouts&.first&.created
+        last_credited_at = Time.at(@payouts&.first&.created)
+      else
+        last_credited_at = Time.now
+      end
       
       @pending_amount = @balance.pending[0].amount
       @available_amount = @balance.available[0].amount
