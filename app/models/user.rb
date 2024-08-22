@@ -60,6 +60,8 @@ class User < ApplicationRecord
   attr_accessor :line2_kana
   attr_accessor :birth_date
   attr_accessor :postal_code
+  attr_accessor :first_postal_code
+  attr_accessor :last_postal_code
   attr_accessor :bank_number
   attr_accessor :branch_number
   attr_accessor :account_number
@@ -244,7 +246,7 @@ class User < ApplicationRecord
 
   def validate_is_seller
     if will_save_change_to_is_seller? && is_dammy == false
-      if self.is_seller && !is_stripe_account_valid?
+      if self.is_seller && self.stripe_account_id #!is_stripe_account_valid?
         errors.add(:is_seller, "登録をできません")
       elsif !self.is_seller && ongoing_transaction_exist?
         errors.add(:is_seller, "登録を解除できません。取引を全て終わらせてください。")

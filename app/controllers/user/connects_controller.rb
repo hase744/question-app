@@ -1,12 +1,14 @@
 class User::ConnectsController < User::Base
-  layout "small", only:[:edit, :new, :certify_phone, :show, :reward]
+  layout "small", only:[:edit, :new, :certify_phone, :show, :reward, :confirm]
   before_action :check_login
-  before_action :phone_valid?, only:[:update, :edit]
+  before_action :define_user, only:[:edit, :confirm]
+  before_action :phone_valid?, only:[:update, :edit, :confirm]
   before_action :check_connect_unregistered, only:[:new, :create, :certify_phone]
-  before_action :check_connect_registered, only:[:update, :destroy, :credit]
+  before_action :check_connect_registered, only:[:update, :destroy, :credit, :confirm]
   before_action :check_ongoing_transaction, only:[:destroy]
   before_action :check_phone_confirmation_enabled, only:[:certify_phone, :create, :new, :send_token]
-
+  before_action :save_in_session, only:[:confirm]
+  
   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   def show
     @account = nil
@@ -103,6 +105,9 @@ class User::ConnectsController < User::Base
     end
   end
 
+  def confirm
+  end
+
   def create
     @user = current_user
     puts "裏付け"
@@ -145,7 +150,6 @@ class User::ConnectsController < User::Base
   def destroy
     begin
       response = Stripe::Account.delete(current_user.stripe_account_id)
-      puts response
       if response.deleted == true && current_user.update(stripe_account_id:nil, is_seller:false)
         flash.notice = "振り込め先情報を削除しました。"
       else
@@ -159,7 +163,7 @@ class User::ConnectsController < User::Base
   end
 
   def edit
-    @user = current_user
+    #@user = current_user
     if current_user.stripe_account_id
       @account = Stripe::Account.retrieve(current_user.stripe_account_id)
       @birth_dat = nil
@@ -198,7 +202,7 @@ class User::ConnectsController < User::Base
     #  @address_kanji = development_individual["address_kanji"]
     #  @bank_account = development_individual["external_accounts"]
     #end
-    set_edit_value
+    #set_edit_value
   end
 
   def set_edit_value
@@ -545,6 +549,8 @@ class User::ConnectsController < User::Base
         :first_name_kanji, 
         :first_name_kana,
         :gender,
+        :is_male,
+        :is_female,
         :state_kanji,
         :state_kana,
         :city_kanji,
@@ -556,10 +562,13 @@ class User::ConnectsController < User::Base
         :line2_kana,
         :birth_date,
         :postal_code,
+        :first_postal_code,
+        :last_postal_code,
         :bank_number,
         :branch_number,
         :account_number,
-        :account_holder_name
+        :account_holder_name,
+        :is_seller,
     )
   end
 
@@ -569,5 +578,30 @@ class User::ConnectsController < User::Base
       flash.notice = "現在登録できません。"
       redirect_to user_connects_alert_path
     end
+  end
+
+  private def define_user
+    @user = current_user
+    params[:user] ||= session[:user] if session[:user]
+    if params[:user]
+      @user.assign_attributes(user_params)
+      @user.birth_date = Date.parse(@user.birth_date)
+      if params[:user][:certification].is_a?(ActionDispatch::Http::UploadedFile)
+        file = params[:user][:certification].tempfile
+        blob_data = file.read
+        base64_blob_data = Base64.encode64(blob_data)
+        # ビューにデータを渡す
+        @blob_data = base64_blob_data
+        @file_name = File.basename(file.path)
+        @extension = @file_name.split('.').last
+        if @extension
+        end
+      end
+    end
+  end
+
+  private def save_in_session
+    session[:user] = params[:user].except(:certification)
+    #jpg画像の時sessionに保存しようとするとエラーを起こすためcertificationを除外
   end
 end

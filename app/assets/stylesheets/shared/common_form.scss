@@ -1,3 +1,4 @@
+@import "variables";
 .common_register_area{
     background-color: white;
     box-shadow: 0 0 2px lightgray;
@@ -55,14 +56,27 @@
           border-radius: 5px;
           cursor: pointer;
         }
+        .submit-btn:hover {
+          background-color: $button_orange_hover;
+        }
+        .back_button{
+          background-color: grey;
+          text-decoration: none;
+        }
+        .back_button:hover{
+          background-color: darkgrey;
+        }
         .fake_submit{
           display: block;
         }
         .submit{
           display: none;
         }
-        .submit-btn:hover {
-          background-color: darkgoldenrod;
+        #first_postal_code{
+          width: 30%;
+        }
+        #last_postal_code{
+          width: 40%;
         }
     }
 }

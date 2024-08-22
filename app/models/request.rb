@@ -29,8 +29,7 @@ class Request < ApplicationRecord
   validates :title, :description, presence: true
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
-  validates :max_price, numericality: {only_integer: true, greater_than_or_equal_to: 100}
-  validate :validate_max_price
+  #validates :max_price, numericality: {greater_than_or_equal_to: 100}
   validate :validate_title
   validate :validate_description
   validate :validate_delivery_days
