@@ -102,6 +102,9 @@ class User::ServicesController < User::Base
   def new
     if params[:request_id]
       @service = Service.new(request: Request.find(params[:request_id]))
+      @request.request_categories.each do |rc|
+        @service.service_categories.build(category_name: rc.category_name)
+      end
     else
       @service = Service.new()
       @service.service_categories.build
@@ -133,7 +136,7 @@ class User::ServicesController < User::Base
         is_suggestion: true
       )
       if @service.service_categories.length == 0
-        @service.service_categories.new(category_name: @request.category.name)
+        #@service.service_categories.new(category_name: @request.category.name)
       end
       ActiveRecord::Base.transaction do
         if save_models

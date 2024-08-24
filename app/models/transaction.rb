@@ -47,15 +47,10 @@ class Transaction < ApplicationRecord
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
+  accepts_nested_attributes_for :transaction_categories, allow_destroy: true
 
   after_initialize do
   end
-
-  #def set_default_values
-  #  if Rails.env.development?
-  #    self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
-  #  end
-  #end
 
   scope :solve_n_plus_1, -> {
     includes(:seller, :buyer, :request, :service, :items, {request: :items})
@@ -82,6 +77,7 @@ class Transaction < ApplicationRecord
 
   scope :ongoing, -> {
     self.where(
+      is_contracted: true,
       is_rejected: false,
       is_canceled: false,
       is_delivered: false
@@ -214,6 +210,7 @@ class Transaction < ApplicationRecord
       else
         nil
       end
+    else
     end
   end
 
@@ -420,7 +417,9 @@ class Transaction < ApplicationRecord
   end
 
   def is_ongoing
-    if self.is_rejected
+    if !self.is_contracted
+      false
+    elsif self.is_rejected
       false
     elsif self.is_delivered
       false

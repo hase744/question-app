@@ -261,6 +261,7 @@ class Service < ApplicationRecord
       self.request_form_name = self.request.request_form_name
       self.request_max_characters = nil
       self.request_max_duration = nil
+      self.service_categories_attributes = {"0"=>{"category_name"=> self.request.category.name}}
     elsif self.request_form_name == 'video' && self.is_inclusive
       self.request_max_duration = request_max_minutes.to_i*60
     end

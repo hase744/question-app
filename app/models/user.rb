@@ -24,11 +24,15 @@ class User < ApplicationRecord
   has_many :followees, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
+  has_many :transactions, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
+  has_many :delivered_transactions, -> { delivered }, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
   has_many :buyable_services, -> { buyable }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
   #has_many :categories, class_name: "UserCategory", dependent: :destroy
   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
   has_many :service_categories, through: :services, source: :service_categories
+  has_many :buyable_service_categories, through: :buyable_services, source: :service_categories
+  has_many :delivered_transaction_categories, through: :delivered_transactions, source: :transaction_categories
   has_many :deals, class_name: "Transaction", foreign_key: :user_id
   has_many :transaction_likes, class_name: "TransactionLike", foreign_key: :user_id
   has_many :service_likes, class_name: "ServiceLike", foreign_key: :user_id
@@ -75,13 +79,13 @@ class User < ApplicationRecord
   enum state: CommonConcern.user_states
 
   scope :solve_n_plus_1, -> {
-    includes(:service_categories, :services)
+    includes(:service_categories, :services, :user_categories)
   }
 
   scope :include_price, -> {
-      left_outer_joins(:buyable_services) #joinsだとserviceが一件もないuserが外れるため
-      .select('users.*, MAX(services.price) AS max_price, MIN(services.price) AS mini_price')
-      .group('users.id')
+    left_outer_joins(:buyable_services) #joinsだとserviceが一件もないuserが外れるため
+    .select('users.*, MAX(services.price) AS max_price, MIN(services.price) AS mini_price')
+    .group('users.id')
   }
   
   scope :is_sellable, -> {
@@ -117,7 +121,13 @@ class User < ApplicationRecord
   end
 
   def categories
-    Category.where(name:self.service_categories.pluck(:category_name))
+    category_names = self.user_categories
+      .order(updated_at: :asc)
+      .pluck(:category_name)
+    #updated_at順に取得したいので
+    category_names.each.map{|name|
+      Category.find_by(name: name)
+    }
   end
 
   #def categories
@@ -171,7 +181,7 @@ class User < ApplicationRecord
   end
 
   def update_total_sales_numbers
-    transactions = Transaction.left_joins(:service).where(service:{user:self}, is_delivered:true)
+    transactions = Transaction.left_joins(:service).wh4ere(service:{user:self}, is_delivered:true)
     self.update(total_sales_numbers: transactions.count)
   end
   
@@ -187,6 +197,43 @@ class User < ApplicationRecord
   
   def update_service_mini_price
     self.update(mini_price: Service.where(user: self, request_id: nil, is_published:true).minimum(:price))
+  end
+
+  def update_categories
+    service_category_names = buyable_service_categories.pluck(:category_name)
+    transaction_category_names = delivered_transaction_categories.pluck(:category_name)
+    service_count_pairs = get_category_count_pairs(service_category_names)
+    transaction_count_pairs = get_category_count_pairs(transaction_category_names)
+    # 各単語の合計を計算
+    combined = {}
+    transaction_count_pairs.each do |hash|
+      hash.each { |word, count| combined[word] = { transaction_count_pairs: count, names2: 0 } }
+    end
+
+    service_count_pairs.each do |hash|
+      hash.each { |word, count| combined[word] ||= { transaction_count_pairs: 0 }
+                 combined[word][:service_count_pairs] = count }
+    end
+  
+    #transaction_count_pairsを優先して、数の多い順に並べ替え
+    category_names = combined.keys.sort_by do |word|
+      [-combined[word][:transaction_count_pairs], -combined[word][:service_count_pairs]]
+    end
+    category_names.each do |name|
+      user_category = self.user_categories.find_by(category_name: name)
+      sleep 0.01
+      if user_category
+        user_category.update(updated_at: DateTime.now)
+      else
+        self.user_categories.create(category_name: name)
+      end
+    end
+  end
+
+  def get_category_count_pairs(category_names)
+    category_names
+      .tally.map { |word, count| { word => count } } #[{"business"=>2}, {"carrier"=>1}]のようにカテゴリー名とその数
+      .sort_by { |hash| -hash.values.first }
   end
 
   def name_max_length
