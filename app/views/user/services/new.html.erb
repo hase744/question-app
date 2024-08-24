@@ -15,4 +15,4 @@
 <%= render "user/shared/caveat",path: abouts_service_guide_path,label:"出品可能なサービスについて" %>
 <%= render "user/shared/caveat",path: abouts_how_to_sell_path,label:"サービスの各項目の詳細について" %>
 -->
-<%= render "user/services/form", service: @service, request: @request, submit_text: @submit_text %>
+<%= render "user/services/form", service: @service, request: @request, submit_text: @submit_text, method: 'POST', path: user_services_path %>

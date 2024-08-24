@@ -1,2 +1,2 @@
 <h2 class="service_edit_title">相談室を編集</h2>
-<%= render "user/services/form", service: @service, request: @request, submit_text: @submit_text %>
+<%= render "user/services/form", service: @service, request: @request, submit_text: @submit_text, method: 'PUT', path: user_service_path %>

@@ -242,7 +242,7 @@ class User::RequestsController < User::Base
       @transaction = Transaction.new
       @request.set_service_values
       @transaction.assign_attributes(service:@service, request:@request)
-      #↓なぜか出来ないのでafter_createで生成
+      #↓なぜか出来ないのでafter_saveで生成
       #@transaction.transaction_categories.build(category_name: @service.category.name)
       ActiveRecord::Base.transaction do
         if save_models

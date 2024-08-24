@@ -1,5 +1,4 @@
-class RequestCategory < ApplicationRecord
-  #belongs_to :category
-  enum category_name: Category.all.map{|c| c.name.to_sym}, _prefix: true
+class RequestCategory < CategoryBase::Base
   belongs_to :request
+  delegate :user, to: :request
 end
