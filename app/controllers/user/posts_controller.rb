@@ -21,7 +21,7 @@ class User::PostsController < User::Base
   def show
     @post = Post.find(params[:id])
     if user_signed_in?
-      @relationship = Relationship.find_by(followee:@post.user, follower_id: current_user.id)
+      @relationship = Relationship.find_by(user:@post.user, target_user_id: current_user.id)
     else
       @relationship = nil
     end

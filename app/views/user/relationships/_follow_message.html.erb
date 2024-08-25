@@ -3,7 +3,15 @@
         <%if user.id == current_user.id%>
             <%= link_to "プロフィール編集", edit_user_accounts_path, class: "user_edit"%>
         <% else %>
-            <% if !Relationship.exists?(followee: user, follower: current_user, is_blocked:true) %>
+            <% if user == current_user %>
+            <% elsif current_user.is_following?(user) %>
+                <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button", method: :patch, remote:true %>
+                <%= link_to "フォロー", user_relationship_path(user.id), class: "fas fa-user-plus follow_button unfollowed_button display_none ", method: :put, remote:true %>
+            <% else %>
+                <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button display_none", method: :patch, remote:true %>
+                <%= link_to "フォロー", user_relationship_path(user.id), class: "fas fa-user-plus follow_button unfollowed_button", method: :put, remote:true %>
+            <% end %>
+            <% if false#!current_user.is_following?(user) %>
                 <span class="follow_button_flame" id="follow_button_flame">
                     <%= link_to "フォロー",user_relationship_path(user.id), class: "fas fa-user-plus follow_button", method: :put, remote:true%>
                 </span>

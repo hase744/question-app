@@ -1,1 +1,1 @@
-Relationship.create!(followee:User.second, follower_id: User.first.id)
+User.first.follower_relationships.create(user: User.second)

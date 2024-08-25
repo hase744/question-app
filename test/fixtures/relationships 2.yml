@@ -2,8 +2,8 @@
 
 one:
   user: one
-  follower_id: 1
+  target_user_id: 1
 
 two:
   user: two
-  follower_id: 1
+  target_user_id: 1

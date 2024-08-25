@@ -22,13 +22,9 @@
         padding: 7px;
         display: inline;
         border: none;
-        border: 2px solid red;
+        border: 2px solid grey;
         border-radius: 20px;
         text-decoration:none;
-    }
-    .follow_button:hover{
-        border: 2px solid pink;
-        color: pink;
     }
     .message_button{
         padding: 7px;
@@ -43,15 +39,10 @@
         color: lightgreen;
     }
     .fa-user-plus{
-        color: red;
         z-index: 2;
     }
     .fa-envelope{
         color: green;
-    }
-    .unfollowed_button{
-        color: white;
-        background-color: red;
     }
 }
 .follow_button{

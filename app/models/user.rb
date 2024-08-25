@@ -20,8 +20,10 @@ class User < ApplicationRecord
   has_many :notifications, class_name: "Notification", foreign_key: :user_id, dependent: :destroy
   has_many :notifications, class_name: "Notification", foreign_key: :notifier_id, dependent: :destroy
   has_many :posts, class_name: "Post", foreign_key: :user_id, dependent: :destroy
-  has_many :followers, class_name: "Relationship", foreign_key: :followee_id, dependent: :destroy
-  has_many :followees, class_name: "Relationship", foreign_key: :follower_id, dependent: :destroy
+  has_many :follower_relationships, -> { follow }, class_name: "Relationship", foreign_key: :target_user_id, dependent: :destroy
+  has_many :followee_relationships, -> { follow }, class_name: "Relationship", foreign_key: :user_id, dependent: :destroy
+  has_many :followers, through: :follower_relationships, source: :user
+  has_many :followees, through: :followee_relationships, source: :target_user
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :transactions, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
@@ -130,6 +132,14 @@ class User < ApplicationRecord
     }
   end
 
+  def is_following?(user)
+    self.followee_relationships.where(target_user: user).present?
+  end
+
+  def is_followed_by?(user)
+    self.follower_relationships.where(user: user).present?
+  end
+
   #def categories
   #  Category.where(name:self.user_categories.pluck(:category_name))
   #end
@@ -181,7 +191,7 @@ class User < ApplicationRecord
   end
 
   def update_total_sales_numbers
-    transactions = Transaction.left_joins(:service).wh4ere(service:{user:self}, is_delivered:true)
+    transactions = Transaction.left_joins(:service).where(service:{user:self}, is_delivered:true)
     self.update(total_sales_numbers: transactions.count)
   end
   
