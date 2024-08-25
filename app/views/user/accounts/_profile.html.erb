@@ -19,7 +19,7 @@
             <% end %>
         </div>
         <% if user == current_user %>
-        <% elsif Relationship.exists?(followee: user, follower: current_user, is_blocked:false) %>
+        <% elsif current_user.is_following?(user) %>
             <%= link_to "フォロー中", user_relationship_path(user.id), class: "fas fa-user-plus follow_button followed_button", method: :patch, remote:true %>
             <%= link_to "フォロー", user_relationship_path(user.id), class: "fas fa-user-plus follow_button unfollowed_button display_none ", method: :put, remote:true %>
         <% else %>

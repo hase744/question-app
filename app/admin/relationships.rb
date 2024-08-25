@@ -5,19 +5,19 @@ ActiveAdmin.register Relationship do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :user_id, :follower_id, :is_blocked
+  permit_params :user_id, :target_user_id, :is_blocked
   #
   # or
   #
   # permit_params do
-  #   permitted = [:user_id, :follower_id, :is_blocked]
+  #   permitted = [:user_id, :target_user_id, :is_blocked]
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
   form do |f|
     f.inputs do
       f.input :user_id
-      f.input :follower_id
+      f.input :target_user_id
       f.input :is_blocked, as: :boolean
     end
     f.actions

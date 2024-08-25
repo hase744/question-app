@@ -78,7 +78,7 @@ class User::AccountsController < User::Base
       .page(params[:page])
       .per(current_element[:page])
 
-    @relationship = Relationship.find_by(followee: @user, follower_id: current_user.id) if user_signed_in?
+    @relationship = Relationship.find_by(user: @user, target_user_id: current_user.id) if user_signed_in?
     if @user == current_user
       gon.tweet_text = "#{@user.name}という名前でコレテクを始めました。"
     else
@@ -143,17 +143,17 @@ class User::AccountsController < User::Base
     render partial: 'user/requests/cell', collection: @requests, as: :request
   end
 
-  def followees
-    relationships = Relationship.where(follower_id: params[:id]).order(id: :DESC).order(id: :DESC)
+  def users
+    relationships = Relationship.where(target_user_id: params[:id]).order(id: :DESC).order(id: :DESC)
     @relationships = relationships.page(params[:page]).per(5)
     
     user_ids = []
     @relationships.each do |relationship|
-      user_ids.push(relationship.followee_id)
+      user_ids.push(relationship.user_id)
     end
 
     @users = User.where(id: user_ids)
-    render partial: "user/accounts/followees", locals: { contents: @users }
+    render partial: "user/accounts/users", locals: { contents: @users }
   end
 
   def reregister

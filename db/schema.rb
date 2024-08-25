@@ -215,14 +215,13 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   end
 
   create_table "relationships", force: :cascade do |t|
-    t.bigint "followee_id", null: false
-    t.bigint "follower_id", null: false
-    t.boolean "is_blocked", default: false
+    t.bigint "user_id", null: false
+    t.bigint "target_user_id"
+    t.integer "type_name", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["followee_id"], name: "index_relationships_on_followee_id"
-    t.index ["follower_id"], name: "index_relationships_on_follower_id"
-    t.index ["is_blocked"], name: "index_relationships_on_is_blocked"
+    t.index ["target_user_id"], name: "index_relationships_on_target_user_id"
+    t.index ["user_id"], name: "index_relationships_on_user_id"
   end
 
   create_table "request_categories", force: :cascade do |t|
@@ -557,7 +556,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.datetime "phone_confirmation_enabled_at"
     t.datetime "last_login_at"
     t.integer "total_reviews", default: 0
-    t.integer "total_followers", default: 0
+    t.integer "total_target_users", default: 0
     t.integer "total_sales_numbers", default: 0
     t.integer "total_sales_amount", default: 0
     t.integer "total_sales_number", default: 0
@@ -577,13 +576,13 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["state"], name: "index_users_on_state"
-    t.index ["total_followers"], name: "index_users_on_total_followers"
     t.index ["total_notifications"], name: "index_users_on_total_notifications"
     t.index ["total_points"], name: "index_users_on_total_points"
     t.index ["total_reviews"], name: "index_users_on_total_reviews"
     t.index ["total_sales_amount"], name: "index_users_on_total_sales_amount"
     t.index ["total_sales_number"], name: "index_users_on_total_sales_number"
     t.index ["total_sales_numbers"], name: "index_users_on_total_sales_numbers"
+    t.index ["total_target_users"], name: "index_users_on_total_target_users"
   end
 
   add_foreign_key "access_logs", "users"
@@ -603,8 +602,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
   add_foreign_key "posts", "users"
-  add_foreign_key "relationships", "users", column: "followee_id"
-  add_foreign_key "relationships", "users", column: "follower_id"
+  add_foreign_key "relationships", "users"
+  add_foreign_key "relationships", "users", column: "target_user_id"
   add_foreign_key "request_categories", "requests"
   add_foreign_key "request_items", "requests"
   add_foreign_key "request_likes", "requests"

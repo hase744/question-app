@@ -61,7 +61,7 @@
                 <!--
                 <li class="menu_element"><%= link_to "レビュー", sample_account_reviews_path(@user.id), remote: true, class:"user_content_link user_reviews_link"%></li>
                 -->
-                <li class="menu_element"><%= link_to "フォロー", sample_account_followees_path(@user.id), remote: true, class:"user_content_link following_user_link"%></li>
+                <li class="menu_element"><%= link_to "フォロー", sample_account_users_path(@user.id), remote: true, class:"user_content_link following_user_link"%></li>
                 <% end %>
             </div>
         </div>

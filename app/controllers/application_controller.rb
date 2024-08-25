@@ -203,9 +203,7 @@ class ApplicationController < ActionController::Base
   
   def message_receivable(user)
     if user_signed_in?
-      if Relationship.exists?(followee:user, follower:current_user, is_blocked:true)
-        false
-      elsif user.can_receive_message
+      if user.can_receive_message
         true
       elsif Contact.exists?(user:user, destination: current_user)
         true

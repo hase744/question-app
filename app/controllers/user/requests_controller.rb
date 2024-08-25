@@ -77,7 +77,7 @@ class User::RequestsController < User::Base
       redirect_to user_requests_path
     else
       if user_signed_in?
-        @relationship = Relationship.find_by(followee: @request.user, follower_id: current_user.id)
+        @relationship = Relationship.find_by(user: @request.user, target_user_id: current_user.id)
       end
       @request.update(total_views:@request.total_views + 1)
     end
