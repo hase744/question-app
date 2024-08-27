@@ -1,0 +1,21 @@
+<span class="forms_area">
+	<% case model.request_form.name %>
+	<% when 'text' %>
+		<span class="text">文章<span class="mark">質問</span></span>
+	<% when 'image' %>
+		<span class="text">文章<span class="mark">＋</span>画像<span class="mark">質問</span></span>
+	<% when 'free' %>
+		<span class="text">自由<span class="mark">質問</span></span>
+	<% else %>
+	<% end %>
+		<span class="text">/</span>
+	<% case model.delivery_form.name %>
+	<% when 'text' %>
+		<span class="text">文章<span class="mark">回答</span></span>
+	<% when 'image' %>
+		<span class="text">文章<span class="mark">+</span>画像<span class="mark">回答</span></span></span>
+	<% when 'free' %>
+		<span class="text">自由<span class="mark">回答</span></span>
+	<% else %>
+	<% end %>
+</span>

@@ -1,0 +1,13 @@
+@import "_variables";
+.forms_area{
+  .text{
+    font-weight: bold;
+    font-size: 17px;
+    color: $text_grey;
+  }
+  .mark{
+    //font-weight: lighter;
+    font-size: 14px;
+    color: dimgray;
+  }
+}

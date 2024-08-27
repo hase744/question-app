@@ -304,6 +304,10 @@ class Request < ApplicationRecord
       end
     end
   end
+
+  def need_text_image?
+    self.request_form.name == "text" || self.items.count < 1
+  end
   
   def validate_max_price
     if max_price

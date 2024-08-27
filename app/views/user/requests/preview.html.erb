@@ -55,7 +55,7 @@
                     <%= image_tag item.file.normal_size.url, class:"image"%>
                   <% end %>
                 <% end %>
-                <% if @request.request_form_name == "text"%>
+                <% if @request.need_text_image?%>
                   <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
                   <img id="description_image" class="description_image">
                 <% end %>
@@ -102,7 +102,7 @@
       <% end %>
     </div>
 </div>
-<%if @request.request_form.name == "text"%>
+<%if @request.need_text_image? %>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 <canvas id="canvas"></canvas>
 <%= render "/user/images/description.html.erb", text:@request.description, image_width: 500%>
@@ -117,7 +117,7 @@ try{
   let isLoaded = false;
   window.addEventListener('load', (event) => {
     isLoaded = true;
-    if("<%=@request.request_form_name%>" == "text"){
+    if(<%=@request.need_text_image?%>){
       create_description_image(); //
     }
   })
