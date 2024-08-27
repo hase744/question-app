@@ -20,15 +20,16 @@
                     <span class="day_form_logout one_line_text">最終ログイン：<%=from_now(user.last_login_at)%></span>
                 </div>
 
-                <div class="categories_area">
-                    <% user.categories.each do |c|%>
-                        <span class="name_tag"><%=c.japanese_name%></span>
-                    <% end %>
+                <div class="categories_description_area">
+                    <div class="introduction user_description_area">
+                        <p class="user_description"><%= user.description%></p>
+                    </div>
+                    <div class="categories_area">
+                        <% user.categories.each do |c|%>
+                            <span class="name_tag"><%=c.japanese_name%></span>
+                        <% end %>
+                    </div>
                 </div>
-                <div class="introduction user_description_area">
-                    <p class="user_description"><%= user.description%></p>
-                </div>
-                
 
                 <table class="user_record_area">
                     <tr class="category user_record">
