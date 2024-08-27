@@ -1,7 +1,7 @@
 class User::OrdersController < User::Base
   before_action :check_login
   before_action :identify_user, only:[:show, :edit, :update]
-  before_action :identify_seller, only:[:show, :reject]
+  before_action :identify_seller, only:[:reject]
   before_action :check_transaction_is_editable, only:[:edit, :update]
   layout :choose_layout
 

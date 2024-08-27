@@ -8,61 +8,120 @@
         <h3>納品済み</h3>
         <% else %>
         <h3 class="links">
-            <%=link_to "編集", edit_user_transaction_path(@transaction.id) %> ｜
-            <%=link_to "拒否", edit_user_order_path(@transaction.id), class:"button" %>
-        </h3></br>
+        <% if current_user == @transaction.seller %>
+            ・<%=link_to "回答を編集", edit_user_transaction_path(@transaction.id)%></br>
+            ・<%=link_to "回答を拒否", edit_user_order_path(@transaction.id), class:"button"%></br>
+        <% else %>
+            ・<%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは元に戻りますが、購入金額は返金はされません。"} %></br>
         <% end %>
-        <div class="information_component">
-            <label><%= Transaction.human_attribute_name(:title)%></label></br>
-            <%if @transaction.title %>
-                <h3 class="margin0px"><%=@transaction.title %></h3>
-            <%else%>
-                <h3 class="margin0px">未記入</h3>
-            <% end %>
+        ・<%=link_to "追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"button" %>
+        </h3>
+        <% end %>
+        <%= render "user/shared/small_label", text: "相談室" %>
+        <div class="service_request_area">
+            <div class="image_area">
+                <%if @transaction.service.item&.file&.thumb&.url.nil?%>
+                    <%=image_tag "/corretech_icon.png", class:"image"%>
+                <% else %>
+                    <%=image_tag @transaction.service.item&.file&.thumb&.url, class:"image"%>
+                <% end %>
+            </div>
+            <div class="text_area">
+                <div class="title_area">
+                    <h3 class="margin0px"><%= link_to @transaction.service_title, user_service_path(@transaction.service.id) %></h3>
+                </div>
+                <div class="info">
+                    <%= render "user/shared/request_delivery_form", model: @transaction%>
+                </div>
+                <div class="info">
+                    <span class="one_line_text">
+                        <span class="price_area"><%= @transaction.price%><span class="unit">円</span></span>
+                        &nbsp;by <span class="price_area"><%= link_to @transaction.seller.name, user_account_path(@transaction.seller.id) %></span>
+                    </span>
+                </div>
+            </div>
         </div>
-        <div  class="information_component">
-            </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
-            <% if @transaction.description %>
-                <h5 class="margin0px break_word"><%=@transaction.description %></h5>
-            <% else %>
-                <h5 class="margin0px break_word">未記入</h5>
-            <% end %>
+        <div class="description_area">
+            <div class="description_text_area" id="descriptionn_content<%@transaction.model_name%><%@transaction.id%>">
+                <p id="description_text<%@transaction.model_name%><%@transaction.id%>" class="description_text closing_text"><%=@transaction.service_descriprion%></p>
+            </div>
+            <div class="change_text open_text" id="open_text<%@transaction.model_name%><%@transaction.id%>"></div>
         </div>
-        <div  class="information_component">
-            <%if @transaction.delivery_form_name != "text" %>
-                </label class="title_label">ファイル</label></br>
-                <% if @transaction.items %>
-                    <%if @transaction.use_youtube%>
-                        <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    <% else %>
-                        <% if @transaction.delivery_form_has_image? %>
-                            <% @transaction.items.each do |item|%>
-                                <%= image_tag item.file.normal_size.url, class:"image" if item.file.is_image?%>
+        <%= render "user/shared/small_label", text: "質問" %>
+        <div class="service_request_area">
+            <div class="image_area">
+                <% if @transaction.request.request_form_has_image? %>
+                    <%= render "user/shared/swiper_images", model: @transaction.request, use_thumb:true %>
+                <% elsif @transaction.request.request_form.name == "video" %>
+                    <%= video_tag @transaction.request.file.url, poster:@transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                <% end %>
+            </div>
+            <div class="text_area">
+                <div class="title_area">
+                <h3 class="margin0px one_line_text"><%= link_to @transaction.request.title, user_request_path(@transaction.request.id) %></h3>
+                </div>
+                <div class="info">
+                    <span class="one_line_text"><%= from_now(@transaction.delivery_time) %>（<%= @transaction.delivery_time.strftime("%Y/%m/%d %H:%m") %>）</span>
+                </div>
+                <div class="info">
+                    <span class="two_line_text"><%= @transaction.request.description%></span>
+                </div>
+            </div>
+        </div>
+        <%= render "user/shared/small_label", text: "回答" %>
+        <% if current_user == @transaction.seller || @transaction.is_delivered%>
+            <div class="information_component">
+                <label><%= Transaction.human_attribute_name(:title)%></label></br>
+                <%if @transaction.title %>
+                    <h3 class="margin0px"><%=@transaction.title %></h3>
+                <%else%>
+                    <h3 class="margin0px">未記入</h3>
+                <% end %>
+            </div>
+            <div  class="information_component">
+                </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
+                <% if @transaction.description %>
+                    <h5 class="margin0px break_word"><%=@transaction.description %></h5>
+                <% else %>
+                    <h5 class="margin0px break_word">未記入</h5>
+                <% end %>
+            </div>
+            <div  class="information_component">
+                <%if @transaction.delivery_form_name != "text" %>
+                    </label class="title_label">ファイル</label></br>
+                    <% if @transaction.items %>
+                        <%if @transaction.use_youtube%>
+                            <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <% else %>
+                            <% if @transaction.delivery_form_has_image? %>
+                                <% @transaction.items.each do |item|%>
+                                    <%= image_tag item.file.normal_size.url, class:"image" if item.file.is_image?%>
+                                <% end %>
+                            <% elsif @transaction.service.delivery_form.name == "video" %>
+                                <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                             <% end %>
-                        <% elsif @transaction.service.delivery_form.name == "video" %>
-                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                         <% end %>
                     <% end %>
                 <% end %>
-            <% end %>
-            <% if false %>
-                <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
-                <img id="description_image" class="description_image">
-            <% end %>
-        </div>
-        <div  class="information_component">
-            <% if @transaction.item %>
-                <%if @transaction.items && @transaction.delivery_form.name == "video"%>
-                    </label class="title_label">サムネイル</label></br>
-                    <%= image_tag @transaction.items, class:"image"%>
+                <% if false %>
+                    <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+                    <img id="description_image" class="description_image">
                 <% end %>
-            <% end %>
             </div>
-        <% if can_deliver(@transaction)%>
-            <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
-                <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
-                <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
-                <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
+            <div  class="information_component">
+                <% if @transaction.item %>
+                    <%if @transaction.items && @transaction.delivery_form.name == "video"%>
+                        </label class="title_label">サムネイル</label></br>
+                        <%= image_tag @transaction.items, class:"image"%>
+                    <% end %>
+                <% end %>
+                </div>
+            <% if can_deliver(@transaction)%>
+                <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
+                    <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
+                    <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
+                    <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
+                <% end %>
             <% end %>
         <% end %>
     </div>

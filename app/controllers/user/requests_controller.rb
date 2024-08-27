@@ -167,7 +167,7 @@ class User::RequestsController < User::Base
 
   def publish
     @request.set_publish
-    if @request.request_form.name == "text"
+    if @request.need_text_image?
       @item = @request.items.new()
       @item.process_file_upload = true
       @item.assign_attributes(file: params[:request][:file])

@@ -6,6 +6,24 @@
     <%= render "user/orders/header"%>
     <div class="order_index_flame">
         <% @transactions.each do |transaction| %>
+            <%= link_to(user_order_path(transaction.id), class:"order_cell") do %>
+                <div class="image_area">
+                    <%if transaction.request.use_youtube%>
+                        <iframe class="youtube_video" src="https://www.youtube.com/embed/<%=transaction.request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <% else %>
+                        <% if transaction.request.request_form_has_image? %>
+                            <%= image_tag transaction.request.items.first.file.url, class:"image" %>
+                        <% elsif transaction.request.request_form.name == "video" %>
+                            <%= video_tag transaction.request.file.url, poster:transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                        <% end %>
+                    <% end %>
+                </div>
+                <div class="text_area">
+                    <h4 class="title two_line_text"><%= transaction.request.title%></h4>
+                    <div class="from_now">納期：<%= from_now(transaction.delivery_time) %></div>
+                </div>
+            <% end %>
+            <!--
             <div class="order_cell">
                 <div class="request_area">
                     <%= link_to(user_request_path(transaction.request_id), class: 'request_link below_500') do %>
@@ -104,6 +122,7 @@
                 <% end %>
                 </div>
             </div>
+            -->
         <% end %>
     </div>
     <div class="main_bottom">
