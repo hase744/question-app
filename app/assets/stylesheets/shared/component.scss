@@ -246,15 +246,16 @@
 .name_tag{
     color: dimgray;
     font-size: 9px;
-    padding: 3px 1px;
+    padding: 4px 4px;
     margin-right: 3px;
+    margin-bottom: 3px;
     display: inline-block;
     background-color: #f1f1f1;
     //background-color: whitesmoke;   
     color: $text_yellow;
-    background-color: $text_yellow;
-    color: white;
-    font-weight: bold;
+    //background-color: $text_yellow;
+    //color: white;
+    //font-weight: bold;
     //color: #195faa;
     //padding-right: 2px;
     //border: 1px solid silver;

@@ -142,6 +142,11 @@
                 width: 100%;
                 display: inline-block;
             }
+            .categories_description_area{
+                display: inline-block;
+                height: 105px;
+                width: 100%;
+            }
         }
     }
 }
@@ -242,6 +247,10 @@
                 }
                 
             }
+            .categories_description_area{
+                display: inline-block;
+                width: calc(100% - 110px);
+            }
             .user_image_flame{
                 height: 100px;
                 width: 100px;
@@ -265,6 +274,7 @@
                 }
             }
             .user_record_area{
+                margin-left: 5px;
                 .record_name{
                     background-color: #EEEEEE;
                     font-size: 15px;
@@ -294,7 +304,7 @@
                 width: calc(100% - 100px);
             }
             .introduction{
-                width: calc(100% - 110px);
+                width: 100%;
                 min-width: 300px;
                 left: 0px;
             }
@@ -311,6 +321,9 @@
 .from720to1000{
     .user_cell_zone{
         .user_cell_flame{
+            .user_cell_area{
+                height: 150px;
+            }
             .user_name{
                 font-size: 30px;
             }
@@ -318,12 +331,18 @@
                 left: 10px;
                 width: calc(100% - 110px);
             }
-            .introduction{
+            .categories_description_area{
                 width: calc(100% - 310px);
+                float: left;
+            }
+            .introduction{
                 min-width: 300px;
+                width: 100%;
+                height: 90px;
             }
             .user_record_area{
                 width: 190px;
+                margin-left: 10px;
                 //left: calc(100% - 410px);
             }
             .user_description_area{
