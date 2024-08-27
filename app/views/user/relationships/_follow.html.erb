@@ -10,18 +10,24 @@ $(".follow_button").each(function() {
     this.addEventListener('ajax:success', function(event) {// 成功時の処理
         var res = event.detail[0];
         is_following = $('.followed_button').is(':visible');
+        follow_succeeded = res.follow_succeeded
+        message = 'フォロー'
         if(is_following){
-            notify_for_seconds("フォローを解除しました。");
-        }else{
-            notify_for_seconds("フォローしました。");
+            message += 'を解除'
         }
-        $('.follow_button').toggleClass('display_none');
+        if(follow_succeeded){
+            message += 'しました。'
+            $('.follow_button').toggleClass('display_none');
+        }else{
+            message += 'できませんでした。'
+        }
+        notify_for_seconds(message);
     })
 
     this.addEventListener('ajax:error', function(event) {// 成功時の処理
         console.log("フォローできませんでした。")
         var res = event.detail[0];
-        console.log(res["is_followed"]);
+        console.log(res["follow_succeeded"]);
         $(".follow_button").toggleClass("unfollowed_button");
         if($(".unfollowed_button").length == 0){
           notify_for_seconds("フォロー解除できませんでした。");

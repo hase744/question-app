@@ -1,13 +1,17 @@
 class User::RelationshipsController < User::Base
   before_action :check_login
   def update
-    relationship = current_user.followee_relationships.find_by(target_user: User.find(params[:id]))
+    user = User.find(params[:id])
+    relationship = current_user.followee_relationships.find_by(target_user: user)
     if relationship
       relationship.destroy
+    elsif current_user != user
+      current_user.followee_relationships.create(target_user: user)
     else
-      current_user.followee_relationships.create(target_user: User.find(params[:id]))
+      render json: {"follow_succeeded": false}
+      return
     end
-    render json: {"is_followed": true}
+    render json: {"follow_succeeded": true}
   end
   
   def update_total_followers
