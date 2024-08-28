@@ -74,46 +74,6 @@
                     margin-right: 10px;
                 }
             }
-            .service_condition_area{
-                margin-top: 10px;
-                @media(max-width:500px){
-                    margin-left: 10px;
-                }
-                @media(min-width:500px){
-                    margin-left: 30px;
-                }
-                tr{
-                    list-style-type: none;
-                    td{
-                        position: relative;
-                        padding-top: 3px;
-                        .service_condition{
-                            left:200px;
-                        }
-                    }
-                    .label_icon{
-                        text-align: center;
-                        .far, .fas{
-                            font-size: 15px;
-                            color: steelblue;
-                        }
-                    }
-                    .condition_name{
-                        font-size: 15px;
-                        //color: gray;
-                        font-weight: bold;
-                        padding-bottom: 0px;
-                        border-radius: 5px;
-                        display: inline-block;
-                        text-decoration: underline;
-                    }
-                    .service_condition{
-                        color: #333333;
-                        margin-left: 10px;
-                        font-size: 14px;
-                    }
-                }
-            }
             .service_image_area{
                 display: inline-block;
                 //min-width: 200px;

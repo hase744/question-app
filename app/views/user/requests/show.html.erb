@@ -53,64 +53,49 @@
                     <span class="request_score_info"><label>提案数</label>&nbsp;<%=Transaction.where(request:@request, is_suggestion:true).count%>件</span>
                 <% end %>
             </div>
-            <table class="request_condition_area">
+            <table class="common_condition_area">
                 <% if @request.services == [] %>
                 <tr>
-                    <td class="label_icon">
-                    <span class="fas fa-yen-sign"></span>
-                    </td>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:max_price)%></span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=@request.max_price%>円</span>
+                        <span class="common_condition"><%=@request.max_price%>円</span>
                     </td>
                 </tr>
                 <% end %>
                 <% if @request.services == [] %>
                 <tr>
-                    <td class="label_icon">
-                    <span class="far fa-calendar-alt"></span>
-                    </td>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:suggestion_deadline) %></span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=from_now(@request.suggestion_deadline)%>（<%=@request.suggestion_deadline.strftime("%Y %m/%d %H:%m")%>まで）</span>
+                        <span class="common_condition"><%=from_now(@request.suggestion_deadline)%>（<%=@request.suggestion_deadline.strftime("%Y %m/%d %H:%m")%>まで）</span>
                     </td>
                 </tr>
                 <% end %>
                 <tr>
-                    <td class="label_icon">
-                    <span class="fas fa-question"></span>
-                    </td>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:request_form) %></span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=@request.request_form.japanese_name%></span>
+                        <span class="common_condition"><%=@request.request_form.japanese_name%></span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="label_icon">
-                    <span class="fas fa-chalkboard-teacher"></span>
-                    </td>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:delivery_form) %></span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=@request.delivery_form.japanese_name%></span>
+                        <span class="common_condition"><%=@request.delivery_form.japanese_name%></span>
                     </td>
                 </tr>
                 <tr>
-                    <td class="label_icon">
-                    <span class="fas fa-sitemap"></span>
-                    </td>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:category) %></span>
                     </td>
                     <td>
-                        <span class="request_condition"><%=@request.category.japanese_name%></span>
+                        <span class="common_condition"><%=@request.category.japanese_name%></span>
                     </td>
                 </tr>
             </table>

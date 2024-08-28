@@ -4,12 +4,12 @@ $(".open_text").click(function() {
     var change_text = parent.find(".change_text");
     var description_text = parent.find(".description_text");
     var answer_area = parent.find(".answer_area");
-    var transaction_cell_flame = parent.find(".transaction_cell_flame");
+    var cell_flame = parent.find(".transaction_cell_flame");
 
     change_text.html("&nbsp;<span class=''></span>&nbsp;")
     open_text.toggleClass("open_text");
     open_text.toggleClass("close_text");
-    transaction_cell_flame.toggleClass("transaction_cell_flame_open");
+    cell_flame.toggleClass("transaction_cell_flame_open");
     description_text.toggleClass("opening_text");
     description_text.toggleClass("closing_text");
     description_text.toggleClass("three_line_text");

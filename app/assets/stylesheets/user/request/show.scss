@@ -86,41 +86,41 @@
                 }
             }
             */
-            .request_condition_area{
-                @media(max-width:500px){
-                    margin-left: 10px;
-                }
-                @media(min-width:500px){
-                    margin-left: 30px;
-                }
-                .label_icon{
-                    text-align: center;
-                }
-                tr{
-                    list-style-type: none;
-                    td{
-                        position: relative;
-                        .request_condition{
-                        }
-                        .far, .fas{
-                            font-size: 15px;
-                            color: steelblue;
-                        }
-                        .fa-sitemap, .fa-warehouse{
-                            margin-right: 0px;
-                            margin-left: 0px;
-                        }
-                    }
-                    .condition_name{
-                        color: gray;
-                        padding-bottom: 0px;
-                        border-radius: 5px;
-                        font-size: 13px;
-                        display: inline-block;
-                        text-decoration: underline;
-                    }
-                }
-            }
+            //.request_condition_area{
+            //    @media(max-width:500px){
+            //        margin-left: 10px;
+            //    }
+            //    @media(min-width:500px){
+            //        margin-left: 30px;
+            //    }
+            //    .label_icon{
+            //        text-align: center;
+            //    }
+            //    tr{
+            //        list-style-type: none;
+            //        td{
+            //            position: relative;
+            //            .request_condition{
+            //            }
+            //            .far, .fas{
+            //                font-size: 15px;
+            //                color: steelblue;
+            //            }
+            //            .fa-sitemap, .fa-warehouse{
+            //                margin-right: 0px;
+            //                margin-left: 0px;
+            //            }
+            //        }
+            //        .condition_name{
+            //            color: gray;
+            //            padding-bottom: 0px;
+            //            border-radius: 5px;
+            //            font-size: 13px;
+            //            display: inline-block;
+            //            text-decoration: underline;
+            //        }
+            //    }
+            //}
             .request_detail{
                 .request_detail_label{
                     margin: 0px;
