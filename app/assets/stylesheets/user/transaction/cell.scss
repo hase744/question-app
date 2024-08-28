@@ -1,3 +1,4 @@
+@import "_variables";
 .transaction_cell_area{
     margin-top: 5px;
     margin: 5px 5px 5px 5px;
@@ -103,7 +104,7 @@
         }
         .seller_name_area{
             display: inline-block;
-            height: 50px;
+            height: 30px;
             position: relative;
             width: calc(100% - 60px);
             padding-top: 5px;
@@ -125,18 +126,33 @@
         //text-decoration: underline;
         color: gray;
     }
+    .mark_a{
+        color: red;
+        font-size: 20px;
+    }
+    .answer{
+        font-weight: bold;
+        color: $text_grey;
+    }
+    .open_page_area{
+        text-align: right;
+        margin: 0 0 0 auto;
+    }
+    .open_page{
+        color: $link_blue;
+    }
     .change_text{
         display: inline-block;
         //text-align: center;
         font-size: 13px;
-        color: #195faa;
+        color: $link_blue;
         position: absolute;
         bottom: 0px;
         right: 0px;
     }
     .change_text:before{
         text-decoration: none;
-        color: #195faa;;
+        color: $link_blue;;
         cursor: pointer;
         background-color: white;
     }

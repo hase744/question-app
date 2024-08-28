@@ -61,13 +61,13 @@
                 <div class="user_label">
                 <%= render "user/shared/small_label", text:"条件"%>
                 </div>
-                <table class="service_condition_area">
+                <table class="common_condition_area">
                     <tr>
                         <td class="user_info_name">
                             <span class="condition_name">料金</span>
                         </td>
                         <td>
-                            <span class="service_condition"><%=@service.price%>円</span>
+                            <span class="common_condition"><%=@service.price%>円</span>
                         </td>
                     </tr>
                     <tr>
@@ -75,7 +75,7 @@
                             <span class="condition_name">質問から回答まで</span>
                         </td>
                         <td>
-                            <span class="service_condition"><%=@service.delivery_days%>日以内</span>
+                            <span class="common_condition"><%=@service.delivery_days%>日以内</span>
                         </td>
                     </tr>
                     <tr>
@@ -83,7 +83,7 @@
                             <span class="condition_name"><%= Service.human_attribute_name(:delivery_form) %></span>
                         </td>
                         <td>
-                            <span class="service_condition"><%=@service.delivery_form.japanese_name%></span>
+                            <span class="common_condition"><%=@service.delivery_form.japanese_name%></span>
                         </td>
                     </tr>
                     <tr>
@@ -91,7 +91,7 @@
                             <span class="condition_name"><%= Service.human_attribute_name(:request_form) %></span>
                             </td>
                         <td>
-                            <span class="service_condition"><%=@service.request_form.japanese_name%></span>
+                            <span class="common_condition"><%=@service.request_form.japanese_name%></span>
                         </td>
                     </tr>
                     <%if @service.is_inclusive %>
@@ -100,7 +100,7 @@
                                 <span class="condition_name">質問の字数</span>
                                 </td>
                             <td>
-                                <span class="service_condition">
+                                <span class="common_condition">
                                 <%= 
                                 if @service.request_max_characters
                                     "#{@service.request_max_characters}字以内"
@@ -117,7 +117,7 @@
                                 <span class="condition_name"><%= Service.human_attribute_name(:request_max_minutes)%></span>
                                 </td>
                             <td>
-                                <span class="service_condition"><%=@service.request_max_minutes%>分</span>
+                                <span class="common_condition"><%=@service.request_max_minutes%>分</span>
                             </td>
                         </tr>
                         <% end %>
@@ -127,7 +127,7 @@
                             <span class="condition_name">カテゴリー</span>
                         </td>
                         <td>
-                            <span class="service_condition"><%=@service.category_names%></span>
+                            <span class="common_condition"><%=@service.category_names%></span>
                         </td>
                     </tr>
                     <tr>
@@ -135,7 +135,7 @@
                             <span class="condition_name">受付状況</span>
                         </td>
                         <td>
-                            <span class="service_condition">
+                            <span class="common_condition">
                             <%if @service.is_for_sale%>
                             販売中
                             <% else %>
@@ -149,7 +149,7 @@
                             <span class="condition_name">公開状況</span>
                         </td>
                         <td>
-                            <span class="service_condition">
+                            <span class="common_condition">
                             <%if @service.is_published%>
                             公開中
                             <% else %>
@@ -163,7 +163,7 @@
                             <span class="condition_name">追加質問</span>
                         </td>
                         <td>
-                            <span class="service_condition">
+                            <span class="common_condition">
                             <%if @service.transaction_message_enabled%>
                             可能
                             <% else %>

@@ -1,3 +1,4 @@
+@import '_variables';
 .order_index_zone{
     .order_header_area{
         border-bottom: solid 1px lightgray;
@@ -29,6 +30,8 @@
         .order_cell:hover{
             text-decoration: none;
         }
+        $image_height: 80px;
+        $image_width: 145px;
         .order_cell{
             background-color: white;
             box-shadow: 0 0 2px lightgray;
@@ -39,25 +42,27 @@
             display: inline-block;
             color: black;
             .image_area{
-                height: 100px;
-                width: 160px;
+                height: $image_height;
+                width: $image_width;
                 display: inline-block;
                 float: left;
             }
             .image{
-                height: 100px;
-                width: 160px;
+                height: $image_height;
+                width: $image_width;
                 object-fit: cover;
             }
             .text_area{
                 display: inline-block;
-                width: calc(100% - 170px);
-                margin: 20px 0px 0px 5px;
+                width: calc(100% - #{$image_width} - 10px);
+                margin: 15px 0px 0px 5px;
                 .title{
                     margin: 0px;
+                    color: $text_grey;
                 }
                 .from_now{
                     font-size: 14px;
+                    color: dimgray;
                 }
             }
             //background-color: white;

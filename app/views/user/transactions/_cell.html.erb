@@ -24,20 +24,26 @@
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= from_now(transaction.created_at)%></h5>
             <h5 class="three_line_text text description_text"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
             <div class="display_none answer_area" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
-            <div class="seller_container">
-                <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
-                    <% if transaction.seller.image.thumb.url %>
-                        <%=image_tag transaction.seller.image.thumb.url, class:"seller_image"%>
-                    <% else %>
-                        <%=image_tag user_image_default, class:"seller_image"%>
+                <div class="seller_container">
+                    <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
+                        <% if transaction.seller.image.thumb.url %>
+                            <%=image_tag transaction.seller.image.thumb.url, class:"seller_image"%>
+                        <% else %>
+                            <%=image_tag user_image_default, class:"seller_image"%>
+                        <% end %>
+                        <div class="seller_name_area">
+                            <p class="seller_name"><%=transaction.seller.name%></p>
+                        </div>
                     <% end %>
-                    <div class="seller_name_area">
-                        <p class="seller_name"><%=transaction.seller.name%></p>
-                    </div>
-                <% end %>
-                <%#= render "user/relationships/follow", user:transaction.seller%>
+                    <%#= render "user/relationships/follow", user:transaction.seller%>
                 </div>
-                <h5 class="title text"><%= transaction.description%></h5>
+                <span class="titl answer">
+                    <span class="mark_a">A.</span><%= transaction.title%>
+                </span>
+                <h5 class="text three_line_text"><%= transaction.description%></h5>
+                <div class="open_page_area">
+                <%= link_to "...続きを見る", user_transaction_path(transaction.id), class:"open_page" %>
+                </div>
             </div>
         </div>
     </div>
