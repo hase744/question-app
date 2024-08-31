@@ -31,4 +31,9 @@ class Email::TransactionMailer < ApplicationMailer
         @transaction = transaction
         mail to: transaction.seller.email, subject: "あなたの質問に回答が納品されました"
     end
+
+    def inquire(transaction)
+        @transaction = transaction
+        mail to: transaction.seller.email, subject: "あなたの相談室に購入前の確認の問い合がされました"
+    end
 end

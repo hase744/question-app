@@ -95,6 +95,8 @@
             font-size: 13px;
             margin: 0px 5px;
             width: calc(100% - 10px);
+            //background-color: red;
+            height: 100px;
             .price_area{
                 .star_logo{
                     font-size: 15px;
@@ -108,7 +110,9 @@
                     color: $text_grey;
                 }
             }
-
+            .name_tag{
+                height: 13px;
+            }
             //.service_review_zone{
             //    height: 100%;
             //    width: 100%;

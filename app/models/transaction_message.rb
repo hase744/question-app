@@ -12,6 +12,10 @@ class TransactionMessage < ApplicationRecord
   attr_accessor :deadline
   before_validation :set_default_values
 
+  scope :solve_n_plus_1, -> {
+    includes(:sender, :receiver, :deal)
+  }
+
   scope :by_transaction_id_and_order, ->(params) {
     puts params
     scope = includes(:sender).joins(:deal)

@@ -367,7 +367,8 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.integer "request_max_duration"
     t.integer "request_max_files"
     t.datetime "renewed_at"
-    t.boolean "transaction_message_enabled"
+    t.boolean "transaction_message_enabled", default: true
+    t.boolean "allow_pre_purchase_inquiry", default: true
     t.integer "total_views", default: 0
     t.integer "total_sales_numbers", default: 0
     t.integer "total_sales_amount", default: 0
@@ -449,6 +450,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.string "stripe_transfer_id"
     t.string "title"
     t.text "description"
+    t.datetime "pre_purchase_inquired_at"
     t.integer "total_views", default: 0
     t.integer "total_likes", default: 0
     t.boolean "is_delivered", default: false

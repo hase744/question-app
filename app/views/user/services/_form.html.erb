@@ -116,6 +116,13 @@
 
         <%if !request.present? %>
           <div class="field_area">
+            <%= f.label :allow_pre_purchase_inquiry, class:"field_label"%></br>
+            <div class="select_area">
+              <%= f.select 'allow_pre_purchase_inquiry', options_for_select({"受け付ける":true, "受付けない":false}, selected: service.is_for_sale),  class:"price_field" ,required: true %>
+            </div>
+          </div>
+          
+          <div class="field_area">
             <%#= f.check_box :is_published, class:"", checked:true%>
             <%= f.label :is_published, class:"field_label"%></br>
             <div class="select_area">

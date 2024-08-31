@@ -116,6 +116,10 @@ class User < ApplicationRecord
     Country.find_by(name: self.country_id)
   end
 
+  def image_width_default
+    self.image.url.presence || "/profile.jpg"
+  end
+
   def self.categories
     Category.all.select do |category|
       user_categories.any? { |uc| uc.category_name == category.name }

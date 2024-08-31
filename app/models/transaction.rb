@@ -53,7 +53,7 @@ class Transaction < ApplicationRecord
   end
 
   scope :solve_n_plus_1, -> {
-    includes(:seller, :buyer, :request, :service, :items, {request: :items})
+    includes(:seller, :buyer, :request, :service, :items, {request: :items}, {transaction_messages: :sender}, {transaction_messages: :receiver}).includes(transaction_messages: [:sender, :receiver])
   }
 
   scope :from_seller, -> (user){
@@ -373,7 +373,23 @@ class Transaction < ApplicationRecord
       true
     elsif user != self.buyer
       false
+    elsif !self.is_contracted
+      can_send_pre_purchase_inquiry(user)
     elsif self.transaction_message_enabled
+      true
+    else
+      false
+    end
+  end
+
+  def can_send_pre_purchase_inquiry(user)
+    if !self.service.allow_pre_purchase_inquiry
+      false
+    elsif user == self.seller
+      false
+    elsif user != self.buyer
+      false
+    elsif (self.transaction_messages.blank? || self.transaction_messages&.last&.receiver == user)
       true
     else
       false
@@ -386,6 +402,14 @@ class Transaction < ApplicationRecord
 
   def delivery_form
     Form.find_by(name: self.delivery_form_name)
+  end
+
+  def opponent_of(user)
+    if user == self.seller
+      self.buyer
+    elsif user == self.buyer
+      self.seller
+    end
   end
 
   def delete_temp_image
