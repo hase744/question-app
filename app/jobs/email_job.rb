@@ -15,6 +15,8 @@ class EmailJob < ApplicationJob
       Email::TransactionMailer.reject(model).deliver_now
     when :message
       Email::TransactionMailer.notify_message(model).deliver_now
+    when :inquire
+      Email::TransactionMailer.inquire(model).deliver_now
     end
   end
 end

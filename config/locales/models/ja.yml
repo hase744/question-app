@@ -42,6 +42,7 @@ ja:
         request_max_length: 質問の最大の長さ
         request_max_minutes: 質問動画の最大時間
         request_max_characters: 質問の最大字数
+        allow_pre_purchase_inquiry: 購入前の確認
       request:
         title: タイトル
         description: 質問・相談内容

@@ -3,6 +3,7 @@ class Service < ApplicationRecord
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
+  has_one :item, class_name: "ServiceItem", dependent: :destroy
   has_one :service_category
   has_one :item, class_name: "ServiceItem", dependent: :destroy
   has_many :items, class_name: "ServiceItem", dependent: :destroy
@@ -139,8 +140,8 @@ class Service < ApplicationRecord
     )
   end
 
-  def update_renewed_at
-    attributes_to_check = [
+  def attributes_to_check
+    [
       "title", 
       "description", 
       "price",
@@ -153,6 +154,9 @@ class Service < ApplicationRecord
       "transaction_message_days",
       #"transaction_message_enabled",
     ]
+  end
+
+  def update_renewed_at
     attributes_to_check.each do |a| #更新判定のattributeが更新されている
       if self.changed.include?(a)
           self.renewed_at = DateTime.now()

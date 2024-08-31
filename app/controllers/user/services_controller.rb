@@ -417,6 +417,7 @@ class User::ServicesController < User::Base
       :request_id,
       :is_published,
       :is_for_sale,
+      :allow_pre_purchase_inquiry,
       service_categories_attributes: [:category_name],
     )
   end

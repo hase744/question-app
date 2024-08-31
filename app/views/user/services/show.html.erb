@@ -132,6 +132,19 @@
                     </tr>
                     <tr>
                         <td class="user_info_name">
+                            <span class="condition_name">購入前の質問</span>
+                        </td>
+                        <td>
+                            <span class="common_condition">
+                            <%if @service.allow_pre_purchase_inquiry%>
+                            可能
+                            <% else %>
+                            不可
+                            <% end %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="user_info_name">
                             <span class="condition_name">受付状況</span>
                         </td>
                         <td>
@@ -268,7 +281,7 @@
                 link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"bottom_button transaction_button"
             else
                 link_to(new_user_request_path(service_id:@service.id), class:"bottom_button transaction_button") do
-                    "質問を投稿する"
+                    "質問を作成する"
                 end
             end
             %>

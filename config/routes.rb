@@ -55,6 +55,8 @@ namespace :user do
     post "requests/purchase/:id", to: "requests#purchase", as: "request_purchase"
     post "transactions/like/:id", to:"transactions#like", as: "transactions_like"
     put "transactions/deliver/:id",  to:"transactions#deliver", as:"deliver_transaction"
+    post "transactions/pre_purchase_inquire/:id",  to:"transactions#pre_purchase_inquire", as:"inquire_transaction"
+    get "transactions/pre_purchase_inquiry",  to:"transactions#pre_purchase_inquiry", as:"pre_purchase_inquiry"
     get "notifications/notification_bar", to: "notifications#notification_bar"
     get "notifications/notification_cells", to: "notifications#notification_cells"
     get "notifications/get_data"

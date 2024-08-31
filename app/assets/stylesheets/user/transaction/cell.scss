@@ -87,7 +87,7 @@
       }
     .seller_area{
         display: inline-block;
-        width: calc(100% - 110px);
+        width: 100%;
         color: black;
     }
     .seller_container{
@@ -133,6 +133,7 @@
     .answer{
         font-weight: bold;
         color: $text_grey;
+        padding-left: 5px;
     }
     .open_page_area{
         text-align: right;

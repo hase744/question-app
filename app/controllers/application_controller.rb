@@ -91,6 +91,9 @@ class ApplicationController < ActionController::Base
     if request.path_info == "/admin/login" 
       admin_dashboard_path
     elsif session[:path_params].present?
+      if ['notifications'].include?(session[:path_params]['controller'])
+        return redirect_to user_account_path(current_user.id)
+      end
       if session[:path_params]['service_id']
         return url_for(
           controller: session[:path_params]['controller'],
@@ -105,10 +108,10 @@ class ApplicationController < ActionController::Base
           id: session[:path_params]['id'],
           )
       end
-        url_for(
-          controller: session[:path_params]['controller'],
-          action: session[:path_params]['action'],
-        )
+      url_for(
+        controller: session[:path_params]['controller'],
+        action: session[:path_params]['action'],
+      )
     else
       user_account_path(current_user.id) # ログイン後に遷移するpathを設定
     end

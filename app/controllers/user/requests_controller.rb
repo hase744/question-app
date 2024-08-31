@@ -5,8 +5,8 @@ class User::RequestsController < User::Base
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :check_stripe_customer, only:[:publish] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
-  before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
-  before_action :check_accessed_at, only:[:create, :update, :publish]
+  #before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
+  before_action :check_accessed_at, only:[:review, :edit, :create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_already_contracted, only:[:new, :create, :publish, :purchase]

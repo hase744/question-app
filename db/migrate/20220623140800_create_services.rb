@@ -23,7 +23,8 @@ class CreateServices < ActiveRecord::Migration[6.1]
       #t.integer :request_mini_length, index:true #依頼すべき最小の長さ（動画の長さ、文字数など）
 
       #t.integer :transaction_message_days, default: 0, index:true #追加でメッセージを送る質問できる依頼に関するカラム
-      t.boolean :transaction_message_enabled, nil: false
+      t.boolean :transaction_message_enabled, nil: false, default: true
+      t.boolean :allow_pre_purchase_inquiry, nil: false, default: true
 
       t.integer :total_views, default: 0, index:true
       t.integer :total_sales_numbers, default: 0, index:true #過去のサービスの売上数

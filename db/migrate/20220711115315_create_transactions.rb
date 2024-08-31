@@ -19,6 +19,7 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.string :stripe_transfer_id
       t.string :title, index:true
       t.text :description
+      t.datetime :pre_purchase_inquired_at
       t.integer :total_views, default: 0, index:true
       t.integer :total_likes, default: 0, index:true
 
