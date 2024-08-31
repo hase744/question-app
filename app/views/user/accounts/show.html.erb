@@ -49,8 +49,10 @@
                     <div class="specifics_area">
                         <span class="specific">
                             <label>評価</label>
-                            <span class="star fas fa-star"></span>
-                            <%=(@user.average_star_rating)&.round(1)%> <span class="unit">(<%=@user.total_reviews%>)</span></span>
+                            <%= render "user/shared/average_star_rating", 
+                                average_star_rating: @user.average_star_rating, 
+                                total_reviews: @user.total_reviews %>
+                        </span>
                         <span class="specific">
                             <label>価格帯</label>
                             <%= render "user/accounts/service_price_range", user:@user %>

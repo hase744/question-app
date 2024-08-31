@@ -144,6 +144,9 @@
                 width: 100%;
                 text-decoration: none;
                 color: $text_grey;
+                .star{
+                    font-size: 15px;
+                }
                 .user_image{
                     float: left;
                     display: inline-block;

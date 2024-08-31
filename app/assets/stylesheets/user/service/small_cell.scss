@@ -1,156 +1,158 @@
 @import "variables";
 .service_small_cell_area{
-  float: left;
-  display: inline-block;
-  height: 220px;
-  width: 100%;
+  	float: left;
+  	display: inline-block;
+  	height: 220px;
+  	width: 100%;
 }
 .service_small_cell_flame{
-  display: inline-block;
-  position: relative;
-  background-color: white;
-  //box-shadow: 0 0 2px lightgrey;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  //margin: 5px;
-  width: calc(100% - 10px);
-  height: calc(100% - 10px);
-  max-width: calc(250px * 1.5 -10px);
-  text-decoration: none;
-  color: $text_grey;
-  .service_image_area{
-      height: 100px;
-      width: 100%;
-      .service_image{
-          height: 100%;
-          width: 100%;
-          border-radius: 5px 5px 0px 0px;
-          object-fit: cover;
-      }
-  }
-  .user_info_area{
-      height: 40px;
-      margin-bottom: 0px;
-      .user_image_area{
-        padding-left: 5px;
-        padding-bottom: 5px;
-          display: inline-block;
-          height: 40px;
-          width: 40px;
-          float: left;
-          .user_image{
-              height:30px;
-              width: 30px;
-              border-radius: 30px;
-              margin-top: 5px;
-              margin-left: 5px;
-              object-fit: cover;
-              @media(max-width: 1000px){
-                height: 25px;
-                width: 25px;
-              }
-          }
-          @media(max-width: 1000px){
-            width: 35px;
-          }
-      }
-      .user_name_area{
-          display: inline-block;
-          width: calc(100% - 60px);
-          margin-top: 5px;
-          @media(max-width: 1000px){
-            margin-top: 2px;
-            width: calc(100% - 50px);
-          }
-          .user_name{
-              color: dimgray;
-              margin-top: 40px;
-              display: -webkit-box;
-              font-size: 13px;
-              margin: 0px;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              -webkit-line-clamp: 2; 
-              @media(max-width: 1000px){
-                font-size: 10px;
-              }
-          }
-      }
-  }
-  .service_description_area{
-      padding: 0px 5px;
-      display: block;
-      height: 40px;
-      .service_description{
-          display: -webkit-box;
-          margin: 0px;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          font-size: 15px;
-          -webkit-line-clamp: 2; 
-          font-weight: 10px;
-          flex-shrink: 0;
-          font-size: 13px;
-      }
-  }
-  .price_and_star_area{
-    padding-left: 5px;
-    font-size: 15px;
-    color: $text_grey;
-    .star_logo{
-      font-size: 12px;
-      color: $text_yellow;
-      margin-right: 2px;
-    }
-  }
-  .service_condition_area{
-      width: 100%;
-      float: left;
-      font-size: 13px;
-      .service_review_zone{
-          height: 100%;
-          width: 100%;
-          .service_review_table{
-              height: 100%;
-              width: 100%;
-              .service_info{
-              }
-          }
-      }
-      .info_icon_area{
-          width: 5px;
-          text-align: center;
-          .far, .fas{
-              color: steelblue;
-          }
-      }
-      .info_name_area{
-          width: 70px;
-          color: gray;
-          .info_name{
-              .condition_name{
-                  border-radius: 10px;
-                  text-decoration: underline;
-              }
-              .coron{
-                  float: right;
-              }
-          }
-      }
-  }
-  .service_show_link{
-      color: black;
-      text-decoration:none ;
-  }
+  	display: inline-block;
+  	position: relative;
+  	background-color: white;
+  	//box-shadow: 0 0 2px lightgrey;
+  	border: 1px solid lightgray;
+  	border-radius: 5px;
+  	//margin: 5px;
+  	width: calc(100% - 10px);
+  	height: calc(100% - 10px);
+  	max-width: calc(250px * 1.5 -10px);
+  	text-decoration: none;
+  	color: $text_grey;
+  	.service_image_area{
+  	    height: 100px;
+  	    width: 100%;
+  	    .service_image{
+  	        height: 100%;
+  	        width: 100%;
+  	        border-radius: 5px 5px 0px 0px;
+  	        object-fit: cover;
+  	    }
+  	}
+  	.user_info_area{
+  	    height: 40px;
+  	    margin-bottom: 0px;
+  	    .user_image_area{
+        	padding-left: 5px;
+        	padding-bottom: 5px;
+  	        display: inline-block;
+  	        height: 40px;
+  	        width: 40px;
+  	        float: left;
+  	        .user_image{
+  	            height:30px;
+  	            width: 30px;
+  	            border-radius: 30px;
+  	            margin-top: 5px;
+  	            margin-left: 5px;
+  	            object-fit: cover;
+  	            @media(max-width: 1000px){
+  	              	height: 25px;
+  	              	width: 25px;
+  	            }
+  	        }
+  	        @media(max-width: 1000px){
+  	          	width: 35px;
+  	        }
+  	    }
+  	    .user_name_area{
+  	        display: inline-block;
+  	        width: calc(100% - 60px);
+  	        margin-top: 5px;
+  	        @media(max-width: 1000px){
+  	          	margin-top: 2px;
+  	          	width: calc(100% - 50px);
+  	        }
+  	        .user_name{
+  	            color: dimgray;
+  	            margin-top: 40px;
+  	            display: -webkit-box;
+  	            font-size: 13px;
+  	            margin: 0px;
+  	            -webkit-box-orient: vertical;
+  	            overflow: hidden;
+  	            -webkit-line-clamp: 2; 
+  	            @media(max-width: 1000px){
+  	              font-size: 10px;
+  	            }
+  	        }
+  	    }
+  	}
+  	.service_description_area{
+  	    padding: 0px 5px;
+  	    display: block;
+  	    height: 40px;
+  	    .service_description{
+  	        display: -webkit-box;
+  	        margin: 0px;
+  	        -webkit-box-orient: vertical;
+  	        overflow: hidden;
+  	        font-size: 15px;
+  	        -webkit-line-clamp: 2; 
+  	        font-weight: 10px;
+  	        flex-shrink: 0;
+  	        font-size: 13px;
+  	    }
+  	}
+  	.price_and_star_area{
+    	padding-left: 5px;
+    	font-size: 15px;
+    	color: $text_grey;
+    	.star{
+    	  	font-size: 12px;
+    	  	color: $text_yellow;
+    	}
+    	.unit{
+    	  	font-size: 12px;
+    	}
+  	}
+  	.service_condition_area{
+  	    width: 100%;
+  	    float: left;
+  	    font-size: 13px;
+  	    .service_review_zone{
+  	        height: 100%;
+  	        width: 100%;
+  	        .service_review_table{
+  	            height: 100%;
+  	            width: 100%;
+  	            .service_info{
+  	            }
+  	        }
+  	    }
+  	    .info_icon_area{
+  	        width: 5px;
+  	        text-align: center;
+  	        .far, .fas{
+  	            color: steelblue;
+  	        }
+  	    }
+  	    .info_name_area{
+  	        width: 70px;
+  	        color: gray;
+  	        .info_name{
+              	.condition_name{
+              	    border-radius: 10px;
+              	    text-decoration: underline;
+              	}
+              	.coron{
+              	    float: right;
+              	}
+          	}
+      	}
+  	}
+  	.service_show_link{
+  	    color: black;
+  	    text-decoration:none ;
+  	}
   
 }
 @media (max-width: 1000px) {
-  .service_small_cell_area{
-    float: left;
-    display: inline-block;
-    height: 210px;
-    .service_description{
-      font-size: 13px;
-    }
-  }
+  	.service_small_cell_area{
+  	  	float: left;
+  	  	display: inline-block;
+  	  	height: 210px;
+  	  	.service_description{
+  	  	  	font-size: 13px;
+  	  	}
+  	}
 }

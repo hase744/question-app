@@ -14,9 +14,9 @@
                 </span>
             </div>
             <div class="price_and_star_area">￥<%=service.price%>&nbsp;
-                <%if service.average_star_rating %>
-                    <span class="star_logo fas fa-star"></span><%=service.average_star_rating %>
-                <% end %>
+                <%= render "user/shared/average_star_rating", 
+                average_star_rating: service.average_star_rating, 
+                total_reviews: service.total_reviews %>
             </div>
             <div class="user_info_area">
                 <div class="user_image_area">
