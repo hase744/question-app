@@ -162,6 +162,11 @@ include Variables
     end
   end
 
-  def unit
+  def mime_types_from_extensions(extensions)
+    extensions.map { |ext| "image/#{ext}" }.join(', ')
+  end
+
+  def accept_image
+    mime_types_from_extensions(FileUploader.new.image_extensions)
   end
 end

@@ -293,7 +293,7 @@ class User::ServicesController < User::Base
       #非公開だけどユーザー本人
     else
       flash.notice = "相談室が非公開です。"
-      redirect_back(fallback_location: root_path)
+      redirect_to user_services_path
     end
   end
   

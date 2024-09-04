@@ -329,7 +329,8 @@ class User::TransactionsController < User::Base
 
   private def deliver_params
     params.require(:transaction).permit(
-      :is_delivered
+      :is_delivered,
+      :is_published
     )
   end
 

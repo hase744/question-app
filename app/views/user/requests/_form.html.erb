@@ -58,20 +58,20 @@
         <iframe class="youtube_video" id="youtube_video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
-    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.image_display_style %>">
+    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.file_label_display_style %>">
       <%= f.label :file, class:"field_label" %><br />
       <%= f.fields_for :items do |item_form| %>
         <% if item_form&.object&.id.present? %>
           <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.is_image? %>
-          <%= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image %>
           <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete, data: {confirm:"削除しますか？"}%>
           </br></br>
         <% end %>
         <% if !item_form.object.file.present? %>
-          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
         <% end %>
       <% end %>
-      <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+      <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true, style:"display:#{request.file_field_display_style}" %>
 
       <%= f.hidden_field :file_duration, id:"file_duration" %>
       <div class="file_discription" id="file_discription"></div>
@@ -121,11 +121,17 @@
 
   <%if service.present? %>
     <%= f.hidden_field :service_id, value: service.id%>
-    <%= f.hidden_field :accessed_at, value: DateTime.now%>
+  <% end %>
+
+  <%if request.persisted? %>
+    <div class="submit_area">
+      <%= link_to "戻る", user_request_preview_path(@parameters),class:"big_submit grey edit_link", id:"edit_link"%>
+    </div>
+  </br>
   <% end %>
 
   <div class="submit_area">
-    <%= f.submit submit_text, class:"submit", id:"submit"%>
+    <%= f.submit submit_text, class:"big_submit", id:"submit"%>
   </div>
   </div>
 <% end %>

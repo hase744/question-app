@@ -51,7 +51,7 @@
                   <% end %>
                 <% end %>
                 <% if @request.request_form_name == "text" && @request.items %>
-                  <% @request.items.each do |item|%>
+                  <% @request.items.text_image.each do |item|%>
                     <%= image_tag item.file.normal_size.url, class:"image"%>
                   <% end %>
                 <% end %>
@@ -90,28 +90,28 @@
         <% end %>
 
         <div class="submit_area">
-          <%= link_to "編集", @edit_path,class:"submit edit_link", id:"edit_link"%>
+          <%= link_to "編集", @edit_path,class:"big_submit grey edit_link", id:"edit_link"%>
         </div></br>
 
         <% if @service&.allow_pre_purchase_inquiry %>
         <div class="submit_area">
-        	<div class="open_button submit edit_link">購入前に質問</div>
+        	<div class="open_button big_submit grey edit_link">購入前に質問</div>
         	</div></br>
         <% end %>
 
         <div class="submit_area">
           <%= f.file_field  :file, id:"file_input", class:"display_none" %>
-          <%= f.hidden_field :accessed_at, value: DateTime.now%>
           <%= f.hidden_field :transaction_id %>
-          <%= f.submit @submit_text, class:"submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
+          <%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
         </div>
       <% end %>
     </div>
 </div>
+<% if @transaction %>
 <%= render "user/shared/pre_inquery_modal", transaction: @transaction %>
 <script>
-const pre_inquery_modal = $('.pre_inquery_modal');
-const modal = $('.modal_window');
+pre_inquery_modal = $('.pre_inquery_modal');
+modal = $('.modal_window');
 $('.open_button').on('click', function(){
 	pre_inquery_modal.addClass("open");
 });
@@ -122,6 +122,7 @@ $('.modal_background').on('click', function(e){
     modal.removeClass('open');
 });
 </script>
+<% end %>
 <%if @request.need_text_image? %>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 <canvas id="canvas"></canvas>

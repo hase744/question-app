@@ -64,8 +64,31 @@
         text-decoration: none;
         vertical-align: top;
     }
-    .submit:hover{
+    .big_submit {
+        -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
+        display: block;
+        width: 100%;
+        padding: 10px 0px;
+        font-size: 16px;
+        text-align: center;
+        background-color: orange;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
         cursor: pointer;
+        font-weight: bolder;
+        line-height:normal;
+    }
+    .big_submit:hover {
+        cursor: pointer;
+        background-color: $button_orange_hover;
+    }
+    .grey{
+        background-color: darkgray;
+    }
+    .grey:hover {
+        background-color: silver;
     }
 }
 .visibility_hidden{

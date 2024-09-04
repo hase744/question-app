@@ -3,13 +3,14 @@ class User::RequestsController < User::Base
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
+  before_action :define_parameter, except:[:new]
+  before_action :check_request_need_transaction, only:[:edit, :preview]
   before_action :check_stripe_customer, only:[:publish] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
-  #before_action :check_service_updated, only:[:edit, :preview] #サービスを購入ようとした後、サービス内容が更新されてないかどうか
-  before_action :check_accessed_at, only:[:review, :edit, :create, :update, :publish]
+  before_action :check_service_checked_at, only:[:preview, :edit, :create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
-  before_action :check_already_contracted, only:[:new, :create, :publish, :purchase]
+  before_action :check_already_contracted, only:[:new, :create, :publish, :purchase, :preview, :edit]
   before_action :check_budget_sufficient, only:[:publish, :purchase]
   layout :choose_layout
 
@@ -145,7 +146,7 @@ class User::RequestsController < User::Base
     @request_item = RequestItem.find(params[:id])
     @request = @request_item.request
     if @request_item.delete
-      redirect_to edit_user_request_path(@request.id), notice: 'File was successfully removed.'
+      redirect_back(fallback_location: root_path)
     end
   end
 
@@ -170,28 +171,36 @@ class User::RequestsController < User::Base
     if @request.need_text_image?
       @item = @request.items.new()
       @item.process_file_upload = true
-      @item.assign_attributes(file: params[:request][:file])
+      @item.assign_attributes(file: params[:request][:file], is_text_image: true)
     end
     if @transaction #サービスの購入である
       @request.service = @service
-      if create_contract
-        redirect_to user_request_path(@request.id)
+      if save_item && create_contract #validationのため、先に文章画像を保存
+        redirect_to user_request_path(@request.id, @parameters)
       else
-        render  "user/requests/preview"
+        @item&.delete_temp_file
+        @item&.destroy
+        render "user/requests/preview"
       end
     else #公開依頼のとき
       @request.suggestion_deadline = Time.now + @request.suggestion_acceptable_duration
-      if save_models
+      if save_item && @request.save
         flash.notice ="質問を公開しました"
-        redirect_to user_request_path(@request.id)
+        redirect_to user_request_path(@request.id, @parameters)
       else
         detect_models_errors([@transaction, current_user, @request, @service, @request_item])
+        @item&.delete_temp_file
+        @item&.destroy
         flash.notice = "公開できませんでした。"
         @request.set_item_values
         set_preview_values
-        render  "user/requests/preview"
+        render "user/requests/preview"
       end
     end
+  end
+
+  def save_item
+    @item ? @item.save : true
   end
 
   def purchase
@@ -410,6 +419,10 @@ class User::RequestsController < User::Base
     end
   end
 
+  private def define_parameter
+    @parameters = @transaction ? { transaction_id: @transaction.id } : {}
+  end
+
   private def check_service_buyable
     flash.notice = @service&.get_unbuyable_message(current_user)
     if flash.notice.present?
@@ -417,20 +430,22 @@ class User::RequestsController < User::Base
     end
   end
 
-  private def check_service_updated
-    if @service && @request
-      if @request.created_at < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
-        flash.notice = "相談室の内容が更新されました。内容を確認してください"
-        #redirect_to user_service_path(@service.id)
-      end
-    end
-  end
-
-  private def check_accessed_at
-    if @service
-      if params[:request][:accessed_at].to_datetime < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
-        flash.notice = "相談室の内容が更新されました"
-        redirect_to user_service_path(@service.id)
+  private def check_service_checked_at
+    if @service && @transaction && @request
+      if @transaction.service_checked_at < @service.renewed_at #依頼の作成時刻　<　サービスの更新時刻
+        @transaction.copy_from_service
+        @transaction.service_checked_at = DateTime.now
+        @request.service = @service
+        @request.copy_from_service
+        if save_models
+          flash.notice = "相談室の内容が変更されました"
+          redirect_to user_service_path(@service.id)
+        else
+          @request.destroy
+          @transaction.destroy
+          flash.notice = "エラーが発生しました"
+          redirect_to user_service_path(@service.id)
+        end
       end
     end
   end
@@ -480,6 +495,12 @@ class User::RequestsController < User::Base
       if making_request.present?
         redirect_to user_request_preview_path(making_request.id)
       end
+    end
+  end
+
+  private def check_request_need_transaction
+    if !defined?(@transaction) && @request.transactions.count > 0
+      redirect_to user_request_path(request_id: @request.id)
     end
   end
 

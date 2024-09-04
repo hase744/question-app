@@ -222,6 +222,7 @@
             }
             
             .user_record_area{
+                margin-top: 10px;
                 width: 100%;
                 border-radius: 10px;
                 
@@ -301,7 +302,7 @@
             }
             .categories_area{
                 left: 10px;
-                width: calc(100% - 100px);
+                width: 100%;
             }
             .introduction{
                 width: 100%;
@@ -329,7 +330,6 @@
             }
             .categories_area{
                 left: 10px;
-                width: calc(100% - 110px);
             }
             .categories_description_area{
                 width: calc(100% - 310px);

@@ -16,11 +16,11 @@ class FileUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  version :thumb, if: :image? do
+  version :thumb, if: :is_image? do
     process resize_to_fit: [300, 300]
   end
 
-  version :normal_size, if: :image? do
+  version :normal_size, if: :is_image? do
     process resize_to_fit: [1000, 1000]
   end
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -45,20 +45,26 @@ class FileUploader < CarrierWave::Uploader::Base
 
   # Add an allowlist of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-  def image?(new_file)
-    %w(jpg jpeg gif png).include?(new_file&.extension&.downcase)
-  end
-  
-  def is_image?
-    %w(jpg jpeg gif png).include?(file&.extension&.downcase)
+  def image_extensions
+    %w(jpg jpeg gif png)
   end
 
-  def is_video?
-    %w(MOV mov wmv mp4).include?(file&.extension&.downcase)
+  def video_extensions
+    %w(MOV mov wmv mp4)
+  end
+  
+  def is_image?(new_file = nil) #上のversion :thumb, if: :is_image? doのための引数
+    new_file ||= file
+    image_extensions.include?(new_file&.extension&.downcase)
+  end
+
+  def is_video?(new_file = nil)
+    new_file ||= file
+    video_extensions.include?(new_file&.extension&.downcase)
   end
 
   def extension_allowlist
-    %w(jpg jpeg png MOV mov wmv mp4)
+    image_extensions + video_extensions
   end
 
   # Override the filename of the uploaded files:

@@ -152,7 +152,9 @@ class Service < ApplicationRecord
       "request_max_duration",
       "request_max_files",
       "transaction_message_days",
-      #"transaction_message_enabled",
+      "transaction_message_enabled",
+      "service_category",
+      "allow_pre_purchase_inquiry",
     ]
   end
 

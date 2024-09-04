@@ -36,7 +36,8 @@ class Request < ApplicationRecord
   validate :validate_suggestion_deadline
   validate :validate_is_published
   validate :validate_request_category
-  #validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
+  validate :validate_max_price
+  validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -140,31 +141,10 @@ class Request < ApplicationRecord
   end
 
   def set_default_values
-    if self.request_categories.length > 1
-      if self.categories.length > 1 #カテゴリの種類がたくさんある
-        self.request_categories.first.update(
-          category_name: self.request_categories.last.category_name
-        )
-      end
-      self.request_categories.last.destroy
-    end
+    update_category
+    puts "カテゴリー数 #{}"
+    copy_from_service if new_record?
 
-    if self.service
-      self.service.service_categories.each do |sc|
-        self.request_categories.new(category_name: sc.category_name)
-      end
-      #self.request_form = self.service.request_form
-      #self.delivery_form = self.service.delivery_form
-      #self.category_id = self.service.category.id
-      #self.suggestion_deadline = DateTime.now + self.service.delivery_days.to_i
-      case self.use_youtube #use_youtubeのbinaryの値をtrue/falseに変換
-      when "1" then
-        self.use_youtube = true
-      when "0" then
-        self.use_youtube = false
-      end
-    end
-    
     case self.request_form.name
     when "text" then
       self.youtube_id = nil
@@ -193,7 +173,6 @@ class Request < ApplicationRecord
   end
 
   def save_file_content(file_content)
-    puts file_content == nil
     self.image = CarrierWave::Uploader::Base.new
     self.image.cache!(CarrierWave::SanitizedFile.new(StringIO.new(file_content)))
     self.image.retrieve_from_cache!(self.image.cache_name)
@@ -205,6 +184,17 @@ class Request < ApplicationRecord
       false
     else
       true
+    end
+  end
+
+  def update_category #カテゴリのアップデートは既存のrequest_categoryのcategory_nameをアップデートして新規のデータは生成しない
+    if self.request_categories.length > 1
+      if self.categories.length > 1 #カテゴリの種類がたくさんある
+        self.request_categories.first.update(
+          category_name: self.request_categories.last.category_name
+        )
+      end
+      self.request_categories.last.destroy
     end
   end
 
@@ -220,17 +210,34 @@ class Request < ApplicationRecord
     end
   end
 
-  def set_service_values
-    if self.service_id
-      self.service = Service.find(self.service_id)
+  def copy_from_service
+    self.service = Service.find(self.service_id) if self.service_id
+    return if self.service.nil?
+    request_category_names = self.request_categories.pluck(:category_name)
+    service_category_names = self.service.service_categories.pluck(:category_name)
+    service_category_names.each do |name|
+      unless request_category_names.include?(name)
+        self.request_categories.new(category_name: name)
+      end
     end
+    request_category_names.each do |name|
+      unless service_category_names.include?(name)
+        self.request_categories.find_by(category_name: name).destroy
+      end
+    end
+    self.request_form_name = self.service.request_form_name
+    self.delivery_form_name = self.service.delivery_form_name
+    self.category_id = self.service.category.id
+    self.suggestion_deadline = nil
+  end
 
-    if self.service
-      self.request_form_name = self.service.request_form_name
-      self.delivery_form_name = self.service.delivery_form_name
-      self.category_id = self.service.category.id
-      self.suggestion_deadline = nil
-    end
+  def set_service_values
+    self.service = Service.find(self.service_id) if self.service_id
+    return if self.service.nil?
+    self.request_form_name = self.service.request_form_name
+    self.delivery_form_name = self.service.delivery_form_name
+    self.category_id = self.service.category.id
+    self.suggestion_deadline = nil
   end
 
   def status
@@ -306,11 +313,14 @@ class Request < ApplicationRecord
   end
 
   def need_text_image?
-    self.request_form.name == "text" || self.items.count < 1
+    self.request_form.name == "text" || (self.request_form.name == "free" && self.items.not_text_image.count < 1)
   end
   
   def validate_max_price
-    if max_price
+    if will_save_change_to_max_price? || (self.service.nil? && new_record?)
+      errors.add(:max_price, "を設定してください") if max_price.nil?
+    end
+    if self.max_price.present?
       errors.add(:max_price, "は100円ごとにしか設定できません") if max_price % 100 != 0
       errors.add(:max_price, "は100円以上に設定して下さい") if max_price < 100
       errors.add(:max_price, "は10000円以下に設定して下さい") if max_price_upper_limit < max_price
@@ -346,31 +356,39 @@ class Request < ApplicationRecord
       errors.add(:description, "を入力して下さい") if self.validate_published
     end
 
-    if self.service
+    #新規の作成 or 作成後に相談室の最大文字数が変更され、最大文字数がひっかかった場合
+    if self.service && (new_record? || self.is_published && will_save_change_to_is_published?)
       if self.service.request_max_characters && self.service.request_max_characters < self.description.gsub(/(\r\n?|\n)/,"a").length
-        errors.add(:description, "は最大#{self.service.request_max_characters}字です")
+        over_character_count = self.description.gsub(/(\r\n?|\n)/,"a").length - self.service.request_max_characters
+        errors.add(:description, "文字数を#{self.service.request_max_characters}字以下にしてください。（#{over_character_count}字オーバー）")
       end
     end
   end
 
   def validate_request_item
-    if self.is_published && will_save_change_to_is_published?
-      if self.items
-        self.items.first.file_duration = self.file_duration
-        if !self.items.first.valid?
-          self.items.first.save
-          puts "だめ #{self.items.first.valid?}"
-          errors.add(:items, "が不適切です")
+    return unless self.is_published && will_save_change_to_is_published?
+    case request_form.name
+    when 'text'
+      errors.add(:items, "が不適切で") if self.items.text_image.count != 1
+    when 'image'
+      errors.add(:items, "をアップロードしてください") if self.items.not_text_image.count < 1
+    end
+    self.items.each do |item|
+      unless item.valid?
+        item.errors.full_messages.each do |message|
+          errors.add(:items, "が不適切です。 #{message}")
         end
-      else
-        errors.add(:items, "がありません")
       end
+    end
+    if self.items
+      #self.items.first.file_duration = self.file_duration
+    else
+      errors.add(:items, "がありません")
     end
   end
 
   def validate_is_published
     if  self.is_published
-      errors.add(:items, "が存在しません") if !self.items.present?
       errors.add(:items, "が処理中です") unless all_items_processed?
     end
   end
@@ -406,8 +424,18 @@ class Request < ApplicationRecord
     end
   end
 
-  def image_display_style
-    if self.service&.request_form&.name == 'text' 
+  def file_field_display_style
+    if self.service&.request_form&.name == 'text'
+      'none'
+    else
+      'block'
+    end
+  end
+
+  def file_label_display_style
+    if self.items.where(is_text_image: false).present?
+      'block'
+    elsif self.service&.request_form&.name == 'text'
       'none'
     else
       'block'

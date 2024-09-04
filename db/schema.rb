@@ -238,6 +238,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.string "file"
     t.string "file_tmp"
     t.boolean "file_processing", default: false, null: false
+    t.boolean "is_text_image", default: false, null: false
     t.string "youtube_id"
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
@@ -441,9 +442,11 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.integer "request_form_name", null: false
     t.integer "delivery_form_name", null: false
     t.datetime "delivery_time"
+    t.datetime "service_checked_at"
     t.integer "price"
     t.text "service_title"
     t.text "service_descriprion"
+    t.boolean "service_allow_pre_purchase_inquiry"
     t.integer "profit"
     t.integer "margin"
     t.string "stripe_payment_id"

@@ -25,7 +25,8 @@
         //background-color: #ffffcc;
     }
     max-width: 1000px;
-    overflow-x:hidden; //スマホで開いた時に横にぐらつくのを防ぐだめ
+    overflow-x: hidden; // スマホで開いた時に横にぐらつくのを防ぐため
+    overflow-y: hidden; // 縦方向のスクロールを禁止
 }
 
 .header{
