@@ -294,6 +294,7 @@
     </script>
 <% end %>
 <script>
+<%= render "user/requests/javascript/cell.js.erb" %>
 function register_callback() {
   $("#request_ajax_update").on(
       "ajax:complete",
@@ -351,6 +352,7 @@ menu_elements.forEach(element => element.addEventListener("click", ()=>{
 var insert_elements = function(response, scroll_element){
     scroll_element.insertAdjacentHTML('beforeend', response)
     $('#loading_animation').css('display','none');
+    define_request_cell_swiper();
 }
 
 //スクロールをした判定
