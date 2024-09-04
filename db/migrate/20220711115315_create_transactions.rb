@@ -9,10 +9,12 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.integer :delivery_form_name, null: false, index:true
 
       t.datetime :delivery_time
+      t.datetime :service_checked_at
       #t.references :category, index:true
       t.integer :price, index:true
       t.text :service_title
       t.text :service_descriprion
+      t.boolean :service_allow_pre_purchase_inquiry
       t.integer :profit, index:true
       t.integer :margin
       t.string :stripe_payment_id
@@ -37,7 +39,6 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.boolean :is_rejected, default:false, index:true #拒否されているか
       t.datetime :rejected_at, index:true
       t.text :reject_reason
-
 
       t.boolean :is_canceled, default: false #キャンセルされているか
       t.datetime :canceled_at, index:true

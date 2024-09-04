@@ -1,7 +1,4 @@
 class Transaction < ApplicationRecord
-  #mount_uploader :file, FileUploader
-  #mount_uploader :thumbnail, ImageUploader
-  
   belongs_to :seller, class_name: "User", foreign_key: :seller_id
   belongs_to :buyer, class_name: "User", foreign_key: :buyer_id
   belongs_to :request, class_name: "Request", foreign_key: :request_id
@@ -32,7 +29,7 @@ class Transaction < ApplicationRecord
   validate :validate_review
   validate :validate_is_suggestion
   validate :previous_transaction
-  validate :validate_is_delivered
+  validate :validate_service_renewed
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
 
@@ -164,6 +161,7 @@ class Transaction < ApplicationRecord
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
     self.profit ||= (self.price - self.margin)
+    self.service_checked_at ||= DateTime.now
     if (self.file.present? || self.use_youtube) && self.item
       self.item.assign_attributes(
         file: self.file,
@@ -191,6 +189,23 @@ class Transaction < ApplicationRecord
 
     self.service_title = self.service.title
     self.service_descriprion = self.service.description
+    self.service_allow_pre_purchase_inquiry = self.service.allow_pre_purchase_inquiry
+    self.seller = self.service.user
+    self.buyer = self.request.user
+  end
+
+  def copy_from_service
+    self.request_form_name = self.service.request_form.name
+    self.delivery_form_name = self.service.delivery_form.name
+    self.service_title = self.service.title
+    self.service_descriprion = self.service.description
+    self.transaction_category.category_name = self.service.service_category.category_name
+    self.service_allow_pre_purchase_inquiry = self.service.allow_pre_purchase_inquiry
+    self.transaction_message_enabled = self.service.transaction_message_enabled
+    self.delivery_time = DateTime.now + self.service.delivery_days.to_i
+    self.price = self.service.price
+    self.margin = self.service.price*transaction_margin.to_f
+    self.profit = (self.price - self.margin)
     self.seller = self.service.user
     self.buyer = self.request.user
   end
@@ -308,17 +323,16 @@ class Transaction < ApplicationRecord
   end
 
   def validate_item
-    if self.is_published
-      if self.items
-        items.each do |item|
-          next if item.valid?
-          item.errors.full_messages.each do |msg|
-            errors.add(:items, msg)
-          end
+    return unless self.is_delivered
+    if self.items
+      items.each do |item|
+        next if item.valid?
+        item.errors.full_messages.each do |msg|
+          errors.add(:items, msg)
         end
-      elsif self.delivery_form.name != "text"
-        errors.add(:item, "がありません")
       end
+    elsif self.delivery_form.name == "image"
+      errors.add(:base, "画像ファイルを添付してください")
     end
   end
 
@@ -335,14 +349,6 @@ class Transaction < ApplicationRecord
     end
   end
 
-  def validate_is_delivered
-    if self.is_delivered
-      if self.delivery_form.name != "text"
-        errors.add(:base, "画像ファイルを入力してください")  if self.items.count < 1
-      end
-    end
-  end
-  
   def validate_is_canceled
     if self.is_canceled 
       if DateTime.now < self.delivery_time
@@ -364,6 +370,12 @@ class Transaction < ApplicationRecord
   def validate_reject_reason
     if (self.is_delivered || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
       errors.add(:reject_reason, "は現在で記入きません")
+    end
+  end
+
+  def validate_service_renewed
+    if self.request.is_published && self.request.will_save_change_to_is_published? && self.service_checked_at < self.service.renewed_at
+      errors.add(:base, "相談室の内容が変更されました。")
     end
   end
 

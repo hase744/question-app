@@ -13,19 +13,20 @@
   	  	margin: 5px;
   	  	border-radius: 5px;
   	  	box-shadow: 0 0 2px lightgray;
+		$image_width: 80px;
 		.image_area{
-			  height: 80px;
-			  width: 145px;
-			  float: left;
-			  display: inline-block;
-			  img{
-					width: 100%;
-					height: 100%;
-					object-fit: cover;
-			  }
+			height: $image_width;
+			width: $image_width;
+			float: left;
+			display: inline-block;
+			img{
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
 		}
 		.title_name_area{
-			height: calc(100% - 145px);
+			height: calc(100% - $image_width);
 		}
   	  	.title_area{
   	  	  	font-size: 13px;

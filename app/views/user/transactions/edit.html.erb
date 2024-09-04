@@ -44,15 +44,15 @@
             	  	<%= f.fields_for :items do |item_form| %>
             	  	  	<% if item_form.object.file.present? %>
             	  	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.file.content_type.start_with?('image/') %>
-            	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg' %>
+            	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image %>
             	  	  	  	<%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
             	  	  	  	</br></br>
             	  	  	<% end %>
             	  	  	<% if !item_form.object.file.present? %>
-            	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+            	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
             	  	  	<% end %>
             	  	<% end %>
-									<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "items[file][]", multiple: true %>
+									<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
             	  	<div class="file_discription" id="file_discription"></div>
             	  	<div class="file_alarm" id="file_alarm"></div></br>
 					
@@ -81,11 +81,11 @@
         <% end %>
 
         <div class="submit_area">
-          	<%= link_to "戻る", user_order_path(@transaction.id),class:"submit edit_link", id:"edit_link"%>
+          	<%= link_to "戻る", user_order_path(@transaction.id),class:"big_submit edit_link grey", id:"edit_link"%>
         </div></br>
 
         <div class="submit_area">
-          	<%= f.submit "保存", class:"submit", id:"submit" %>
+          	<%= f.submit "保存", class:"big_submit", id:"submit" %>
         </div>
       <% end %>
     </div>

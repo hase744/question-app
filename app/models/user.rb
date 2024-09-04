@@ -221,7 +221,7 @@ class User < ApplicationRecord
     # 各単語の合計を計算
     combined = {}
     transaction_count_pairs.each do |hash|
-      hash.each { |word, count| combined[word] = { transaction_count_pairs: count, names2: 0 } }
+      hash.each { |word, count| combined[word] = { transaction_count_pairs: count, service_count_pairs: 0 } }
     end
 
     service_count_pairs.each do |hash|

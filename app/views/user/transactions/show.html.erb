@@ -110,11 +110,11 @@
                         <div class="like_flame">
                             <%if @transaction_like_exist%>
                                 <%= link_to(user_transaction_likes_path(id:@transaction.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
-                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.likes.count%></span>いいね
+                                    <span class="far fa-thumbs-up" id="like_count"> <%=@transaction.likes.count%></span> いいね
                                 <% end %>
                             <% else %>
                                 <%= link_to(user_transaction_likes_path(id:@transaction.id), class: "like_button", id:"like_button", method: :post, remote:true) do%>
-                                    <span class="far fa-thumbs-up" id="like_count"><%=@transaction.likes.count%></span>いいね
+                                    <span class="far fa-thumbs-up" id="like_count"> <%=@transaction.likes.count%></span> いいね
                                 <% end %>
                             <% end %>
                         </div>

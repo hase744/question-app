@@ -116,7 +116,7 @@ class SampleData
           #request.request_categories.create(category_name: category.name)
           item = request.items.new()
           item.process_file_upload = true
-          item.assign_attributes(file: File.open(image_path))
+          item.assign_attributes(file: File.open(image_path), is_text_image:true)
           item.save
           request.update(is_published: true)
         else
@@ -160,7 +160,7 @@ class SampleData
         #request.request_categories.create(category_name: category.name)
         item = request.items.new()
         item.process_file_upload = true
-        item.assign_attributes(file: File.open(image_path))
+        item.assign_attributes(file: File.open(image_path), is_text_image:true)
         item.save
         request.update(is_published: true)
         puts "seller#{n}@exmaple.com"
@@ -189,6 +189,7 @@ class SampleData
           is_contracted:true,
           contracted_at:DateTime.now,
           is_delivered:true,
+          is_published:true,
           delivered_at: DateTime.now - n,
           stripe_payment_id:"pi_3LO0pXFsZJRtLc1j0OJU7Mlg",
           use_youtube:true,

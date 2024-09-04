@@ -8,13 +8,15 @@
         <h3>納品済み</h3>
         <% else %>
         <h3 class="links">
+        <div class="submit_area">
         <% if current_user == @transaction.seller %>
-            ・<%=link_to "回答を編集", edit_user_transaction_path(@transaction.id)%></br>
-            ・<%=link_to "回答を拒否", edit_user_order_path(@transaction.id), class:"button"%></br>
-        <% else %>
-            ・<%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"button", data: {confirm: "依頼をキャンセルしますか？\nポイントは元に戻りますが、購入金額は返金はされません。"} %></br>
+            <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"big_submit fas fa-edit grey"%>
+            <%=link_to " 回答を拒否", edit_user_order_path(@transaction.id), class:"big_submit fas fa-handshake-alt-slash grey"%>
+        <% elsif @transaction.delivery_time < DateTime.now %>
+            <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントは元に戻りますが、購入金額は返金はされません。"} %>
         <% end %>
-        ・<%=link_to "追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"button" %>
+        <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope big_submit grey" %>
+        </div>
         </h3>
         <% end %>
         <%= render "user/shared/small_label", text: "相談室" %>
@@ -51,7 +53,7 @@
         <div class="service_request_area">
             <div class="image_area">
                 <% if @transaction.request.request_form_has_image? %>
-                    <%= render "user/shared/swiper_images", model: @transaction.request, use_thumb:true %>
+                    <%= image_tag @transaction.request.items.first.file.thumb.url, class:"image" %>
                 <% elsif @transaction.request.request_form.name == "video" %>
                     <%= video_tag @transaction.request.file.url, poster:@transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                 <% end %>
@@ -119,8 +121,9 @@
             <% if can_deliver(@transaction)%>
                 <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
                     <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
+                    <%= f.hidden_field :is_published, value:true, class:"input_field" ,required: true%>
                     <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
-                    <%= f.submit "納品", class:"submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
+                    <%= f.submit "納品", class:"big_submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
                 <% end %>
             <% end %>
         <% end %>

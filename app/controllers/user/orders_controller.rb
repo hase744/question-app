@@ -89,7 +89,7 @@ class User::OrdersController < User::Base
       else
         detect_models_errors([@transaction, current_user, @service])
         flash.alert = "キャンセルできませんでした"
-        render "user/shared/error"
+        redirect_to user_order_path(@transaction.id)
       end
     end
   end

@@ -9,10 +9,18 @@ class RequestItem < ApplicationRecord
     store_in_background :file
     before_validation :set_default_values
   
-    validate :validate_youtube_id
+    #validate :validate_youtube_id
     validate :validate_file
     #validate :validate_thumbnail
-    validate :validatable_duration
+    #validate :validatable_duration
+
+    scope :not_text_image, -> {
+      where(is_text_image: false)
+    }
+  
+    scope :text_image, -> {
+      where(is_text_image: true)
+    }
   
     after_initialize do
       if self.youtube_id.present?
@@ -76,7 +84,6 @@ class RequestItem < ApplicationRecord
           self.duration = get_video_second
         end
       end
-
     end
     
     def validate_youtube_id
@@ -107,15 +114,20 @@ class RequestItem < ApplicationRecord
   
     #process_file_upload=trueにするとfileとfile_tmpはnilになるがなぜか保存できるためアップロード後にvalidation
     def validate_file
-      if  self.request_form.name == "text" && self.is_published
-        errors.add(:file, "をアップロードして下さい") if !self.file.present?#&& self.validate_published
-        #errors.add(:file, "のフォーマットが正しくありません") if !is_image_extension #&& self.validate_published
-      elsif self.request_form.name == "image" && self.is_published 
-        errors.add(:file, "をアップロードして下さい") if !self.file.present?#&& self.validate_published
-      elsif self.request_form.name == "video" && self.is_published
-        if !self.use_youtube
-          errors.add(:file, "のフォーマットが正しくありません") if !is_video_extension #&& self.validate_published
-          errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+      return unless self.is_published
+      case self.request_form.name
+      when "text"
+        errors.add(:file, "をアップロードして下さい") unless self.file.present?
+        errors.add(:base, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.file.is_image?
+        errors.add(:base, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.is_text_image
+      when "image"
+        errors.add(:file, "をアップロードして下さい") unless self.file.present?
+        errors.add(:base, "アップロードできるのは画像のみです") unless self.file.is_image?
+      when "video"
+        unless self.use_youtube
+          errors.add(:file, "のフォーマットが正しくありません") unless is_video_extension
+          errors.add(:file, "をアップロードして下さい") unless self.file.present?
+          errors.add(:base, "アップロードできるのは動画のみです") unless self.file.is_video?
         end
       end
     end

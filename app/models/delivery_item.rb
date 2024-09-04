@@ -69,17 +69,16 @@ class DeliveryItem < ApplicationRecord
     end
   
     def validate_file
-      if self.is_published
-        if  self.delivery_form.name == "text"
+      return unless self.is_published
+      if  self.delivery_form.name == "text"
+        errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+        #errors.add(:file, "のフォーマットが正しくありません") if !is_image_extension #&& self.validate_published
+      elsif self.delivery_form.name == "image"
+        errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+      elsif self.delivery_form.name == "video"
+        if !self.use_youtube
+          errors.add(:file, "のフォーマットが正しくありません") if !is_video_extension #&& self.validate_published
           errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
-          #errors.add(:file, "のフォーマットが正しくありません") if !is_image_extension #&& self.validate_published
-        elsif self.delivery_form.name == "image"
-          errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
-        elsif self.delivery_form.name == "video"
-          if !self.use_youtube
-            errors.add(:file, "のフォーマットが正しくありません") if !is_video_extension #&& self.validate_published
-            errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
-          end
         end
       end
     end
