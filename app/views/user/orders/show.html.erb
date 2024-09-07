@@ -74,11 +74,17 @@
         <% if current_user == @transaction.seller || @transaction.is_delivered%>
             <div class="information_component">
                 <label><%= Transaction.human_attribute_name(:title)%></label></br>
-                <%if @transaction.title %>
-                    <h3 class="margin0px"><%=@transaction.title %></h3>
-                <%else%>
-                    <h3 class="margin0px">未記入</h3>
-                <% end %>
+                <h3 class="margin0px">
+                    <% if @transaction.title %>
+                        <% if @transaction.is_published %>
+                            <%= link_to @transaction.title, user_transaction_path(@transaction.id) %>
+                        <% else %>
+                            <%= @transaction.title %>
+                        <% end %>
+                    <%else%>
+                        未記入
+                    <% end %>
+                </h3>
             </div>
             <div  class="information_component">
                 </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>

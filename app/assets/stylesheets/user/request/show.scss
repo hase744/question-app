@@ -47,24 +47,6 @@
             .request_like_area{
                 margin-top: 10px;
             }
-            .like_button{
-                color: gray;
-                border: 1.5px solid lightgray;
-                padding: 5px;
-                border-radius: 3px;
-                font-size: 14px;
-                text-decoration: none;
-                //display: inline-block;
-                float: right;
-                .fa-heart{
-                    color: darkgray;
-                }
-            }
-            .liked_button{
-                .fa-heart{
-                    color: red;
-                }
-            }
             .edit_delete_area{
                 display: inline-block;
                 //width: 100%;

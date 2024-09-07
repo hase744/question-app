@@ -3,6 +3,9 @@
   	  	height: calc(100% - 40px);
   	  	overflow-y: auto;
   	}
+  	.service_cell:hover{
+		background-color: whitesmoke;
+	}
   	.service_cell{
   	  	height: 80px;
   	  	padding: 5px;

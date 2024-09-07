@@ -101,13 +101,11 @@
                                 </td>
                             <td>
                                 <span class="common_condition">
-                                <%= 
-                                if @service.request_max_characters
-                                    "#{@service.request_max_characters}字以内"
-                                else
-                                    "制限なし"
-                                end
-                                    %>
+                                    <% if @service.request_max_characters %>
+                                        <%="#{@service.request_max_characters}字以内"%>
+                                    <% else %>
+                                        <span class="ok">制限なし</span>
+                                    <% end %>
                                 </span>
                             </td>
                         </tr>
@@ -127,7 +125,9 @@
                             <span class="condition_name">カテゴリー</span>
                         </td>
                         <td>
-                            <span class="common_condition"><%=@service.category_names%></span>
+                            <span class="common_condition">
+                            <span class="big_name_tag"><%=@service.category_names%></span>
+                            </span>
                         </td>
                     </tr>
                     <tr>
@@ -137,9 +137,9 @@
                         <td>
                             <span class="common_condition">
                             <%if @service.allow_pre_purchase_inquiry%>
-                            可能
+                            <span class="ok">可能</span>
                             <% else %>
-                            不可
+                            <span class="not_ok">不可</span>
                             <% end %></span>
                         </td>
                     </tr>
@@ -150,10 +150,11 @@
                         <td>
                             <span class="common_condition">
                             <%if @service.is_for_sale%>
-                            販売中
+                            <span class="ok">販売中</span>
                             <% else %>
-                            販売停止
-                            <% end %></span>
+                            <span class="not_ok">販売停止</span>
+                            <% end %>
+                            </span>
                         </td>
                     </tr>
                     <%if @service.user == current_user%>
@@ -164,9 +165,9 @@
                         <td>
                             <span class="common_condition">
                             <%if @service.is_published%>
-                            公開中
+                            <span class="ok">公開中</span>
                             <% else %>
-                            非公開
+                            <span class="not_ok">非公開</span>
                             <% end %></span>
                         </td>
                     </tr>
@@ -178,9 +179,9 @@
                         <td>
                             <span class="common_condition">
                             <%if @service.transaction_message_enabled%>
-                            可能
+                            <span class="ok">可能</span>
                             <% else %>
-                            不可
+                            <span class="not_ok">不可</span>
                             <% end %></span>
                         </td>
                     </tr>
@@ -210,8 +211,8 @@
                         <span class="specific">
                             <label>評価</label>
                             <%= render "user/shared/average_star_rating", 
-                            average_star_rating: @service.average_star_rating, 
-                            total_reviews: @service.total_reviews %>
+                            average_star_rating: @service.user.average_star_rating, 
+                            total_reviews: @service.user.total_reviews %>
                         </span>
                         <span class="specific">
                             <label>価格帯</label>

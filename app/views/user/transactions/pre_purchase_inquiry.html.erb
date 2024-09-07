@@ -6,7 +6,7 @@
   	<% @transactions.each do |transaction| %>
 		<div class="pre_purchase_inquiry_cell open_button">
 			<div class="inner_pre_purchase_inquiry_cell">
-				<%=image_tag transaction.opponent_of(current_user).image.url, class:"image" %>
+				<%=image_tag transaction.opponent_of(current_user).image.thumb.url, class:"image" %>
 				<div class="text_area">
 					<div class="message one_line_text"><%=transaction.transaction_messages.last.body %></div>
 					<div class="datetime">

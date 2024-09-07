@@ -26,10 +26,10 @@
             </div>
             <div class="service_condition_area">
                 <div class="price_area">
+                    <span class="price">&nbsp;<%=service.price%></span>円&nbsp;
                     <%= render "user/shared/average_star_rating", 
                     average_star_rating: service.average_star_rating, 
                     total_reviews: service.total_reviews %>
-                    <span class="price">&nbsp;<%=service.price%></span>円
                 </div>
                 <span class="name_tag">
 	                <% case service.request_form.name %>

@@ -134,8 +134,15 @@
                     display: block;
                 }
             }
+            .user_area:hover{
+                background-color: whitesmoke;
+            }
+            .user_area:hover .specific > label{
+                background-color: lightgrey
+            }
             .user_area{
                 //height: 60px;
+                border-radius: 10px;
                 display: none;
                 @media (max-width: 1000px) {
                     display: inline-block;

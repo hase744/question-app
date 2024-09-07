@@ -202,22 +202,22 @@
         font-size:20px;
     }
 }
-.small_label_area{
+.small_label_area {
     display: flex;
-    .label{
-        font-size: 17px;
-        position: relative;
-        margin-bottom: 0px;
+    align-items: center;
+    gap: 0px; /* Adjust spacing between text and line */
+    .label {
+        font-size: 17px; /* Adjust font size as needed */
+        font-weight: bold; /* Make the text bold */
+        margin: 0; /* Remove default margin */
     }
-    .label_line{
-        display: inline-block;
-        height: 1.5px;
-        width: calc(100% - 70px);
-        background-color: lightgrey;
-        //position: absolute;
-        margin-top: 29px;
+    
+    .label_line {
+        flex-grow: 1; /* Make the line take up the remaining space */
+        border-bottom: 1.5px solid #ccc; /* Adjust the thickness and color of the line */
     }
 }
+
 .component_line{
     height: 1px;
     border: none;
@@ -287,14 +287,19 @@
     //border: 1px solid silver;
     border-radius: 2px;
 }
+:lang(en) {
+    font-size: 19px !important;
+}
 .big_name_tag{
-    background-color: $text_yellow;
+    //background-color: $text_yellow;
+    border: 1px solid $text_yellow;
     font-size: 12px;
     padding: 2px 5px;
     margin-right: 3px;
+    margin-bottom: 3px;
     border-radius: 3px;
     font-weight: bold;
-    color: white;
+    color: $text_yellow;// white;
     display: inline-block;
 }
 .specifics_area{
@@ -359,6 +364,27 @@
     }
     .bottom_button:hover{
         background-color: #FFC700;
+    }
+}
+.like_button{
+    color: gray !important;
+    border: 1.5px solid lightgray;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    text-decoration: none !important;
+    //display: inline-block;
+    float: right;
+    .fa-heart{
+        color: darkgray;
+    }
+}
+.like_button:hover{
+    background-color: whitesmoke;
+}
+.liked_button{
+    .fa-heart{
+        color: grey;
     }
 }
 //.select_area {
