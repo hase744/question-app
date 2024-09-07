@@ -44,12 +44,19 @@
                 cursor: pointer;
             }
             .request_title{
-                font-size: 17px;
+                font-size: 16px;
+                //color: #0064c8;
                 color: blue;
                 font-weight: bold;
                 cursor: pointer;
                 padding-left: 5px;
                 //color: steelblue;
+                margin: 0px;
+                .mark_q{
+                    font-size: 18px;
+                    color: $text_grey;
+                    //color: blue;
+                }
             }
             hr{
                 size:10px;
@@ -60,7 +67,7 @@
             .transaction_title{
                 //color: indianred;
                 //text-decoration: underline;
-                font-size:15px;
+                font-size: 15px;
             }
             .text{
                 margin-top: 3px;
@@ -84,11 +91,17 @@
         right: 90px;
         height: 20px; /* グラデーションの高さ */
         background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
-      }
+    }
     .seller_area{
         display: inline-block;
         width: 100%;
         color: black;
+    }
+    .seller_area:hover{
+        text-decoration: none;
+    }
+    .seller_area:hover .seller_name{
+        color: grey !important;
     }
     .seller_container{
         height: 40px;
@@ -104,12 +117,14 @@
         }
         .seller_name_area{
             display: inline-block;
-            height: 30px;
+            height: 40px;
             position: relative;
             width: calc(100% - 60px);
-            padding-top: 5px;
+            display: flex;
+            //padding-top: 7px;
+            align-items: center;
             .seller_name{
-                color: dimgray;
+                color: $text_grey;
                 margin: 0px;
             }
             .datetime{

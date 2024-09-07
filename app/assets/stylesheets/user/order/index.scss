@@ -32,6 +32,9 @@
         }
         $image_height: 80px;
         $image_width: 80px;
+        .order_cell:hover{
+            background-color: whitesmoke !important;
+        }
         .order_cell{
             background-color: white;
             box-shadow: 0 0 2px lightgray;

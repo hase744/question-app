@@ -4,7 +4,7 @@ class User::HomesController < ApplicationController
     @services = Service.all
       .solve_n_plus_1
       .where(request_id: nil)
-      .where.not(price: 0)
+      #.where.not(price: 0)
       .order(total_sales_numbers: :DESC)
       .order(Arel.sql('average_star_rating DESC NULLS LAST'))
       .limit(10)

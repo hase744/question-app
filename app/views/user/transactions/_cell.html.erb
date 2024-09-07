@@ -19,9 +19,9 @@
         
         <div class="video_text_area">
             <%= link_to(user_transaction_path(transaction.id), class: 'transaction_link') do %>
-            <h5 class="one_line_text request_title ">Q.<%= transaction.request.title%><%= transaction.request.title%><%= transaction.request.title%></h5>
+                <h5 class="request_title one_line_text"><span class="mark_q">Q.</span><%= transaction.request.title%></h5>
             <% end %>
-            <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= from_now(transaction.created_at)%></h5>
+            <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= readable_datetime(transaction.created_at)%></h5>
             <h5 class="three_line_text text description_text"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
             <div class="display_none answer_area" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
                 <div class="seller_container">

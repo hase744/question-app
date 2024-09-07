@@ -3,6 +3,9 @@
     float: left;
     display: inline-block;
     height: 320px;
+    .service_cell_flame:hover .service_show_link{
+        opacity: 0.7;
+    }
     .service_cell_flame{
         display: inline-block;
         position: relative;
@@ -95,6 +98,7 @@
             font-size: 13px;
             margin: 0px 5px;
             width: calc(100% - 10px);
+            overflow: hidden;
             //background-color: red;
             height: 100px;
             .price_area{

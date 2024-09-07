@@ -12,7 +12,7 @@
     padding: 10px;
     margin: 5px;
     .input_new_area{
-        width: calc(100% - 20px);
+        width: 100%;
     }
 }
 .input_text_field{
@@ -20,14 +20,22 @@
     height: 150px;
 }
 .input_area{
+    form{
+        width: 100%;
+    }
     .field_area{
+        width: 100%;
         margin-bottom: 20px;
         .field_label{
             margin-top: 20px;
         }
-        input.input_field {
-            height: 30px;
+        .input_field[type="text"]{
             width: 100%;
+        }
+        .input_field {
+            height: 30px;
+            box-sizing: border-box;
+            
             border-radius: 5px;
             border: 1px solid gray;
         }
@@ -49,6 +57,7 @@
             max-width: 100%;
             min-width: 100%;
             border-radius: 5px;
+            font-size: 14px;
         }
         .annotation{
             font-size: 12px;

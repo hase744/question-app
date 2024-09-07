@@ -7,16 +7,16 @@
             <% end %>
             <span>質問者：<%= link_to request.user.name, user_account_path(request.user.id) %></span>
         </div>
-        <%if request.request_form_name == "text"%>
+        <%if request.items.count == 1 && request.items.first.is_text_image %>
         <div class="request_condition_area">
-            <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<%=request.max_price%>円　</div>
-            <div class="request_condition_block"><span class="request_condition_title">期限</span>&nbsp;<%=from_now(request.suggestion_deadline)%>　</div>
-            <div class="request_condition_block"><span class="request_condition_title">分野</span>&nbsp;<%=request.category.japanese_name%>　</div>
-            <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<%=request.total_services%>件　</div>
-            <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<%=forms_japanese_hash.key(request.delivery_form_name)%>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">期限</span>&nbsp;<span class="content"><%=from_now(request.suggestion_deadline)%></span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">分野</span>&nbsp;<span class="content"><%=request.category.japanese_name%></span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
         </div>
         <% end %>
-        <% if request.request_form_name != "text" && request.items.present? %>
+        <% unless request.items.count == 1 && request.items.first.is_text_image %>
         <div class="item_area">
             <%if request.use_youtube%>
                 <a href="https://www.youtube.com/watch?v=xIP41E4B-bI">
@@ -26,11 +26,8 @@
                 -->
                 </a>
             <% else %>
-                <% if (request.request_form_name == "text" && request.image.thumb.url.present?) %>
-                    <%= link_to(request.image.url, class: 'request_link') do %>
-                        <%= image_tag request.image.thumb.url, class:"image"%>
-                    <% end %>
-                <% else (request.request_form.name == "image") && request.items.present? %>
+                <% if request.items.count == 1 && request.items.first.is_text_image %>
+                <% elsif request.items %>
                     <%= render "user/shared/swiper_images", model: request, use_thumb:true %>
                 <% end %>
                 <%#= link_to(request.thumbnail, class: 'request_link') do %>
@@ -64,11 +61,11 @@
             </table>
         </div>
         <div class="request_condition_area horizontal_condition_area">
-            <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<%=request.max_price%>円　</div>
-            <div class="request_condition_block"><span class="request_condition_title">期限</span>&nbsp;<%=from_now(request.suggestion_deadline)%>　</div>
-            <div class="request_condition_block"><span class="request_condition_title">分野</span>&nbsp;<%=request.category.japanese_name%>　</div>
-            <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<%=request.total_services%>件　</div>
-            <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<%=forms_japanese_hash.key(request.delivery_form_name)%>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">期限</span>&nbsp;<span class="content"><%=from_now(request.suggestion_deadline)%></span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">分野</span>&nbsp;<span class="content"><%=request.category.japanese_name%></span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
+            <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
         </div>
         <% end %>
         <%= render "/user/shared/description", text:request%>

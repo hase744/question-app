@@ -7,6 +7,9 @@
 	}
 }
 .transaction_pre_purchase_inquiry{
+	.pre_purchase_inquiry_cell:hover{
+	  background-color: whitesmoke;
+	}
   	.pre_purchase_inquiry_cell{
 		background-color: white;
 		border-radius: 5px;
@@ -21,6 +24,7 @@
 				object-fit: cover;
 				float: left;
 				margin-right: 5px;
+				border-radius: 50%;
 			}
 			.text_area{
 				display: inline-block;

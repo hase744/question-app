@@ -3,13 +3,8 @@
     //display: inline-block;
     display: block;
 }
-.user_link:hover,
-.user_link:hover .record_name {
-    color: grey !important;
-}
-.user_link:hover .day_form_logout,
-.user_link:hover .last_login p {
-    color: darkgrey !important;
+.user_link:hover .user_cell_area{
+    opacity: 0.7;
 }
 .user_cell_zone{
     max-width: 1300px;
@@ -22,10 +17,10 @@
     }
     .user_cell_flame{
         position: relative;
-            background-color: white;
-            border-radius: 5px;
-            margin: 5px;
-            border: 1px solid lightgray;
+        margin: 5px;
+        background-color: white;
+        border: 1px solid lightgray;
+        border-radius: 5px;
         .user_cell_area{
             padding: 5px;
             .user_name{
@@ -141,6 +136,7 @@
                 height: 20px;
                 width: 100%;
                 display: inline-block;
+                overflow: hidden;
             }
             .categories_description_area{
                 display: inline-block;
@@ -177,6 +173,9 @@
 
 .to500{
     .user_cell_zone{
+        .user_cell_flame:hover .user_record_area{
+            background-color: gainsboro !important;
+        }
         .user_cell_flame{
             .user_image_flame{
                 height: 55px;
@@ -226,7 +225,7 @@
                 width: 100%;
                 border-radius: 10px;
                 
-                background-color: #f5f5f5;
+                background-color: whitesmoke;
             }
             
         }

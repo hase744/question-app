@@ -1,7 +1,9 @@
 <h3 class="transaction_new_title"><%= link_to "プレビュー", user_order_path(@transaction.id) %> > 回答を編集</h3>
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: @transaction_item%>
+<%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
 <%= render "user/requests/cell", request:@transaction.request%>
+<%= render 'user/shared/common_label', text: '回答', language: 'ja'%>
 <div class="transaction_new_zone">
     <div class="transaction_new_area input_area">
     <%= form_with model: @transaction, url:user_transaction_path(@transaction.id), method:"put" do |f| %>

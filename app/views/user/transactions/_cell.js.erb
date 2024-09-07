@@ -5,6 +5,7 @@ $(".open_text").click(function() {
     var description_text = parent.find(".description_text");
     var answer_area = parent.find(".answer_area");
     var cell_flame = parent.find(".transaction_cell_flame");
+    var request_title = parent.find(".request_title");
 
     change_text.html("&nbsp;<span class=''></span>&nbsp;")
     open_text.toggleClass("open_text");
@@ -14,4 +15,5 @@ $(".open_text").click(function() {
     description_text.toggleClass("closing_text");
     description_text.toggleClass("three_line_text");
     answer_area.toggleClass("display_none");
+    request_title.toggleClass("one_line_text");
 });

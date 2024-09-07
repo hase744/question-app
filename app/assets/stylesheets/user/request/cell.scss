@@ -1,3 +1,4 @@
+@import "_variables";
 .request_cell_area{
     margin: 5px;
     background-color: white;
@@ -56,13 +57,18 @@
             z-index: 0.7;
             .request_condition_block{
                 display: inline-block;
+                margin-bottom: 3px;
             }
             .request_condition_title{
-                font-size: 12px;
-                padding: 3px 1px;
+                font-size: 14px;
+                padding: 4px 1px;
                 //border-radius: 2px;
-                color: #555555;
+                color: black;
                 background-color: #EEEEEE;
+            }
+            .content{
+                color: $text_grey;
+                font-size: 13px;
             }
             .request_condition{
                 font-size: 20px;
@@ -85,7 +91,7 @@
                 width: calc(100% - 10px);
                 .image{
                     height: 100%;
-                    max-height: 200px;
+                    max-height: 30vw;
                     object-fit: cover;
                 }
             }

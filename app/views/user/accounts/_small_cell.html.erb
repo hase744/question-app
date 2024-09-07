@@ -3,25 +3,37 @@
     <div class="user_small_cell_zone">
         <div class="user_cell_flame">
             <div class="user_cell_area">
-                <div class="user_image_flame">
-                    <% if user.image.thumb.url %>
-                        <%=image_tag user.image.thumb.url, class:"user_image"%>
-                    <% else %>
-                        <%=image_tag user_image_default, class:"user_image"%>
-                    <% end %>
+                <div class="user_top_info">
+                    <div class="user_image_flame">
+                        <% if user.image.thumb.url %>
+                            <%=image_tag user.image.thumb.url, class:"user_image"%>
+                        <% else %>
+                            <%=image_tag user_image_default, class:"user_image"%>
+                        <% end %>
+                    </div>
+
+                    <div class="user_name_area">
+                        <span class="user_name" id="user_cell_area"><%=user.name%></span>
+                        <!--
+                        <span class="categories">
+                            <% user.categories.each do |c|%>
+                                <span class="name_tag"><%=c.japanese_name%></span>
+                            <% end %>
+                        </span>
+                        -->
+                        <%= render "user/shared/average_star_rating", 
+                        average_star_rating: user.average_star_rating, 
+                        total_reviews: user.total_reviews %>
+                    </div>
                 </div>
 
-                <div class="user_name_area">
-                    <span class="user_name" id="user_cell_area"><%=user.name%></span>
+                <div class="introduction user_description_area">
+                    <p class="user_description"><%= user.description%></p>
                     <span class="categories">
                         <% user.categories.each do |c|%>
                             <span class="name_tag"><%=c.japanese_name%></span>
                         <% end %>
                     </span>
-                </div>
-
-                <div class="introduction user_description_area">
-                    <p class="user_description"><%= user.description%></p>
                 </div>
             </div>
         </div>

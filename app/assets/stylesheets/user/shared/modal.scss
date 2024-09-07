@@ -1,3 +1,4 @@
+@import "_variables";
 .modal_open {
   //cursor: pointer;
   //background: green;
@@ -56,9 +57,13 @@
     cursor: pointer;
     text-decoration: none;
   }
+  .button:hover{
+    background-color: $button_orange_hover;
+  }
+  $image_height: 80px;
   .image_area{
-    height: 80px;
-    width: 145px;
+    height: $image_height;
+    width: $image_height;
     float: left;
     display: inline-block;
     img{
@@ -71,18 +76,22 @@
     height: calc(100% - 40px);
     overflow-y: auto;
   }
+  .service_cell:hover{
+    background-color: whitesmoke;
+  }
   .service_cell{
     height: 80px;
     padding: 5px;
     width: calc(100% - 10px);
     display: block;
     color: dimgrey;
+    background-color: white;
     .title_area{
       font-size: 13px;
       float: left;
       padding: 10px;
       display: inline-block;
-      width: calc(100% - 170px);
+      width: calc(100% - #{$image_height} - 25px);
       span{
         float: left;
       }
@@ -100,6 +109,9 @@
   margin: 0px;
   padding: 8px;
   text-align: center;
+}
+.modal_delete:hover{
+  color: dimgray;
 }
 .modal_delete_area{
   height: 40px;
