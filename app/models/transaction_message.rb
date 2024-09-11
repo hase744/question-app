@@ -19,7 +19,7 @@ class TransactionMessage < ApplicationRecord
   scope :by_transaction_id_and_order, ->(params) {
     puts params
     scope = includes(:sender).joins(:deal)
-    scope = scope.where('transaction_messages.created_at > transactions.delivered_at') if params[:after_delivered]
+    scope = scope.where('transaction_messages.created_at > transactions.published_at') if params[:after_delivered]
     scope.where(transaction_id: params[:transaction_id])
       .order(created_at: params[:order])
       .page(params[:page])

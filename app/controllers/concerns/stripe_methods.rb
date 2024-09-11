@@ -33,8 +33,8 @@ module StripeMethods
       @balance_amount = @pending_amount + @available_amount
       transactions = Transaction.all
         .left_joins(:service)
-        .where(service:{user: current_user}, is_delivered:true)
-        .where("delivered_at > ?", last_credited_at)
+        .where(service:{user: current_user}, is_transacted:true)
+        .where("transacted_at > ?", last_credited_at)
         .order(created_at: :DESC)
 
       @total_revenue = transactions.sum(:price)

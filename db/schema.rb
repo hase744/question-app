@@ -456,8 +456,10 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.datetime "pre_purchase_inquired_at"
     t.integer "total_views", default: 0
     t.integer "total_likes", default: 0
-    t.boolean "is_delivered", default: false
-    t.datetime "delivered_at"
+    t.boolean "is_transacted", default: false
+    t.datetime "transacted_at"
+    t.boolean "is_published", default: false
+    t.datetime "published_at"
     t.boolean "is_violating", default: false
     t.boolean "is_contracted", default: false
     t.datetime "contracted_at"
@@ -469,7 +471,6 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.boolean "is_canceled", default: false
     t.datetime "canceled_at"
     t.boolean "transaction_message_enabled", default: false
-    t.boolean "is_published", default: false
     t.integer "star_rating"
     t.text "review_description"
     t.datetime "reviewed_at"
@@ -479,15 +480,16 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["buyer_id"], name: "index_transactions_on_buyer_id"
     t.index ["canceled_at"], name: "index_transactions_on_canceled_at"
     t.index ["contracted_at"], name: "index_transactions_on_contracted_at"
-    t.index ["delivered_at"], name: "index_transactions_on_delivered_at"
     t.index ["delivery_form_name"], name: "index_transactions_on_delivery_form_name"
     t.index ["is_contracted"], name: "index_transactions_on_is_contracted"
-    t.index ["is_delivered"], name: "index_transactions_on_is_delivered"
+    t.index ["is_published"], name: "index_transactions_on_is_published"
     t.index ["is_rejected"], name: "index_transactions_on_is_rejected"
     t.index ["is_suggestion"], name: "index_transactions_on_is_suggestion"
+    t.index ["is_transacted"], name: "index_transactions_on_is_transacted"
     t.index ["is_violating"], name: "index_transactions_on_is_violating"
     t.index ["price"], name: "index_transactions_on_price"
     t.index ["profit"], name: "index_transactions_on_profit"
+    t.index ["published_at"], name: "index_transactions_on_published_at"
     t.index ["rejected_at"], name: "index_transactions_on_rejected_at"
     t.index ["request_form_name"], name: "index_transactions_on_request_form_name"
     t.index ["request_id"], name: "index_transactions_on_request_id"
@@ -498,6 +500,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.index ["title"], name: "index_transactions_on_title"
     t.index ["total_likes"], name: "index_transactions_on_total_likes"
     t.index ["total_views"], name: "index_transactions_on_total_views"
+    t.index ["transacted_at"], name: "index_transactions_on_transacted_at"
   end
 
   create_table "user_categories", force: :cascade do |t|

@@ -46,7 +46,7 @@ class User::ConfigsController < User::Base
 
   private def ongoing_transaction_exist
     exist = false
-    Transaction.where(seller:current_user ,is_delivered:false, is_canceled:false).each do |transaction|
+    Transaction.where(seller:current_user ,is_transacted:false, is_canceled:false).each do |transaction|
       if !transaction.is_rejected
         exist = true
         break

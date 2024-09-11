@@ -188,9 +188,10 @@ class SampleData
           request: request,
           is_contracted:true,
           contracted_at:DateTime.now,
-          is_delivered:true,
+          is_transacted:true,
           is_published:true,
-          delivered_at: DateTime.now - n,
+          transacted_at: DateTime.now - n,
+          published_at: DateTime.now - n,
           stripe_payment_id:"pi_3LO0pXFsZJRtLc1j0OJU7Mlg",
           use_youtube:true,
           youtube_id: nil,
@@ -198,7 +199,6 @@ class SampleData
           star_rating: n%6,
           review_description: "レビュー内容をここに表示",
           reviewed_at: DateTime.now - n,
-          is_published:false
         )
         transaction.transaction_categories.create(category_name: category.name)
         for i in 0..5

@@ -253,7 +253,7 @@ class Request < ApplicationRecord
         transaction = transactions[0]
         if transaction.is_canceled || transaction.is_rejected
           "中断"
-        elsif transaction.is_delivered
+        elsif transaction.is_transacted
           "回答済み"
         else
           "回答待ち"

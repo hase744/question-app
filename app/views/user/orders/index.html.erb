@@ -20,7 +20,13 @@
                 </div>
                 <div class="text_area">
                     <h4 class="title two_line_text"><%= transaction.request.title%></h4>
-                    <div class="from_now">納期：<%= from_now(transaction.delivery_time) %></div>
+                    <div class="from_now">
+                    <% if transaction.is_transacted %>
+                        <span class="ok">納品済み</span>
+                    <% else %>
+                    <span class="not_ok"><%= from_now(transaction.delivery_time) %></span>
+                    <% end %>
+                    </div>
                 </div>
             <% end %>
             <!--
@@ -41,7 +47,7 @@
                                 <%= video_tag transaction.request.file.url, poster:transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                             <% end %>
                         <% end %>
-                        <% if transaction.is_delivered %>
+                        <% if transaction.is_transacted %>
                             <span class="alert green">納品済み</span>
                         <% elsif transaction.is_canceled %>
                             <span class="alert orange">キャンセル</span>
@@ -80,7 +86,7 @@
                             </tr>
                             <tr>
                                 <th><label>
-                                    <% if transaction.is_delivered %>
+                                    <% if transaction.is_transacted %>
                                         回答
                                     <% else %>
                                         納期
@@ -88,7 +94,7 @@
                                 </th>
                                 <td>
                                     <span class="one_line_text">
-                                        <% if transaction.is_delivered %>
+                                        <% if transaction.is_transacted %>
                                             <%= link_to transaction.title, user_transaction_path(transaction.id) %>
                                         <% else %>
                                             <%= from_now(transaction.delivery_time) %>（<%= transaction.delivery_time.strftime("%Y/%m/%d %H:%m") %>）

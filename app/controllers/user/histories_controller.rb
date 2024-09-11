@@ -4,10 +4,10 @@ class User::HistoriesController < User::Base
     @transactions = Transaction.includes(:items, :service, request: [:items])
     if params[:deal] == "purchase"
       @transactions = @transactions.left_joins(:request, :items)
-      @transactions = @transactions.where(request: {user: current_user}, is_delivered:true)
+      @transactions = @transactions.where(request: {user: current_user}, is_transacted:true)
     else
       @transactions = @transactions.left_joins(:service, :items)
-      @transactions = @transactions.where(service: {user: current_user}, is_delivered:true)
+      @transactions = @transactions.where(service: {user: current_user}, is_transacted:true)
     end
     @transactions = @transactions.page(params[:page]).per(10)
   end

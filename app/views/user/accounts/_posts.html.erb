@@ -1,3 +1,8 @@
-<% contents.each do |post| %>
-  <%= render "user/posts/cell", post:post %>
+<% models.each do |row| %>
+    <%= case row.model_name.to_s
+	when 'Transaction'
+        render 'user/transactions/cell', transaction: row
+    when 'Request'
+        render 'user/requests/cell', request: row
+    end %>
 <% end %>

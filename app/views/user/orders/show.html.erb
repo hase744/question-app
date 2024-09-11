@@ -4,7 +4,7 @@
     <div class="order_show_flame component_area">
         <%  if @transaction.is_canceled || @transaction.is_rejected%>
         <h3>取引は中止されました。</h3>
-        <% elsif @transaction.is_delivered %>
+        <% elsif @transaction.is_transacted %>
         <h3>納品済み</h3>
         <% else %>
         <h3 class="links">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <%= render "user/shared/small_label", text: "回答" %>
-        <% if current_user == @transaction.seller || @transaction.is_delivered%>
+        <% if current_user == @transaction.seller || @transaction.is_transacted%>
             <div class="information_component">
                 <label><%= Transaction.human_attribute_name(:title)%></label></br>
                 <h3 class="margin0px">
@@ -126,7 +126,7 @@
                 </div>
             <% if can_deliver(@transaction)%>
                 <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
-                    <%= f.hidden_field :is_delivered, value:true, class:"input_field" ,required: true%>
+                    <%= f.hidden_field :is_transacted, value:true, class:"input_field" ,required: true%>
                     <%= f.hidden_field :is_published, value:true, class:"input_field" ,required: true%>
                     <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
                     <%= f.submit "納品", class:"big_submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
