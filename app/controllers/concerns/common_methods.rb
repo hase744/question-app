@@ -30,7 +30,8 @@ module CommonMethods
 
   def set_current_nav_item
     @current_nav_item = params[:nav_item]
-    @current_nav_item ||= 'posts'
+    @current_nav_item ||= action_name
+    @current_nav_item = 'posts' if @current_nav_item == 'show'
   end
 
   def set_current_nav_item_for_service

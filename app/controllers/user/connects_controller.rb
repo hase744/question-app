@@ -513,7 +513,7 @@ class User::ConnectsController < User::Base
   end
 
   private def check_ongoing_transaction
-    Transaction.where(seller:current_user ,is_delivered:false, is_canceled:false).each do |transaction|
+    Transaction.where(seller:current_user ,is_transacted:false, is_canceled:false).each do |transaction|
       if !transaction.is_rejected
         flash.notice = "取引中の依頼があります。依頼を完了するか断って下さい。"
         redirect_to user_connects_path

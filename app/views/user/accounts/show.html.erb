@@ -99,7 +99,7 @@
         <%=
             case current_nav_item
             when 'posts'
-                render partial: 'user/posts/cell', collection: @models, as: :post
+                render 'user/accounts/posts', models: @models
             when 'requests'
                 render partial: 'user/requests/cell', collection: @models, as: :request
             when 'sales'

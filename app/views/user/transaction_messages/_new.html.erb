@@ -1,5 +1,5 @@
 <div class="transaction_message_form_area component_area">
-    <%if transaction.delivered_at.nil? %>
+    <%if transaction.published_at.nil? %>
     <%elsif transaction.buyer == current_user %>
         <div class="title">
         追加質問<%=render "user/shared/total_characters_display", text_max_length: TransactionMessage.new.body_max_characters %></br>

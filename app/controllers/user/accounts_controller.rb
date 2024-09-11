@@ -2,6 +2,7 @@ class User::AccountsController < User::Base
   before_action :check_login, only:[:edit, :update]
   before_action :check_published, only: [:show]
   before_action :define_page_count
+  before_action :define_models, only: [:show, :posts, :requests, :sales, :services, :reviews]
   after_action :create_access_log
   layout :choose_layout
 
@@ -46,37 +47,16 @@ class User::AccountsController < User::Base
   def show
     @user = User.find(params[:id])
     @bar_elements = [
-      {item:'posts', japanese_name:'投稿', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
+      {item:'posts', japanese_name:'相談', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
       {item:'requests', japanese_name:'質問', link:user_account_requests_path(@user.id, nav_item:'requests'), page: @request_page, for_seller:false},
       {item:'sales', japanese_name:'回答', link:user_account_sales_path(@user.id, nav_item:'sales'), page: @sales_page, for_seller:true},
       {item:'services', japanese_name:Service.model_name.human, link:user_account_services_path(@user.id, nav_item:'services'), page: @service_page, for_seller:true},
       {item:'reviews',japanese_name:'レビュー', link:user_account_reviews_path(@user.id, nav_item:'reviews'), page:@review_page, for_seller:true},
     ]
 
-    case current_nav_item
-    when 'posts'
-      @models = Post.where(user: User.find(params[:id]))
-    when 'requests'
-      @models = Request.where(user: User.find(params[:id]))
-    when 'sales'
-      @models = Transaction.from_seller(User.find(params[:id]))
-    when 'services'
-      @models = Service.where(user: User.find(params[:id])).displayable(current_user)
-    when 'reviews'
-      @models = Transaction.from_seller(current_user)
-        .where(is_delivered: true)
-        .where.not(reviewed_at: nil)
-    end
-
     current_element = @bar_elements.find{|e| 
       e[:item] == current_nav_item
     }
-
-    @models = @models
-      .solve_n_plus_1
-      .order(id: :DESC)
-      .page(params[:page])
-      .per(current_element[:page])
 
     @relationship = Relationship.find_by(user: @user, target_user_id: current_user.id) if user_signed_in?
     if @user == current_user
@@ -112,35 +92,34 @@ class User::AccountsController < User::Base
   end
 
   def services
-    @services = Service.all
-    @services = @services.solve_n_plus_1
-    @services = @services.where(user: User.find(params[:id]))
-    @services = @services.displayable(current_user)
-    @services = @services.order(id: :DESC).page(params[:page]).per(@service_page)
     render partial: 'user/services/cell', collection: @services, as: :service
   end
   #@services.page(params[:page]).includes(:user).per(10)
   def posts
-    @posts = Post.where(user: User.find(params[:id])).includes(:user).order(id: :DESC).page(params[:page]).per(@post_page)
-    render partial: 'user/posts/cell', collection: @posts, as: :post
+    #@posts = Post.where(user_id: params[:id]).includes(:user).order(id: :DESC).page(params[:page]).per(@post_page)
+    #@models.each do |item|
+    #  if item.is_a?(Request)
+    #    render partial: 'user/requests/cell', locals: { request: item }
+    #  elsif item.is_a?(Transaction)
+    #    render partial: 'user/transactions/cell', locals: { transaction: item }
+    #  end
+    #end
+    #render partial: 'user/posts/cell', collection: @posts, as: :post
+    render partial: 'user/accounts/posts', locals: { models: @models}
   end
 
   def purchases
-    purchases = Transaction.left_joins(:request).where(request: {user: User.find(params[:id])}, is_delivered: true).includes(:buyer, :seller, :request, :service, :items).order(id: :DESC)
+    purchases = Transaction.left_joins(:request).where(request: {user_id: params[:id]}, is_published: true).includes(:buyer, :seller, :request, :service, :items).order(id: :DESC)
     @purchases = purchases.page(params[:page]).per(5)
     render partial: "user/accounts/transactions", locals: { contents: @purchases }
   end
 
   def sales
-    sales = Transaction.left_joins(:service).where(service: {user: User.find(params[:id])}, is_delivered: true).includes(:seller, :seller, :request, :service, :items).order(id: :DESC)
-    @sales = sales.page(params[:page]).per(@sales_page)
-    render partial: 'user/transactions/cell', collection: @sales, as: :transaction
+    render partial: 'user/transactions/cell', collection: @models, as: :transaction
   end
 
   def requests
-    @requests = Request.where(user:User.find(params[:id]), is_published:true).order(id: :DESC).page(params[:page]).per(@request_page)
-    @requests.count
-    render partial: 'user/requests/cell', collection: @requests, as: :request
+    render partial: 'user/requests/cell', collection: @models, as: :request
   end
 
   def users
@@ -175,14 +154,7 @@ class User::AccountsController < User::Base
   end
   
   def reviews
-    @transactions = Transaction.includes(:seller, :seller, :request)
-      .from_seller(current_user)
-      .where(is_delivered: true)
-      .where.not(reviewed_at: nil)
-      .order(id: :DESC)
-      .page(params[:page])
-      .per(@review_page)
-    render partial: 'user/reviews/cell', collection: @transactions, as: :transaction
+    render partial: 'user/reviews/cell', collection: @models, as: :transaction
   end
 
   def renew
@@ -207,6 +179,76 @@ class User::AccountsController < User::Base
     @sales_page = 5
     @service_page = 20
     @review_page = 5
+  end
+
+  private def define_models
+    params[:page] ||= 1
+    case current_nav_item
+    when 'posts'
+      transaction_sql = <<-SQL
+      SELECT 'Transaction' AS record_type, id, created_at, published_at 
+      FROM transactions
+      WHERE seller_id = #{ActiveRecord::Base.connection.quote(params[:id])}
+        AND is_published = true
+      SQL
+
+      request_sql = <<-SQL
+      SELECT 'Request' AS record_type, id, created_at, published_at 
+      FROM requests
+      WHERE user_id = #{ActiveRecord::Base.connection.quote(params[:id])}
+        AND is_published = true
+      SQL
+
+      final_sql = <<-SQL
+      (#{transaction_sql})
+      UNION ALL
+      (#{request_sql})
+      ORDER BY published_at DESC
+      LIMIT #{@post_page} OFFSET #{(params[:page].to_i-1)*@post_page}
+      SQL
+
+      records = ActiveRecord::Base.connection.execute(final_sql)
+      requests = Request.solve_n_plus_1.find(records.map{|row| row['id'] if row['record_type'] == 'Request'}.compact).to_a
+      transactions = Transaction.solve_n_plus_1.find(records.map{|row| row['id'] if row['record_type'] == 'Transaction'}.compact).to_a
+      records = records.to_a
+      records.map! do |row|
+        case row['record_type']
+        when 'Transaction'
+          row = transactions.find { |model| model['id'] == row['id'] }
+        when 'Post'
+          row = posts.find { |model| model['id'] == row['id'] }
+        when 'Request'
+          row = requests.find { |model| model['id'] == row['id'] }
+        end
+        row # 変更されたrecordを返す
+      end
+      @models = records
+    when 'requests'
+      @models = Request
+        .where(user_id: params[:id], is_published: true)
+        .page(params[:page])
+        .per(@request_page)
+    when 'sales'
+      @models = Transaction
+        .from_seller(User.find(params[:id]))
+        .where(is_published: true)
+        .page(params[:page])
+        .per(@sales_page)
+        .order(id: :DESC)
+    when 'services'
+      @models = Service.solve_n_plus_1
+        .where(user_id: params[:id])
+        .displayable(current_user)
+        .page(params[:page])
+        .per(@service_page)
+    when 'reviews'
+      @models = Transaction
+        .from_seller(User.find(params[:id]))
+        .where(is_transacted: true)
+        .where.not(reviewed_at: nil)
+        .page(params[:page])
+        .per(@review_page)
+    end
   end
 
   private def check_published

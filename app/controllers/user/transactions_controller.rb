@@ -2,7 +2,7 @@ class User::TransactionsController < User::Base
   #layout "search_layout", only: :index
   #layout "transaction_index", only: [:index]
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
-  before_action :check_transaction_is_delivered, only:[:show, :like]
+  before_action :check_transaction_is_transacted, only:[:show, :like]
   before_action :define_transaction, only:[:show, :update, :deliver, :messages, :pre_purchase_inquire]
   before_action :filter_transaction, only:[:update, :deliver]
   before_action :define_transaction_message, only:[:show, :messages]
@@ -30,7 +30,7 @@ class User::TransactionsController < User::Base
     @transactions = @transactions.joins(:transaction_categories)
     @transactions = @transactions.distinct
     @transactions = @transactions.solve_n_plus_1
-    @transactions = @transactions.where(is_delivered:true).order(id: :DESC)
+    @transactions = @transactions.where(is_published:true).order(id: :DESC)
     @transactions = @transactions.filter_categories(params[:categories])
     @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
     @transactions = @transactions.page(params[:page]).per(30)
@@ -56,7 +56,7 @@ class User::TransactionsController < User::Base
     @transaction_along_messages =  TransactionMessage
       .joins(:deal)
       .where(transaction_id:@transaction.id)
-      .where('transaction_messages.created_at < transactions.delivered_at')
+      .where('transaction_messages.created_at < transactions.published_at')
       .where('transaction_messages.created_at > transactions.contracted_at')
     @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
     gon.tweet_text = @transaction.description
@@ -69,7 +69,7 @@ class User::TransactionsController < User::Base
       .includes(:seller, :service, :request, :items, :transaction_categories)
       .where.not(id: @transaction.id)
       .where(
-        is_delivered:true, 
+        is_published:true, 
         transaction_categories:{category_name: @transaction.category.name}
         )
     @total_message_count = @transaction.total_after_delivered_messages
@@ -86,7 +86,7 @@ class User::TransactionsController < User::Base
 
   def create_description_image
     @transaction = Transaction.find(params[:id])
-    if !@transaction.is_delivered && params[:transaction][:file]
+    if !@transaction.is_transacted && params[:transaction][:file]
       @transaction.update(file: params[:transaction][:file])
     end
   end
@@ -130,7 +130,13 @@ class User::TransactionsController < User::Base
 
   def deliver
     @transaction.assign_attributes(deliver_params)
-    @transaction.delivered_at = DateTime.now
+    @transaction.transacted_at = DateTime.now
+    @transaction.assign_attributes(
+      is_published: true,
+      published_at: DateTime.now,
+      is_transacted: true,
+      transacted_at: DateTime.now,
+    )
 
     if @transaction.delivery_form.name != "text"
       @delivery_item = @transaction.items.first
@@ -155,7 +161,7 @@ class User::TransactionsController < User::Base
       end
     else
       detect_models_errors([current_user, @transaction, @delivery_item])
-      @transaction.is_delivered = false
+      @transaction.is_transacted = false
       flash.notice = "回答を納品できませんでした。"
       render "user/orders/show"
     end
@@ -270,7 +276,7 @@ class User::TransactionsController < User::Base
     elsif @transaction.is_rejected
       flash.notice = "取引は中断されています。"
       false
-    elsif @transaction.is_delivered
+    elsif @transaction.is_transacted
       flash.notice = "既に取引が完了しています。"
       false
     else
@@ -288,7 +294,7 @@ class User::TransactionsController < User::Base
       id: params[:id],
       service: {user: current_user},
       is_canceled: false,
-      is_delivered: false,
+      is_transacted: false,
       is_rejected: false,
       )
   end
@@ -329,13 +335,13 @@ class User::TransactionsController < User::Base
 
   private def deliver_params
     params.require(:transaction).permit(
-      :is_delivered,
+      :is_transacted,
       :is_published
     )
   end
 
-  private def check_transaction_is_delivered
-    if  !Transaction.exists?(id:params[:id], is_delivered:true)
+  private def check_transaction_is_transacted
+    if  !Transaction.exists?(id:params[:id], is_transacted:true)
       raise ActiveRecord::RecordNotFound
     end
   end

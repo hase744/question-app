@@ -141,7 +141,7 @@
             <% end %>
         <% else %>
             <%= render 'user/shared/common_label', text: '回答', language: 'ja' %>
-            <% Transaction.where(request_id: @request.id, is_delivered:true).each do |transaction| %>
+            <% Transaction.where(request_id: @request.id, is_transacted:true).each do |transaction| %>
                 <%= render "user/transactions/cell", transaction: transaction %>
             <% end %>
         <% end %>

@@ -195,7 +195,7 @@ class User < ApplicationRecord
   end
 
   def update_total_sales_numbers
-    transactions = Transaction.left_joins(:service).where(service:{user:self}, is_delivered:true)
+    transactions = Transaction.left_joins(:service).where(service:{user:self}, is_transacted:true)
     self.update(total_sales_numbers: transactions.count)
   end
   
@@ -300,7 +300,7 @@ class User < ApplicationRecord
         is_contracted:true, 
         is_rejected: false,
         is_canceled: false,
-        is_delivered: false,
+        is_transacted: false,
         service:{user: self}
         )
       #特定のサービスの出品者である
@@ -324,7 +324,7 @@ class User < ApplicationRecord
 
   def ongoing_transaction_exist?
     exist = false
-    Transaction.where(seller:self ,is_delivered:false, is_canceled:false).each do |transaction|
+    Transaction.where(seller:self ,is_transacted:false, is_canceled:false).each do |transaction|
       if !transaction.is_rejected
         exist = true
         break
@@ -335,7 +335,7 @@ class User < ApplicationRecord
 
   def validate_is_published
     if  !self.is_published
-      ongoing_transactions = Transaction.where(seller: self, is_delivered:false).or(Transaction.where(buyer: self, is_delivered:false))
+      ongoing_transactions = Transaction.where(seller: self, is_transacted:false).or(Transaction.where(buyer: self, is_transacted:false))
       if ongoing_transactions.count > 0 #取引中の依頼がああるか
         errors.add(:is_published)
       end

@@ -191,7 +191,7 @@ class User::OrdersController < User::Base
       false
     elsif @transaction.is_rejected
       false
-    elsif @transaction.is_delivered
+    elsif @transaction.is_transacted
       false
     else
       true

@@ -25,7 +25,7 @@ class Sample::TransactionsController < Sample::Base
           title:"取引のタイトル",
           request:@request,
           service:@service,
-          delivered_at: DateTime.now,
+          transacted_at: DateTime.now,
           delivery_form:Form.find_by(name:"image")
           )
         @delivery_item = DeliveryItem.new(

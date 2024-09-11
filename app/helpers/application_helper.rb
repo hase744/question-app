@@ -126,7 +126,7 @@ include Variables
   def request_completed
     transaction = Transaction.find_by(request_id: @request.id)
     if transaction
-      if transaction.is_delivered
+      if transaction.is_transacted
         true
       else
         false

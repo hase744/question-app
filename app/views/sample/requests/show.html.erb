@@ -148,9 +148,9 @@
                 </div>
             <% end %>
         <% end %>
-        <% if Transaction.exists?(request_id: @request.id, is_delivered:true) %>
+        <% if Transaction.exists?(request_id: @request.id, is_transacted:true) %>
             <h3 class="suggest_title zone_title">納品</h3>
-            <%= render "user/transactions/cell", content:Transaction.find_by(request_id: @request.id, is_delivered:true) %>
+            <%= render "user/transactions/cell", content:Transaction.find_by(request_id: @request.id, is_transacted:true) %>
         <% end %>
 </div>
     <%= render "sample/accounts/profile", user: @request.user, relationship:@relationship %>

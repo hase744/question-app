@@ -35,7 +35,7 @@
                     </script>
                 <% end %>
                     <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
-                    <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_delivered: true).count %>件</span>
+                    <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_published: true).count %>件</span>
                     <%if @service.user == current_user%>
                         <span class="service_score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
                     <% end %>

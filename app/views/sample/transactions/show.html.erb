@@ -44,7 +44,7 @@
                         <% end %>
                         <div class="seller_name_area">
                             <p class="seller_name"><%=@transaction.seller.name%></p>
-                            <div class="datetime"><%=readable_datetime(@transaction.delivered_at)%></div>
+                            <div class="datetime"><%=readable_datetime(@transaction.published_at)%></div>
                         </div>
                     <% end %>
                     <%#= render "user/relationships/follow", user:@transaction.seller%>

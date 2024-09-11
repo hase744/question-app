@@ -25,8 +25,11 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.integer :total_views, default: 0, index:true
       t.integer :total_likes, default: 0, index:true
 
-      t.boolean :is_delivered, default: false, index:true #納品されているか
-      t.datetime :delivered_at, index:true
+      t.boolean :is_transacted, default: false, index:true #納品されているか
+      t.datetime :transacted_at, index:true
+
+      t.boolean :is_published, default: false, index:true #納品されているか
+      t.datetime :published_at, index:true
 
       t.boolean :is_violating, default:false, index:true #規約に違反しているか
 
@@ -46,7 +49,6 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       #t.integer :transaction_message_days, default:0
       t.boolean :transaction_message_enabled, default: false
       #t.datetime :transaction_message_deadline
-      t.boolean :is_published, default:false
 
       #レビューに関連するカラム
       t.integer :star_rating, index:true

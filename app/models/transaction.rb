@@ -58,7 +58,7 @@ class Transaction < ApplicationRecord
       .left_joins(:service)
       .where(
         service: {user: user}, 
-        is_delivered: true
+        is_published: true
         )
   }
 
@@ -68,7 +68,7 @@ class Transaction < ApplicationRecord
       .left_joins(:request)
       .where(
         request: {user: user}, 
-        is_delivered: true
+        is_published: true
         )
   }
 
@@ -77,7 +77,7 @@ class Transaction < ApplicationRecord
       is_contracted: true,
       is_rejected: false,
       is_canceled: false,
-      is_delivered: false
+      is_transacted: false
     )
   }
 
@@ -85,7 +85,7 @@ class Transaction < ApplicationRecord
     self.where(
       is_rejected: true,
       is_canceled: false,
-      is_delivered: false
+      is_transacted: false
     )
   }
 
@@ -93,11 +93,11 @@ class Transaction < ApplicationRecord
     self.where(
       is_rejected: false,
       is_canceled: true,
-      is_delivered: false
+      is_transacted: false
     ).or(self.where(
       is_rejected: true,
       is_canceled: false,
-      is_delivered: false
+      is_transacted: false
       )
     )
   }
@@ -106,7 +106,7 @@ class Transaction < ApplicationRecord
     self.where(
       is_rejected: false,
       is_canceled: false,
-      is_delivered: true
+      is_transacted: true
       )
   }
 
@@ -138,7 +138,7 @@ class Transaction < ApplicationRecord
   def total_after_delivered_messages
     self.transaction_messages
       .joins(:deal)
-      .where('transaction_messages.created_at > transactions.delivered_at')
+      .where('transaction_messages.created_at > transactions.transacted_at')
       .count
   end
 
@@ -154,7 +154,7 @@ class Transaction < ApplicationRecord
   end
 
   def set_default_values
-    if Rails.env.development? && self.is_delivered && !will_save_change_to_is_delivered?
+    if Rails.env.development? && self.is_transacted && !will_save_change_to_is_transacted?
       self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
     end
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
@@ -274,7 +274,7 @@ class Transaction < ApplicationRecord
   end
 
   def update_total_sales
-    if self.saved_change_to_is_delivered?
+    if self.saved_change_to_is_transacted?
       self.service.update_total_sales_numbers
       self.service.user.update_total_sales_numbers
     end
@@ -308,22 +308,22 @@ class Transaction < ApplicationRecord
 
   def validate_title
     if self.title.present?
-      errors.add(:title, "を入力して下さい") if self.title.length <= 0 && self.is_delivered
+      errors.add(:title, "を入力して下さい") if self.title.length <= 0 && self.is_published
     else
-      errors.add(:title, "を入力して下さい") if self.is_delivered
+      errors.add(:title, "を入力して下さい") if self.is_published
     end
   end
 
   def validate_description
     if self.description.present?
-      errors.add(:description, "を入力して下さい") if self.description.length <= 0 && self.is_delivered
+      errors.add(:description, "を入力して下さい") if self.description.length <= 0 && self.is_published
     else
-      errors.add(:description, "を入力して下さい") if self.is_delivered
+      errors.add(:description, "を入力して下さい") if self.is_published
     end
   end
 
   def validate_item
-    return unless self.is_delivered
+    return unless self.is_published
     if self.items
       items.each do |item|
         next if item.valid?
@@ -355,20 +355,20 @@ class Transaction < ApplicationRecord
         errors.add(:delivery_time, "を過ぎていません")
       end
 
-      if self.is_rejected || self.is_delivered
+      if self.is_rejected || self.is_transacted
         errors.add(:is_canceled, "はできません")
       end
     end
   end
   
   def validate_is_rejected
-    if (self.is_delivered || self.is_canceled) && self.is_rejected #納品済み または　キャンセル済み
+    if (self.is_transacted || self.is_canceled) && self.is_rejected #納品済み または　キャンセル済み
       errors.add(:is_rejected, "は現在できません")
     end
   end
 
   def validate_reject_reason
-    if (self.is_delivered || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
+    if (self.is_transacted || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
       errors.add(:reject_reason, "は現在で記入きません")
     end
   end
@@ -457,7 +457,7 @@ class Transaction < ApplicationRecord
       false
     elsif self.is_rejected
       false
-    elsif self.is_delivered
+    elsif self.is_transacted
       false
     elsif self.is_canceled
       false
@@ -492,7 +492,7 @@ class Transaction < ApplicationRecord
 
   def validate_review
     if all_review_present? || all_review_empty?
-    elsif self.is_delivered?
+    elsif self.is_transacted?
       errors.add(:review_description, "がありません") if !self.review_description.present?
       errors.add(:star_rating, "がありません") if !self.star_rating.present?
       errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?

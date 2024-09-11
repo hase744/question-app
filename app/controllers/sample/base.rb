@@ -71,7 +71,7 @@ class Sample::Base < ApplicationController
             title:"回答のタイトル",
             request:@request,
             service:@service,
-            delivered_at: DateTime.now,
+            transacted_at: DateTime.now,
             delivery_form:Form.find_by(name:"image")
             )
         @transaction.set_item

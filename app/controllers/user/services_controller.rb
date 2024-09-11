@@ -78,14 +78,14 @@ class User::ServicesController < User::Base
 
     case current_nav_item
     when 'transactions'
-      @models = Transaction.where(service: @service, is_delivered: true)
+      @models = Transaction.where(service: @service, is_published: true)
     when 'requests'
       @models = Request.from_service(@service)
     when 'reviews'
       @models = Transaction
         .where.not(reviewed_at: nil)
         .where.not(star_rating: nil)
-        .where(service: @service, is_delivered: true)
+        .where(service: @service, is_published: true)
     end
 
     current_element = @bar_elements.find{|e| 
@@ -232,13 +232,13 @@ class User::ServicesController < User::Base
 
   def transactions
     @transactions = Transaction.includes(:seller, :service, :request, :items).order(id: :DESC)
-    @transactions = @transactions.where(service_id:params[:id], is_delivered: true)
+    @transactions = @transactions.where(service_id:params[:id], is_published: true)
     @transactions = @transactions.page(params[:page]).per(@transaction_page)
     render partial: 'user/transactions/cell', collection: @transactions, as: :transaction
   end
 
   def reviews
-    transactions = Transaction.where(service_id:params[:id], is_delivered: true).where.not(reviewed_at: nil).includes(:seller, :seller, :request).order(id: :DESC)
+    transactions = Transaction.where(service_id:params[:id], is_published: true).where.not(reviewed_at: nil).includes(:seller, :seller, :request).order(id: :DESC)
     @transactions = transactions.page(params[:page]).per(@review_page)
     render partial: 'user/reviews/cell', collection: @transactions, as: :transaction
   end
