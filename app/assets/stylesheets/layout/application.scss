@@ -62,6 +62,15 @@
             color: blue;
         }
     }
+    .pagination{
+        display: inline;
+        float: right;
+        margin-right: 5px;
+    }
+    .main_bottom{
+        display: inline-block;
+        width: 100%;
+    }
 }
 .bottom{
     display: none;
@@ -93,9 +102,42 @@ body{
     display: inline-block;
 }
 .main_bottom{
+    margin-bottom: 5px;
     a{
         color: blue;
     }
+    .pagination{
+        text-align: center;
+        color: white;
+    }
+    .page.current{
+        background-color: $medium_text_yellow;
+        border-radius: 5px;
+    }
+    span{
+        display: inline-block;
+        align-items: center;
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+        line-height: 40px;
+    }
+    a{
+        display: inline-block;
+        align-items: center;
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+        line-height: 40px;
+        color: $medium_text_yellow;
+        border-radius: 5px;
+    }
+    a:hover{
+        color: white;
+        text-decoration: none;
+        background-color: $medium_text_yellow;
+    }
+    
 }
 .normal_layout{
     @media(max-width:1000px){

@@ -3,7 +3,7 @@
         if(element == null){
             var docHeight = $(document).innerHeight(); //ドキュメントの高さ
             var windowHeight = $(window).innerHeight(); //ウィンドウの高さ
-            var pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+            var pageBottom = docHeight - windowHeight - 100; //ドキュメントの高さ - ウィンドウの高さ
             if(pageBottom <= $(window).scrollTop()){
                 return true
             }else{

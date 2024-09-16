@@ -16,29 +16,33 @@
                 <div class="service_title_area">
                     <h3 class="service_title"><%=@service.title%></h3>
                 </div>
-                <div class="service_score_area">
-                <% if @service.user == current_user%>
-                    <div class="edit_delete_area">
-                        <%if @service.is_inclusive%>
-                            <%= link_to "編集", edit_user_service_path(@service.id), class:"edit" %>
-                        <% else %>
-                            <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
+                <div class="common_score_area">
+                    <div class='score_area_left'>
+                        <span class="score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
+                        <span class="score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_published: true).count %>件</span>
+                        <%if @service.user == current_user%>
+                            <span class="score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
                         <% end %>
-                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "相談室を削除しますか？"}  %>
                     </div>
-                <% else %>
-                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button #{@service.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
-                        <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
-                    <% end %>
-                    <script>
-                    <%= render "user/services/javascript/like.js.erb" %>
-                    </script>
-                <% end %>
-                    <span class="service_score_info"><label>評価</label>&nbsp;<%= render "user/shared/star_display", model: @service %></span>
-                    <span class="service_score_info"><label>回答数</label>&nbsp;<%= @service.transactions.where(is_published: true).count %>件</span>
-                    <%if @service.user == current_user%>
-                        <span class="service_score_info"><label>いいね</label>&nbsp;<%= @service.total_likes %>件</span>
-                    <% end %>
+                    <div class='score_area_right'>
+                        <% if @service.user == current_user%>
+                            <div class="edit_delete_area">
+                                <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "相談室を削除しますか？"}  %>｜
+                                <%if @service.is_inclusive%>
+                                    <%= link_to "編集", edit_user_service_path(@service.id), class:"edit" %>
+                                <% else %>
+                                    <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
+                                <% end %>
+                            </div>
+                        <% else %>
+                            <%= link_to(user_service_likes_path(id: @service.id), class: "like_button #{@service.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
+                                <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
+                            <% end %>
+                            <script>
+                                <%= render "user/services/javascript/like.js.erb" %>
+                            </script>
+                        <% end %>
+                    </div>
                 </div>
                 <!--
                 <% if @service.user == current_user%>
@@ -51,15 +55,15 @@
                         <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
                     </div>
                 <% else %>
-                    <div class="service_like_area">
-                    <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
-                        <span class="far fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
-                    <% end %>
+                    <div class="like_area">
+                        <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
+                            <span class="far fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
+                        <% end %>
                     </div>
                 <% end %>
                     -->
                 <div class="user_label">
-                <%= render "user/shared/small_label", text:"条件"%>
+                    <%= render "user/shared/small_label", text:"条件"%>
                 </div>
                 <table class="common_condition_area">
                     <tr>
@@ -126,7 +130,9 @@
                         </td>
                         <td>
                             <span class="common_condition">
-                            <span class="big_name_tag"><%=@service.category_names%></span>
+                                <% @service.categories.each do |category| %>
+                                    <%= link_to category.japanese_name, user_services_path(categories: category.name), class:"big_name_tag" %>
+                                <% end %>
                             </span>
                         </td>
                     </tr>
@@ -263,7 +269,7 @@
             <%=
                 case current_nav_item
                 when 'transactions'
-                    render partial: 'user/transactions/cell', collection: @models, as: :transaction
+                    render partial: 'user/transactions/answer', collection: @models, as: :transaction
                 when 'requests'
                     render partial: 'user/requests/cell', collection: @models, as: :request
                 when 'reviews'
@@ -281,10 +287,10 @@
             <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
             <%=
             if @transaction&.is_suggestion
-                link_to "購入する", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"bottom_button transaction_button"
+                link_to "購入", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"bottom_button transaction_button"
             else
                 link_to(new_user_request_path(service_id:@service.id), class:"bottom_button transaction_button") do
-                    "質問を作成する"
+                    "質問を作成"
                 end
             end
             %>
@@ -296,6 +302,7 @@
 <% end %>
 <script>
 <%= render "user/requests/javascript/cell.js.erb" %>
+<%=%>
 function register_callback() {
   $("#request_ajax_update").on(
       "ajax:complete",

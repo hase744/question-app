@@ -1,4 +1,4 @@
-<div class="transaction_cell_area">
+<div class="transaction_cell_area closing">
     <div class="transaction_cell_flame transaction_cell_flame_open">
     <!--
         <div class="youtube_video_area">
@@ -22,8 +22,24 @@
                 <h5 class="request_title one_line_text"><span class="mark_q">Q.</span><%= transaction.request.title%></h5>
             <% end %>
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= readable_datetime(transaction.created_at)%></h5>
-            <h5 class="three_line_text text description_text"  id="description_text<%=transaction.model_name%><%=transaction.id%>"><%= transaction.request.description%></h5>
-            <div class="display_none answer_area" id="answer_area<%=transaction.model_name%><%=transaction.id%>">
+			<div class="item_description_area">
+				<% if transaction.request.items.not_text_image.present? %>
+					<div class='item_area'>
+						<%= image_tag transaction.request.items.not_text_image.first.file.thumb.url %>
+					</div>
+				<% end %>
+				<div class="description_area">
+            		<span class="three_line_text text description_text"><%= transaction.request.description%></span>
+				</div>
+			</div>
+			<% if transaction.request.items.not_text_image.present? %>
+				<div class='items_area'>
+					<% transaction.request.items.not_text_image.each do |item| %>
+						<%= image_tag item.file.thumb.url %>
+					<% end %>
+				</div>
+			<% end %>
+            <div class="answer_area" id="answer_area">
                 <div class="seller_container">
                     <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
                         <% if transaction.seller.image.thumb.url %>
@@ -32,7 +48,7 @@
                             <%=image_tag user_image_default, class:"seller_image"%>
                         <% end %>
                         <div class="seller_name_area">
-                            <p class="seller_name"><%=transaction.seller.name%></p>
+                            <p class="seller_name one_line_text"><%=transaction.seller.name%></p>
                         </div>
                     <% end %>
                     <%#= render "user/relationships/follow", user:transaction.seller%>
@@ -41,11 +57,21 @@
                     <span class="mark_a">A.</span><%= transaction.title%>
                 </span>
                 <h5 class="text three_line_text"><%= transaction.description%></h5>
+				<% if transaction.items.present? %>
+					<div class='items_area'>
+						<% transaction.items.each do |item| %>
+							<%= image_tag item.file.thumb.url %>
+						<% end %>
+					</div>
+				<% end %>
                 <div class="open_page_area">
-                <%= link_to "...続きを見る", user_transaction_path(transaction.id), class:"open_page" %>
+                    <%= link_to "...続きを見る", user_transaction_path(transaction.id), class:"open_page" %>
                 </div>
             </div>
         </div>
     </div>
-    <div class="change_text open_text" id="open_text<%=transaction.model_name%><%=transaction.id%>">&nbsp;<span class='fas fa-angle-down'></span>&nbsp;</div>
+    <div class='open_text_area'>
+	<div class="smoke"></div>
+        <div class="open_text" id="open_text">&nbsp;詳細を見る<span class='fas fa-angle-down'></span>&nbsp;</div>
+    </div>
 </div>

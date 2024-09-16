@@ -1,0 +1,53 @@
+@import '_variables';
+.common_score_area{
+    display: flex;
+    justify-content: space-between; /* score_area と edit_delete_area の間にスペースを配置 */
+    align-items: flex-start; /* 縦方向のセンタリング */
+    .score_area_left{
+        flex-grow: 1; /* 残りのスペースを埋める */
+        display: flex; /* 内部の要素を横並びに */
+        gap: 10px; /* 内部要素の間にスペースを作る */
+        flex-wrap: wrap;
+        .score_info{
+            display: inline-block;
+            margin: 0px 5px;
+            label{
+                background-color: #EEEEEE;
+                padding: 5px 2px;
+                font-size: 12px;
+                //border-radius: 5px;
+            }
+            .status{
+              padding: 3px;
+              border-radius: 10px;
+              color: white;
+              font-size: 11px;
+            }
+            .status.grey{
+              background-color: grey;
+            }
+            .status.green{
+              background-color: $ok_green;
+            }
+            .status.yellow{
+              background-color: $text_yellow;
+            }
+            .status.red{
+              background-color: red;
+            }
+        }
+    }
+    .score_area_right {
+        flex-shrink: 0; /* 幅を縮めないようにする */
+        display: flex; /* 編集と削除ボタンを横並びに */
+        gap: 10px; /* ボタン間のスペース */
+        flex-direction: row; /* 横並び */
+        align-items: flex-start; /* 上揃え */
+
+        .delete, .edit {
+          display: inline-block; /* ボタンの縦揃えが正しくなる */
+        }
+    }
+    margin-top: 5px;
+    margin-bottom: 10px;
+}

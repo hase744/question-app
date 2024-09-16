@@ -1,10 +1,16 @@
-$(".change_text").click(function() {
-    var parent = $(this).closest(".description_area");
+open_description = function(object){
+    console.log(object)
+    var parent = object.closest(".description_area");
     var description_text_area = parent.find(".description_text_area");
     var description_text = parent.find(".description_text");
 
-    $(this).toggleClass("open_text");
-    $(this).toggleClass("close_text");
+    object.toggleClass("open_text");
+    object.toggleClass("close_text");
     description_text.toggleClass("opening_text");
     description_text.toggleClass("closing_text");
+}
+addEventListener("load", (event) => {
+    $(document).on("click", ".change_text", function() {
+        open_description($(this));
+    });
 });

@@ -1,0 +1,133 @@
+@import "_variables";
+.transaction_answer_area{
+  	margin-top: 5px;
+  	margin: 5px 5px 5px 5px;
+  	border-radius: 2.5px;
+  	background-color: white;
+  	//border: 1px solid lightgray;
+  	box-shadow: 0 0 2px lightgray;
+  	box-shadow: 1px 1px 3px gray;
+  	position: relative;
+  	.transaction_answer_flame{
+  	  	display: flex;
+  	  	align-items: stretch; /* 子要素の高さを合わせる */
+  	  	.user_image_area{
+  	  	  	width: 50px;
+  	  	  	flex: 0 0 50px; /* 幅を50pxに固定 */
+  	  	  	min-height: 50px; /* 高さは最低50px */
+  	  	  	.image{
+  	  	  	  	width: 40px;
+  	  	  	  	height: 40px;
+  	  	  	  	object-fit: cover;
+  	  	  	  	margin: 5px;
+				border-radius: 50%;
+  	  	  	}
+  	  	}
+  	  	.text_area{
+  	  	  	flex: 1;
+  	  	  	display: flex;
+  	  	  	width: calc(100% - 50px);
+			flex-direction: column;
+			.answer_area{
+				width: 100%;
+				display: inline-block;
+				.image_title_area{
+					display: flex;
+					.image{
+  	  	  	  			width: 30px;
+  	  	  	  			height: 30px;
+  	  	  	  			object-fit: cover;
+						flex: 0 0 30px;
+  	  	  	  			margin: 5px;
+						border-radius: 50%;
+					}
+					.title_area{
+						flex: 1;
+						display: flex;
+						align-items: center;
+					}
+					.title{
+						margin: 3px 0px;
+						color: $text_grey;
+						.mark_a{
+							font-size: 18px;
+							color: $text_grey;
+						}
+					}
+
+				}
+				.title{
+					margin: 0px 3px;
+					.mark_a{
+						font-size: 18px;
+						color: $text_grey;
+					}
+				}
+				.description_item_area{
+					display: flex;
+					.description_area{
+						flex: 1;
+						font-size: 14px;
+						padding: 0px 5px;
+					}
+					.item_area{
+						height: 60px;
+						width: 60px;
+						display: flex;
+						margin-right: 5px;
+						margin-top: 5px;
+						img{
+							height: 100%;
+							width: 100%;
+							object-fit: cover;
+						}
+					}
+				}
+			}
+  	  	  	.request_area{
+  	  	  	  	border-radius: 5px;
+  	  	  	  	margin-right: 10px;
+				margin-top: 5px;
+				margin-bottom: 5px;
+				margin: 5px;
+				box-shadow: 0 0 2px grey;
+  	  	  	  	//border: 1.5px solid lightgray;
+				color: $text_grey;
+				display: inline-block;
+				width: calc(100% - 25px);
+				padding: 5px;
+				.title{
+					margin: 0px;
+					.mark_q{
+						font-size: 19px;
+					}
+				}
+				.item_description_area{
+					display: flex;
+					.description_area{
+						display: flex;
+						flex: 1;
+						font-size: 14px;
+					}
+					.item_area{
+						margin-right: 5px;
+						margin-top: 5px;
+						display: flex;
+						height: 60px;
+						width: 60px;
+						img{
+							height: 100%;
+							width: 100%;
+							object-fit: cover;
+						}
+					}
+				}
+  	  	  	}
+			.request_area:hover{
+				text-decoration: none;
+				color: blue;
+				opacity: 0.7;
+			}
+  	  	}
+  	}
+}

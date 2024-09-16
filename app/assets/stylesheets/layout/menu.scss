@@ -42,29 +42,30 @@ $menu_link_height: 30px;
     */
 
 
-    $left_menu_button: 33px;
+    $left_menu_button: 25px;
+    $line_width_ratio: 0.08;
     .left_menu_button_area {
         display: inline-block;
         //position: absolute;
         float: right;
-        width: $left_menu_button;
-        height: $left_menu_button;
+        width: 40px;
+        height: 50px;
         right: 10px;
         .left_menu_button {
-            width: $left_menu_button*0.9;
-            height: $left_menu_button*0.8;
+            width: $left_menu_button;
+            height: $left_menu_button;
             cursor: pointer;
-            margin-top: 12px;
-            margin-right: 5px;
+            margin-top: calc((50px - #{$left_menu_button}) / 2);
+            margin-right: calc((40px - #{$left_menu_button}) / 2);
             position: relative;
         }
         .left_menu_button span {
             position: absolute;
             left: 0;
-            width: $left_menu_button*0.9;
-            height: $left_menu_button*0.08;
+            width: $left_menu_button;
+            height: calc(#{$left_menu_button} * #{$line_width_ratio});
             background-color: dimgray;
-            border-radius: $left_menu_button*0.08;
+            border-radius: calc(#{$left_menu_button} * #{$line_width_ratio} /2);
         }
         .left_menu_button, .left_menu_button span {
             display: inline-block;
@@ -75,21 +76,21 @@ $menu_link_height: 30px;
             top: 0;
         }
         .left_menu_button span:nth-of-type(2) {
-            top: $menu_height*0.24;
+            top: calc(#{$left_menu_button} * (0.5 - #{$line_width_ratio/2}));
         }
         .left_menu_button span:nth-of-type(3) {
             bottom: 0;
         }
         .left_menu_button.active span:nth-of-type(1) {
-            -webkit-transform: translateY($menu_height*0.4) rotate(-45deg);
-            transform: translateY($menu_height*0.24) rotate(-45deg);
+            -webkit-transform: translateY(0px) rotate(-45deg);
+            transform: translateY($left_menu_button*0.46) rotate(-45deg);
         }
         .left_menu_button.active span:nth-of-type(2) {
             opacity: 0;
         }
         .left_menu_button.active span:nth-of-type(3) {
-            -webkit-transform: translateY(-$menu_height*0.4) rotate(45deg);
-            transform: translateY(-$menu_height*0.24) rotate(45deg);
+            -webkit-transform: translateY(-0px) rotate(45deg);
+            transform: translateY(-$left_menu_button*0.46) rotate(45deg);
         }
         .left_menu_button span{
             display: none;

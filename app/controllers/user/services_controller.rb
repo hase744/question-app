@@ -234,7 +234,7 @@ class User::ServicesController < User::Base
     @transactions = Transaction.includes(:seller, :service, :request, :items).order(id: :DESC)
     @transactions = @transactions.where(service_id:params[:id], is_published: true)
     @transactions = @transactions.page(params[:page]).per(@transaction_page)
-    render partial: 'user/transactions/cell', collection: @transactions, as: :transaction
+    render partial: 'user/transactions/answer', collection: @transactions, as: :transaction
   end
 
   def reviews

@@ -270,6 +270,7 @@
 .name_tag{
     color: dimgray;
     font-size: 9px;
+    //font-weight: lighter;
     padding: 4px 4px;
     margin-right: 3px;
     margin-bottom: 3px;
@@ -301,6 +302,12 @@
     font-weight: bold;
     color: $text_yellow;// white;
     display: inline-block;
+}
+.big_name_tag:hover{
+    cursor: pointer;
+    text-decoration: none;
+    color: $light_text_yellow;
+    border: 1px solid $light_text_yellow;
 }
 .specifics_area{
     .specific{
@@ -384,7 +391,7 @@
 }
 .liked_button{
     .fa-heart{
-        color: grey;
+        color: red;
     }
 }
 //.select_area {

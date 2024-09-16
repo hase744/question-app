@@ -47,7 +47,7 @@ class User::AccountsController < User::Base
   def show
     @user = User.find(params[:id])
     @bar_elements = [
-      {item:'posts', japanese_name:'相談', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
+      {item:'posts', japanese_name:'Q&A', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
       {item:'requests', japanese_name:'質問', link:user_account_requests_path(@user.id, nav_item:'requests'), page: @request_page, for_seller:false},
       {item:'sales', japanese_name:'回答', link:user_account_sales_path(@user.id, nav_item:'sales'), page: @sales_page, for_seller:true},
       {item:'services', japanese_name:Service.model_name.human, link:user_account_services_path(@user.id, nav_item:'services'), page: @service_page, for_seller:true},
@@ -76,10 +76,6 @@ class User::AccountsController < User::Base
     @user.process_image_upload = true
     @user.process_header_image_upload = true
     @user.assign_attributes(user_params)
-    puts @user.categories
-    UserCategory.where(user:@user).each do |uc|
-      uc.destroy
-    end
 
     if @user.save
         flash.notice = "ユーザー情報を更新しました"
@@ -115,11 +111,11 @@ class User::AccountsController < User::Base
   end
 
   def sales
-    render partial: 'user/transactions/cell', collection: @models, as: :transaction
+    render partial: 'user/transactions/answer', collection: @models, as: :transaction
   end
 
   def requests
-    render partial: 'user/requests/cell', collection: @models, as: :request
+    render partial: 'user/requests/question', collection: @models, as: :request
   end
 
   def users
@@ -266,7 +262,6 @@ class User::AccountsController < User::Base
     params.require(:user).permit(
         :name, 
         :description, 
-        :category_ids,
         :image, 
         :header_image
     )
