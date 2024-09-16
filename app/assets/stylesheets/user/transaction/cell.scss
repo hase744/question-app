@@ -73,6 +73,8 @@
                 margin-top: 3px;
                 margin-bottom: 0px;
                 padding-left: 5px;
+                padding-right: 5px;
+                font-size: 13px;
                 color: #333333;
                 font-weight: lighter;
             }
@@ -84,13 +86,13 @@
         }
     }
     .transaction_cell_flame_open::after {
-        content: "";
-        position: absolute;
-        bottom: 0px;
-        width: 100px;
-        right: 90px;
-        height: 20px; /* グラデーションの高さ */
-        background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
+        //content: "";
+        //position: absolute;
+        //bottom: 0px;
+        //width: 100px;
+        //right: 85px;
+        //height: 20px; 
+        //background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
     }
     .seller_area{
         display: inline-block;
@@ -116,10 +118,9 @@
             object-fit: cover;
         }
         .seller_name_area{
-            display: inline-block;
             height: 40px;
             position: relative;
-            width: calc(100% - 60px);
+            width: calc(100% - 40px);
             display: flex;
             //padding-top: 7px;
             align-items: center;
@@ -145,6 +146,25 @@
         color: red;
         font-size: 20px;
     }
+    .item_description_area{
+        display: flex;
+        .item_area{
+            height: 60px;
+            width: 55px;
+            padding: 5px;
+            padding-right: 0px;
+            padding-bottom: 0px;
+            img{
+                object-fit: cover;
+                width: 55px;
+                height: 55px;
+            }
+        }
+        .description_area{
+            display: inline-block;
+            flex-grow: 1;
+        }
+    }
     .answer{
         font-weight: bold;
         color: $text_grey;
@@ -157,29 +177,94 @@
     .open_page{
         color: $link_blue;
     }
-    .change_text{
+    .open_text_area{
+        position: absolute;
+        bottom: 2px;
+        right: 0px;
+        height: 20px;
+    }
+    .open_text{
         display: inline-block;
         //text-align: center;
         font-size: 13px;
         color: $link_blue;
-        position: absolute;
-        bottom: 0px;
-        right: 0px;
+        background-color: white;
     }
-    .change_text:before{
+    .open_text:before{
         text-decoration: none;
         color: $link_blue;;
         cursor: pointer;
         background-color: white;
     }
-    .change_text:hover{
+    .open_text:hover{
         text-decoration: underline;
+        cursor: pointer;
     }
-    .open_text:before{
-      content: "...詳細を表示";
+    .smoke{
+        display: inline-block;
+        float: left;
+        width: 100px;
+        height: 100%; 
+        background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
     }
+    //.open_text:before{
+    //    content: "";
+    //    width: 100px;
+    //    height: 20px; 
+    //    background: linear-gradient(to left, white, rgba(255, 255, 255, 0));
+    //  //content: "...詳細を表示";
+    //}
     .close_text:before{
       //content: "詳細を閉じる";
     }
 }
+.transaction_cell_area.closing{
+    .answer_area{
+        display: none;
+    }
+    .items_area{
+        display: none;
+    }
+}
+.transaction_cell_area.opening{
+    .item_description_area{
+        display: block;
+        .item_area{
+            display: none;
+        }
+    }
+    .description_area{
+        display: inline-block;
+        height: 100%;
+        .description_text{
+            display: -webkit-box;
+        }
+    }
+    .items_area{
+        overflow-x: auto;
+        display: flex;
+        height: 100px;
+        width: 100%;
+        scroll-behavior: smooth;
+        img{
+            object-fit: cover;
+            height: 100px;
+            display: inline-block;
+            margin: 0px 2.5px;
+        }
+    }
+    .open_text_area{
+        display: none;
+    }
+    .answer_area{
+        display: block;
+        box-shadow: 0 0 2px grey;
+        margin: 5px;
+        border-radius: 5px;
+    }
+    .transaction_cell_flame{
+        padding-bottom: 1px;
+    }
+}
+
 

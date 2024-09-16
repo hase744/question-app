@@ -4,7 +4,17 @@
             <%= link_to(user_service_path(service.id, transaction_id: transaction&.id), class:"service_link_area") do%>
                 <h3 class="service_title"><%= service.title%></h3>
             <% end %>
-            <div class="service_user_condition_image">
+            <%= link_to(user_account_path(service.user.id), class:"user_image_name_area top_user_image_name") do %>
+                <%if service.user.image.url == nil%>
+                    <%=image_tag "/profile.jpg", class:"user_image"%>
+                <% else %>
+                    <%=image_tag service.user.image.url, class:"user_image"%>
+                <% end %>
+                <div class="user_name_area">
+                    <span class="user_name"><%=service.user.name %></span>
+                </div>
+            <% end %>
+            <div class="service_condition_image">
                 <div class="service_image_area">
                     <%if service.item&.file&.url == nil%>
                         <%=image_tag "/corretech_icon.png", class:"service_image"%>
@@ -12,7 +22,10 @@
                         <%=image_tag service.item&.file&.thumb&.url, class:"service_image"%>
                     <% end %>
                 </div>
-                <div class="service_condition_user">
+                <div class="service_condition_area">
+                    <div class="price_area">
+                        <span class="price">&nbsp;<%=service.price%></span>円
+                    </div>
                     <%= link_to(user_account_path(service.user.id), class:"user_image_name_area") do %>
                         <%if service.user.image.url == nil%>
                             <%=image_tag "/profile.jpg", class:"user_image"%>
@@ -23,6 +36,38 @@
                             <span class="user_name"><%=service.user.name %></span>
                         </div>
                     <% end %>
+                    <span class="name_tag">
+	                    <% case service.request_form.name %>
+	                    <% when 'text' %>
+	                    	<span class="text">文章で質問</span>
+	                    <% when 'image' %>
+	                    	<span class="text">文章＋画像で質問</span>
+	                    <% when 'free' %>
+	                    	<span class="text">自由形式で質問</span>
+	                    <% else %>
+	                    <% end %>
+                    </span>
+                    <span class="name_tag">
+	                    <% case service.delivery_form.name %>
+	                    <% when 'text' %>
+	                    	<span class="text">文章で回答</span>
+	                    <% when 'image' %>
+	                    	<span class="text">文章+画像で回答</span></span>
+	                    <% when 'free' %>
+	                    	<span class="text">自由形式で回答</span>
+	                    <% else %>
+	                    <% end %>
+                    </span>
+                    <%service.categories.each do |category|%>
+                        <span class="name_tag"><%= category.japanese_name %></span>
+                    <% end %>
+                    <%if service.transaction_message_enabled%>
+                        <span class="name_tag">追加で質問可能</span>
+                    <% end %>
+                    <%if service.allow_pre_purchase_inquiry%>
+                        <span class="name_tag">購入前に質問可能</span>
+                    <% end %>
+                    <!--
                     <table class="service_condition_area">
                         <tr>
                             <td class="service_condition_icon">
@@ -80,6 +125,7 @@
                             </td>
                         </tr>
                     </table>
+                    -->
                 </div>
             </div>
         </div>

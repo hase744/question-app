@@ -33,28 +33,37 @@
                 <% end %>
             <% end %>
             -->
-            <div class="request_score_area">
-                <% if @request.user == current_user%>
-                    <div class="edit_delete_area">
-                <% if @request.user == current_user && !Transaction.exists?(request_id:params[:id]) %>
-                    <div class="edit_delete_area">
-                        <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "依頼を削除しますか？。"} %>
-                    </div>
-                <% end %>
-                    </div>
-                <% else %>
-                    <%= link_to(user_request_likes_path(id: @request.id), class: "like_button #{@request.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
-                        <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@request.total_likes%></span>&nbsp;
+            <div class="common_score_area">
+                <div class="score_area_left">
+                    <span class="score_info"><label>状況</label>&nbsp;
+                        <span class='status <%=@request.status_color%>'><%= @request.status %></span>
+                    </span>
+                    <span class="score_info"><label>投稿</label>&nbsp;<%= readable_datetime(@request.published_at)%></span>
+                    <% unless @request.services.present? %>
+                        <span class="score_info"><label>提案数</label>&nbsp;<%=Transaction.where(request:@request, is_suggestion:true).count%>件</span>
                     <% end %>
-                <% end %>
-                <span class="request_score_info"><label>状況</label>&nbsp;<%= @request.status%></span>
-                <span class="request_score_info"><label>投稿</label>&nbsp;<%= readable_datetime(@request.published_at)%></span>
-                <% unless @request.services.present? %>
-                    <span class="request_score_info"><label>提案数</label>&nbsp;<%=Transaction.where(request:@request, is_suggestion:true).count%>件</span>
-                <% end %>
+                </div>
+                <div class='score_area_right'>
+                    <% if @request.user == current_user%>
+                        <div class="edit_delete_area">
+                            <% if @request.user == current_user && !Transaction.exists?(request_id:params[:id]) %>
+                                <div class="edit_delete_area">
+                                    <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "依頼を削除しますか？。"} %>
+                                </div>
+                            <% end %>
+                        </div>
+                    <% else %>
+                        <%= link_to(user_request_likes_path(id: @request.id), class: "like_button #{@request.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
+                            <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@request.total_likes%></span>&nbsp;
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+            <div class="user_label">
+                <%= render "user/shared/small_label", text:"条件"%>
             </div>
             <table class="common_condition_area">
-                <% if @request.services == [] %>
+                <% if @request.is_inclusive %>
                 <tr>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:max_price)%></span>
@@ -64,7 +73,7 @@
                     </td>
                 </tr>
                 <% end %>
-                <% if @request.services == [] %>
+                <% if @request.is_inclusive %>
                 <tr>
                     <td class="condition_label">
                         <span class="condition_name "><%= Request.human_attribute_name(:suggestion_deadline) %></span>
@@ -95,7 +104,11 @@
                         <span class="condition_name "><%= Request.human_attribute_name(:category) %></span>
                     </td>
                     <td>
-                        <span class="common_condition"><%=@request.category.japanese_name%></span>
+                        <span class="common_condition">
+                        <% @request.categories.each do |category| %>
+                            <%= link_to category.japanese_name, user_requests_path(categories: category.name), class:"big_name_tag" %>
+                        <% end %>
+                        </span>
                     </td>
                 </tr>
             </table>
@@ -155,7 +168,7 @@
 <div class="bottom_button_area">
     <div class="bottom_button_flame button_area">
         <div class="bottom_button modal_open suggest_button button"">
-        相談室を提案
+        <i class="fa-solid fa-chalkboard-user"></i> 相談室を提案
         </div>
     </div>
 </div>

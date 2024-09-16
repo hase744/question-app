@@ -263,6 +263,30 @@ class Request < ApplicationRecord
       end
     end
   end
+  
+  def status_color
+    if self.is_inclusive
+      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now
+        'grey'
+      else
+        "green"
+      end
+    else
+      transactions = Transaction.where(request_id: self.id)
+      if transactions.length >= 1 
+        transaction = transactions[0]
+        if transaction.is_canceled || transaction.is_rejected
+          "black"
+        elsif transaction.is_transacted
+          "green"
+        else
+          "yellow"
+        end
+      else
+        "yellow"
+      end
+    end
+  end
 
   def validate_request_category
     unless self.request_categories.present?

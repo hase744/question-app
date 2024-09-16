@@ -1,0 +1,62 @@
+<div class="transaction_cell_area closing">
+    <div class="transaction_cell_flame transaction_cell_flame_open">
+        <div class="video_text_area">
+            <%= link_to(user_request_path(request.id), class: 'transaction_link') do %>
+                <h5 class="request_title one_line_text"><span class="mark_q">Q.</span><%= request.title%></h5>
+            <% end %>
+            <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to request.user.name, user_account_path(request.user.id), class: '' %><%= %>　<%= readable_datetime(request.created_at)%></h5>
+			<div class="item_description_area">
+				<% if request.items.not_text_image.present? %>
+					<div class='item_area'>
+						<%= image_tag request.items.not_text_image.first.file.thumb.url %>
+					</div>
+				<% end %>
+				<div class="description_area">
+            		<span class="three_line_text text description_text"><%= request.description%></span>
+				</div>
+			</div>
+			<% if request.items.not_text_image.present? %>
+				<div class='items_area'>
+					<% request.items.not_text_image.each do |item| %>
+						<%= image_tag item.file.thumb.url %>
+					<% end %>
+				</div>
+			<% end %>
+            <% request.transactions.where(is_published: true).each do |transaction| %>
+            	<div class="answer_area">
+            	    <div class="seller_container">
+            	        <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
+            	            <% if transaction.seller.image.thumb.url %>
+            	                <%=image_tag transaction.seller.image.thumb.url, class:"seller_image"%>
+            	            <% else %>
+            	                <%=image_tag user_image_default, class:"seller_image"%>
+            	            <% end %>
+            	            <div class="seller_name_area">
+            	                <p class="seller_name"><%=transaction.seller.name%></p>
+            	            </div>
+            	        <% end %>
+            	        <%#= render "user/relationships/follow", user:transaction.seller%>
+            	    </div>
+            	    <span class="title answer">
+            	        <span class="mark_a">A.</span><%= transaction.title%>
+            	    </span>
+            	    <h5 class="text three_line_text"><%= transaction.description%></h5>
+					<% if transaction.items.present? %>
+						<div class='items_area'>
+							<% transaction.items.each do |item| %>
+								<%= image_tag item.file.thumb.url %>
+							<% end %>
+						</div>
+					<% end %>
+            	    <div class="open_page_area">
+            	    	<%= link_to "...続きを見る", user_transaction_path(transaction.id), class:"open_page" %>
+            	    </div>
+            	</div>
+			<% end %>
+        </div>
+    </div>
+    <div class='open_text_area'>
+	<div class="smoke"></div>
+        <div class="open_text" id="open_text">&nbsp;<%=request.transactions.where(is_published: true).count%>件の回答<span class='fas fa-angle-down'>&nbsp;</span>&nbsp;</div>
+    </div>
+</div>

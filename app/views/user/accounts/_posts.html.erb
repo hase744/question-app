@@ -1,8 +1,8 @@
 <% models.each do |row| %>
     <%= case row.model_name.to_s
 	when 'Transaction'
-        render 'user/transactions/cell', transaction: row
+        render 'user/transactions/answer', transaction: row
     when 'Request'
-        render 'user/requests/cell', request: row
+        render 'user/requests/question', request: row
     end %>
 <% end %>

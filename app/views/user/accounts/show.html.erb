@@ -69,7 +69,7 @@
                 <% end %>
                 <div class="category_area">
                     <% @user.categories.each do |category| %>
-                        <div class="big_name_tag"><%=category.japanese_name%></div>
+                        <%= link_to category.japanese_name, user_accounts_path(categories: category.name), class:"big_name_tag" %>
                     <% end %>
                 </div>
             </div>
@@ -101,9 +101,9 @@
             when 'posts'
                 render 'user/accounts/posts', models: @models
             when 'requests'
-                render partial: 'user/requests/cell', collection: @models, as: :request
+                render partial: 'user/requests/question', collection: @models, as: :request
             when 'sales'
-                render partial: 'user/transactions/cell', collection: @models, as: :transaction
+                render partial: 'user/transactions/answer', collection: @models, as: :transaction
             when 'services'
                 render partial: 'user/services/cell', collection: @models, as: :service
             when 'reviews'

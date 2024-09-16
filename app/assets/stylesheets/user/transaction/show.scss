@@ -3,6 +3,12 @@
     .transaction_show_left_side{
         display: inline-block;
         width: 100%;
+        .sort_area{
+            .current_order{
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        }
         .title_component{
             margin: 0px;
             margin-left: 5px;

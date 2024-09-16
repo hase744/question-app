@@ -1,10 +1,12 @@
 @import "_variables";
 .request_cell_area{
     margin: 5px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 2px lightgray;
     padding: 5px;
+    border-radius: 2.5px;
+    background-color: white;
+    box-shadow: 0 0 2px lightgray;
+    box-shadow: 1px 1px 3px gray;
+    position: relative;
     .request_link{    
         text-decoration: none;
         color: blue;
@@ -31,6 +33,28 @@
                 font-size:15px;
                 font-weight: normal;
             }
+        }
+        .user_deadline{
+            .deadline{
+                //float: right;
+                padding: 3px 5px;
+                font-size: 12px;
+                border-radius: 20px;
+                color: white;
+                margin-bottom: 5px;
+            }
+            .soon{
+                background-color: red;
+            }
+            .ongoing{
+                background-color: $ok_green;
+            }
+            .over{
+                background-color: grey;
+            }
+        }
+        .name_tag{
+            //float: right;
         }
         .request_user_area{
             text-align: right;
@@ -76,7 +100,7 @@
             }
         }
         .vertical_condition_area{
-            height: 150px;
+            height: 100px;
         }
     }
 }
@@ -87,6 +111,9 @@
     }
     .request_cell_area{
         .request_cell_flame{
+            h3{
+                font-size: 17px;
+            }
             .item_area{
                 width: calc(100% - 10px);
                 .image{
@@ -103,9 +130,9 @@
         .request_cell_flame{
             .item_area{
                 width: calc(50% - 10px);
-                width: calc(150px * 16 / 9);
+                width: calc(100px * 16 / 9);
                 .image{
-                    height: 150px;
+                    height: 100px;
                     width: 100%;
                 }
             }

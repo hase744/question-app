@@ -1,17 +1,20 @@
 @import "variables";
 .sidebar_notification_zone{
     z-index: 2;
-    background-color: green;
+    //background-color: green;
     height: 0px;
     width: 100%;
     transition-duration: 4s;
     display: none;
     float: right;
     width:200px;
+    position: fixed;
+    width: 100%;
+    height: 100%;
     .menu_notification_cells_area{
-        z-index: 2;
+        z-index: 20;
         position: absolute;
-        height: calc(100% - 50px);
+        height: calc(100% - 50px) !important;
         width:200px;
         right: 0px;
         padding:0px 0px;

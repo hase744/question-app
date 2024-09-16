@@ -18,34 +18,11 @@
                 background-color: red;
             }
             .request_title_area{
-                
                 .request_title{
                     margin-top: 5px;
                     margin-bottom:0px;
                 }
                 border-bottom: solid 2px lightgray;
-            }
-            .request_score_area{
-                .request_score_info{
-                    display: inline-block;
-                    margin: 5px;
-                    label{
-                        background-color: #EEEEEE;
-                        padding: 5px 2px;
-                        font-size: 12px;
-                        //border-radius: 5px;
-                    }
-                }
-                .user_name{
-                    display: inline-block;
-                    span{
-                        display: inline-block;
-                    }
-                }
-                margin-top: 5px;
-            }
-            .request_like_area{
-                margin-top: 10px;
             }
             .edit_delete_area{
                 display: inline-block;

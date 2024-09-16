@@ -7,8 +7,8 @@
 <% end %>
 <div class="sort_area">&nbsp;
 	<%= link_to "古い順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"ASC", transaction_id:@transaction.id, after_delivered: action_name == "show"), remote:true, class:"sort_button desc_button asc_mode", style:'cursor:pointer', onclick:"change_to_asc()"%>
-	<span class="asc_mode">｜ 新しい順</span>
-	<span class="desc_mode"> 古い順 ｜</span>
+	<span class="asc_mode">｜ <span class="current_order">新しい順</span></span>
+	<span class="desc_mode"> <span class="current_order">古い順</span> ｜</span>
     <%= link_to "新しい順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"DESC", transaction_id:@transaction.id, after_delivered: action_name == "show"), remote:true, class:"sort_button asc_button desc_mode", style:'cursor:pointer', onclick:"change_to_desc()"%>
 </div>
 <div class="transaction_message_area">

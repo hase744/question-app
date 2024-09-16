@@ -1,4 +1,4 @@
-
+@import "_variables";
 .suggestion_area:hover{
     //background-color: whitesmoke;
 }
@@ -8,15 +8,20 @@
         color: blue;
     }
     background-color: white;
-    box-shadow: 0 0 2px lightgray;
+    border: 1px solid lightgray;
     margin: 5px;
+    padding: 0px 5px;
     border-radius: 10px;
     position: relative;
+    .top_user_image_name{
+        display: none;
+        @media(max-width: 500px){
+            display: inline-block;
+        }
+    }
     .user_image_name_area{
-        display: inline-block;
         width: calc(100%);
        // width: 60px;
-        display: inline-block;
         //float: left;
         .user_image{
             width: 30px;
@@ -31,13 +36,13 @@
         .user_name_area{
             width: calc(100% - 40px);
             height: 40px;
-            display: inline-block;
+			display: flex;
+			align-items: center;
             float: left;
-            color: dimgray;
+            color: $text_grey;
             .user_name{
                 display: inline-block;
-                margin-top: 8px;
-                color: gray;
+                color: $text_grey;
             }
             .user_name:hover{
                 color: darkgray;
@@ -58,26 +63,56 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         -webkit-line-clamp: 1;
-        text-decoration: underline;
-        color: blue
+        //text-decoration: underline;
+        color: $text_grey;
+        border-bottom: solid 2px lightgray;
     }
-    .service_image_area{
-        display: inline-block;
-        float: left;
-        height: 120px;
-        width: 180px;
-        .service_image{
-            object-fit: cover;
-            height: 100%;
-            width: 100%;
-        }
-    }
-
-    .service_user_condition_image{
-        float: left;
-        display: inline-block;
-        position: relative;
+    .service_condition_image{
+        display: flex;
+        justify-content: space-between;
+        //align-items: flex-start;
         width: 100%;
+        align-items: stretch;
+        .user_image_name_area{
+            display: inline-block;
+            @media(max-width: 500px){
+                display: none;
+            }
+        }
+        .service_image_area{
+            flex-shrink: 0;
+            display: flex;
+            min-height: 100px;
+            align-self: stretch;
+            width: 180px;
+            @media(max-width: 500px){
+                width: 50%;
+            }
+            position: relative;
+            .service_image{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        .service_condition_area{
+            flex: 1;
+            //display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 3px;
+            padding: 5px;
+            flex-direction: column;
+            .price_area{
+                width: 100%;
+                .price{
+                    font-size: 22px;
+                    color: $text_grey;
+                }
+            }
+        }
         .service_condition_user{
             height: 120px;
             float: left;

@@ -1,19 +1,19 @@
-$(".open_text").click(function() {
-    var parent = $(this).closest(".transaction_cell_area");
-    var open_text = parent.find(".open_text");
-    var change_text = parent.find(".change_text");
-    var description_text = parent.find(".description_text");
-    var answer_area = parent.find(".answer_area");
-    var cell_flame = parent.find(".transaction_cell_flame");
-    var request_title = parent.find(".request_title");
+open_transaction_cells = function(cell_area){
+    var description_text = cell_area.find(".description_text");
+    var request_title = cell_area.find(".request_title");
 
-    change_text.html("&nbsp;<span class=''></span>&nbsp;")
-    open_text.toggleClass("open_text");
-    open_text.toggleClass("close_text");
-    cell_flame.toggleClass("transaction_cell_flame_open");
-    description_text.toggleClass("opening_text");
-    description_text.toggleClass("closing_text");
     description_text.toggleClass("three_line_text");
-    answer_area.toggleClass("display_none");
     request_title.toggleClass("one_line_text");
-});
+
+
+    cell_area.toggleClass("opening");
+    cell_area.toggleClass("closing");
+}
+//$(document)がないと新しく増えたtransaction_cell_areaに適応されないため
+addEventListener("load", (event) => {
+    $(document).on("click", ".open_text", function() {
+        var cell_area = $(this).closest(".transaction_cell_area");
+        open_transaction_cells(cell_area);
+    });
+    }
+);

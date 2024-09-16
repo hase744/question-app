@@ -46,26 +46,26 @@
             }
         }
         .user_info_area{
+            display: flex;
             height: 40px;
             margin-bottom: 0px;
             .user_image_area{
-                display: inline-block;
+                display: flex;
                 height: 40px;
                 width: 40px;
-                float: left;
                 .user_image{
                     height:30px;
                     width: 30px;
                     border-radius: 30px;
-                    margin-top: 5px;
-                    margin-left: 5px;
+                    margin: 5px;
                     object-fit: cover;
                 }
             }
             .user_name_area{
-                display: inline-block;
+                flex: 1;
+                display: flex;
+                align-items: center;
                 width: calc(100% - 60px);
-                margin-top: 5px;
                 .user_name{
                     color: $text_grey;
                     margin-top: 40px;
