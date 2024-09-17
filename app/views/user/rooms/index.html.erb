@@ -6,11 +6,7 @@
                     <div class="room_cell_area" id="room_cell_area">
                     <%= link_to(user_room_path(room.id), class: 'message_show_button') do %>
                         <div class="user_image_area">
-                            <% if room.receiver.image.url %>
-                                <%=image_tag room.receiver.image.url, class:"user_image"%>
-                            <% else %>
-                                <%=image_tag "/profile.jpg", class:"user_image"%>
-                            <% end %>
+                            <%=image_tag room.receiver.thumb_with_default, class:"user_image"%>
                         </div>
                         <div class="room_info_area">
                             <div class="user_name_area">

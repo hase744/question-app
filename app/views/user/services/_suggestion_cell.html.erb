@@ -5,33 +5,21 @@
                 <h3 class="service_title"><%= service.title%></h3>
             <% end %>
             <%= link_to(user_account_path(service.user.id), class:"user_image_name_area top_user_image_name") do %>
-                <%if service.user.image.url == nil%>
-                    <%=image_tag "/profile.jpg", class:"user_image"%>
-                <% else %>
-                    <%=image_tag service.user.image.url, class:"user_image"%>
-                <% end %>
+                <%=image_tag service.user.thumb_with_default, class:"user_image"%>
                 <div class="user_name_area">
                     <span class="user_name"><%=service.user.name %></span>
                 </div>
             <% end %>
             <div class="service_condition_image">
                 <div class="service_image_area">
-                    <%if service.item&.file&.url == nil%>
-                        <%=image_tag "/corretech_icon.png", class:"service_image"%>
-                    <% else %>
-                        <%=image_tag service.item&.file&.thumb&.url, class:"service_image"%>
-                    <% end %>
+                    <%=image_tag service.thumb_with_default, class:"service_image"%>
                 </div>
                 <div class="service_condition_area">
                     <div class="price_area">
                         <span class="price">&nbsp;<%=service.price%></span>円
                     </div>
                     <%= link_to(user_account_path(service.user.id), class:"user_image_name_area") do %>
-                        <%if service.user.image.url == nil%>
-                            <%=image_tag "/profile.jpg", class:"user_image"%>
-                        <% else %>
-                            <%=image_tag service.user.image.url, class:"user_image"%>
-                        <% end %>
+                        <%=image_tag service.user.thumb_with_default, class:"user_image"%>
                         <div class="user_name_area">
                             <span class="user_name"><%=service.user.name %></span>
                         </div>

@@ -2,11 +2,7 @@
     <% contents.each do |user| %>
         <div class="followed_user_area">
             <%= link_to(user_account_path(user.id), class: 'seller_area') do %>
-                <%if user.image.url %>
-                <%=image_tag user.image.url, class:"seller_image"%>
-                <% else %>
-                <%=image_tag "/profile.jpg", class:"seller_image"%>
-                <% end %>
+                <%=image_tag user.thumb_with_default, class:"seller_image"%>
                 <div class="seller_name_area">
                     <p class="seller_name"><%=user.name%></p>
                 </div>

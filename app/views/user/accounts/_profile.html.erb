@@ -1,11 +1,7 @@
 <div class="user_profile_zone">
     <div class="user_profile_flame">
         <div class="user_image_area">
-            <%if  user.image.url == nil%>
-            <%=image_tag "/profile.jpg", class:"user_profile_image"%>
-            <% else %>
-            <%=image_tag user.image_url, class:"user_profile_image", users: user%>
-            <% end %>
+            <%=image_tag user.normal_image_with_default, class:"user_profile_image", users: user%>
         </div>
         <div class="user_name_area">
             <%= link_to(user_account_path(user.id), class: 'user_link') do %>

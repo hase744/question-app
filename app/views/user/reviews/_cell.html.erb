@@ -1,11 +1,7 @@
 <div class="review_cell_zone">
     <div class="review_cell_flame">
         <div class="image_area">
-            <% if transaction.buyer.image_url %>
-                <%=image_tag transaction.buyer.image_url, class:"image"%>
-            <% else %>
-                <%=image_tag "/profile.jpg", class:"image"%>
-            <% end %>
+            <%=image_tag transaction.buyer.thumb_with_default, class:"image"%>
         </div>
         <div class="review_content">
             <div class="star_rating">

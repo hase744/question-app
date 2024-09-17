@@ -116,8 +116,12 @@ class User < ApplicationRecord
     Country.find_by(name: self.country_id)
   end
 
-  def image_width_default
+  def image_with_default
     self.image.url.presence || "/profile.jpg"
+  end
+
+  def normal_image_with_default
+    self.image.normal_size.url.presence || "/profile.jpg"
   end
 
   def thumb_with_default

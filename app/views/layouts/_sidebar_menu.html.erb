@@ -6,15 +6,11 @@
         <div class="sidebar_menu_area side_menu signined_menu">
             <div class="sidebar_menu_flame">
                 <div class="sidebar_menu_profile sidebar_menu_component">
-                    <%if current_user %>
-                    <a href="/user/accounts/<%=current_user.id%>">
-                    <% if current_user.image.url %>
-                        <%=image_tag current_user.image.url, class:"menu_profile_image"%>
-                    <% else %>
-                        <%=image_tag "/profile.jpg", class:"menu_profile_image"%>
-                    <% end %>
-                    <span>プロフィール</span>
-                    </a>
+                    <%if user_signed_in? %>
+                        <%= link_to user_account_path(current_user.id) do %>
+                            <%=image_tag current_user.thumb_with_default, class:"menu_profile_image"%>
+                            <span>プロフィール</span>
+                        <% end %>
                     <% end %>
                 </div>
                 <div class="sidebar_menu_seller sidebar_menu_component">

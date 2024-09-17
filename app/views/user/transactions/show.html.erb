@@ -13,11 +13,7 @@
                     <h2 class="title"><%=link_to @transaction.request.title, user_request_path(@transaction.request.id), class:"request_title"%></h2>
                     <div class="datetime"><%=readable_datetime(@transaction.request.published_at)%></div>
                     <%= link_to(user_account_path(@transaction.buyer.id), class: 'buyer_area') do %>
-                        <% if @transaction.buyer.image.url %>
-                            <%=image_tag @transaction.buyer.image.url, class:"buyer_image" %>
-                        <% else %>
-                            <%=image_tag user_image_default, class:"buyer_image" %>
-                        <% end %>
+                        <%=image_tag @transaction.buyer.thumb_with_default, class:"buyer_image" %>
                         <div class="buyer_name_area">
                             <p class="buyer_name"><%=@transaction.buyer.name%></p>
                         </div>
@@ -48,7 +44,7 @@
         <div class="along_message_area">
             <div class="user_name_area">
                 <div class="user_image_area">
-                <%= image_tag @transaction_along_messages.first.sender.image.thumb.url, class:"image" %>
+                <%= image_tag @transaction_along_messages.first.sender.thumb_with_default, class:"image" %>
                 </div>
                 <div class="user_name">
                     <span class="one_line_text">
@@ -76,11 +72,7 @@
             <div class="transaction_flame" id="transaction_flame">
                 <div class="seller_info">
                     <%= link_to(user_account_path(@transaction.seller.id), class: 'seller_area') do %>
-                        <% if @transaction.seller.image.url %>
-                            <%=image_tag @transaction.seller.image.url, class:"seller_image"%>
-                        <% else %>
-                            <%=image_tag user_image_default, class:"seller_image"%>
-                        <% end %>
+                        <%=image_tag @transaction.seller.thumb_with_default, class:"seller_image"%>
                         <div class="seller_name_area">
                             <p class="seller_name"><%=@transaction.seller.name%></p>
                             <div class="datetime"><%=readable_datetime(@transaction.published_at)%></div>

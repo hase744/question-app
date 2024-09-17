@@ -17,11 +17,7 @@
     <% else %>
         <div class="destination_message_area message_area">
             <div class="image_area">
-                <% if content.sender.image.url %>
-                    <%=image_tag content.sender.image.url, class:"user_image"%>
-                <% else %>
-                    <%=image_tag "/profile.jpg", class:"user_image"%>
-                <% end %>
+                <%=image_tag content.sender.thumb_with_default, class:"user_image"%>
             </div>
             <div class="message_text_area">
                 <div class="message_text"><%=content.body %></div>
