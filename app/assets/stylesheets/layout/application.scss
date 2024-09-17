@@ -103,6 +103,7 @@ body{
 }
 .main_bottom{
     margin-bottom: 5px;
+    width: 100%;
     a{
         color: blue;
     }
@@ -156,9 +157,6 @@ body{
             margin: 0 0 0 calc(50% - 500px);
             width: 1000px;
         }
-        .sidebar_menu_margin{
-            display: none;
-        }
     }
 }
 .small_layout{
@@ -177,9 +175,6 @@ body{
             margin: 0 0 0 calc(50% - 250px);
             width: 500px;
         }
-        .sidebar_menu_margin{
-            display: none;
-        }
     }
 }
 .medium_layout{
@@ -197,9 +192,6 @@ body{
         .main_area{
             margin: 0 0 0 calc(50% - 350px);
             width: 700px;
-        }
-        .sidebar_menu_margin{
-            display: none;
         }
     }
 }
@@ -228,6 +220,7 @@ body{
 .search_layout{
     .top_search_margin{
         height: 50px;
+        background-color: white;
     }
     .top_search_form{
         padding-top: 0px;
@@ -251,9 +244,6 @@ body{
         .search_detail_margin{
             display: inline-block;
             width: 10%;
-        }
-        .sidebar_menu_margin{
-            display: none;
         }
     }
 }
@@ -285,3 +275,8 @@ textarea{
 
 $main-color: #3D85C6;
 $text_yellow: rgb(200, 200, 0);
+@media(min-width: 500px){
+    .sidebar_menu_margin{
+        display: none;
+    }
+}

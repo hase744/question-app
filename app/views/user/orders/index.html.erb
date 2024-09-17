@@ -2,7 +2,7 @@
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: current_user%>
 <%= render "user/shared/error_message", model: @service%>
-<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ＞</span> 取引一覧 </h3>
+<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> ></span> 取引一覧 </h3>
     <%= render "user/orders/header"%>
     <div class="order_index_flame">
         <% @transactions.each do |transaction| %>
@@ -20,12 +20,13 @@
                 </div>
                 <div class="text_area">
                     <h4 class="title two_line_text"><%= transaction.request.title%></h4>
-                    <div class="from_now">
-                    <% if transaction.is_transacted %>
-                        <span class="ok">納品済み</span>
-                    <% else %>
-                    <span class="not_ok"><%= from_now(transaction.delivery_time) %></span>
-                    <% end %>
+                    <div class="from_now one_line_text">
+                        <% if transaction.is_transacted %>
+                            <span class="ok">納品済み</span>
+                        <% else %>
+                            <span class="not_ok"><%= from_now(transaction.delivery_time) %></span>
+                        <% end %>
+                        to: <%= transaction.service.title%>
                     </div>
                 </div>
             <% end %>

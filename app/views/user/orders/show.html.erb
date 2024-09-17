@@ -1,5 +1,5 @@
 <div class="order_show_zone">
-    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> ＞ 回答</p>
+    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> > 回答</p>
     <%= render "user/shared/error_message", model: @transaction%>
     <div class="order_show_flame component_area">
         <%  if @transaction.is_canceled || @transaction.is_rejected%>

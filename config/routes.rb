@@ -53,6 +53,7 @@ namespace :user do
     get "requests/:id/preview", to: "requests#preview", as: "request_preview"
     post "requests/publish/:id", to: "requests#publish", as: "request_publish"
     post "requests/purchase/:id", to: "requests#purchase", as: "request_purchase"
+    get "requests/mine", to: "requests#mine", as:"request_mine"
     post "transactions/like/:id", to:"transactions#like", as: "transactions_like"
     put "transactions/deliver/:id",  to:"transactions#deliver", as:"deliver_transaction"
     post "transactions/pre_purchase_inquire/:id",  to:"transactions#pre_purchase_inquire", as:"inquire_transaction"
@@ -102,6 +103,7 @@ namespace :user do
     get "services/reviews/:id", to: "services#reviews", as:"service_reviews"
     get "services/transactions/:id", to: "services#transactions", as:"service_transactions"
     put "services/:id/suggest", to: "services#suggest", as:"service_suggest"
+    get "services/mine", to: "services#mine", as:"service_mine"
     put "orders/:id", to: "orders#cancel", as:"cancel_order"
     patch "orders/:id", to: "orders#reject", as:"reject_order"
     

@@ -2,14 +2,17 @@ class User::RequestLikesController < User::Base
   before_action :check_login, only:[:show, :create]
   layout 'medium_layout'
   def show
-    @requests = Request
-      .where(id: current_user.request_likes.pluck(:request_id))
+    @requests = Request.joins(:likes)
+      .solve_n_plus_1
+      .where(likes: { user_id: current_user.id })
+      .order('likes.created_at DESC')
       .page(params[:page])
       .per(20)
   end
 
   def create
     request = Request.find(params[:id])
+    return if !request.is_published
     like = request.likes.find_by(user: current_user)
     if like.present?
       like.destroy

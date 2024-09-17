@@ -75,34 +75,16 @@
             <div class="caveat">＊<%=date_of_payment%></div>
         </div>
     </div>
-    <%= link_to(user_orders_path, class:"link_area config_component_area") do %>
-        <h4 class="far fa-handshake">&nbsp;取引一覧</h4>
-    <% end %>
-    <%= link_to(user_cards_path, class:"link_area config_component_area") do %>
-        <h4 class="far fa-credit-card">&nbsp;クレジットカード情報</h4>
-    <% end %>
-    <%= link_to(user_connects_path, class:"link_area config_component_area") do %>
-        <h4 class="far fa-id-card">&nbsp;回答者情報</h4>
-    <% end %>
-    <%= link_to(user_service_likes_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-heart">&nbsp;気に入りの相談室</h4>
-    <% end %>
-    <%= link_to(user_transaction_likes_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-thumbs-up">&nbsp;いいねした回答</h4>
-    <% end %>
-    <%= link_to(user_request_likes_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-thumbs-up">&nbsp;いいねした質問</h4>
-    <% end %>
-    <%= link_to(user_payments_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-coins">&nbsp;ポイント</h4>
-    <% end %>
-    <%= link_to(user_connect_reward_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-money-check-alt">&nbsp;収益の銀行口座入金</h4>
-    <% end %>
-    <%= link_to(user_pre_purchase_inquiry_path, class:"link_area config_component_area") do %>
-        <h4 class="fa-regular fa-comments">&nbsp;購入前メッセージ</h4>
-    <% end %>
-    <%= link_to(edit_user_configs_path, class:"link_area config_component_area") do %>
-        <h4 class="fas fa-cogs">&nbsp;設定</h4>
-    <% end %>
+    <%= render "user/configs/button", path: user_orders_path, icon: "far fa-handshake", label: "取引一覧" %>
+    <%= render "user/configs/button", path: user_cards_path, icon: "far fa-credit-card", label: "クレジットカード" %>
+    <%= render "user/configs/button", path: user_connects_path, icon: "far fa-id-card", label: "回答者情報" %>
+    <%= render "user/configs/button", path: user_pre_purchase_inquiry_path, icon: "fa-solid fa-comments", label: "購入前メッセージ" %>
+    <%= render "user/configs/button", path: user_service_mine_path, icon: "fas fa-chalkboard-teacher", label: "自分の相談室" %>
+    <%= render "user/configs/button", path: user_request_mine_path, icon: "fa-solid fa-q", label: "自分の質問" %>
+    <%= render "user/configs/button", path: user_service_likes_path, icon: "fas fa-heart", label: "気に入りの相談室" %>
+    <%= render "user/configs/button", path: user_transaction_likes_path, icon: "fas fa-thumbs-up", label: "いいねした回答" %>
+    <%= render "user/configs/button", path: user_request_likes_path, icon: "fas fa-thumbs-up", label: "いいねした質問" %>
+    <%= render "user/configs/button", path: user_payments_path, icon: "fas fa-coins", label: "ポイント" %>
+    <%= render "user/configs/button", path: user_connect_reward_path, icon: "fas fa-money-check-alt", label: "収益の口座入金" %>
+    <%= render "user/configs/button", path: edit_user_configs_path, icon: "fas fa-cogs", label: "設定" %>
 </div>

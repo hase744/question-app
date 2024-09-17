@@ -1,9 +1,21 @@
-<div class="request_like_show">
-    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> ＞ いいねした質問 <%= paginate @requests %></h3>
+<div class="list_zone">
+    <h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした質問 <%= paginate @requests %></h3>
   	<% @requests.each do |request| %>
-		  <%= render "user/requests/cell", request: request %>
+        <%= link_to(user_request_path(request.id), class:"order_cell") do %>
+            <div class="image_area">
+                <%= image_tag request.items.first.file.thumb.url, class:"image" %>
+            </div>
+            <div class="text_area">
+                <h4 class="title two_line_text"><%= request.title%></h4>
+                <div class="from_now one_line_text">
+                by: <%= request.user.name %>
+                </div>
+            </div>
+        <% end %>
   	<% end %>
-  	<%= paginate @requests %>
+	<div class="main_bottom">
+  		<%= paginate @requests %>
+	</div>
 </div>
 <script>
 

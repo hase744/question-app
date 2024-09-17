@@ -110,6 +110,14 @@ class User::RequestsController < User::Base
     set_preview_values
   end
 
+  def mine
+    @requests = current_user.requests
+      .solve_n_plus_1
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(20)
+  end
+
   def update
     @transactions = Transaction.where(request:@request) #サービスの購入である
     if @transactions.present? #サービスの購入である

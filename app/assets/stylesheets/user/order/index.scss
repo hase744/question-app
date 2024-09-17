@@ -36,38 +36,6 @@
             background-color: whitesmoke !important;
         }
         .order_cell{
-            background-color: white;
-            box-shadow: 0 0 2px lightgray;
-            border-radius: 5px;
-            padding: 5px;
-            margin: 5px;
-            width: calc(100% - 20px);
-            display: inline-block;
-            color: black;
-            .image_area{
-                height: $image_height;
-                width: $image_width;
-                display: inline-block;
-                float: left;
-            }
-            .image{
-                height: $image_height;
-                width: $image_width;
-                object-fit: cover;
-            }
-            .text_area{
-                display: inline-block;
-                width: calc(100% - #{$image_width} - 10px);
-                margin: 15px 0px 0px 5px;
-                .title{
-                    margin: 0px;
-                    color: $text_grey;
-                }
-                .from_now{
-                    font-size: 14px;
-                    color: dimgray;
-                }
-            }
             //background-color: white;
             //box-shadow: 0 0 2px lightgray;
             //border-radius: 10px;

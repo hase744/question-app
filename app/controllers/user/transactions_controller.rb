@@ -176,7 +176,7 @@ class User::TransactionsController < User::Base
       @transaction = @transaction_message.deal
       @transaction.pre_purchase_inquired_at ||= DateTime.now
       if @transaction_message.save! && @transaction.save
-        flash.notice = "問い合わせしました。"
+        flash.notice = "送信しました。"
         EmailJob.perform_later(mode: :inquire, model: @transaction)
         redirect_back(fallback_location: root_path)
         if current_user == @transaction.seller

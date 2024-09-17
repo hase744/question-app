@@ -1,22 +1,27 @@
-<h3 class="zone_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 購入前メッセージ</h3>
-<div class="transaction_pre_purchase_inquiry_header">
-<%= paginate @transactions %>
-</div>
-<div class="transaction_pre_purchase_inquiry">
-  	<% @transactions.each do |transaction| %>
-		<div class="pre_purchase_inquiry_cell open_button">
-			<div class="inner_pre_purchase_inquiry_cell">
-				<%=image_tag transaction.opponent_of(current_user).image.thumb.url, class:"image" %>
-				<div class="text_area">
-					<div class="message one_line_text"><%=transaction.transaction_messages.last.body %></div>
-					<div class="datetime">
-						<%=	readable_datetime(transaction.transaction_messages.last.created_at) %>
+<div class="list_zone">
+	<h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 購入前メッセージ</h3>
+	<div class="transaction_pre_purchase_inquiry_header">
+	<%= paginate @transactions %>
+	</div>
+	<div class="transaction_pre_purchase_inquiry">
+	  	<% @transactions.each do |transaction| %>
+			<div class="pre_purchase_inquiry_cell open_button">
+				<div class="inner_pre_purchase_inquiry_cell">
+					<%=image_tag transaction.opponent_of(current_user).image.thumb.url, class:"image" %>
+					<div class="text_area">
+						<div class="message one_line_text"><%=transaction.transaction_messages.last.body %></div>
+						<div class="datetime">
+							<%=	readable_datetime(transaction.transaction_messages.last.created_at) %>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<%= render "user/shared/pre_inquery_modal", transaction: transaction %>
-  	<% end %>
+			<%= render "user/shared/pre_inquery_modal", transaction: transaction %>
+	  	<% end %>
+	</div>
+	<div class="main_bottom">
+		<%= paginate @transactions %>
+	</div>
 </div>
 <script>
 <% if params[:transaction_id] %>

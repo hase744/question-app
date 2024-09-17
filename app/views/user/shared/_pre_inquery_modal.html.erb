@@ -4,9 +4,7 @@
         <div class="user_area">
 			<% opponent = transaction.opponent_of(current_user) %>
             <%= image_tag opponent.image_width_default, class: "image" %>
-			<div class="user_name_area">
-				<%= opponent.name%>
-			</div>
+			<%= link_to opponent.name, user_account_path(opponent.id), class:"user_name_area one_line_text" %>
         </div>
         <div>
 			<div class="text_area">

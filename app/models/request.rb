@@ -124,6 +124,10 @@ class Request < ApplicationRecord
     self.likes.count
   end
 
+  def thumb_with_default
+    self.items&.first&.file&.thumb&.url.presence || "/corretech_icon.png"
+  end
+
   def acceptable_duration_in_days
     suggestion_acceptable_duration / 1.day.to_i
   end
@@ -142,7 +146,6 @@ class Request < ApplicationRecord
 
   def set_default_values
     update_category
-    puts "カテゴリー数 #{}"
     copy_from_service if new_record?
 
     case self.request_form.name

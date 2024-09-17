@@ -1,0 +1,23 @@
+<div class="list_zone">
+    <h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > 自分の相談室 <%= paginate @services %></h3>
+    <% @services.each do |service| %>
+        <%= link_to(user_service_path(service.id), class: "service_cell" ) do %>
+            <div class="image_area">
+                <%= image_tag service.thumb_with_default, class:"image" %>
+            </div>
+            <div class="title_name_area">
+                <div class="title_area">
+                    <span class="two_line_text">
+                        <%= service.title%>
+                    </span>
+                </div>
+                <div class='date'>
+                  作成: <%= readable_datetime(service.created_at) %>
+                </div>
+            </div>
+        <% end %>
+    <% end %>
+	  <div class="main_bottom">
+        <%= paginate @services %>
+    </div>
+</div>

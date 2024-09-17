@@ -168,11 +168,7 @@ class Service < ApplicationRecord
   end
 
   def thumb_with_default
-    if self.item&.file&.thumb&.url == nil
-      "/corretech_icon.png"
-    else 
-      self.item.file.thumb.url
-    end 
+    self.item&.file&.thumb&.url.presence || "/corretech_icon.png"
   end
 
   def update_average_star_rating

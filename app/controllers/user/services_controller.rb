@@ -262,6 +262,14 @@ class User::ServicesController < User::Base
     end
   end
 
+  def mine
+    @services = current_user.services
+      .solve_n_plus_1
+      .order(created_at: :desc)
+      .page(params[:page])
+      .per(20)
+  end
+
   private def after_suggest
     Email::ServiceMailer.suggestion(@transaction).deliver_now
     Notification.create(
