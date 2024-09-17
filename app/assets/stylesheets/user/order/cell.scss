@@ -1,0 +1,44 @@
+@import "_variables";
+.order_cell:hover{
+  	text-decoration: none;
+}
+$image_height: 80px;
+$image_width: 80px;
+.order_cell:hover{
+  	background-color: whitesmoke !important;
+}
+.order_cell{
+  	background-color: white;
+  	box-shadow: 0 0 2px lightgray;
+  	border-radius: 5px;
+  	padding: 5px;
+  	margin: 5px;
+  	width: calc(100% - 20px);
+  	display: flex;
+  	color: black;
+  	.image_area{
+  	    height: $image_height;
+  	    width: $image_width;
+  	    display: flex;
+		padding-right: 5px;
+  	}
+  	.image{
+  	    height: $image_height;
+  	    width: $image_width;
+  	    object-fit: cover;
+  	}
+  	.text_area{
+		flex: 1;
+  	    display: flex;
+		flex-direction: column;
+		justify-content: center;
+  	    .title{
+  	        margin: 0px;
+  	        color: $text_grey;
+  	    }
+  	    .from_now{
+  	        font-size: 14px;
+  	        color: dimgray;
+  	    }
+  	}
+}

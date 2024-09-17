@@ -3,13 +3,13 @@
         <div class="field_area">
           <%= f.label :star_rating, class:"field_label" %><br />
           <div class="select_area">
-          <%= f.select :star_rating, {"5★★★★★": "5","4★★★★☆": "4","3★★★☆☆": "3","2★★☆☆☆": "2","1★☆☆☆☆": "1","0☆☆☆☆☆": "0"}, { include_blank: '選択'}, autocomplete: "select_input", class:"input_field" ,required: true%>
+          <%= f.select :star_rating, {"5★★★★★": "5","4★★★★☆": "4","3★★★☆☆": "3","2★★☆☆☆": "2","1★☆☆☆☆": "1","0☆☆☆☆☆": "0"}, { include_blank: '選択'}, autocomplete: "select_input" ,required: true%>
           </div>
           </br>
         </div>
         <div class="field_area">
           <%= f.label :review_description, class:"field_label" %>（<%=transaction.review_description_max_length%>字以内）<br />
-          <%= f.text_area :review_description, autocomplete: "new-password", class:"input_text_field text_area",required: true %>
+          <%= f.text_area :review_description, autocomplete: "new-password", class:"input_text_field text_area input_field",required: true %>
         </div>
         <div class="submit_area">
           <%= f.submit "投稿", class:"submit", data: {confirm: "レビューを投稿しますか？"} %>

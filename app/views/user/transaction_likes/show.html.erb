@@ -1,7 +1,9 @@
-<div class="transaction_like_show">
-  	<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> ＞ いいねした回答 <%= paginate @transactions %></h3>
+<div class="list_zone">
+  	<h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > いいねした回答 <%= paginate @transactions %></h3>
   	<% @transactions.each do |transaction| %>
-		<%= render "user/transactions/cell", transaction: transaction %>
+		<%= render "user/transactions/answer", transaction: transaction %>
   	<% end %>
-  	<%= paginate @transactions %>
+	<div class="main_bottom">
+  		<%= paginate @transactions %>
+	</div>
 </div>

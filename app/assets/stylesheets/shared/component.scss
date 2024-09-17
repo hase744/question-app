@@ -394,6 +394,16 @@
         color: red;
     }
 }
+.list_zone{
+    .list_header{
+        margin: 5px;
+        margin-right: 0px;
+        .pagination{
+            margin-right: 5px;
+            float: right;
+        }
+    }
+}
 //.select_area {
 //    position: relative;
 //    border-radius: 4px;

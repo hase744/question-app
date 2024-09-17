@@ -120,6 +120,10 @@ class User < ApplicationRecord
     self.image.url.presence || "/profile.jpg"
   end
 
+  def thumb_with_default
+    self.image.thumb.url.presence || "/profile.jpg"
+  end
+
   def self.categories
     Category.all.select do |category|
       user_categories.any? { |uc| uc.category_name == category.name }

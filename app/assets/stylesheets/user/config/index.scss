@@ -12,21 +12,21 @@
             padding-right: 0px;
             float: left;
             display: inline-block;
-            @media(max-width:700px){
+            @media(max-width:600px){
                 width: 100px;
                 height: 100px;
             }
-            @media(min-width:700px){
+            @media(min-width:600px){
                 width: 175px;
                 height: 175px;
             }
             .user_image{
-                @media(max-width:700px){
+                @media(max-width:600px){
                     width:75px;
                     height:75px;
                     border-radius: 75px;
                 }
-                @media(min-width:700px){
+                @media(min-width:600px){
                     width: 150px;
                     height: 150px;
                     border-radius: 75px;
@@ -38,10 +38,10 @@
             display: inline-block;
             float: left;
             color: gray;
-            @media(max-width:700px){
+            @media(max-width:600px){
                 width: calc(100% - 130px);
             }
-            @media(min-width:700px){
+            @media(min-width:600px){
                 width: calc(100% - 205px);
             }
             .user_name{
@@ -129,10 +129,13 @@
         color: #555555;
         font-weight: bold;
         display: inline-block;
-        @media(max-width:700px){
+        @media(max-width:600px){
             width: calc(100% - 10px);
+            h4{
+                margin: 15px 0px;
+            }
         }
-        @media(min-width:700px){
+        @media(min-width:600px){
             width: calc((100% - 40px)/3);
         }
         margin: 5px;
@@ -141,8 +144,10 @@
         background-color: white;
         text-align: center;
         text-decoration: none;
-        h4{ 
-            font-weight: bold;
+        h4{
+            .name{
+                font-weight: 575;
+            }
         }
     }
     .config_component_area:hover {

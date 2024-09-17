@@ -1,16 +1,21 @@
 @import "_variables";
 .pre_inquery_modal{
     .user_area{
+        padding-top: 1vh;
         .image{
-            height: 10vh;
-            width: 10vh;
+            height: 9vh;
+            width: 9vh;
             min-width: 100px;
             min-height: 100px;
             object-fit: cover;
+            border-radius: 50%;
         }
         .user_name_area{
+            display: inline-block;
+            width: 100%;
             font-size: 20px;
 			font-weight: bold;
+            color: grey;
         }
     }
     .text_area{
@@ -31,22 +36,23 @@
             border-radius: 5px;
             background-color: white;
 			height: calc(10vh + 10px);
+            display: flex;
             .service_image{
                 height: 10vh;
                 width: 10vh;
                 margin: 5px;
-                float: left;
+                display: flex;
 				object-fit: cover;
             }
             .service_text_area{
                 height: calc(10vh + 10px);
-                display: inline-block;
-                width: calc(100% - 10px - 10vh);
+                display: flex;
+                flex: 1;
+                align-items: center;
                 .title{
 					font-size: 15px;
 					font-weight: 650;
                     color: $text_grey;
-                    margin-top: calc((10vh - 35px) / 2);
                 }
             }
         }
@@ -73,7 +79,7 @@
             padding-bottom: 5px;
             border-radius: 10px;
             position: relative;
-            max-width: calc(100% - 80px);
+            max-width: calc(100% - 76px);
         }
         .left_text::before {
           content: '';
@@ -149,7 +155,7 @@
         }
         
         .fa-paper-plane{
-            right: 25px;
+            right: 27px;
             top: 13px;
             display: inline-block;
             position: absolute;

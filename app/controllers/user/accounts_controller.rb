@@ -233,7 +233,7 @@ class User::AccountsController < User::Base
         .order(id: :DESC)
     when 'services'
       @models = Service.solve_n_plus_1
-        .where(user_id: params[:id])
+        .where(user_id: params[:id], request_id: nil)
         .displayable(current_user)
         .page(params[:page])
         .per(@service_page)

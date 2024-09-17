@@ -54,7 +54,7 @@
                         </div>
                     <% else %>
                         <%= link_to(user_request_likes_path(id: @request.id), class: "like_button #{@request.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
-                            <span class="fas fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@request.total_likes%></span>&nbsp;
+                            <span class="fas fa-heart" ></span>&nbsp;いいね　　<span id="like_count"><%=@request.total_likes%></span>&nbsp;
                         <% end %>
                     <% end %>
                 </div>
