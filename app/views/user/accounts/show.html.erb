@@ -15,11 +15,7 @@
                     <% end %>
                 </div>
                 <div class="user_image_area">
-                    <% if @user.image.url %>
-                        <%=image_tag @user.image.url, class:"user_image"%>
-                    <% else %>
-                        <%=image_tag "/profile.jpg", class:"user_image"%>
-                    <% end %>
+                    <%=image_tag @user.thumb_with_default, class:"user_image"%>
                 </div>
                 
                 <div class="user_edit_area user_edit1">

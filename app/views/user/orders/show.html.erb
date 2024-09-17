@@ -22,11 +22,7 @@
         <%= render "user/shared/small_label", text: "相談室" %>
         <div class="service_request_area">
             <div class="image_area">
-                <%if @transaction.service.item&.file&.thumb&.url.nil?%>
-                    <%=image_tag "/corretech_icon.png", class:"image"%>
-                <% else %>
-                    <%=image_tag @transaction.service.item&.file&.thumb&.url, class:"image"%>
-                <% end %>
+                <%=image_tag @transaction.service.thumb_with_default, class:"image"%>
             </div>
             <div class="text_area">
                 <div class="title_area">

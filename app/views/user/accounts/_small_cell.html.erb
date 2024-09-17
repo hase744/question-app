@@ -5,11 +5,7 @@
             <div class="user_cell_area">
                 <div class="user_top_info">
                     <div class="user_image_flame">
-                        <% if user.image.thumb.url %>
-                            <%=image_tag user.image.thumb.url, class:"user_image"%>
-                        <% else %>
-                            <%=image_tag user_image_default, class:"user_image"%>
-                        <% end %>
+                        <%=image_tag user.thumb_with_default, class:"user_image"%>
                     </div>
 
                     <div class="user_name_area">

@@ -26,11 +26,7 @@
             <div class="seller_area" onclick="goVideoShow(<%=transaction.id%>)">
                 <div class="seller_image_and_title">
                     <div class="seller_image_flame">
-                        <%if transaction.seller.image.present? %>
-                            <%=image_tag transaction.seller.image.url, class:"seller_image"%>
-                        <% else %>
-                            <%=image_tag "/profile.jpg", class:"seller_image"%>
-                        <% end %>
+                        <%=image_tag transaction.seller.thumb_with_default, class:"seller_image"%>
                     </div>
                     <div class="name_detail_area">
                         <p class="seller_name"><%=transaction.seller.name%></p>

@@ -13,11 +13,7 @@
                 </div>
                 <div class="user_info_area">
                     <div class="user_image_area">
-                        <%if service.user.image.thumb.url == nil%>
-                            <%=image_tag "/profile.jpg", class:"user_image"%>
-                        <% else %>
-                            <%=image_tag service.user.image.thumb.url, class:"user_image"%>
-                        <% end %>
+                        <%=image_tag service.user.thumb_with_default, class:"user_image"%>
                     </div>
                     <div class="user_name_area">
                     <span class="user_name one_line_text"><%=service.user.name%></span>

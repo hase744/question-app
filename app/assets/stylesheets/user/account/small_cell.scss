@@ -22,11 +22,11 @@
         opacity: 0.7;
     }
     .user_cell_flame{
-        position: relative;
         background-color: white;
         border-radius: 5px;
         margin: 0px 5px;
         border: 1px solid lightgray;
+        width: calc(100% - 10px);
         .user_cell_area{
             padding: 5px;
             height: 130px;
@@ -163,7 +163,6 @@
 
 .user_small_cell_zone{
     .user_cell_flame{
-      width: 235px;
         .user_top_info{
             border-bottom:1px solid lightgrey;
             height: 50px;

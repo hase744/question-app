@@ -6,11 +6,7 @@
         <%end%>
         <% if user_signed_in?%>
             <div class="open_sidebar_menu_button">
-                <% if current_user.image.url %>
-                    <%=image_tag current_user.image.thumb.url, class:"open_sidebar_menu_button_image"%>
-                <% else %>
-                    <%=image_tag "/profile.jpg", class:"open_sidebar_menu_button_image"%>
-                <% end %>
+                <%=image_tag current_user.thumb_with_default, class:"open_sidebar_menu_button_image"%>
             </div>
             <div class="menu_notification">
                 <% if notifications_length > 0 %>

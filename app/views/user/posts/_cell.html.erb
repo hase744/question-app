@@ -1,10 +1,6 @@
 <div class="post_cell_zone">
     <div class="user_image_area">
-        <% if post.user.image.url %>
-            <%=image_tag post.user.image.url, class:"user_image"%>
-        <% else %>
-            <%=image_tag "/profile.jpg", class:"user_image"%>
-        <% end %>
+        <%=image_tag post.user.thumb_with_default, class:"user_image"%>
     </div>
     <div class="post_text_area">
         <%=link_to post.user.name, user_account_path(post.user.id), class:"post_user_name"%>

@@ -3,7 +3,7 @@
     <div class="modal_window_body">
         <div class="user_area">
 			<% opponent = transaction.opponent_of(current_user) %>
-            <%= image_tag opponent.image_width_default, class: "image" %>
+            <%= image_tag opponent.image_with_default, class: "image" %>
 			<%= link_to opponent.name, user_account_path(opponent.id), class:"user_name_area one_line_text" %>
         </div>
         <div>
@@ -29,7 +29,7 @@
 					<%side = 'left'%>
 				<% end %>
 				<div class="message_component">
-					<%= image_tag  transaction.request.user.image_width_default, class: "image #{side}_image" %>
+					<%= image_tag  transaction.request.user.thumb_with_default, class: "image #{side}_image" %>
 					<div class="text <%=side%>_text">
 						<h3 class="margin0px">タイトル</h3>
 						<%= transaction.request.title%>
@@ -48,7 +48,7 @@
 						<% side = 'right'%>
 					<% end %>
 					<div class="message_component">
-						<%= image_tag  tm.sender.image_width_default, class: "image #{side}_image" %>
+						<%= image_tag  tm.sender.thumb_with_default, class: "image #{side}_image" %>
 						<div class="text <%=side%>_text"><%= tm.body%></div>
 					</div>
 				<% end %>

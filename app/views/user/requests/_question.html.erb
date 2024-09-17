@@ -26,11 +26,7 @@
             	<div class="answer_area">
             	    <div class="seller_container">
             	        <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
-            	            <% if transaction.seller.image.thumb.url %>
-            	                <%=image_tag transaction.seller.image.thumb.url, class:"seller_image"%>
-            	            <% else %>
-            	                <%=image_tag user_image_default, class:"seller_image"%>
-            	            <% end %>
+            	            <%=image_tag transaction.seller.thumb_with_default, class:"seller_image"%>
             	            <div class="seller_name_area">
             	                <p class="seller_name"><%=transaction.seller.name%></p>
             	            </div>

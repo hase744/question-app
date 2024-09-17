@@ -1,13 +1,13 @@
 <div class="transaction_answer_area">
     <div class="transaction_answer_flame">
 		<div class="user_image_area">
-			<%= image_tag transaction.seller.image.url, class:"image" %>
+			<%= image_tag transaction.seller.thumb_with_default, class:"image" %>
 		</div>
 		<div class="text_area">
 			<div class="answer_area">
 				<!--
 				<div class="image_title_area">
-					<%= image_tag transaction.seller.image.url, class:"image" %>
+					<%= image_tag transaction.seller.thumb_with_default, class:"image" %>
 					<div class='title_area'>
 						<h4 class="title">
 							<%= link_to(user_transaction_path(transaction.id), class:"title") do %>
