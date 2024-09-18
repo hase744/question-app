@@ -82,10 +82,10 @@ class User::OrdersController < User::Base
 
     ActiveRecord::Base.transaction do
       if @transaction.save && @service.save && current_user.update_total_points
-        flash.notice = "質問をキャンセルしました"
+        flash.notice = " 購入をキャンセルしました"
         redirect_to user_orders_path(user: "buyer", scope: "ongoing")
         create_cancel_notification
-        EmailJob.perform_later(mode: :cancel, model: @transaction)
+        EmailJob.perform_later(mode: :cancel, model: @transaction) if @transaction.seller.can_email_transaction
       else
         detect_models_errors([@transaction, current_user, @service])
         flash.alert = "キャンセルできませんでした"
@@ -109,7 +109,7 @@ class User::OrdersController < User::Base
         flash.notice = "質問を断りました"
         create_rejection_notification
         redirect_to user_orders_path(user: "seller", scope: "ongoing")
-        EmailJob.perform_later(mode: :reject, model: @transaction)
+        EmailJob.perform_later(mode: :reject, model: @transaction) if @transaction.buyer.can_email_transaction
       else
         gon.text_max_length = @transaction.reject_reason_max_length
         render "user/orders/edit"
@@ -135,14 +135,13 @@ class User::OrdersController < User::Base
   end
 
   def create_cancel_notification
-    Notification.create(
-      user_id: @transaction.seller,
+    Notification.create!(
+      user_id: @transaction.seller.id,
       notifier_id: current_user.id,
       description: "依頼がキャンセルされました。",
-      action: "index",
+      action: "show",
       controller: "orders",
-      id_number: @request.id,
-      parameter: "?scope=undelivered&user=seller"
+      id_number: @transaction.id,
       )
   end
 
@@ -152,10 +151,9 @@ class User::OrdersController < User::Base
       user_id: @transaction.buyer.id,
       notifier_id: current_user.id,
       description: "質問がお断りされました。",
-      action: "index",
+      action: "show",
       controller: "orders",
-      id_number: @request.id,
-      parameter: "?scope=undelivered&user=buyer"
+      id_number: @transaction.id,
       )
   end
 

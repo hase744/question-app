@@ -23,6 +23,10 @@
                     <div class="from_now one_line_text">
                         <% if transaction.is_transacted %>
                             <span class="ok">納品済み</span>
+                        <% elsif transaction.is_canceled%>
+                            <span class="stop">キャンセル</span>
+                        <% elsif transaction.is_rejected%>
+                            <span class="stop">お断り</span>
                         <% else %>
                             <span class="not_ok"><%= from_now(transaction.delivery_time) %></span>
                         <% end %>

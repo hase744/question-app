@@ -171,17 +171,19 @@ class User::TransactionsController < User::Base
     if @transaction.service.allow_pre_purchase_inquiry
       @transaction_message = TransactionMessage.new
       @transaction_message.sender = current_user
-      @transaction_message.receiver = @transaction.seller
+      @transaction_message.receiver = @transaction.opponent_of(current_user)
       @transaction_message.assign_attributes(transaction_message_params)
       @transaction = @transaction_message.deal
       @transaction.pre_purchase_inquired_at ||= DateTime.now
       if @transaction_message.save! && @transaction.save
         flash.notice = "送信しました。"
-        EmailJob.perform_later(mode: :inquire, model: @transaction)
         redirect_back(fallback_location: root_path)
+        puts "質問 #{@transaction_message.receiver.can_email_transaction}"
         if current_user == @transaction.seller
+          EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
           message = "購入前質問に返信がされました。"
         elsif current_user == @transaction.buyer
+          EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
           message = "購入前質問がされました。"
         end
         Notification.create(
@@ -219,7 +221,7 @@ class User::TransactionsController < User::Base
 
   def complete_delivery
     @transaction.save
-    EmailJob.perform_later(mode: :deliver, model: @transaction)
+    EmailJob.perform_later(mode: :deliver, model: @transaction) if @transaction.buyer.can_email_transaction
     create_notification(@transaction)
     flash.notice = "回答を納品しました。"
     redirect_to user_transaction_path(@transaction.id)

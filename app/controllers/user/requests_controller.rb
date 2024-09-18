@@ -231,7 +231,7 @@ class User::RequestsController < User::Base
     ActiveRecord::Base.transaction do
       if save_models
         current_user.update_total_points
-        EmailJob.perform_later(mode: :purchase, model: @transaction)
+        EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
         create_notification
         flash.notice = "購入しました。"
         true
@@ -334,12 +334,12 @@ class User::RequestsController < User::Base
 
   private def create_notification
     Notification.create(
-      user_id:@service.user_id,
+      user_id: @service.user_id,
       notifier_id: current_user.id,
       description: "あなたの相談室に相談が依頼されました。",
       action: "show",
-      controller: "requests",
-      id_number: @request.id
+      controller: "orders",
+      id_number: @transaction.id
       )
   end
 

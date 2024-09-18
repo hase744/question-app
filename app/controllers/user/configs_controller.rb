@@ -57,9 +57,8 @@ class User::ConfigsController < User::Base
 
   private def user_params
     params.require(:user).permit(
-      :can_receive_message,
       :can_email_advert,
-      :can_email_message,
+      :can_email_transaction,
       :is_published,
       :is_seller
     )

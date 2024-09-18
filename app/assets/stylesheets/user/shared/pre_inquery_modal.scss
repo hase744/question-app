@@ -5,8 +5,6 @@
         .image{
             height: 9vh;
             width: 9vh;
-            min-width: 100px;
-            min-height: 100px;
             object-fit: cover;
             border-radius: 50%;
         }
@@ -18,11 +16,20 @@
             color: grey;
         }
     }
+    .message_area{
+        display: flex;
+		flex-direction: column;
+        flex: 1;
+        width: 100%;
+    }
     .text_area{
+        display: flex;
+		flex-direction: column;
+        flex: 1;
         background-color: $text_yellow;
         text-align: left;
         width: 100%;
-        min-height: calc(100vh - 280px - 20vh);
+        //min-height: calc(100vh - 280px - 20vh);
         overflow-x: scroll;
         height: 30vh;
         font-size: 14px;
@@ -110,6 +117,9 @@
         height: 25px;
     }
 	.submit_area{
+        display: flex;
+		flex-direction: column;
+        width: 100%;
 		text-align: left;
 		color: dimgrey;
 		font-size: 13px;
