@@ -13,7 +13,7 @@
   	background-color: rgba(0, 0, 0, 0.5); /*半透明の黒*/
 }
 .modal_window {
-  	display: none;
+	display: none;
   	position: fixed;
   	width: 100%;
   	height: 100%;
@@ -27,11 +27,15 @@
   	.modal_window_body{
   	  	position: absolute;
   	  	top: 0px;
-  	  	vertical-align: middle;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+  	  	//vertical-align: middle;
   	  	width: 90%;
+		height: 100%;
   	  	//height: 80%;
   	  	max-width: 500px;
-  	  	max-height: 80vh;
+  	  	max-height: 80%;
   	  	margin: auto;
   	  	left: 0;
   	  	right: 0;
@@ -59,12 +63,11 @@
   	.button:hover{
   	  	background-color: $button_orange_hover;
   	}
-  	$image_height: 80px;
+  	$image_height: 60px;
   	.image_area{
   	  	height: $image_height;
   	  	width: $image_height;
-  	  	float: left;
-  	  	display: inline-block;
+		display: flex;
   	  	img{
   	  	  	width: 100%;
   	  	  	height: 100%;
@@ -75,34 +78,34 @@
   	.service_area{
   	  	height: calc(100% - 40px);
   	  	overflow-y: auto;
-  	}
-  	.service_cell:hover{
-  	  	background-color: whitesmoke;
-  	}
-  	.service_cell{
-  	  	height: 80px;
-  	  	padding: 5px;
-  	  	width: calc(100% - 10px);
-  	  	display: block;
-  	  	color: dimgrey;
-  	  	background-color: white;
-  	  	.title_area{
-  	  	  	font-size: 13px;
-  	  	  	float: left;
-  	  	  	padding: 10px;
-  	  	  	display: inline-block;
-  	  	  	width: calc(100% - #{$image_height} - 25px);
-  	  	  	span{
-  	  	  	  	float: left;
-  	  	  	}
-  	  	}
+		.service_cell:hover{
+			  background-color: whitesmoke;
+		}
+		.service_cell{
+			  height: 60px;
+			  padding: 5px;
+			  width: calc(100% - 10px);
+			  display: flex;
+			  color: dimgrey;
+			  background-color: white;
+			  .title_area{
+					font-size: 13px;
+					flex: 1;
+					padding: 10px;
+					display: flex;
+					width: calc(100% - #{$image_height} - 25px);
+					span{
+						  float: left;
+					}
+			  }
+		}
   	}
 }
 .modal_window img {
   	max-width: 100%;
 }
 .modal_window.open {
-  	display: block;
+  	display: flex;
 }
 .modal_delete {
   	cursor: pointer;

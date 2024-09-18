@@ -9,7 +9,9 @@
                     <%if user_signed_in? %>
                         <%= link_to user_account_path(current_user.id) do %>
                             <%=image_tag current_user.thumb_with_default, class:"menu_profile_image"%>
-                            <span>プロフィール</span>
+                            <div class='text_area'>
+                                <span class="text">プロフィール</span>
+                            </div>
                         <% end %>
                     <% end %>
                 </div>

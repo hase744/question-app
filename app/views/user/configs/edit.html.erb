@@ -3,20 +3,18 @@
 <div class="component_area">
     <div class="component_flame">
         <%= form_with model: @user, url: user_configs_path, method:"PATCH" do |f| %>
-            <%= f.check_box :is_published, class:"input_field check_box", checked:@user.is_published, id:"youtube_check_box" %>
+            <%= f.check_box :can_email_advert, class:"input_field check_box", checked:@user.can_email_advert, id:"youtube_check_box" %>
             <label>新サービスやアップデートに関するメールの受信を許可する</label></br>
-            <%= f.check_box :can_email_message, class:"input_field check_box", checked:@user.is_published, id:"youtube_check_box" %>
-            <label>新サービスに関するメールの受信を許可する</label></br>
+
+            <%= f.check_box :can_email_transaction, class:"input_field check_box", checked:@user.can_email_transaction, id:"youtube_check_box" %>
+            <label>取引や追加メッセージに関するメールの受信を許可する</label></br>
+
             <%= f.check_box :is_published, class:"input_field check_box", checked:@user.is_published, id:"youtube_check_box" %>
             <label>アカウントを公開する</label></br>
             <% if current_user.stripe_account_id %>
                 <%= f.check_box :is_seller, class:"input_field check_box", checked:@user.is_seller, id:"youtube_check_box" %>
                 <label>回答者として登録する</label></br>
             <% end %>
-            <!--
-            <%= f.check_box :can_receive_message, class:"input_field check_box", id:"youtube_check_box" %>
-            <label>許可していない人からのダイレクトメッセージを受け付ける</label></br>
-            -->
             <div class="submit_area">
                 <%= f.submit '更新',class:"submit", placeholder:"" %>
             </div>

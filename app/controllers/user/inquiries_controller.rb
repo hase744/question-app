@@ -19,7 +19,7 @@ class User::InquiriesController < User::Base
     if @inquiry.save
       flash.notice = "お問合せを送信しました。"
       redirect_to abouts_path
-      Email::InquiryMailer.notify_amin_user(@inquiry.id).deliver_now
+      Email::InquiryMailer.notify_admin_user(@inquiry.id).deliver_now
     else
       flash.notice = "お問合せに失敗しました。"
       redirect_to new_user_inquiries_path

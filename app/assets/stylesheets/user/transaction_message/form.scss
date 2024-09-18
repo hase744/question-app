@@ -1,5 +1,5 @@
 .transaction_message_form_flame{
-  height: calc(100% - 150px);
+  flex-grow: 1;
 }
 .transaction_message_submit_form{
   text-align: left;
@@ -12,7 +12,7 @@
     min-width: calc(100% - 5px);
     max-width: calc(100% - 5px);
     height: 100px;
-    height: 100%;
+    height: calc(100% - 100px);
     border-radius: 5px;
     box-sizing: border-box;
   }
@@ -36,7 +36,7 @@
   height: 100%;
 }
 .new_message_modal .modal_delete_area{
-  position: absolute;
+  //position: absolute;
   width: 100%;
   bottom: 0px;
 }

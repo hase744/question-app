@@ -6,7 +6,6 @@
             <%= image_tag opponent.image_with_default, class: "image" %>
 			<%= link_to opponent.name, user_account_path(opponent.id), class:"user_name_area one_line_text" %>
         </div>
-        <div>
 			<div class="text_area">
 				<div class="flash_alert_zone flash_zone">
 					<%= content_tag(:spin, flash.alert, class:"alert") if flash.alert%>
@@ -81,7 +80,6 @@
 					</div>
 				<% end %>
 			</div>
-        </div>
         <div class="modal_delete_area">
             <p class="modal_delete">閉じる</p>
         </div>

@@ -14,7 +14,9 @@
                 <% end %>
             </div>
         </div>
-        <%= paginate @users %>
+        <div class="main_bottom">
+            <%= paginate @users %>
+        </div>
     <% end %>
 </div>
 <%= javascript_pack_tag "user/accounts/index"%>

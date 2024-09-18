@@ -14,26 +14,33 @@ class Email::TransactionMailer < ApplicationMailer
 
     def cancel(transaction)
         @transaction = transaction
-        mail to: @transaction.buyer.email, subject: "あなたの購入がキャンセルされました"
+        mail to: @transaction.buyer.email, subject: "相談室の購入がキャンセルされました"
     end
 
     def reject(transaction)
         @transaction = transaction
-        mail to: @transaction.seller.email, subject: "あなたの質問がお断りされました"
+        mail to: @transaction.seller.email, subject: "依頼した相談がお断りされました"
     end
 
     def purchase(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "あなたの相談室に質問がされました"
+        mail to: transaction.seller.email, subject: "相談室に質問が届きました"
     end
 
     def deliver(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "あなたの質問に回答が納品されました"
+        mail to: transaction.seller.email, subject: "依頼した相談に回答が納品されました"
     end
 
-    def inquire(transaction)
-        @transaction = transaction
-        mail to: transaction.seller.email, subject: "あなたの相談室に購入前の確認の問い合がされました"
+    def inquire(transaction_message)
+        @transaction_message = transaction_message
+        @transaction = transaction_message.deal
+        if transaction_message.sender == @transaction.seller
+            message = "相談室に購入前質問がされました。"
+        elsif transaction_message.sender == @transaction.buyer
+            message = "購入前質問に返信がされました。"
+        end
+        puts "送信　#{transaction_message.receiver.email} #{message}"
+        mail to: transaction_message.receiver.email, subject: message
     end
 end
