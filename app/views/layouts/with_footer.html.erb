@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja" prefix="og: http://ogp.me/ns#">
-  <%= render "layouts/head" %>
-  <body class="body big_layout">
-    <div class="header" id="header">
-      <%=render "layouts/menu"%>
-    </div>
-    <div class="main_area">
-      <%= yield %>
-    </div>
-    <%= render "layouts/footer"%>
-  </body>
-  <%= render "layouts/bottom" %>
+  	<%= render "layouts/head" %>
+  	<body class="body big_layout home_layout">
+  	  	<div class="header" id="header">
+  	  	  	<%=render "layouts/menu"%>
+  	  	</div>
+  	  	<div class="top">
+  	  	    <%= render "abouts/front_image_area" %>
+  	  	</div>
+  	  	<div class="main_area">
+			<div>
+  	  	  		<%= yield %>
+			</div>
+  	  	</div>
+  	  	<%= render "layouts/footer"%>
+  	</body>
+  	<%= render "layouts/bottom" %>
 </html>

@@ -9,66 +9,36 @@
     .image{
         width: 100%;
     }
-    $request_height: calc(100vw - 30px);//order_show_flameのmarginとpaddingの合計
-    $under_500_request_height: calc((100vw - 30px) * 0.3);
     .service_area{}
     .service_request_area{
-        max-height: 100px;
-        height: $request_height;
-        @media(max-width:500px){
-            height: $under_500_request_height;
-        }
+        height: 70px;
         width: 100%;
-        //float: left;
+        display: flex;
         .image_area{
-            height: 100%;
-            width: 30%;
-            max-width: 140px;
-            display: inline-block;
-            float: left;
+            height: 70px;
+            width: 70px;
+            display: flex;
             .image{
-                height: 100%;
+                height: 60px;
+                width: 60px;
+                margin: 5px;
+                margin-left: 0px;
                 object-fit: cover;
             }
         }
         .text_area{
-            display: inline-block;
-            height: $request_height;
-            @media(max-width:500px){
-                height: $under_500_request_height;
-            }
-            max-height: 100px;
-            min-width: calc(100% - 140px);
-            width: 70%;
-            float: left;
-            a{
+            height: 70px;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            .title a{
                 color: $text_grey;
                 text-decoration: underline;
             }
-            .title_area{
-                display: inline-block;
-                padding-left: 5px;
-                width: calc(100% - 5px);
-            }
-            .info{
-                margin-left: 5px;
-                display: inline-block;
-                width: calc(100% - 5px);
-                font-size: 14px;
-                .price_area{
-                    font-size: 15px;
-                    font-weight: bold;
-                    .unit{
-                        font-size: 14px;
-                        font-weight: lighter;
-                    }
-                    a{
-                        text-decoration: none;
-                    }
-                    a:hover{
-                        text-decoration: underline;
-                    }
-                }
+            .user_name{
+                color: grey;
+                font-size: 13px;
             }
         }
     }

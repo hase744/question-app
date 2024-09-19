@@ -1,6 +1,5 @@
 <div class="home_show_zone">
     <%= render "user/shared/label_with_link", label: "相談室", link: user_services_path %>
-    
     <div class="swiper-service-container">
         <div class="swiper-wrapper home_service_area">
             <% @services.each.with_index do |service, index| %>

@@ -1,5 +1,5 @@
 <div class="order_show_zone">
-    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> > 回答</p>
+    <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> > 取引内容</p>
     <%= render "user/shared/error_message", model: @transaction%>
     <div class="order_show_flame component_area">
         <%  if @transaction.is_canceled || @transaction.is_rejected%>
@@ -13,38 +13,110 @@
             <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"big_submit fas fa-edit grey"%>
             <%=link_to " 回答を拒否", edit_user_order_path(@transaction.id), class:"big_submit fas fa-handshake-alt-slash grey"%>
         <% elsif @transaction.delivery_time < DateTime.now %>
-            <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントは元に戻りますが、購入金額は返金はされません。"} %>
+            <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントの元に戻りますが、購入したポイントは返金されません。"} %>
         <% end %>
         <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope big_submit grey" %>
         </div>
         </h3>
         <% end %>
-        <%= render "user/shared/small_label", text: "相談室" %>
-        <div class="service_request_area">
-            <div class="image_area">
-                <%=image_tag @transaction.service.thumb_with_default, class:"image"%>
-            </div>
-            <div class="text_area">
-                <div class="title_area">
-                    <h3 class="margin0px"><%= link_to @transaction.service_title, user_service_path(@transaction.service.id) %></h3>
-                </div>
-                <div class="info">
-                    <%= render "user/shared/request_delivery_form", model: @transaction%>
-                </div>
-                <div class="info">
-                    <span class="one_line_text">
-                        <span class="price_area"><%= @transaction.price%><span class="unit">円</span></span>
-                        &nbsp;by <span class="price_area"><%= link_to @transaction.seller.name, user_account_path(@transaction.seller.id) %></span>
+        <% if @transaction.is_rejected %>
+            <%= render "user/shared/small_label", text: "拒否理由" %>
+            <div><%=@transaction.reject_reason%></div>
+        <% end %>
+        </br>
+        <%= render "user/shared/small_label", text: "契約内容" %>
+        <table class="common_condition_area">
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name">料金</span>
+                </td>
+                <td>
+                    <span class="common_condition"><%=@transaction.price%>円</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name">納期</span>
+                </td>
+                <td>
+                    <span class="common_condition"><%= @transaction.delivery_time.strftime("%Y/%m/%d %H:%m") %></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name"><%= Service.human_attribute_name(:delivery_form) %></span>
+                </td>
+                <td>
+                    <span class="common_condition"><%=@transaction.delivery_form.japanese_name%></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name"><%= Service.human_attribute_name(:request_form) %></span>
+                    </td>
+                <td>
+                    <span class="common_condition"><%=@transaction.request_form.japanese_name%></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name">カテゴリー</span>
+                </td>
+                <td>
+                    <span class="common_condition">
+                        <% @transaction.categories.each do |category| %>
+                            <%= link_to category.japanese_name, user_services_path(categories: category.name), class:"big_name_tag" %>
+                        <% end %>
                     </span>
-                </div>
-            </div>
-        </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name">購入前の質問</span>
+                </td>
+                <td>
+                    <span class="common_condition">
+                    <%if @transaction.service.allow_pre_purchase_inquiry%>
+                    <span class="ok">可能</span>
+                    <% else %>
+                    <span class="not_ok">不可</span>
+                    <% end %></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="user_info_name">
+                    <span class="condition_name">追加質問</span>
+                </td>
+                <td>
+                    <span class="common_condition">
+                    <%if @transaction.transaction_message_enabled%>
+                    <span class="ok">可能</span>
+                    <% else %>
+                    <span class="not_ok">不可</span>
+                    <% end %></span>
+                </td>
+            </tr>
+        </table>
+        </br>
+        <%= render "user/shared/small_label", text: "提供内容" %>
         <div class="description_area">
             <div class="description_text_area" id="descriptionn_content<%@transaction.model_name%><%@transaction.id%>">
                 <p id="description_text<%@transaction.model_name%><%@transaction.id%>" class="description_text closing_text"><%=@transaction.service_descriprion%></p>
             </div>
             <div class="change_text open_text" id="open_text<%@transaction.model_name%><%@transaction.id%>"></div>
         </div>
+
+        <%= render "user/shared/small_label", text: "相談室" %>
+        <div class="service_request_area">
+            <div class="image_area">
+                <%=image_tag @transaction.service.thumb_with_default, class:"image"%>
+            </div>
+            <div class="text_area">
+                <h4 class="title margin0px one_line_text"><%= link_to @transaction.service_title, user_service_path(@transaction.service.id) %></h4>
+                <div class="user_name one_line_text">回答者: <%= @transaction.seller.name %></div>
+            </div>
+        </div>
+        </br>
         <%= render "user/shared/small_label", text: "質問" %>
         <div class="service_request_area">
             <div class="image_area">
@@ -55,17 +127,11 @@
                 <% end %>
             </div>
             <div class="text_area">
-                <div class="title_area">
-                <h3 class="margin0px one_line_text"><%= link_to @transaction.request.title, user_request_path(@transaction.request.id) %></h3>
-                </div>
-                <div class="info">
-                    <span class="one_line_text"><%= from_now(@transaction.delivery_time) %>（<%= @transaction.delivery_time.strftime("%Y/%m/%d %H:%m") %>）</span>
-                </div>
-                <div class="info">
-                    <span class="two_line_text"><%= @transaction.request.description%></span>
-                </div>
+                <h4 class="margin0px one_line_text title"><%= link_to @transaction.request.title, user_request_path(@transaction.request.id) %></h4>
+                <div class="user_name one_line_text">質問者: <%= @transaction.buyer.name %></div>
             </div>
         </div>
+        </br>
         <%= render "user/shared/small_label", text: "回答" %>
         <% if current_user == @transaction.seller || @transaction.is_transacted%>
             <div class="information_component">
