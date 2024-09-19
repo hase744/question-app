@@ -136,17 +136,6 @@
                 </div>
             <% end %>
         </div>
-        <% @request.transactions.each do |transaction| %>
-            <% if transaction.is_rejected && @request.user == current_user %>
-                <%= render 'user/shared/common_label', text: '質問のお断り理由', language: 'ja' %>
-                <div class="component_area">
-                    <%=transaction.reject_reason%>
-                    <div>
-                    <%=link_to transaction.seller.name, user_account_path(transaction.seller.id)%>
-                    </div>
-                </div>
-            <% end %>
-        <% end %>
         <% if @request.suggestion_deadline && @request.suggestion_deadline > DateTime.now %>
             <%= render 'user/shared/common_label', text: '提案された相談室', language: 'ja' %>
             <% @request.transactions.where(is_suggestion: true).each do |transaction| %>
