@@ -300,13 +300,13 @@
     margin-bottom: 3px;
     border-radius: 3px;
     font-weight: bold;
-    color: $text_yellow;// white;
+    color: $dark_text_yellow;// white;
     display: inline-block;
 }
 .big_name_tag:hover{
     cursor: pointer;
     text-decoration: none;
-    color: $light_text_yellow;
+    color: $medium_text_yellow;
     border: 1px solid $light_text_yellow;
 }
 .specifics_area{

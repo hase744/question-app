@@ -85,12 +85,6 @@
                 //    border-bottom: none;
                 //  }
             }
-            .user_label{
-                display: none;
-                @media (max-width: 1000px) {
-                    display: block;
-                }
-            }
             .user_area:hover{
                 background-color: whitesmoke;
             }

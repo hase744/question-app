@@ -1,11 +1,15 @@
 <div class="adjustable_image_area">
 <div class="request_image_area container">
-  <% request.items.each do |item|%>
-    <%= image_tag item.file.url, class:"request_image", id:"request_image", onclick:"revealImage()"%>
-  <% end %>
-  <div class="button_area">
-    <button class="btn dli-chevron-down dli-chevron" id='btn' ></button>
-  </div>
+  	<% request.items.each do |item|%>
+  	  	<%= image_tag item.file.url, class:"request_image", id:"request_image", onclick:"revealImage()"%>
+  	<% end %>
+  	<div class="button_area">
+  	  	<button class="btn dli-chevron-down dli-chevron" id='btn' >
+			<span class="fa-solid fa-angle-down"></span>
+  	  		<span class="text">画像を開く</span>
+			<span class="fa-solid fa-angle-down"></span>
+  	  	</button>
+  	</div>
 </div>
 </div>
 <script>
@@ -13,8 +17,10 @@ function revealImage() {
   $('.request_image_area').toggleClass('reveal');
   //$('.request_image_area button').text('全体を表示');
   //$('.reveal button').text('一部だけ表示');
-  $('.btn').toggleClass('dli-chevron-up');
-  $('.btn').toggleClass('dli-chevron-down');
+  $('.btn .fa-solid').toggleClass('fa-angle-down');
+  $('.btn .fa-solid').toggleClass('fa-angle-up');
+  $('.btn').css('top','-30px')
+  $('.btn .text').text('画像を閉じる')
 }
 </script>
 <style>
