@@ -20,7 +20,7 @@
                     <% end %>
                     <div class="description_area"><%= @transaction.request.description%></div>
 
-                    <%if @transaction.request.request_form.name == 'text' %>
+                    <%if @transaction.request.items.first.is_text_image %>
                         <%= render 'user/shared/adjustable_image', request: @transaction.request%>
                     <% else %>
                         <% @transaction.request.items.each do |item| %>
