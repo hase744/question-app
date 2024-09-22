@@ -147,7 +147,7 @@ class User::Base < ApplicationController
       else
         false
       end
-    elsif controller_name == "requsts" && action_name == "show" #自分の依頼ページを閲覧
+    elsif controller_name == "requests" && action_name == "show" #自分の依頼ページを閲覧
       if user_signed_in? && Request.find(params[:id]).user == current_user
         true
       else

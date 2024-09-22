@@ -127,6 +127,7 @@ namespace :user do
     resources :transactions, only: [ :index, :show, :edit, :update]
     resources :notifications, only: [ :index, :show]
     resources :histories, only: [ :index ,:new, :create]
+    resources :request_supplements, only: [:create, :new]
     resource :payments, only: [:show, :create]
     resource :videos, only: [:show]
     resource :homes, only: [:show]

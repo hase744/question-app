@@ -51,6 +51,9 @@
                                     <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "依頼を削除しますか？。"} %>
                                 </div>
                             <% end %>
+                            <%if @request.is_suppliable %>
+                                <%= link_to "補足", new_user_request_supplement_path(request_id: @request.id)%>
+                            <% end %>
                         </div>
                     <% else %>
                         <%= link_to(user_request_likes_path(id: @request.id), class: "like_button #{@request.liked_class(current_user)}", id:"like_button", method: :post, remote:true) do%>
@@ -131,6 +134,12 @@
                     <% end %>
                 <% end %>
             </div>
+            <%if @request.supplements.present? %>
+                <%= render "user/shared/small_label", text:"補足" %>
+                <% @request.supplements.each do |supplement| %>
+                    <%= supplement.body%>
+                <% end %>
+            <% end %>
 
             <%if user_signed_in? && current_user.can_respond_order(@request) %>
                 <div class="button_area" >
