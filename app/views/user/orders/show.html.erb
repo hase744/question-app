@@ -2,22 +2,24 @@
     <p class="zone_title"><%=link_to "取引一覧", user_orders_path %> > 取引内容</p>
     <%= render "user/shared/error_message", model: @transaction%>
     <div class="order_show_flame component_area">
-        <%  if @transaction.is_canceled || @transaction.is_rejected%>
-        <h3>取引は中止されました。</h3>
+        <% if @transaction.is_canceled %>
+            <h3>取引は拒否されています</h3>
+        <% elsif @transaction.is_rejected %>
+            <h3>取引はキャンセルされています</h3>
         <% elsif @transaction.is_transacted %>
-        <h3>納品済み</h3>
+            <h3>納品済み</h3>
         <% else %>
-        <h3 class="links">
-        <div class="submit_area">
-        <% if current_user == @transaction.seller %>
-            <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"big_submit fas fa-edit grey"%>
-            <%=link_to " 回答を拒否", edit_user_order_path(@transaction.id), class:"big_submit fas fa-handshake-alt-slash grey"%>
-        <% elsif @transaction.delivery_time < DateTime.now %>
-            <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントの元に戻りますが、購入したポイントは返金されません。"} %>
-        <% end %>
-        <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope big_submit grey" %>
-        </div>
-        </h3>
+            <h3 class="links">
+            <div class="submit_area">
+            <% if current_user == @transaction.seller %>
+                <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"big_submit fas fa-edit grey"%>
+                <%=link_to " 回答を拒否", edit_user_order_path(@transaction.id), class:"big_submit fas fa-handshake-alt-slash grey"%>
+            <% elsif @transaction.delivery_time < DateTime.now %>
+                <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントの元に戻りますが、購入したポイントは返金されません。"} %>
+            <% end %>
+            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope big_submit grey" %>
+            </div>
+            </h3>
         <% end %>
         <% if @transaction.is_rejected %>
             <%= render "user/shared/small_label", text: "拒否理由" %>
@@ -196,6 +198,10 @@
             <% end %>
         <% end %>
     </div>
+    <% if @transaction.reviewed_at %>
+        <%= render 'user/shared/common_label', text: 'レビュー', language: 'ja'%>
+        <%= render "user/reviews/cell", transaction: @transaction %>
+    <% end %>
 </div>
 <%#= render "/user/images/description", text:@transaction.description %>
 <%= javascript_pack_tag "shared/reload_page"%>
