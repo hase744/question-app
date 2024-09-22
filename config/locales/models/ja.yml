@@ -60,6 +60,8 @@ ja:
         price: 料金
         use_youtube: アップロード方法
         youtube_id: YouTube動画のID
+      request_supplement:
+        body: 補足内容
       request_item:
         file: ファイル
         file_duration: 再生時間

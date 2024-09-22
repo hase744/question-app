@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_12_095023) do
+ActiveRecord::Schema.define(version: 2024_09_21_234226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -253,6 +253,14 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["request_id"], name: "index_request_likes_on_request_id"
     t.index ["user_id"], name: "index_request_likes_on_user_id"
+  end
+
+  create_table "request_supplements", force: :cascade do |t|
+    t.bigint "request_id", null: false
+    t.text "body"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["request_id"], name: "index_request_supplements_on_request_id"
   end
 
   create_table "requests", force: :cascade do |t|
@@ -616,6 +624,7 @@ ActiveRecord::Schema.define(version: 2024_08_12_095023) do
   add_foreign_key "request_items", "requests"
   add_foreign_key "request_likes", "requests"
   add_foreign_key "request_likes", "users"
+  add_foreign_key "request_supplements", "requests"
   add_foreign_key "requests", "users"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"

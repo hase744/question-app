@@ -8,6 +8,7 @@ class Request < ApplicationRecord
   has_many :services, through: :transactions
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
+  has_many :supplements, class_name: "RequestSupplement", dependent: :destroy
   has_one :request_category, dependent: :destroy
   delegate :category, to: :request_category, allow_nil: true
   has_many :likes, class_name: "RequestLike"
@@ -142,6 +143,18 @@ class Request < ApplicationRecord
       is_published:true, 
       published_at:DateTime.now
       )
+  end
+
+  def is_suppliable
+    if !self.is_published
+      false
+    elsif !self.is_inclusive
+      false
+    elsif self.supplements.present?
+      false
+    else
+      true
+    end
   end
 
   def set_default_values
