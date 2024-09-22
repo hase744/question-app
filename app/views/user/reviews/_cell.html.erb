@@ -8,7 +8,7 @@
                 <span id="star_rating" class="star5_rating user<%=transaction.id%>" data-rate="4" name="<%=(transaction.star_rating*20).round(1) %>"></span>&nbsp;
             </div>
             <div class="review_user">
-            <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id) %>
+                <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id) %>
             </div>
             <div class="review_text">
                 <div class="description_area">
