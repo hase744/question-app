@@ -8,7 +8,7 @@ class TransactionMessage < ApplicationRecord
 
   validate :validate_sender
   validate :can_send_message
-  validates :body, length: {minimum: 1, maximum: :body_max_characters}
+  #validates :body, length: {minimum: 1, maximum: :body_max_characters}
   attr_accessor :deadline
   before_validation :set_default_values
 
@@ -54,6 +54,6 @@ class TransactionMessage < ApplicationRecord
   end
 
   def body_max_characters
-    1000
+    #1000
   end
 end

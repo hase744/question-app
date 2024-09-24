@@ -16,7 +16,7 @@
         	</div>
 
         	<div class="field_area">
-        	  	<%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: Service.description_max_length() %><br />
+        	  	<%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=Service.description_max_length()%>"></span><br />
         	  	<%= f.text_area :description, maxlength:service.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
         	</div>
 

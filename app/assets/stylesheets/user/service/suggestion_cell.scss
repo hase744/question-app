@@ -11,14 +11,8 @@
     border: 1px solid lightgray;
     margin: 5px;
     padding: 0px 5px;
-    border-radius: 10px;
+    border-radius: 5px;
     position: relative;
-    .top_user_image_name{
-        display: none;
-        @media(max-width: 500px){
-            display: inline-block;
-        }
-    }
     .user_image_name_area{
         width: calc(100%);
        // width: 60px;
@@ -64,7 +58,6 @@
         overflow: hidden;
         -webkit-line-clamp: 1;
         //text-decoration: underline;
-        color: $text_grey;
         border-bottom: solid 2px lightgray;
     }
     .service_condition_image{
@@ -73,16 +66,10 @@
         //align-items: flex-start;
         width: 100%;
         align-items: stretch;
-        .user_image_name_area{
-            display: inline-block;
-            @media(max-width: 500px){
-                display: none;
-            }
-        }
         .service_image_area{
             flex-shrink: 0;
             display: flex;
-            min-height: 100px;
+            min-height: 40px;
             align-self: stretch;
             width: 180px;
             @media(max-width: 500px){
