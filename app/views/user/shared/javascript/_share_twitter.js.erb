@@ -1,4 +1,4 @@
-const text = '<%= text %>';
+const text = '<%= j(text).gsub(/\r\n|\r|\n/, "\\n") %>';
 const max_length = 280;
 var urlWithSpace = 22 + 2;//urlの前後にスペースが入るため-2 
 var share_text = "";

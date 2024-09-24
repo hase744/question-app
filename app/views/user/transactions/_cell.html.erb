@@ -23,18 +23,18 @@
             <% end %>
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id), class: '' %><%= %>　<%= readable_datetime(transaction.created_at)%></h5>
 			<div class="item_description_area">
-				<% if transaction.request.items.not_text_image.present? %>
+				<% unless transaction.request.items.first.is_text_image %>
 					<div class='item_area'>
-						<%= image_tag transaction.request.items.not_text_image.first.file.thumb.url %>
+						<%= image_tag transaction.request.items.first.file.thumb.url %>
 					</div>
 				<% end %>
 				<div class="description_area">
             		<span class="three_line_text text description_text"><%= transaction.request.description%></span>
 				</div>
 			</div>
-			<% if transaction.request.items.not_text_image.present? %>
+			<% unless transaction.request.items.first.is_text_image %>
 				<div class='items_area'>
-					<% transaction.request.items.not_text_image.each do |item| %>
+					<% transaction.request.items.each do |item| %>
 						<%= image_tag item.file.thumb.url %>
 					<% end %>
 				</div>

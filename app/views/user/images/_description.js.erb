@@ -1,6 +1,6 @@
 var description_image = document.getElementById("description_image");
 var file_input = document.getElementById('file_input');
-var textContent = "<%=text.gsub(/\r\n/,'KAIGYOSTR')%>";
+var textContent = "<%= "Q." + title + 'KAIGYOSTR' + text.gsub(/\r\n/,'KAIGYOSTR')%>";
 textContent = textContent.replace(/\s/g, "");
 
 

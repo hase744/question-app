@@ -4,10 +4,8 @@
 		<%
 		if request.is_published
 			path = user_request_path(request.id)
-		else
-			if request.transactions
-				transaction_id = request.transactions.last.id
-			end
+		elsif request.transactions.present?
+			transaction_id = request.transactions.last.id
 			path = user_request_preview_path(request.id, transaction_id: transaction_id)
 		end
 		%>

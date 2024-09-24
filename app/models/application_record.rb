@@ -30,7 +30,11 @@ class ApplicationRecord < ActiveRecord::Base
 
   #価格
   def price_minimum_number#最小値
-    0
+    if Rails.env == "production"
+      100
+    else
+      0
+    end
   end
 
   def price_max_number#最小値

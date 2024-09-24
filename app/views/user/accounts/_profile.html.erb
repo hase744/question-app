@@ -10,7 +10,7 @@
         </div>
         <%= render "user/accounts/user_basic_info", user:user, star_rating:3 %>
         <div class="categories_area">
-            <% user.categories.each do |category|%>
+            <% user.user_categories.each do |category|%>
                     <%= link_to category.japanese_name, user_accounts_path(categories: category.name), class:"big_name_tag" %>
             <% end %>
         </div>

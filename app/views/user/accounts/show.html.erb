@@ -118,9 +118,4 @@
 <%= render "user/services/javascript/cell.js.erb" %>
 <%= render "user/accounts/show.js.erb" %>
 <%= render "user/requests/javascript/cell.js.erb" %>
-<% flash.each do |type, message| %>
-    // Bootstrapを導入しているため、`class="alert alert-success"`としています
-      $("#added-message").html('<p class="alert alert-success"><%= type %><%= message %></p>')
-      $("#result").html(users_list)
-<% end %>
 </script>

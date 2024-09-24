@@ -3,7 +3,6 @@ class Service < ApplicationRecord
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
-  has_one :item, class_name: "ServiceItem", dependent: :destroy
   has_one :service_category
   has_one :item, class_name: "ServiceItem", dependent: :destroy
   has_many :items, class_name: "ServiceItem", dependent: :destroy
@@ -36,7 +35,7 @@ class Service < ApplicationRecord
   accepts_nested_attributes_for :service_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
-    includes(:user, :transactions, :requests, :service_categories, :service_category)
+    includes(:user, :transactions, :requests, :service_categories, :service_category, :item)
   }
 
   scope :buyable, -> {
@@ -201,11 +200,13 @@ class Service < ApplicationRecord
     if !self.is_for_sale
       "販売停止中です。"
     elsif !self.is_published
-      "サービスが非公開です。"
+      "相談室が非公開です。"
     elsif !self.user.is_published
       "ユーザーが非公開です。"
     elsif self.user.is_deleted
       "アカウントが存在しません。"
+    elsif self.user == user
+      "自分の相談室に質問できません"
     elsif !self.user.is_stripe_account_valid?
       "回答者の決済が承認されていません。"
     elsif !self.user.is_normal

@@ -22,9 +22,10 @@
 </div>
 <script>
 $(function(){
-    $('a').on('click', function(event) {
-        event.stopPropagation();
-    });
+    //これがないと特定のカテゴリが選択された状態で再びindexを開いた時に、category_modalが開くいてしまうため
+    //$('a:not([data-method])').on('click', function(event) {
+    //    //event.stopPropagation();
+    //});
     $('.category_button').on('click', function(){
         $('.category_modal').addClass("open");
     });

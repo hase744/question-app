@@ -13,7 +13,7 @@
     right: 0px;
     height: 100%;
     .menu_notification_cells_area{
-        z-index: 20;
+        z-index: 3;
         position: absolute;
         height: calc(100% - 50px) !important;
         width:200px;
@@ -40,6 +40,7 @@
             vertical-align: middle;
             //overflow: scroll;
             .notification_cell{
+                display: block;
                 min-height: 50px;
                 padding-bottom: 10px;
                 color: $text_grey;
@@ -55,7 +56,7 @@
                         object-fit: cover;
                     }
                 }
-                .description_area{
+                .text_area{
                     display: inline-block;
                     width: calc(100% - 40px);
                     .new{
@@ -67,27 +68,64 @@
                         margin-right: 2px;
                         border: solid lightgreen 1px;
                     }
-                    .description{
-                        display: -webkit-box;
+                    .text{
                         margin: 0px;
-                        -webkit-box-orient: vertical;
-                        overflow: hidden;
-                        -webkit-line-clamp: 3;
                         font-size: 12px;
                     }
                     .datetime{
+                        display: inline-block;
+                        position: relative;
                         font-size: 13px;
                         color: gray;
+                        width: 100%;
+                    }
+                    .description{
+                        display: none;
                     }
                 }
+                
             }
             .notification_cell:hover{
                 background-color: #EEEEEE;
             }
         }
     }
-    .notification_margin{
+    .opening .description{
+        display: block !important;
     }
+}
+.detail_button_area{
+    width: 100%;
+    position: relative;
+    z-index: 3;
+    .detail_button_background{
+        z-index: 4;
+        display: inline-block;
+        position: absolute;
+        bottom: 3px;
+        height: 40px;
+        width: 40px;
+        right: 0px;
+    }
+    .fa-solid{
+        padding-left: 3px;
+        padding-right: 1px;
+        padding-top: 2px;
+        font-size: 20px;
+        height: 22px;
+        width: 20px;
+        z-index: 5;
+        display: inline-block;
+        position: absolute;
+        border-radius: 12px;
+        right: 3px;
+        bottom: 5px;
+        color: white;
+        background-color: grey;
+    }
+}
+.detail_button_area:hover{
+    cursor: pointer;
 }
 .open_notification{
     display: inline-block;

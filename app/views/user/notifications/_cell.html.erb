@@ -1,19 +1,29 @@
-<%= link_to(user_notification_path(notification.id), class: 'message_show_button') do %>
-    <div class="notification_cell">
-        <div class="image_area">
-            <%if notification.notifier_id %>
-                <%=image_tag notification.notifier.thumb_with_default, class:"image"%>
-            <% else %>
-                <%=image_tag "/corretech_icon.png", class:"image"%>
-            <% end %>
-        </div>
-        <div class="description_area">
-        <span class="description">
-        <%if !notification.is_notified%>
-                <span class="new"><%= "NEW" %></span>
-        <% end %><%= notification.description%>
+<div class="notification_cell_area closing">
+    <%= link_to(user_notification_path(notification.id), class: 'notification_cell') do %>
+            <div class="image_area">
+                <%if notification.notifier_id %>
+                    <%=image_tag notification.notifier.thumb_with_default, class:"image"%>
+                <% else %>
+                    <%=image_tag "/corretech_icon.png", class:"image"%>
+                <% end %>
+            </div>
+            <div class="text_area">
+            <span class="text three_line_text">
+                <%if !notification.is_notified%>
+                    <span class="new"><%= "NEW" %></span>
+                <% end %><%= notification.title%>
+                </br>
+                <div class="description">
+                「<%= notification.description%>」
+                </div>
             </span>
-            <span class="datetime"><%=from_now(notification.created_at)%></span>
-        </div>
+            <span class="datetime">
+                <%=from_now(notification.created_at)%></span>
+            </div>
+    <% end %>
+    <div class="detail_button_area">
+        <div class="detail_button_background"></div>
+        <span class="fa-solid fa-angle-down">
+        </span>
     </div>
-<% end %>
+</div>

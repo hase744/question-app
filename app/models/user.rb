@@ -135,7 +135,8 @@ class User < ApplicationRecord
   end
 
   def categories
-    category_names = self.user_categories
+    category_names = self
+      .user_categories
       .order(updated_at: :asc)
       .pluck(:category_name)
     #updated_at順に取得したいので

@@ -123,22 +123,11 @@ class User::OrdersController < User::Base
     )
   end
   
-  def create_notification(request, user)
-    Notification.create(
-      user_id: user.id,
-      notifier_id: current_user.id,
-      description: "依頼が中断されました。",
-      action: "show",
-      controller: "requests",
-      id_number: request.id
-      )
-  end
-
   def create_cancel_notification
     Notification.create!(
       user_id: @transaction.seller.id,
       notifier_id: current_user.id,
-      description: "依頼がキャンセルされました。",
+      title: "依頼がキャンセルされました",
       action: "show",
       controller: "orders",
       id_number: @transaction.id,
@@ -150,7 +139,8 @@ class User::OrdersController < User::Base
     Notification.create(
       user_id: @transaction.buyer.id,
       notifier_id: current_user.id,
-      description: "質問がお断りされました。",
+      title: "質問がお断りされました",
+      description: @transaction.reject_reason,
       action: "show",
       controller: "orders",
       id_number: @transaction.id,

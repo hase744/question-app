@@ -157,7 +157,7 @@ class User::ServicesController < User::Base
       user_service_path(Service.last.id) if @service.service_categories.length == 0
       ActiveRecord::Base.transaction do
         if save_models
-          create_notification(@service, "相談室を出品されました。")
+          create_notification(@service, "相談室が出品されました。")
           flash.alert = "相談室を出品しました。"
           service = Service.find_by(user: current_user)
           redirect_to user_service_path(Service.last.id)
@@ -277,11 +277,11 @@ class User::ServicesController < User::Base
       notifier_id: current_user.id,
       controller: "services",
       action: "show",
-      description: "あなたの質問に相談室が提案されました。",
+      title: "あなたの質問に相談室が提案されました",
+      description: @transaction.service.title,
       id_number: @service.id,
       parameter: "?transaction_id=#{@transaction.id}"
     )
-    create_notification(@service, "質問に相談室が提案されました。")
     flash.alert = "相談室を提案しました"
   end
 
@@ -393,7 +393,8 @@ class User::ServicesController < User::Base
       Notification.create(
         user: relationship.target_user,
         notifier_id: current_user.id,
-        description: text,
+        title: text,
+        description: service.title,
         action: "show",
         controller: "services",
         id_number: service.id

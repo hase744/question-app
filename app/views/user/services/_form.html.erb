@@ -3,149 +3,149 @@
 <%= render "user/shared/error_message", model: @transaction%>
 <div class="service_new_zone">
     <div class="service_new_area input_area">
-    <%= form_with model: service, url: path, method: method do |f| %>
-        <div class="field_area">
-          <%= f.label :title, class:"field_label"%>（<%=service.title_max_length%>字以内）<br />
-          <%= f.text_field :title, maxlength:service.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
-        </div>
-        
-        <div class="field_area">
-          <%= f.label :image, class:"field_label" %><br />
-          <%##= f.file_field :image, autocomplete: "image", class:"input_field" %>
-          <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "item[file][]", multiple: true %>
-        </div>
-      
-          <div class="field_area">
-            <%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: Service.description_max_length() %><br />
-            <%= f.text_area :description, maxlength:service.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
-          </div>
+    	<%= form_with model: service, url: path, method: method do |f| %>
+        	<div class="field_area">
+        	  	<%= f.label :title, class:"field_label"%>（<%=service.title_max_length%>字以内）<br />
+        	  	<%= f.text_field :title, maxlength:service.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
+        	</div>
 
-        <div class="field_area">
-          <%= f.label :category, class:"field_label" %><br />
-          <%if request.present? %>
-            <h3 class="request_content"><%=request.category.japanese_name%></h3>
-          <% else %>
-              <%= f.fields_for :service_categories do |category_form| %>
-                <%if service.service_categories.length > 1%>
-                  <%if category_form.object.category_name %>
-                    <div class="select_area">
-                          <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-                    </div>
-                  <% end %>
-                <% else %>
-                  <div class="select_area">
-                    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-                  </div>
-                <% end %>
-              <% end %>
-            <% service.service_categories.each do |sc| %>
-            <% end %>
-          <% end %>
-        </div>
+        	<div class="field_area">
+        	  	<%= f.label :image, class:"field_label" %><br />
+        	  	<%##= f.file_field :image, autocomplete: "image", class:"input_field" %>
+        	  	<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: 'image/png, image/gif, image/jpeg', name: "item[file][]", multiple: true %>
+        	</div>
 
-        <div class="field_area">
-          <%= f.label :request_form, class:"field_label" %><br />
-          <%if request.present? %>
-            <h3 class="request_content"><%=request.request_form.japanese_name%></h3>
-          <% else %>
-            <div class="select_area">
-              <%= f.select 'request_form_name', options_for_select(forms_japanese_hash, selected: service.request_form_name), include_blank: true,  class:"" ,required: true %>
-            </div>
-          <% end %>
-        </div>
+        	<div class="field_area">
+        	  	<%= f.label :description, class:"field_label" %><%=render "user/shared/total_characters_display", text_max_length: Service.description_max_length() %><br />
+        	  	<%= f.text_area :description, maxlength:service.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+        	</div>
 
-        <%if !request.present? %>
-          <div class="field_area length_field_area text_field_area">
-            <%= f.label :request_max_characters%><br />
-            <div class="select_area">
-              <%= f.select 'request_max_characters', options_for_select(service.max_character_options, selected: service.request_max_characters),  class:"" %>
-            </div>
-          </div>
+        	<div class="field_area">
+        	  	<%= f.label :category, class:"field_label" %><br />
+        	  	<%if request.present? %>
+        	  	  	<h3 class="request_content"><%=request.category.japanese_name%></h3>
+        	  	<% else %>
+        	  	    <%= f.fields_for :service_categories do |category_form| %>
+        	  	      	<%if service.service_categories.length > 1%>
+        	  	      	  	<%if category_form.object.category_name %>
+        	  	      	  	  	<div class="select_area">
+        	  	      	  	  	    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+        	  	      	  	  	</div>
+        	  	      	  	<% end %>
+        	  	      	<% else %>
+        	  	      	  	<div class="select_area">
+        	  	      	  	  	<%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
+        	  	      	  	</div>
+        	  	      	<% end %>
+        	  	    <% end %>
+        	  	  	<% service.service_categories.each do |sc| %>
+        	  	  	<% end %>
+        	  	<% end %>
+        	</div>
 
-          <% if Form.find_by(name: 'video').present? %>
-          <div class="field_area length_field_area video_field_area", style="display: <%=service.video_display_style=%>">
-            <label><%= Service.human_attribute_name(:request_max_minutes)%>（<%=service.mini_request_max_minutes%>〜<%=service.max_request_max_minutes%>分）</label><br />
-            <div class="select_area">
-              <%= f.select 'request_max_minutes', options_for_select((service.mini_request_max_minutes..service.max_request_max_minutes).step(1).map { |num| ["#{num}分", num] }, selected: service.request_max_minutes), include_blank: true,  class:"" ,required: true %>
-            </div>
-          </div>
-          <% end %>
-        <% end %>
+        	<div class="field_area">
+        	  	<%= f.label :request_form, class:"field_label" %><br />
+        	  	<%if request.present? %>
+        	  	  	<h3 class="request_content"><%=request.request_form.japanese_name%></h3>
+        	  	<% else %>
+        	  	  	<div class="select_area">
+        	  	  	  	<%= f.select 'request_form_name', options_for_select(forms_japanese_hash, selected: service.request_form_name), include_blank: true,  class:"" ,required: true %>
+        	  	  	</div>
+        	  	<% end %>
+        	</div>
 
-        <div class="field_area">
-          <%= f.label :delivery_form, class:"field_label" %><br />
-          <div class="select_area">
-            <%if request%>
-              <%= f.select :delivery_form_name, forms_japanese_hash(request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
-            <%else%>
-                <%= f.select 'delivery_form_name', options_for_select(forms_japanese_hash, selected: service.delivery_form_name), include_blank: true,  class:"" ,required: true %>
-            <% end %>
-          </div>
-        </div>
+        	<%if !request.present? %>
+        	  	<div class="field_area length_field_area text_field_area">
+        	  	  	<%= f.label :request_max_characters%><br />
+        	  	  	<div class="select_area">
+        	  	  	  	<%= f.select 'request_max_characters', options_for_select(service.max_character_options, selected: service.request_max_characters),  class:"" %>
+        	  	  	</div>
+        	  	</div>
 
-        <div class="field_area">
-          <%= f.label :transaction_message_enabled, class:"field_label", id:"transaction_message_enabled"%><br/>
-          <div class="select_area">
-            <%= f.select 'transaction_message_enabled', options_for_select([["受け付ける",true],["受け付けない",false]], selected: service.transaction_message_enabled), include_blank: true,  class:"" ,required: true %>
-          </div>
-        </div>
+        	  	<% if Form.find_by(name: 'video').present? %>
+        	  	<div class="field_area length_field_area video_field_area", style="display: <%=service.video_display_style=%>">
+        	  	  	<label><%= Service.human_attribute_name(:request_max_minutes)%>（<%=service.mini_request_max_minutes%>〜<%=service.max_request_max_minutes%>分）</label><br />
+        	  	  	<div class="select_area">
+        	  	  	  	<%= f.select 'request_max_minutes', options_for_select((service.mini_request_max_minutes..service.max_request_max_minutes).step(1).map { |num| ["#{num}分", num] }, selected: service.request_max_minutes), include_blank: true,  class:"" ,required: true %>
+        	  	  	</div>
+        	  	</div>
+        	  	<% end %>
+        	<% end %>
 
-        <%if false#request.nil? %>
-          <div class="field_area">
-            <%= f.label :stock_quantity, class:"field_label"%><br/>
-            <div class="select_area">
-              <%= f.select 'stock_quantity', options_for_select(service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
-            </div>
-          </div>
-        <% end %>
+        	<div class="field_area">
+        	  	<%= f.label :delivery_form, class:"field_label" %><br />
+        	  	<div class="select_area">
+        	  	  	<%if request%>
+        	  	  	  	<%= f.select :delivery_form_name, forms_japanese_hash(request.delivery_form.name), autocomplete: "select_input", class:"input_field" %>
+        	  	  	<%else%>
+        	  	  	    <%= f.select 'delivery_form_name', options_for_select(forms_japanese_hash, selected: service.delivery_form_name), include_blank: true,  class:"" ,required: true %>
+        	  	  	<% end %>
+        	  	</div>
+        	</div>
 
-        <div class="field_area">
-          <%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
-          <div class="select_area">
-            <%= f.select 'price', options_for_select(service.price_options, selected: service.price), include_blank: true,  class:"price_field" %>
-          </div>
-        </div>
+        	<div class="field_area">
+        	  	<%= f.label :transaction_message_enabled, class:"field_label", id:"transaction_message_enabled"%><br/>
+        	  	<div class="select_area">
+        	  	  	<%= f.select 'transaction_message_enabled', options_for_select([["受け付ける",true],["受け付けない",false]], selected: service.transaction_message_enabled), include_blank: true,  class:"" ,required: true %>
+        	  	</div>
+        	</div>
 
-        <div class="field_area">
-          <%= f.label :delivery_days, class:"field_label"%>（1〜<%=service.delivery_days_max_number%>日）<br/>
-          <div class="select_area">
-            <%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日以内", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
-          </div>
-          <div class="annotation">＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
-        </div>
+        	<%if false#request.nil? %>
+        	  	<div class="field_area">
+        	  	  	<%= f.label :stock_quantity, class:"field_label"%><br/>
+        	  	  	<div class="select_area">
+        	  	  	  	<%= f.select 'stock_quantity', options_for_select(service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
+        	  	  	</div>
+        	  	</div>
+        	<% end %>
 
-        <%if !request.present? %>
-          <div class="field_area">
-            <%= f.label :allow_pre_purchase_inquiry, class:"field_label"%></br>
-            <div class="select_area">
-              <%= f.select 'allow_pre_purchase_inquiry', options_for_select({"受け付ける":true, "受付けない":false}, selected: service.allow_pre_purchase_inquiry),  class:"price_field" ,required: true %>
-            </div>
-          </div>
-          
-          <div class="field_area">
-            <%#= f.check_box :is_published, class:"", checked:true%>
-            <%= f.label :is_published, class:"field_label"%></br>
-            <div class="select_area">
-            <%= f.select 'is_published', options_for_select({"公開":true, "非公開":false}, selected: service.is_published),  class:"price_field" ,required: true %>
-            </div>
-          </div>
+        	<div class="field_area">
+        	  	<%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
+        	  	<div class="select_area">
+        	  	  	<%= f.select 'price', options_for_select(service.price_options, selected: service.price), include_blank: true,  class:"price_field" %>
+        	  	</div>
+        	</div>
 
-          <div class="field_area">
-            <%= f.label :is_for_sale, class:"field_label"%></br>
-            <div class="select_area">
-              <%= f.select 'is_for_sale', options_for_select({"販売中":true, "販売停止":false}, selected: service.is_for_sale),  class:"price_field" ,required: true %>
-            </div>
-          </div>
-        <%end%>
+        	<div class="field_area">
+        	  	<%= f.label :delivery_days, class:"field_label"%>（1〜<%=service.delivery_days_max_number%>日）<br/>
+        	  	<div class="select_area">
+        	  	  	<%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日以内", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
+        	  	</div>
+        	  	<div class="annotation">＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
+        	</div>
 
-        <%if request.present? %>
-          <%= f.hidden_field :request_id, value: request.id%>
-        <% end %>
+        	<div class="field_area">
+        	  	<%= f.label :allow_pre_purchase_inquiry, class:"field_label"%></br>
+        	  	<div class="select_area">
+        	  	  	<%= f.select 'allow_pre_purchase_inquiry', options_for_select({"受け付ける":true, "受付けない":false}, selected: service.allow_pre_purchase_inquiry),  class:"price_field" ,required: true %>
+        	  	</div>
+        	</div>
 
-        <div class="submit_area">
-          <%= f.submit submit_text, class:"big_submit", data: {confirm: "#{submit_text}しますか？"}  %>
-        </div>
-      <% end %>
+        	<%if !request.present? %>
+        	  	<div class="field_area">
+        	  	  	<%#= f.check_box :is_published, class:"", checked:true%>
+        	  	  	<%= f.label :is_published, class:"field_label"%></br>
+        	  	  	<div class="select_area">
+        	  	  		<%= f.select 'is_published', options_for_select({"公開":true, "非公開":false}, selected: service.is_published),  class:"price_field" ,required: true %>
+        	  	  	</div>
+        	  	</div>
+
+        	  	<div class="field_area">
+        	  	  	<%= f.label :is_for_sale, class:"field_label"%></br>
+        	  	  	<div class="select_area">
+        	  	  	  	<%= f.select 'is_for_sale', options_for_select({"販売中":true, "販売停止":false}, selected: service.is_for_sale),  class:"price_field" ,required: true %>
+        	  	  	</div>
+        	  	</div>
+        	<% end %>
+
+        	<%if request.present? %>
+        	  	<%= f.hidden_field :request_id, value: request.id%>
+        	<% end %>
+
+        	<div class="submit_area">
+        	  	<%= f.submit submit_text, class:"big_submit", data: {confirm: "#{submit_text}しますか？"}  %>
+        	</div>
+      	<% end %>
     </div>
 </div>
 <script>
