@@ -1,0 +1,37 @@
+
+$(function() {
+    function display_total_characters($text_area, $total_characters_span){
+        const text_max_length = $total_characters_span.attr('length');
+        const current_length = $text_area.val().length;
+        
+        if(text_max_length == null || text_max_length == ""){ return; }
+        $total_characters_span.text(`（${current_length}/${text_max_length}字）`);
+        
+        // Change color based on character length
+        if(current_length <= text_max_length / 2){
+            $total_characters_span.css("color", "dimgray");
+        } else if(current_length <= text_max_length){
+            $total_characters_span.css("color", "rgb(150, 150, 0)");
+        } else {
+            $total_characters_span.css("color", "red");
+        }
+    }
+    
+    // Apply to each text area and its corresponding span
+    $(".total_characters").each(function(){
+        console.log($(this))
+        const $total_characters_span = $(this);
+        const $text_area = $total_characters_span.closest('div').find('.text_area');
+        
+        console.log("$text_area")
+        console.log($total_characters_span.closest('div'))
+        
+        // Initial display update
+        display_total_characters($text_area, $total_characters_span);
+        
+        // On change or keyup events
+        $text_area.on('change keyup', function(){
+            display_total_characters($text_area, $total_characters_span);
+        });
+    });
+});

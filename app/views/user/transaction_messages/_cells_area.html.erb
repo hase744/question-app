@@ -1,10 +1,4 @@
 <%= render 'user/shared/common_label', text: '追加メッセージ', language: 'ja'%>
-<%if user_signed_in? && @transaction.can_send_message(current_user) %>
-    <%##= render "user/transaction_messages/new", 
-        transaction_message: @transaction_message,
-        transaction: @transaction 
-        %>
-<% end %>
 <div class="sort_area">&nbsp;
 	<%= link_to "古い順", user_transaction_messages_reset_cells_path(page:1, transaction_message_order:"ASC", transaction_id:@transaction.id, after_delivered: action_name == "show"), remote:true, class:"sort_button desc_button asc_mode", style:'cursor:pointer', onclick:"change_to_asc()"%>
 	<span class="asc_mode">｜ <span class="current_order">新しい順</span></span>

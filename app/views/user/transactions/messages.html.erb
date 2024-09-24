@@ -2,12 +2,6 @@
   	<div class="transaction_messages_arae">
 	<%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
   	<%= render "user/requests/cell", request: @transaction.request %>
-  	  	<%if user_signed_in? && @transaction.can_send_message(current_user) %>
-  	  	<%#= render "user/transaction_messages/new", 
-  	  	    transaction_message: TransactionMessage.new,
-  	  	    transaction: @transaction 
-  	  	    %>
-  	  	<% end %>
 		<%= render "user/transaction_messages/cells_area" %>
   	</div>
 </div>
