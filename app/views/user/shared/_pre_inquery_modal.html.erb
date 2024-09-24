@@ -34,7 +34,7 @@
 						<%= transaction.request.title%>
 						<h3 class="margin0px">本文</h3>
 						<%= transaction.request.description%>
-						<% transaction.request.items.each do |item| %>
+						<% transaction.request.items.not_text_image.each do |item| %>
 							<%= image_tag item.file.normal_size.url, class: "item_image"%>
 						<% end %>
 					</div>

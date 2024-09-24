@@ -62,7 +62,7 @@
                     </div>
                 <% end %>
                     -->
-                <div class="user_label">
+                <div class="condition_label">
                     <%= render "user/shared/small_label", text:"条件"%>
                 </div>
                 <table class="common_condition_area">
@@ -194,7 +194,7 @@
                 </table>
                 <div class="service_image_area">
                     <%if @service.item&.file&.url.present? %>
-                        <%=image_tag @service.item.file.url, class:"service_image",id:"service_image"%>
+                        <%=image_tag @service.item.file.normal_size.url, class:"service_image",id:"service_image"%>
                     <% end %>
                 </div>
                 <div class="service_detail_area">
@@ -204,28 +204,30 @@
                 <div class="user_label">
                     <%= render "user/shared/small_label", text:"回答者"%>
                 </div>
-                <%= link_to(user_account_path(@service.user.id), class:"user_area") do %>
+                <div class="user_area">
                     <%=image_tag @service.user.thumb_with_default, class:"user_image"%>
-                    <div class="user_name">
-                        <%=@service.user.name%>
+                    <div class="right_side">
+                        <%= link_to(user_account_path(@service.user.id), class:"user_name") do %>
+                            <%=@service.user.name%>
+                        <% end %>
+                        <div class="specifics_area">
+                            <span class="specific">
+                                <label>評価</label>
+                                <%= render "user/shared/average_star_rating", 
+                                average_star_rating: @service.user.average_star_rating, 
+                                total_reviews: @service.user.total_reviews %>
+                            </span>
+                            <span class="specific">
+                                <label>価格帯</label>
+                                <%= render "user/accounts/service_price_range", user: @service.user%>
+                            </span>
+                            <span class="specific">
+                                <label>回答数</label>
+                                <%=@service.user.total_sales_numbers%><span class="unit">件</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="specifics_area">
-                        <span class="specific">
-                            <label>評価</label>
-                            <%= render "user/shared/average_star_rating", 
-                            average_star_rating: @service.user.average_star_rating, 
-                            total_reviews: @service.user.total_reviews %>
-                        </span>
-                        <span class="specific">
-                            <label>価格帯</label>
-                            <%= render "user/accounts/service_price_range", user: @service.user%>
-                        </span>
-                        <span class="specific">
-                            <label>回答数</label>
-                            <%=@service.user.total_sales_numbers%><span class="unit">件</span>
-                        </span>
-                    </div>
-                <% end %>
+                </div>
                 <!--
                 <%if can_purchase %>
                     <div class="transaction_button_area">
@@ -241,24 +243,29 @@
                     </div>
                 <% end %>
                 -->
+                <% if @transaction&.suggestion_buyable(current_user) %>
+                    <div class="transaction_button_area">
+        	            <div class="open_button transaction_button">購入前に質問</div>
+                    </div>
+                <% end %>
                 <%= render "/user/shared/share_twitter"%>
             </div>
             <% if !@service.request.present?%>
-            <div class="service_info_menu" id="request_ajax_update">
-                <% @bar_elements.each do |element| %>
-                    <% 
-                    if current_nav_item == element[:item]
-                        puts "現在#{current_nav_item}"
-                        additional_class = "blue"  
-                    else
-                        additional_class = "gray"
-                    end
-                    %>
-                    <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
-                        <%= link_to element[:japanese_name], user_service_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
-                    </li>
-                <% end %>
-            </div>
+                <div class="service_info_menu" id="request_ajax_update">
+                    <% @bar_elements.each do |element| %>
+                        <% 
+                        if current_nav_item == element[:item]
+                            puts "現在#{current_nav_item}"
+                            additional_class = "blue"  
+                        else
+                            additional_class = "gray"
+                        end
+                        %>
+                        <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
+                            <%= link_to element[:japanese_name], user_service_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
+                        </li>
+                    <% end %>
+                </div>
             <% end %>
         </div>
         <div class="service_hitsory" id="updated_by_ajax">
@@ -277,24 +284,30 @@
     </div>
     <%= render "user/accounts/profile", user: @service.user, relationship:@relationship%>
 </div>
-<% unless user_signed_in? && @service.user == current_user  %>
-    <div class="bottom_button_area purchase_button_area">
-        <div class="bottom_button_flame">
-            <div class="label_area"><%=@service.price%><span class="yen">円</span></div>
-            <%=
-            if @transaction&.is_suggestion
-                link_to "購入", user_request_purchase_path(transaction_id:@transaction.id),method: :post, data: { confirm: "購入しますか？"} ,class:"bottom_button transaction_button"
-            else
-                link_to(new_user_request_path(service_id:@service.id), class:"bottom_button transaction_button") do
-                    "質問を作成"
-                end
-            end
-            %>
-        </div>
-    </div>
-    <script>
-        $('.main_area').css('padding-bottom','50px');
-    </script>
+<%= render "user/services/bottom_area" do %>
+    <% if @transaction&.suggestion_buyable(current_user) %>
+        <%= link_to "購入", user_request_purchase_path(transaction_id: @transaction.id), method: :post, data: { confirm: "購入しますか？" }, class: "bottom_button transaction_button" %>
+    <% elsif !@transaction&.is_suggestion %>
+        <%= link_to new_user_request_path(service_id: @service.id), class: "bottom_button transaction_button" do %>
+            質問を作成
+        <% end %>
+    <% end %>
+<% end %>
+<% if @transaction&.suggestion_buyable(current_user) %>
+<%= render "user/shared/pre_inquery_modal", transaction: @transaction %>
+<script>
+pre_inquery_modal = $('.pre_inquery_modal');
+modal = $('.modal_window');
+$('.open_button').on('click', function(){
+	pre_inquery_modal.addClass("open");
+});
+$('.modal_delete').on('click', function(){
+    modal.removeClass("open");
+  });
+$('.modal_background').on('click', function(e){
+    modal.removeClass('open');
+});
+</script>
 <% end %>
 <script>
 <%= render "user/requests/javascript/cell.js.erb" %>
@@ -343,13 +356,13 @@ function update_menu_color(element){
 }
 //横スクロールメニューの要素が押された時
 menu_elements.forEach(element => element.addEventListener("click", ()=>{
-    	$('#loading_animation').css('display','block');
-        $('#updated_by_ajax').empty();
-        update_menu_color(element);
-        item = element.getAttribute('item');
-        var loaded_element_count = service_hitsory.childElementCount+1; //現在取得済みの要素数
-        //繰り上げ（現在取得済みの要素数 / 取得するページの要素数）＋１
-        page = Math.ceil(loaded_element_count/item_to_page(item)) + 1;
+    //$('#loading_animation').css('display','block');
+    $('#updated_by_ajax').empty();
+    update_menu_color(element);
+    item = element.getAttribute('item');
+    var loaded_element_count = service_hitsory.childElementCount+1; //現在取得済みの要素数
+    //繰り上げ（現在取得済みの要素数 / 取得するページの要素数）＋１
+    page = Math.ceil(loaded_element_count/item_to_page(item)) + 1;
     }
 ));
 

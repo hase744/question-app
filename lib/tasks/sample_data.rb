@@ -136,6 +136,7 @@ class SampleData
       Parallel.each(0..9) do |n|
       #for n in 0..9
         image_path = Rails.root.join('public', 'sample', category.name, "canvas (#{n}).jpg")
+        service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
         buyers = User.where(is_seller: false)
         sellers = User.where(is_seller: true)
         buyer = buyers[n%buyers.count]
@@ -179,6 +180,10 @@ class SampleData
           request_max_files: 0,
           service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
+        item = service.items.new()
+        item.process_file_upload = true
+        item.assign_attributes(file: File.open(service_image_path))
+        item.save
         #service.service_categories.create(category_name: category.name)
         transaction = Transaction.create_or_find_by!(
           title: transactions[n]['answer']['title'],
@@ -196,7 +201,7 @@ class SampleData
           use_youtube:true,
           youtube_id: nil,
           transaction_message_enabled: service.transaction_message_enabled,
-          star_rating: n%6,
+          star_rating: 4 + (n % 2),
           review_description: "レビュー内容をここに表示",
           reviewed_at: DateTime.now - n,
         )

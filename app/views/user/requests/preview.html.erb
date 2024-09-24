@@ -128,7 +128,7 @@ $('.modal_background').on('click', function(e){
 <canvas id="canvas"></canvas>
 <%= render "/user/images/description.html.erb", text:@request.description, image_width: 500%>
 <script>
-<%= render 'user/images/description.js.erb', text: @request.description, image_width: 500, user_name: current_user.name %>
+<%= render 'user/images/description.js.erb',title: @request.title, text: @request.description, image_width: 500, user_name: current_user.name %>
 </script>
 <style>
 <%= render 'user/images/description.css.erb', text: @request.description, image_width: 500%>

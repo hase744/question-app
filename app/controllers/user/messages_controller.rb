@@ -88,7 +88,8 @@ class User::MessagesController < User::Base
     Notification.create(
       user_id: @message.receiver_id,
       notifier_id: @message.sender_id,
-      description: "メッセージをが届いています",
+      title: "メッセージをが届いています",
+      description: @message.body,
       action: "show",
       controller: "contacts",
       id_number: Contact.find_by(room: Room.find(@message.room_id).id, user_id: @message.receiver_id).id

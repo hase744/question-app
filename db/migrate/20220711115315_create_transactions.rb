@@ -23,7 +23,6 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.text :description
       t.datetime :pre_purchase_inquired_at
       t.integer :total_views, default: 0, index:true
-      t.integer :total_likes, default: 0, index:true
 
       t.boolean :is_transacted, default: false, index:true #納品されているか
       t.datetime :transacted_at, index:true

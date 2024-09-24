@@ -336,7 +336,8 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id: @service.user_id,
       notifier_id: current_user.id,
-      description: "あなたの相談室に相談が依頼されました。",
+      title: "あなたの相談室に相談が依頼されました",
+      description: @request.title,
       action: "show",
       controller: "orders",
       id_number: @transaction.id

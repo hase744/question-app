@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
   create_table "notifications", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "notifier_id"
+    t.text "title"
     t.text "description"
     t.string "image"
     t.boolean "is_notified", default: false
@@ -433,12 +434,10 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.string "file_tmp"
     t.boolean "file_processing", default: false, null: false
     t.text "body"
-    t.integer "total_likes", default: 0
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["receiver_id"], name: "index_transaction_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_transaction_messages_on_sender_id"
-    t.index ["total_likes"], name: "index_transaction_messages_on_total_likes"
     t.index ["transaction_id"], name: "index_transaction_messages_on_transaction_id"
   end
 
@@ -463,7 +462,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.text "description"
     t.datetime "pre_purchase_inquired_at"
     t.integer "total_views", default: 0
-    t.integer "total_likes", default: 0
     t.boolean "is_transacted", default: false
     t.datetime "transacted_at"
     t.boolean "is_published", default: false
@@ -506,7 +504,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["star_rating"], name: "index_transactions_on_star_rating"
     t.index ["suggested_at"], name: "index_transactions_on_suggested_at"
     t.index ["title"], name: "index_transactions_on_title"
-    t.index ["total_likes"], name: "index_transactions_on_total_likes"
     t.index ["total_views"], name: "index_transactions_on_total_views"
     t.index ["transacted_at"], name: "index_transactions_on_transacted_at"
   end

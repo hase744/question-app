@@ -299,11 +299,9 @@ class Transaction < ApplicationRecord
       deal:self
     )
   end
-  
-  def update_total_likes
-    self.update(
-      total_likes: self.likes.count
-    )
+
+  def total_likes
+    self.likes.count
   end
 
   def validate_title
@@ -376,6 +374,22 @@ class Transaction < ApplicationRecord
   def validate_service_renewed
     if self.request.is_published && self.request.will_save_change_to_is_published? && self.service_checked_at < self.service.renewed_at
       errors.add(:base, "相談室の内容が変更されました。")
+    end
+  end
+
+  def suggestion_buyable(user)
+    if user.nil?
+      false
+    elsif self.service.get_unbuyable_message(user).present?
+      false
+    elsif self.buyer != user
+      false
+    elsif !self.is_suggestion
+      false
+    elsif self.is_contracted
+      false
+    else
+      true
     end
   end
 

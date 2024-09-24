@@ -1,0 +1,13 @@
+<% unless user_signed_in? && @service.user == current_user %>
+    <% if @transaction&.suggestion_buyable(current_user) || !@transaction&.is_suggestion %>
+        <div class="bottom_button_area purchase_button_area">
+            <div class="bottom_button_flame">
+                <div class="label_area"><%= @service.price %><span class="yen">円</span></div>
+                <%= yield if block_given? %> <!-- This is where the link will be rendered -->
+            </div>
+        </div>
+        <script>
+            $('.main_area').css('padding-bottom', '50px');
+        </script>
+    <% end %>
+<% end %>

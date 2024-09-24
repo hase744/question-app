@@ -6,7 +6,7 @@
   	<div class="button_area">
   	  	<button class="btn dli-chevron-down dli-chevron" id='btn' >
 			<span class="fa-solid fa-angle-down"></span>
-  	  		<span class="text">画像を開く</span>
+  	  		<span class="text" id="text">画像を開く</span>
 			<span class="fa-solid fa-angle-down"></span>
   	  	</button>
   	</div>
@@ -14,13 +14,15 @@
 </div>
 <script>
 function revealImage() {
-  $('.request_image_area').toggleClass('reveal');
-  //$('.request_image_area button').text('全体を表示');
-  //$('.reveal button').text('一部だけ表示');
-  $('.btn .fa-solid').toggleClass('fa-angle-down');
-  $('.btn .fa-solid').toggleClass('fa-angle-up');
-  $('.btn').css('top','-30px')
-  $('.btn .text').text('画像を閉じる')
+  	$('.request_image_area').toggleClass('reveal');
+  	$('.btn .fa-solid').toggleClass('fa-angle-down');
+  	$('.btn .fa-solid').toggleClass('fa-angle-up');
+  	$('.btn').css('top','-30px');
+  	if ($('#text').text() === '画像を開く') {
+    	$('#text').text('画像を閉じる');
+  	} else {
+    	$('#text').text('画像を開く');
+  	}
 }
 </script>
 <style>

@@ -1,0 +1,14 @@
+$(document).on('click', '.detail_button_area', function() {
+  var notificationCellArea = $(this).closest('.notification_cell_area');
+  var icon = $(this).find('.fa-solid');
+  var text = notificationCellArea.find('.text');
+  if (notificationCellArea.hasClass('closing')) {
+    notificationCellArea.removeClass('closing').addClass('opening');
+    icon.removeClass('fa-angle-down').addClass('fa-angle-up');
+    text.removeClass('three_line_text');
+  } else if (notificationCellArea.hasClass('opening')) {
+    notificationCellArea.removeClass('opening').addClass('closing');
+    icon.removeClass('fa-angle-up').addClass('fa-angle-down');
+    text.addClass('three_line_text');
+  }
+});

@@ -163,6 +163,9 @@
         .description_area{
             display: inline-block;
             flex-grow: 1;
+            .text{
+                white-space: pre-line;
+            }
         }
     }
     .answer{
@@ -261,6 +264,9 @@
         box-shadow: 0 0 2px grey;
         margin: 5px;
         border-radius: 5px;
+        .text{
+            white-space: pre-line;
+        }
     }
     .transaction_cell_flame{
         padding-bottom: 1px;

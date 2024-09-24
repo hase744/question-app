@@ -189,7 +189,8 @@ class User::TransactionsController < User::Base
         Notification.create(
           user: @transaction.opponent_of(current_user),
           notifier_id: current_user.id,
-          description: message,
+          title: message,
+          description: @transaction_message.body,
           action: "pre_purchase_inquiry",
           controller: "transactions",
           parameter: "?transaction_id=#{@transaction.id}",
@@ -235,14 +236,13 @@ class User::TransactionsController < User::Base
     else
       transaction.likes.create(user: current_user)
     end
-    transaction.update_total_likes
   end
 
   def create_notification(transaction)
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
-      description: "あなたの依頼した相談に回答が納品されました。",
+      description: "あなたの依頼した相談に回答が納品されました",
       action: "show",
       controller: "transactions",
       id_number: transaction.id

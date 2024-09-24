@@ -1,14 +1,14 @@
 class User::HomesController < ApplicationController
   layout "with_footer"
   def show
-    @services = Service.all
+    @services = Service
       .solve_n_plus_1
       .where(request_id: nil)
       #.where.not(price: 0)
       .order(total_sales_numbers: :DESC)
       .order(Arel.sql('average_star_rating DESC NULLS LAST'))
       .limit(10)
-    @users = User.all
+    @users = User
       .solve_n_plus_1
       .where(is_seller:true)
       .order(total_sales_numbers: :DESC)

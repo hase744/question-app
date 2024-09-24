@@ -54,8 +54,8 @@
                 text-align: center;
                 height: 50px;
                 .transaction_button{
-                    width: 100%;
-                    height: 50px;
+                    width: 30%;
+                    min-width: 200px;
                     display: inline-block;
                     font-size: 15px;
                     border-radius: 3px 3px 3px 3px;
@@ -85,18 +85,12 @@
                 //    border-bottom: none;
                 //  }
             }
-            .user_area:hover{
-                background-color: whitesmoke;
-            }
-            .user_area:hover .specific > label{
-                background-color: lightgrey
-            }
             .user_area{
                 //height: 60px;
                 border-radius: 10px;
                 display: none;
                 @media (max-width: 1000px) {
-                    display: inline-block;
+                    display: flex;
                 }
                 height: 100%;
                 width: 100%;
@@ -106,25 +100,36 @@
                     font-size: 15px;
                 }
                 .user_image{
-                    float: left;
-                    display: inline-block;
+                    display: flex;
                     height: 50px;
                     width: 50px;
                     object-fit: cover;
                     margin: 5px;
                     border-radius: 50%;
                 }
+                .right_side{
+                    display: flex;
+                    flex: 1;
+                    flex-direction: column;
+                }
                 .user_name{
                     margin: 5px 5px 0px 5px ;
-                    float: left;
-                    display: inline-block;
+                    display: block;
                     width: calc(100% - 70px);
-                    height: 25px;
                     font-size: 18px;
                     font-weight: bold;
+                    text-decoration: underline;
+                    color: dimgrey;
                 }
                 .specifics_area{
+                    display: block;
                     color: black;
+                }
+            }
+            .user_label{
+                display: none;
+                @media (max-width: 1000px) {
+                    display: block;
                 }
             }
         }
@@ -174,6 +179,9 @@
                 cursor: pointer;
             }
         }
+    }
+    #loading_animation{
+        display: none;
     }
 }
 .purchase_button_area{

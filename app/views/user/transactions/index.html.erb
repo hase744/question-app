@@ -3,7 +3,7 @@
         <%= render "user/shared/state_register_alert" %>
     <%else%>
         <div class="main_header">
-            <%= link_to "", user_transactions_path, class:"fas fa-home" %>
+            <%= link_to "", user_homes_path, class:"fas fa-home"%>
              > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
              <%= render "user/shared/category_selector", 
 				current_link: -> { user_transactions_path(categories: params[:categories]) }, 

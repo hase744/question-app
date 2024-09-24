@@ -35,7 +35,7 @@ class User::TransactionMessagesController < User::Base
     @transaction_message.assign_attributes(transaction_message_params)
     @transaction = @transaction_message.deal
     if @transaction_message.save
-      EmailJob.perform_later(mode: :message, model: @transaction_message) if @transaction_message.receiver.seller.can_email_transaction
+      EmailJob.perform_later(mode: :message, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
       if @transaction.seller == @transaction_message.sender
         create_notification(@transaction.buyer, "追加回答が届いています。")
         flash.alert = "回答を送信しました。"
@@ -58,7 +58,7 @@ class User::TransactionMessagesController < User::Base
     end
   end
 
-  def create_notification(user, description)
+  def create_notification(user, title)
     if @transaction.is_transacted
       action = "show"
     else
@@ -70,7 +70,8 @@ class User::TransactionMessagesController < User::Base
       controller: "transactions",
       action: action,
       id_number:@transaction.id,
-      description: description,
+      title: title,
+      description: @transaction_message.body,
       parameter: "?transaction_message_order=DESC"
     )
   end

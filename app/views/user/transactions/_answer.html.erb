@@ -35,7 +35,7 @@
 					<% end %>
 					<div class="description_area three_line_text">
 						<span class="description_text three_line_text">
-							<%= transaction.description %>
+							<%= simple_format(transaction.description) %>
 						</span>
 					</div>
 				</div>
@@ -46,13 +46,15 @@
 					<%= transaction.request.title %>
 				</h4>
 				<div class="item_description_area">
-					<% if transaction.request.items.not_text_image.present? %>
-						<div class="item_area">
-							<%= image_tag transaction.request.items.not_text_image.first.file.thumb.url %>
-						</div>
+					<% if transaction.request.items.present? %>
+						<%unless transaction.request.items.first.is_text_image %>
+							<div class="item_area">
+								<%= image_tag transaction.request.items.first.file.thumb.url %>
+							</div>
+						<% end %>
 					<% end %>
 					<div class="description_area">
-						<span class="description three_line_text"><%= transaction.request.description %></span>
+						<span class="description three_line_text"><%= simple_format(transaction.request.description) %></span>
 					</div>
 				</div>
 			<% end %>

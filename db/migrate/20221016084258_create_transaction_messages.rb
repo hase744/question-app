@@ -8,7 +8,6 @@ class CreateTransactionMessages < ActiveRecord::Migration[6.1]
       t.string :file_tmp
       t.boolean :file_processing, null: false, default: false
       t.text :body
-      t.integer :total_likes, default: 0, index:true
 
       t.timestamps
     end
