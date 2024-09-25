@@ -1,4 +1,4 @@
-$(document).on('click', '.detail_button_area', function() {
+$(document).off('click', '.detail_button_area').on('click', '.detail_button_area', function() {
   var notificationCellArea = $(this).closest('.notification_cell_area');
   var icon = $(this).find('.fa-solid');
   var text = notificationCellArea.find('.text');

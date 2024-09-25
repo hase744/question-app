@@ -1,0 +1,13 @@
+<div class="share_zone">
+    <span class="share_area" id="twitter_share_area"></span>
+    <span class="share_area" id="facebook_share_area"></span>
+</div>
+<script>
+<%if Rails.env == "development"%>
+    <%= render "user/shared/javascript/small_share_facebook_development.js.erb" %>
+    <%= render "user/shared/javascript/small_share_twitter_development.js.erb" %>
+<% else %>
+    <%= render "user/shared/javascript/small_share_twitter.js.erb" %>
+    <%= render "user/shared/javascript/small_share_facebook.js.erb" %>
+<% end %>
+</script>

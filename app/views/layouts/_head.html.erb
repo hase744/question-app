@@ -35,6 +35,6 @@
     <%= include_gon %>
     <%=javascript_pack_tag "layout/application"%>
     <%Dir.glob("app/javascript/packs/shared/*.js")  do |path|%>
-      <%= javascript_pack_tag path.slice(21, path.length).to_s%>
+      <%#= javascript_pack_tag path.slice(21, path.length).to_s%>
     <%end%>
 </head>
