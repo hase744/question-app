@@ -242,6 +242,7 @@ class User::TransactionsController < User::Base
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
+      title: transaction.title,
       description: "あなたの依頼した相談に回答が納品されました",
       action: "show",
       controller: "transactions",

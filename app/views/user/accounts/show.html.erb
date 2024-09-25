@@ -28,7 +28,6 @@
                             <% end %>
                         <% end %>
                     </div>
-                    <%##= render "user/relationships/follow_message", user: @user, relationship: @relationship%>
                 </div>
                 <div class="user_name_area">
                     <h2 class="user_name">
@@ -112,8 +111,6 @@
 	    <%= render "user/shared/loading_animation" %>
     </div>
 </div>
-<%= javascript_pack_tag "shared/xml_request" %>
-<%= javascript_pack_tag "shared/check_scroll" %>
 <script>
 <%= render "user/services/javascript/cell.js.erb" %>
 <%= render "user/accounts/show.js.erb" %>

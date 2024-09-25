@@ -8,7 +8,7 @@
           </br>
         </div>
         <div class="field_area">
-          <%= f.label :review_description, class:"field_label" %>（<%=transaction.review_description_max_length%>字以内）<br />
+          <%= f.label :review_description, class:"field_label" %><span class="total_characters" length="<%=transaction.review_description_max_length%>"></span><br />
           <%= f.text_area :review_description, autocomplete: "new-password", class:"input_text_field text_area input_field",required: true %>
         </div>
         <div class="submit_area">

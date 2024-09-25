@@ -3,6 +3,7 @@ var service_cell_area = document.getElementsByClassName("service_cell_area");
 function resize_service_cell(){
     var ideal_width = 240;
     //幅をideal_widthで割ったあまりと商から適切な幅を算出
+    if(service_cell_area[0] == null || service_cell_area[0] == ""){ return; }
     var width = service_cell_area[0].parentNode.clientWidth;
     //console.log(width)
     quotient = Math.round(width / ideal_width)

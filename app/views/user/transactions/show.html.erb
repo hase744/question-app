@@ -55,9 +55,9 @@
             <div class="open_button_area">
                 <div class="open_button"></div>
                 <span class="one_line_text">
-                <%= @transaction_along_messages.first.body %>
+                <%= @transaction_along_messages.first.body %>...
                 </span>
-                <a class="open_along_messages" onclick="open_along_messages()">詳細のメッセージ
+                <a class="open_along_messages" onclick="open_along_messages()">途中のメッセージ
                 <span class="fas fa-angle-down"></span></a>
             </div>
         </div>
@@ -140,7 +140,6 @@
         <% end %>
     </div>
 </div>
-<%=javascript_pack_tag "user/transactions/show"%>
 <script>
 function open_along_messages(){
     $('.along_message_area').css('display','none')
@@ -196,5 +195,3 @@ function resize_item_file_flame(){
 //window.addEventListener("resize", resize_item_file_flame)
 
 </script>
-<%= javascript_pack_tag "shared/check_scroll"%>
-<%= javascript_pack_tag "shared/xml_request"%>
