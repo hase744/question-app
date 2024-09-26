@@ -379,6 +379,7 @@ $(window).on('scroll', function(){
     var docHeight = $(document).innerHeight(), //ドキュメントの高さ
     windowHeight = $(window).innerHeight(), //ウィンドウの高さ
     pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+    if(service_hitsory == null || service_hitsory == ""){return;};
     page = Math.ceil(service_hitsory.childElementCount/item_to_page(item))+1
     
     //ウィンドウの一番下までスクロールした時 && スクロール位置が変化した

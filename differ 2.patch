@@ -102,7 +102,7 @@ index ba2d3cd..f084af3 100644
 -        gon.layout = "normal"
 -        gon.is_loaded = true
 -        gon.user_signed_in = user_signed_in?
--        gon.tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+-        @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
 -    end
 +  def set_view_value
 +    gon.category_tree = category_tree
@@ -113,7 +113,7 @@ index ba2d3cd..f084af3 100644
 +    gon.layout = "normal"
 +    gon.is_loaded = true
 +    gon.user_signed_in = user_signed_in?
-+    gon.tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
++    @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
 +  end
  
 -    require 'nkf'

@@ -58,15 +58,3 @@ resize_contents = function(){
 
 window.addEventListener('resize', resize_contents);
 resize = new resize_contents();
-
-
-//jsのgonが更新されてない時にリロードする処理
-//if( gon.is_loaded){
-//  console.log("gonをロードした")
-//  gon.is_loaded = false
-//  resize_contents();
-//}else{
-//  console.log("gonをロードしてない")
-//  window.location.reload();
-//  resize_contents();
-//}

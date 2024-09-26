@@ -59,9 +59,9 @@ class User::ServicesController < User::Base
 
   def show
     if @service.user == current_user
-      gon.tweet_text = "サービスを出品しました。気になる方は以下のリンクへ！"
+      @tweet_text = "サービスを出品しました。気になる方は以下のリンクへ！"
     else
-      gon.tweet_text = "#{@service.user.name}さんのサービスはこちら。気になる方は以下のリンクへ！"
+      @tweet_text = "#{@service.user.name}さんのサービスはこちら。気になる方は以下のリンクへ！"
     end
     if @service.item&.file&.url
       @og_image = @service.item&.file&.url

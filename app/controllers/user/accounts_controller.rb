@@ -60,9 +60,9 @@ class User::AccountsController < User::Base
 
     @relationship = Relationship.find_by(user: @user, target_user_id: current_user.id) if user_signed_in?
     if @user == current_user
-      gon.tweet_text = "#{@user.name}という名前でコレテクを始めました。"
+      @tweet_text = "#{@user.name}という名前でコレテクを始めました。"
     else
-      gon.tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
+      @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
     end
     if @user.image.url
       @og_image = @user.image.url
