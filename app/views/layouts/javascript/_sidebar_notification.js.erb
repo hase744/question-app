@@ -39,7 +39,7 @@ var disable_notification_link = function(){
   }
 }
 //メニュー通知が押された
-if(gon.user_signed_in){//ログインしている
+if(<%= user_signed_in? %><%%>){//ログインしている
   $(".menu_notification").on('click', function() {
     $("#menu_notification_cells_area").height($(".body").height() - 50)
     $(".notification_margin").height($("body").height())

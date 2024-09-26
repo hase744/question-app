@@ -68,6 +68,7 @@ $(window).on('scroll', function(){
     var docHeight = $(document).innerHeight(), //ドキュメントの高さ
     windowHeight = $(window).innerHeight(), //ウィンドウの高さ
     pageBottom = docHeight - windowHeight - 0.5; //ドキュメントの高さ - ウィンドウの高さ
+    if(user_detail == null || user_detail == ""){return;};
     page = Math.ceil(user_detail.childElementCount/item_to_page(item))+1
     console.log("page : "+page)
     //ウィンドウの一番下までスクロールした時 && スクロール位置が変化した

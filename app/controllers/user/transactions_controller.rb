@@ -59,7 +59,7 @@ class User::TransactionsController < User::Base
       .where('transaction_messages.created_at < transactions.published_at')
       .where('transaction_messages.created_at > transactions.contracted_at')
     @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
-    gon.tweet_text = @transaction.description
+    @tweet_text = @transaction.description
     @transaction_message = TransactionMessage.new()
 
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
