@@ -19,15 +19,12 @@
             <div>
                 <%= render "user/shared/form/request_sort_form", f:f %>
             </div>
-            
+
             <div class="category_area">
                 <label class="field_label">カテゴリー</label>
                 <%= render "layouts/form_category", f:f, model: Transaction.new.class.name%>
             </div>
 
-            </br>
-            <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>在庫あり</span>
-            </br>
             <div class="search_button_area">
                 <%= f.submit '検索',class:"search_button", placeholder:"" %>
             </div>

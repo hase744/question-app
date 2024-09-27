@@ -73,23 +73,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "contacts", force: :cascade do |t|
-    t.bigint "room_id", null: false
-    t.bigint "user_id", null: false
-    t.bigint "destination_id", null: false
-    t.boolean "new_message_exists", default: false
-    t.boolean "is_blocked", default: false
-    t.boolean "is_valid", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["destination_id"], name: "index_contacts_on_destination_id"
-    t.index ["is_blocked"], name: "index_contacts_on_is_blocked"
-    t.index ["is_valid"], name: "index_contacts_on_is_valid"
-    t.index ["new_message_exists"], name: "index_contacts_on_new_message_exists"
-    t.index ["room_id"], name: "index_contacts_on_room_id"
-    t.index ["user_id"], name: "index_contacts_on_user_id"
-  end
-
   create_table "delivery_items", force: :cascade do |t|
     t.bigint "transaction_id", null: false
     t.string "file"
@@ -128,22 +111,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_inquiries_on_admin_user_id"
     t.index ["user_id"], name: "index_inquiries_on_user_id"
-  end
-
-  create_table "messages", force: :cascade do |t|
-    t.bigint "room_id"
-    t.bigint "contact_id"
-    t.bigint "sender_id"
-    t.bigint "receiver_id"
-    t.text "body"
-    t.string "file"
-    t.boolean "is_read", default: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["contact_id"], name: "index_messages_on_contact_id"
-    t.index ["receiver_id"], name: "index_messages_on_receiver_id"
-    t.index ["room_id"], name: "index_messages_on_room_id"
-    t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -312,15 +279,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.string "japanese_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "rooms", force: :cascade do |t|
-    t.text "last_message"
-    t.datetime "last_message_at"
-    t.boolean "is_blocked"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["is_blocked"], name: "index_rooms_on_is_blocked"
   end
 
   create_table "service_categories", force: :cascade do |t|
@@ -553,9 +511,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.string "video"
     t.boolean "can_email_advert", default: false
     t.boolean "can_email_transaction", default: false
-    t.boolean "can_email_message", default: false
     t.boolean "can_email_notification", default: false
-    t.boolean "can_receive_message", default: true
     t.string "stripe_account_id"
     t.string "stripe_card_id"
     t.string "stripe_customer_id"
@@ -601,15 +557,10 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "admin_user_roles", "roles"
-  add_foreign_key "contacts", "rooms"
-  add_foreign_key "contacts", "users"
-  add_foreign_key "contacts", "users", column: "destination_id"
   add_foreign_key "delivery_items", "transactions"
   add_foreign_key "error_logs", "users"
   add_foreign_key "inquiries", "admin_users"
   add_foreign_key "inquiries", "users"
-  add_foreign_key "messages", "users", column: "receiver_id"
-  add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "notifications", "users"
   add_foreign_key "notifications", "users", column: "notifier_id"
   add_foreign_key "operations", "admin_users"

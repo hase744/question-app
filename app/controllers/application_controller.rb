@@ -204,20 +204,6 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def message_receivable(user)
-    if user_signed_in?
-      if user.can_receive_message
-        true
-      elsif Contact.exists?(user:user, destination: current_user)
-        true
-      end
-    elsif user.can_receive_message
-      true
-    else
-      false
-    end
-  end
-  
   def delete_temp_file_items
     @item&.delete_temp_file
     @items&.each do |item|
