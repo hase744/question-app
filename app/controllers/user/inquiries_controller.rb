@@ -2,7 +2,6 @@ class User::InquiriesController < User::Base
   layout "about"
   def new
     @inquiry = Inquiry.new
-    gon.layout = "about"
     if user_signed_in?
       @inquiries = Inquiry.where(user:current_user).page(params[:page]).per(10)
     end

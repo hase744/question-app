@@ -47,9 +47,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_view_value
-    gon.layout = "normal"
-    gon.is_loaded = true
-    gon.user_signed_in = user_signed_in?
     @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
   end
 

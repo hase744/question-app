@@ -21,7 +21,6 @@ class User::CardsController < User::Base
     # あらかじめ環境変数に入れておいたテスト用公開鍵を、gonの変数にセット
     key = ENV['STRIPE_PUBLISHABLE_KEY']
     current_user = User.find_by(id:1)
-    gon.stripe_public_key = ENV['STRIPE_PUBLISHABLE_KEY']
   end
 
   def create
@@ -63,7 +62,6 @@ class User::CardsController < User::Base
   def edit
     key = ENV['STRIPE_PUBLISHABLE_KEY']
     current_user = User.find_by(id:1)
-    gon.stripe_public_key = ENV['STRIPE_PUBLISHABLE_KEY']
   end
   
   def update
