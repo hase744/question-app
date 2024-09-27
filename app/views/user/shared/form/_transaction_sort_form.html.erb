@@ -1,0 +1,3 @@
+<div class="select_area transaction_search_field">
+    <%= f.select :order, options_for_select(sort_options(transaction_sort_list), selected: params[:order]), { include_blank: '選択', disabled: true}, class:"select_field" %>
+</div>

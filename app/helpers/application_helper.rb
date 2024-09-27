@@ -169,4 +169,41 @@ include Variables
   def accept_image
     mime_types_from_extensions(FileUploader.new.image_extensions)
   end
+
+  def sorts_manager
+    {
+      likes_count: {japanese_name: 'いいねが多い', name: 'likes_count'},
+      followers_count: {japanese_name: 'フォロワーが多い', name: 'followers_count'},
+      published_at: {japanese_name: '投稿が新しい', name: 'published_at'},
+      deadline: {japanese_name: '受付期限が近い', name: 'deadline'},
+      popularity: {japanese_name: '人気', name: 'popularity'},
+      max_price: {japanese_name: '予算が多い', name: 'max_price'},
+      price: {japanese_name: '価格が安い', name: 'price'},
+      transactions_count: {japanese_name: '回答が多い', name: 'transactions_count'},
+      suggestions_count: {japanese_name: '提案数が少ない', name: 'transactions_count'},
+    }
+  end
+
+  def account_sort_list
+    [:followers_count, :transactions_count]
+  end
+
+  def service_sort_list
+    [:likes_count, :transactions_count, :price]
+  end
+
+  def transaction_sort_list
+    [:likes_count, :published_at]
+  end
+
+  def request_sort_list
+    [:likes_count, :max_price, :suggestions_count, :published_at, :deadline]
+  end
+
+  def sort_options(list)
+    list.each_with_object({}) do |sort_key, result|
+      info = sorts_manager[sort_key]
+      result[info[:japanese_name]] = info[:name] if info
+    end
+  end
 end

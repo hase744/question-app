@@ -30,9 +30,8 @@ class User::RequestsController < User::Base
   def index
     @requests = Request.includes(:user)
       .suggestable
-      .where("title LIKE?", "%#{params[:word]}%")
-      .order(id: :DESC)
       .filter_categories(params[:categories])
+    @requests = @requests.where("requests.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?
       @requests = @requests.where(request_form_name: params[:request_form])
@@ -61,8 +60,8 @@ class User::RequestsController < User::Base
       @requests = @requests.where("? <= max_price", "#{params[:mini_price]}")
     end
 
+    @requests = @requests.sorted_by(params[:order])
     @requests = @requests.page(params[:page]).per(10)
-    gon.layout = "action_index"
   end
 
   def show

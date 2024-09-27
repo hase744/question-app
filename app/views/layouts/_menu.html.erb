@@ -70,7 +70,7 @@
                     <div class="select_area">
                         <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件以上", num] }, selected: 0), include_blank: true,  class:"sales_results" ,required: true %>
                     </div>
-                    </br></br>
+                    </br>
                 </span>
 
                 <span id="price_field_area" class="request_search_field service_search_field">
@@ -92,6 +92,31 @@
                     </span>
                     </br>
                 </span>
+
+                <span class="service_search_field sort_search_field">
+                    <br/><label class="field_label">並び替え</label><br/>
+                    <%= render "user/shared/form/service_sort_form", f:f%>
+                    </br>
+                </span>
+
+                <span class="request_search_field sort_search_field">
+                    <br/><label class="field_label">並び替え</label><br/>
+                    <%= render "user/shared/form/request_sort_form", f:f%>
+                    </br>
+                </span>
+
+                <span class="transaction_search_field sort_search_field">
+                    <br/><label class="field_label">並び替え</label><br/>
+                    <%= render "user/shared/form/transaction_sort_form", f:f%>
+                    </br>
+                </span>
+
+                <span class="account_search_field sort_search_field">
+                    <br/><label class="field_label">並び替え</label><br/>
+                    <%= render "user/shared/form/account_sort_form", f:f%>
+                    </br>
+                </span>
+
                 
                 <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
                     <p>カテゴリー</p>

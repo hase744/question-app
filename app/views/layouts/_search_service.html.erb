@@ -18,6 +18,13 @@
 
             <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label>
             <%= render "user/shared/form/delivery_form", f:f%>
+
+
+            <label class="field_label">ソート</label><br/>
+            <div>
+                <%= render "user/shared/form/service_sort_form", f:f %>
+            </div>
+
             <div class="category_area">
                 <label class="field_label">カテゴリー</label><br />
                 <%= render "layouts/form_category", f:f, model: Service.new.class.name%>

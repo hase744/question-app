@@ -13,6 +13,7 @@ module OperationConfig
 
   #現在のstateをファイルから確認、変更時期を過ぎていたらdbを参照して更新
   def current_state
+    puts "状態"
     state = config_value(sort:"operation", key:"state")
     change_at = config_value(sort:"operation", key:"change_at")
     #configのoperationのchange_atが過ぎていたら更新

@@ -123,7 +123,7 @@ class Category
           id: 3002,
           parent_category: life,
           name: 'living',
-          japanese_name: '暮らし',
+          japanese_name: '生き方',
           start_at: DateTime.new(2024, 1, 1),
           child_categories: []
         ),

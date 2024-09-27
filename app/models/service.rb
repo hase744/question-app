@@ -81,6 +81,33 @@ class Service < ApplicationRecord
     end
   }
 
+  scope :sort_by_default, ->{ #is_published=trueとなっている一番最新のtransactionのpublished_atが新しい順にserviceをソート
+    left_joins(:transactions, :likes)
+      .where(transactions: { is_published: true })
+      .select('services.*, MAX(transactions.published_at) AS latest_published_at')
+      .group('services.id')
+      .order('latest_published_at DESC')
+      .order('COUNT(service_likes.id) DESC')
+      .order(created_at: :desc)
+  }
+
+  scope :sort_by_likes, -> {
+    left_joins(:likes)
+      .group('services.id')
+      .order('COUNT(service_likes.id) DESC')
+  }
+
+  scope :transactions_count, -> {
+    left_joins(:transactions)
+      .select('services.*, COUNT(CASE WHEN transactions.is_published = true THEN 1 END) AS published_transactions_count')
+      .group('services.id')
+      .order('published_transactions_count DESC')
+  }
+
+  scope :sort_by_price, -> {
+    order(price: :ASC)
+  }
+
   after_initialize do
     if self.request_form_name == 'video'
       self.request_max_minutes = self.request_max_minutes.to_i if self.request_max_minutes

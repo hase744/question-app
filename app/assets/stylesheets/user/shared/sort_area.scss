@@ -1,0 +1,32 @@
+.sort_area{
+	position: relative;
+  	margin-right: 5px;
+	display: inline-block;
+	margin-left: auto;
+	//border: 1px solid dimgrey;
+	//padding: 0px 2px;
+	//border-radius: 3px;
+  	.sort_flame{
+  	    display: inline-block;
+		cursor: pointer;
+  	}
+	.sort_selector{
+		display: none;
+		z-index: 2;
+		position: absolute;
+		background-color: white;
+		box-shadow: 0 0 2px lightgray;
+		border: 1px solid dimgrey;
+		border-radius: 5px;
+		padding: 5px 10px;
+		right: 0px;
+		width: 120px;
+		a{
+			display: inline-block;
+			font-size: 13px;
+		}
+	}
+}
+.sort_area:hover .sort_selector{
+	display: block;
+}

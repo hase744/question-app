@@ -3,15 +3,27 @@
         <%= render "user/shared/state_register_alert" %>
     <%else%>
         <div class="main_header">
-            <%= link_to "", user_homes_path, class:"fas fa-home"%>
-             > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-            <%= render "user/shared/category_selector", 
-				current_link: -> { user_services_path(categories: params[:categories]) }, 
-				link: ->(category) { user_services_path(categories: category[:name]) } %>
+            <div class="left_side">
+                <%= link_to "", user_homes_path, class:"fas fa-home"%>
+                 > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+                <%= render "user/shared/category_selector", 
+			    	current_link: -> { user_services_path(categories: params[:categories], order: params[:order],s_for_sale: params[:is_available]) }, 
+			    	link: ->(category) { user_services_path(categories: category[:name], order: params[:order],s_for_sale: params[:is_available]) } %>
+            </div>
+            <div class="second_stage">
+			    <%= link_to user_services_path(categories: params[:categories], order: params[:order], is_available: '1'), class:"check_link" do %>
+			    	<input class="checkbox" type="checkbox" <%='checked' if params[:is_available] == '1'%>>受付中
+			    <% end %>
+            <%= render "user/shared/sort_selector",
+                link: ->(order) {user_services_path(order: order, categories: params[:categories],s_for_sale: params[:is_available]) } %>
+            </div>
         </div>
         <div class="service_index_flame service_cell_zone">
             <% @services.each do |service| %>
                     <%= render "user/services/cell", service: service%>
+            <% end %>
+            <% unless @services.present? %>
+                <div class="service"></div>
             <% end %>
         </div>
         <div class="main_bottom">

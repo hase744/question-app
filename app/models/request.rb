@@ -77,6 +77,42 @@ class Request < ApplicationRecord
     end
   }
 
+  scope :sort_by_default, -> {
+    order(published_at: :DESC)
+  }
+
+  scope :sort_by_likes, -> {
+    left_joins(:likes)
+      .group('requests.id')
+      .order('COUNT(request_likes.id) DESC')
+  }
+
+  scope :sort_by_published_at, -> {
+    order(published_at: :DESC)
+  }
+
+  scope :sort_by_max_price, -> {
+    order(max_price: :DESC)
+  }
+
+  scope :sort_by_deadline, -> {
+    where("suggestion_deadline > ?", DateTime.now)
+    .order(suggestion_deadline: :ASC)
+  }
+
+  scope :sort_by_likes, -> {
+    left_joins(:likes)
+      .group('requests.id')
+      .order('COUNT(request_likes.id) DESC')
+  }
+
+  scope :sort_by_suggestions, -> {
+    left_joins(:transactions)
+      .select('requests.*, COUNT(CASE WHEN transactions.is_suggestion = true THEN 1 END) AS suggested_transactions_count')
+      .group('requests.id')
+      .order('suggested_transactions_count ASC')
+  }
+
   after_initialize do
     if self.service_id
       if Service.exists?(id: self.service_id) && !service.present?
