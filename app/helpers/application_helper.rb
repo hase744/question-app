@@ -140,22 +140,6 @@ include Variables
     "#{controller_path}/#{action_name}.js"
   end
 
-  def message_receivable(user)
-    if user_signed_in?
-      if user.can_receive_message
-        true
-      elsif Contact.exists?(user:user, destination: current_user)
-        true
-      else
-        false
-      end
-    elsif user.can_receive_message
-      true
-    else
-      false
-    end
-  end
-
   def shared_paths
     Dir.glob("app/javascript/packs/shared/*.js")  do |path|
       path.slice(21, path.length).to_s

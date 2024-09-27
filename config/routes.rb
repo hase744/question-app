@@ -75,7 +75,6 @@ namespace :user do
     get 'accounts/sales/:id', to:"accounts#sales", as:"account_sales"
     get 'accounts/services/:id', to:"accounts#services", as:"account_services"
     get 'accounts/posts/:id', to:"accounts#posts", as:"account_posts"
-    get 'contacts/cells', to:"contacts#cells", as:"contacts_cells"
     get 'accounts/revive', to:"accounts#revive", as: "revive_account"
     get 'accounts/renew', to:"accounts#renew", as: "renew_account"
     post 'accounts/reregister', to:"accounts#reregister", as: "reregister_account"
@@ -103,14 +102,11 @@ namespace :user do
     resource :accounts, only: [:edit, :update]
     resources :reviews, only: [:update]
     resources :orders, only:[:index, :show, :edit]
-    resources :messages, only: [:create, :show]
     resources :transaction_messages, only: [:create, :show]
-    resources :contacts, only: [ :index, :show, :create]
     resources :posts, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
     resources :relationships, only: [ :update]
     resources :services, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
     resources :requests, only: [ :index, :show, :new, :edit, :create, :update, :destroy]
-    resources :rooms, only: [:create]
     resources :accounts, only: [ :index, :show]
     resources :transactions, only: [ :index, :show, :edit, :update]
     resources :notifications, only: [ :index, :show]

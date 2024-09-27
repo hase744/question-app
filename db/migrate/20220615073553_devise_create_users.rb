@@ -47,9 +47,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
       t.boolean :can_email_advert, default: false
       t.boolean :can_email_transaction, default: false
-      t.boolean :can_email_message, default: false
       t.boolean :can_email_notification, default: false
-      t.boolean :can_receive_message, default: true
 
       t.string :stripe_account_id
       t.string :stripe_card_id
