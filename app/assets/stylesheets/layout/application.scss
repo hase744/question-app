@@ -77,6 +77,33 @@
     p {
         margin: 0px;
     }
+    .left_side{
+        display: inline-block;
+        margin-right: auto;
+    }
+    .check_link{
+        display: inline-block;
+        margin-right: auto;
+    }
+    .second_stage{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap; 
+        width: 100%;
+        margin-top: 5px;
+    }
+    .check_link{
+        font-size: 13px;
+    }
+    .check_link:hover{
+        text-decoration: none;
+    }
+}
+.search_layout .main_header{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; 
+    //margin-top: 0px;
 }
 .bottom{
     display: none;

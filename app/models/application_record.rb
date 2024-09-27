@@ -10,6 +10,30 @@ class ApplicationRecord < ActiveRecord::Base
   include CommonConcern
   include TemplateConcern
 
+  def self.sorted_by(order)
+    case order
+    when 'likes_count'
+      sort_by_likes
+    when 'due_date'
+      due_soon
+    when 'transactions_count'
+      transactions_count
+    when 'followers_count'
+      sort_by_followers
+    when 'suggestions_count'
+      sort_by_suggestions
+    when 'max_price'
+      sort_by_max_price
+    when 'price'
+      sort_by_price
+    when 'published_at'
+      sort_by_published_at
+    when 'deadline'
+      sort_by_deadline
+    else
+      sort_by_default
+    end
+  end
 
   def self.acceptable_video_extensions
     extensions = FileUploader.new.extension_allowlist - ImageUploader.new.extension_allowlist

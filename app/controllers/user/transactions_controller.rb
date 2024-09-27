@@ -30,10 +30,11 @@ class User::TransactionsController < User::Base
     @transactions = @transactions.joins(:transaction_categories)
     @transactions = @transactions.distinct
     @transactions = @transactions.solve_n_plus_1
-    @transactions = @transactions.where(is_published:true).order(id: :DESC)
+    @transactions = @transactions.where(is_published:true)
     @transactions = @transactions.filter_categories(params[:categories])
-    @transactions = @transactions.where("title LIKE?", "%#{params[:word]}%")
+    @transactions = @transactions.where("transactions.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
     @transactions = @transactions.page(params[:page]).per(30)
+    @transactions = @transactions.sorted_by(params[:order])
   end
 
   def edit

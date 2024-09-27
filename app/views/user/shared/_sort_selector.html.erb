@@ -1,0 +1,41 @@
+<div class="sort_area">
+	<div class="sort_flame">
+	<i class="fa-solid fa-sort"></i>
+  		<%= 
+		if params[:order].present?
+			sorts_manager[params[:order].to_sym][:japanese_name]
+		else
+			"ソート"
+		end
+		%>
+  		<span class="fa-solid fa-angle-down"></span>
+	</div>
+	<div class="sort_selector">
+		<% case controller_name %>
+		<% when "accounts" %>
+			<% account_sort_list.each do |order| %>
+				<%= render "user/shared/sort_link",link: link, order: order %>
+			<% end %>
+		<% when "services" %>
+			<% service_sort_list.each do |order| %>
+				<%= render "user/shared/sort_link",link: link, order: order %>
+			<% end %>
+		<% when "requests" %>
+			<% request_sort_list.each do |order| %>
+				<%= render "user/shared/sort_link",link: link, order: order %>
+			<% end %>
+		<% when "transactions" %>
+			<% transaction_sort_list.each do |order| %>
+				<%= render "user/shared/sort_link",link: link, order: order %>
+			<% end %>
+		<% end %>
+	</div>
+	<script>
+	$(function(){
+    $('.sort_flame').on('click', function() {
+        // .sort_selectorのdisplayを切り替える
+        $('.sort_selector').toggle();
+    });
+});
+	</script>
+</div>

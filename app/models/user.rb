@@ -91,11 +91,10 @@ class User < ApplicationRecord
   }
   
   scope :is_sellable, -> {
-    left_joins(:user_categories)
-    .solve_n_plus_1
+    solve_n_plus_1
     .where(
-      is_published: true, 
       is_seller: true,
+      is_published: true, 
       state: 'normal'
       )
   }
@@ -106,10 +105,29 @@ class User < ApplicationRecord
       self.left_joins(:service_categories)
       .where(service_categories: {
         category_name: names
-      }).distinct
+    })#.distinct
     else
       self
     end
+  }
+
+  scope :sort_by_followers, -> {
+    left_joins(:follower_relationships)
+      .group('users.id')
+      .order('COUNT(relationships.id) DESC')
+  }
+
+  scope :transactions_count, -> {
+    left_joins(:transactions)
+      .select('users.*, COUNT(CASE WHEN transactions.is_published = true THEN 1 END) AS published_transactions_count')
+      .group('users.id')
+      .order('published_transactions_count DESC')
+  }
+
+  scope :sort_by_default, -> {
+    left_joins(:follower_relationships)
+      .group('users.id')
+      .order('COUNT(relationships.id) DESC')
   }
 
   def country

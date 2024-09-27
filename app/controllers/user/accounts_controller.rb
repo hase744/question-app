@@ -18,8 +18,7 @@ class User::AccountsController < User::Base
   def index
     @users = User.all
     @users = @users.is_sellable
-    @users = @users.where("name LIKE?", "%#{params[:name]}%")
-    @users = @users.order(total_sales_numbers: :desc)
+    @users = @users.where("users.name LIKE ?", "%#{params[:name]}%") if params[:name].present?
     @users = @users.filter_categories(params[:categories])
     @users = @users.solve_n_plus_1
     @users = @users.include_price
@@ -28,13 +27,12 @@ class User::AccountsController < User::Base
     #  #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
     #end
 
-    if params[:elapsed_days].present?
-      @requests = @requests.where("suggestion_deadline > ?", DateTime.parse(params[:suggestion_deadline]) - 30)
+    if params[:signed_in_recently] == "1"
+      @users = @users.where("last_login_at > ?", DateTime.now - 1.week)
     end
-
+    
+    @users = @users.sorted_by(params[:order])
     @users = @users.page(params[:page]).per(10)
-
-    gon.layout = "action_index"
   end
 
   def edit

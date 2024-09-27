@@ -30,8 +30,8 @@ class User::ServicesController < User::Base
   def index
     @services = Service
       .seeable
-      .where("title LIKE?", "%#{params[:word]}%")
       .filter_categories(params[:categories])
+    @services = @services.where("services.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?
       @services = @services.where(request_form_name: params[:request_form])
@@ -53,7 +53,7 @@ class User::ServicesController < User::Base
     if params[:mini_price] != nil && params[:mini_price] != ""
       @services = @services.where("? <= price", "#{params[:mini_price]}")
     end
-    @services = @services.order(total_sales_numbers: :desc, total_views: :desc)
+    @services = @services.sorted_by(params[:order])
     @services = @services.page(params[:page]).per(24)
   end
 

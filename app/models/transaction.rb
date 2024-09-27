@@ -123,6 +123,21 @@ class Transaction < ApplicationRecord
     end
   }
 
+  scope :sort_by_default, ->{
+    order(published_at: :DESC)
+  }
+
+  scope :sort_by_likes, -> {
+    select('transactions.*, COUNT(transaction_likes.id) AS likes_count')
+      .left_joins(:likes)
+      .group('transactions.id')
+      .order('likes_count DESC')
+  }
+
+  scope :sort_by_published_at, -> {
+    order(published_at: :DESC)
+  }
+
   scope :reviewed, -> {
     self.where.not(reviewed_at: nil)
   }
