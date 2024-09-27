@@ -2,18 +2,6 @@ Rails.application.routes.draw do
   namespace :user do
     get 'videos/show'
   end
-  namespace :sample do
-    get 'accounts/index'
-    get 'accounts/show'
-  end
-  namespace :sample do
-    get 'requests/index'
-    get 'requests/show'
-  end
-  namespace :sample do
-    get 'services/index'
-    get 'services/show'
-  end
   namespace :user do
     get 'alerts/index'
   end
@@ -146,23 +134,7 @@ namespace :user do
       end
     end
   end
-  
-  namespace :sample do
-    resources  :accounts, only: [:index, :show]
-    resources  :transactions, only: [:index, :show]
-    resources  :services, only: [:index, :show]
-    resources  :requests, only: [:index, :show]
 
-    get 'accounts/likes/:id', to:"accounts#likes", as:"account_likes"
-    get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"
-    get 'accounts/requests/:id', to:"accounts#requests", as:"account_requests"
-    get 'accounts/users/:id', to:"accounts#users", as:"account_users"
-    get 'accounts/registered_users/:id', to:"accounts#registered_users", as:"registered_users"
-    get 'accounts/purchases/:id', to:"accounts#purchases", as:"account_purchases"
-    get 'accounts/sales/:id', to:"accounts#sales", as:"account_sales"
-    get 'accounts/services/:id', to:"accounts#services", as:"account_services"
-    get 'accounts/posts/:id', to:"accounts#posts", as:"account_posts"
-  end
   devise_for :users
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   get '*a', :to => 'application#rescue404'
