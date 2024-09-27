@@ -2,7 +2,6 @@ class AboutsController < ApplicationController
     layout "about"
     before_action :layout
     def index
-        puts gon.layout
     end
 
     def inquiry
@@ -21,7 +20,6 @@ class AboutsController < ApplicationController
     end
 
     def layout
-        gon.layout = "about"
     end
 
     def how_to_sell

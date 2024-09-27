@@ -64,8 +64,6 @@ class User::OrdersController < User::Base
     else
       @disabled = true
     end
-    puts @disabled
-    set_show_values
   end
 
   def edit
@@ -111,7 +109,6 @@ class User::OrdersController < User::Base
         redirect_to user_orders_path(user: "seller", scope: "ongoing")
         EmailJob.perform_later(mode: :reject, model: @transaction) if @transaction.buyer.can_email_transaction
       else
-        gon.text_max_length = @transaction.reject_reason_max_length
         render "user/orders/edit"
       end
     end
@@ -153,24 +150,6 @@ class User::OrdersController < User::Base
       puts "その取引は編集できません"
       flash.notice = "その取引は編集できません"
       redirect_to user_orders_path
-    end
-  end
-
-  def set_show_values
-    gon.transaction_id = @transaction.id
-    gon.delivery_form = @transaction.delivery_form.name
-    gon.description = @transaction.description
-    if @transaction.item
-      if @transaction.file.url == nil 
-        gon.is_file_nil = true
-      else 
-        gon.is_file_nil = false
-      end
-      if @transaction.description == nil 
-        gon.is_transaction_description_nil = true
-      else 
-        gon.is_transaction_description_nil = false
-      end
     end
   end
 

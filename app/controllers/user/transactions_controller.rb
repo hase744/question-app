@@ -25,7 +25,6 @@ class User::TransactionsController < User::Base
   end
 
   def index
-    gon.layout = "transaction_index"
     @transactions = Transaction.all
     @transactions = @transactions.joins(:transaction_categories)
     @transactions = @transactions.distinct
@@ -39,9 +38,7 @@ class User::TransactionsController < User::Base
 
   def edit
     @transaction = Transaction.find(params[:id])
-    if can_edit_transaction
-      set_edit_values
-    else
+    unless can_edit_transaction
       redirect_to user_order_path(params[:id])
     end
     @transaction.items.build
@@ -53,7 +50,6 @@ class User::TransactionsController < User::Base
     elsif @transaction.service.item
       @og_image = @transaction.service.item&.file&.url
     end
-    gon.env = Rails.env
     @transaction_along_messages =  TransactionMessage
       .joins(:deal)
       .where(transaction_id:@transaction.id)
@@ -104,7 +100,6 @@ class User::TransactionsController < User::Base
       else
         delete_temp_file_items
         detect_models_errors([@transaction.item, @transaction])
-        set_edit_values
         render "user/transactions/edit"
       end
     end
@@ -323,10 +318,6 @@ class User::TransactionsController < User::Base
       :use_youtube,
       :youtube_id,
     )
-  end
-
-  private def set_edit_values
-    gon.delivery_form = @transaction.service.delivery_form.name
   end
 
   private def transaction_item_params

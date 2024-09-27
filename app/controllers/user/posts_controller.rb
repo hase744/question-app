@@ -15,7 +15,6 @@ class User::PostsController < User::Base
   def new
     @post = Post.new
     @submit_text = "投稿"
-    gon.text_max_length = @post.body_max_length
   end
 
   def show
@@ -37,7 +36,6 @@ class User::PostsController < User::Base
       redirect_to user_account_path(current_user.id)
     else
       flash.notice = "投稿に失敗しました。"
-      gon.text_max_length = @post.body_max_length
       render "user/posts/new"
     end
   end

@@ -37,8 +37,6 @@ class User::AccountsController < User::Base
 
   def edit
     @user = current_user
-    gon.text_max_length = @user.description_max_length
-    
     @categories = Category.all #config.jsonにある親カテゴリー
   end
 
@@ -80,7 +78,6 @@ class User::AccountsController < User::Base
         redirect_to user_account_path(@user.id)
     else
         @categories = Category.all
-        gon.text_max_length = @user.description_max_length
         render action: "edit"
     end
   end
