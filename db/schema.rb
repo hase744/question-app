@@ -159,19 +159,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
-  create_table "posts", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "body"
-    t.string "file"
-    t.string "file_tmp"
-    t.boolean "file_processing", default: false, null: false
-    t.integer "total_views", default: 0
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["total_views"], name: "index_posts_on_total_views"
-    t.index ["user_id"], name: "index_posts_on_user_id"
-  end
-
   create_table "question_answers", force: :cascade do |t|
     t.string "sort"
     t.text "question"
@@ -567,7 +554,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
   add_foreign_key "notifications", "users", column: "notifier_id"
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
-  add_foreign_key "posts", "users"
   add_foreign_key "relationships", "users"
   add_foreign_key "relationships", "users", column: "target_user_id"
   add_foreign_key "request_categories", "requests"
