@@ -72,6 +72,7 @@
         <% end %>
       <% end %>
       <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true, style:"display:#{request.file_field_display_style}" %>
+	  <span class="annotation">＊添付ファイルの上限数は<%=Request.new.max_items_count%>個です</span>
 
       <%= f.hidden_field :file_duration, id:"file_duration" %>
       <div class="file_discription" id="file_discription"></div>
@@ -79,9 +80,6 @@
     </div>
     <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.video_display_style=%>">
       <%##= f.label :thumbnail, class:"field_label" %><br />
-      <%= f.file_field :thumbnail, autocomplete: "file", class:"input_field display_none",id:"thumbnail"%>
-      <div class="display_none">フォーマットはjpg,jpeg,pngのみです。</div>
-      <video id="video_display" style="width:100%"controls></video>
     </div>
   </div>
 

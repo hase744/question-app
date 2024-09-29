@@ -76,7 +76,7 @@ ja:
         use_youtube: アップロード方法
         youtube_id: YouTube動画のID
         file: ファイル
-        items: 成果物
+        items: 回答ファイル
         request_form: 質問形式
         delivery_form: 回答形式
         delivery_time: 納品期限

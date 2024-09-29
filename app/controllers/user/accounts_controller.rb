@@ -217,6 +217,7 @@ class User::AccountsController < User::Base
     when 'requests'
       @models = Request
         .where(user_id: params[:id], is_published: true)
+        .solve_n_plus_1
         .page(params[:page])
         .per(@request_page)
     when 'sales'

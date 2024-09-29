@@ -83,10 +83,9 @@ class Service < ApplicationRecord
 
   scope :sort_by_default, ->{ #is_published=trueとなっている一番最新のtransactionのpublished_atが新しい順にserviceをソート
     left_joins(:transactions, :likes)
-      .where(transactions: { is_published: true })
-      .select('services.*, MAX(transactions.published_at) AS latest_published_at')
+      .select('services.*, MAX(CASE WHEN transactions.is_published = true THEN transactions.published_at ELSE NULL END) AS latest_published_at')
       .group('services.id')
-      .order('latest_published_at DESC')
+      .order(Arel.sql('latest_published_at DESC NULLS LAST'))
       .order('COUNT(service_likes.id) DESC')
       .order(created_at: :desc)
   }
