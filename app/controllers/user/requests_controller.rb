@@ -1,5 +1,5 @@
 class User::RequestsController < User::Base
-  before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish ] #ログイン済みである
+  before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish, :stop_accepting ] #ログイン済みである
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
@@ -107,6 +107,15 @@ class User::RequestsController < User::Base
     end
     @request.set_item_values
     set_preview_values
+  end
+
+  def stop_accepting
+    if Request.find_by(id: params[:id], user:current_user, is_inclusive: true).update(is_accepting: false)
+      flash.notice = "質問を取り下げました"
+    else
+      flash.notice = "質問を取り下げできませんでした"
+    end
+    redirect_back(fallback_location: root_path)
   end
 
   def mine
@@ -251,6 +260,7 @@ class User::RequestsController < User::Base
     @request = Request.new(request_new_params)
     #@request_item = @request.items.new(request_item_params)
     @request.user = current_user
+    @request.is_accepting = true
     @items = generate_items&.flatten
     if @request.service_id
       @request.is_inclusive = false

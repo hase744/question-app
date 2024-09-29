@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 namespace :user do
   
     get "requests/:id/preview", to: "requests#preview", as: "request_preview"
+    put "requests/:id/stop_accepting", to: "requests#stop_accepting", as: "request_stop_accepting"
     post "requests/publish/:id", to: "requests#publish", as: "request_publish"
     post "requests/purchase/:id", to: "requests#purchase", as: "request_purchase"
     get "requests/mine", to: "requests#mine", as:"request_mine"

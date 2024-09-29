@@ -48,7 +48,11 @@
                         <div class="edit_delete_area">
                             <% if @request.user == current_user && !Transaction.exists?(request_id:params[:id]) %>
                                 <div class="edit_delete_area">
-                                    <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "依頼を削除しますか？。"} %>
+                                    <%= link_to "削除", user_request_path(@request.id), method: "delete", class:"delete button", data: {confirm: "質問を削除しますか？。"} %>
+                                </div>
+                            <% elsif @request.can_stop_accepting? %>
+                                <div class="edit_delete_area">
+                                    <%= link_to "取り下げ", user_request_stop_accepting_path(@request.id), method: "put", class:"delete button", data: {confirm: "質問を取り下げますか？。\n取り消しできません"} %>
                                 </div>
                             <% end %>
                             <%if @request.is_suppliable %>

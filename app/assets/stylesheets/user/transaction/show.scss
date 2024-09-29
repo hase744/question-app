@@ -433,11 +433,13 @@
     }
     .request_image_area > img {
         opacity: 0.5;
+        border-radius: 10px;
     }
     .reveal > img {
         height: 100%;
         opacity: 1.0;
         object-position: 0px;
+        border-radius: 0px;
     }
     .button_area {
         position: relative;

@@ -240,7 +240,8 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.string "image"
     t.integer "max_price"
     t.integer "mini_price"
-    t.boolean "is_inclusive"
+    t.boolean "is_inclusive", default: true, null: false
+    t.boolean "is_accepting", default: true, null: false
     t.integer "suggestion_acceptable_duration"
     t.datetime "suggestion_deadline"
     t.integer "description_total_characters", default: 0
@@ -257,6 +258,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["delivery_form_name"], name: "index_requests_on_delivery_form_name"
     t.index ["description_total_characters"], name: "index_requests_on_description_total_characters"
     t.index ["file_duration"], name: "index_requests_on_file_duration"
+    t.index ["is_accepting"], name: "index_requests_on_is_accepting"
     t.index ["is_inclusive"], name: "index_requests_on_is_inclusive"
     t.index ["is_published"], name: "index_requests_on_is_published"
     t.index ["max_price"], name: "index_requests_on_max_price"

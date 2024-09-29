@@ -111,6 +111,7 @@ class SampleData
             published_at:DateTime.now - n + 2,
             total_views:0,
             is_inclusive: true,
+            is_accepting: true,
             request_categories_attributes: {"0"=>{"category_name"=>category.name}}
           )
           #request.request_categories.create(category_name: category.name)
@@ -156,6 +157,7 @@ class SampleData
           published_at:DateTime.now - n + 2,
           total_views:0,
           is_inclusive: false,
+          is_accepting: true,
           request_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
         #request.request_categories.create(category_name: category.name)

@@ -59,9 +59,11 @@ class User::ServicesController < User::Base
 
   def show
     if @service.user == current_user
-      @tweet_text = "サービスを出品しました。気になる方は以下のリンクへ！"
+      @tweet_text = 
+      "「稼げる相談サイト」コレテクで相談室を出品しました。「#{@service.title}」という内容を提供します。気になる方は以下のリンクへ！"
     else
-      @tweet_text = "#{@service.user.name}さんのサービスはこちら。気になる方は以下のリンクへ！"
+      @tweet_text = 
+      "「稼げる相談サイト」コレテクの#{@service.user.name}さんの相談室はこちら。 気になる方は以下のリンクへ！"
     end
     if @service.item&.file&.url
       @og_image = @service.item&.file&.url
@@ -258,7 +260,7 @@ class User::ServicesController < User::Base
         is_contracted: true,
         is_rejected: false
         )
-      render "user/requests/show"
+      redirect_back(fallback_location: root_path)
     end
   end
 
