@@ -1,137 +1,135 @@
 
 <%= form_with model: request, url:path, method: method do |f| %>
   
-  <div class="field_area">
-    <%= f.label :title, class:"field_label"%>（<%= request.title_max_length %>字以内）<br/>
-    <%= f.text_field :title, maxlength: request.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field"%>
-  </div>
+  	<div class="field_area">
+  	  	<%= f.label :title, class:"field_label"%>（<%= request.title_max_length %>字以内）<br/>
+  	  	<%= f.text_field :title, maxlength: request.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field"%>
+  	</div>
 
-  <div class="field_area">
-    <%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=request.description_max_length(service)%>"></span><br />
-    <%= f.text_area :description, autocomplete: "new-password", class:"input_field text_area"%>
-  </div>
+  	<div class="field_area">
+  	  	<%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=request.description_max_length(service)%>"></span><br />
+  	  	<%= f.text_area :description, autocomplete: "new-password", class:"input_field text_area"%>
+  	</div>
 
-  <div class="field_area">
-    <%= f.label :category, class:"field_label" %><br />
-    <%if service.present? %>
-      <h3 class="request_content"><%=service.category.japanese_name%></h3>
-    <% else %>
-      <%= f.fields_for :request_categories do |category_form| %>
-          <%if request.request_categories.length > 1%>
-            <%if category_form.object.category_name %>
-              <div class="select_area">
-                    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-              </div>
-            <% end %>
-          <% else %>
-            <div class="select_area">
-              <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-            </div>
-          <% end %>
-      <% end %>
-    <% end %>
-  </div>
+  	<div class="field_area">
+  	  	<%= f.label :category, class:"field_label" %><br />
+  	  	<%if service.present? %>
+  	  	  	<h3 class="request_content"><%=service.category.japanese_name%></h3>
+  	  	<% else %>
+  	  	  	<%= f.fields_for :request_categories do |category_form| %>
+  	  	  	    <%if request.request_categories.length > 1%>
+  	  	  	      	<%if category_form.object.category_name %>
+						<%= render 'user/shared/form/category_selector', f:category_form %>
+  	  	  	      	<% end %>
+  	  	  	    <% else %>
+					<%= render 'user/shared/form/category_selector', f:category_form %>
+  	  	  	    <% end %>
+  	  	  	<% end %>
+  	  	<% end %>
+  	</div>
 
-  <div class="field_area">
-    <%= f.label :request_form, class:"field_label" %><br />
-    <%if service.present? %>
-      <h3 class="request_content"><%=service.request_form.japanese_name%></h3>
-    <% else %>
-      <div class="input_field text_field select_area">
-        <%= f.select :request_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
-      </div>
-    <% end %>
-    </div>
-    <div class="image_video_field_area" id="image_video_field_area">
-    <div id="youtube_area" style="display:<%=request.video_display_style=%>">
-      <div class="field_area" id="youtube_check_field_area">
-        <%= f.label :use_youtube, class:"field_label"%><br />
-        <div class="input_field text_field select_area">
-          <%= f.select :use_youtube, {'youtube': '1', 'ファイル':'0'}, include_blank: true, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
-        </div>
-      </div>
+  	<div class="field_area">
+  	  	<%= f.label :request_form, class:"field_label" %><br />
+  	  	<%if service.present? %>
+  	  	  	<h3 class="request_content"><%=service.request_form.japanese_name%></h3>
+  	  	<% else %>
+  	  	  	<div class="input_field text_field select_area">
+  	  	  	  	<%= f.select :request_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  	  	  	</div>
+  	  	<% end %>
+  	</div>
+  	<div class="image_video_field_area" id="image_video_field_area">
+  	  	<div id="youtube_area" style="display:<%=request.video_display_style=%>">
+  	  	  	<div class="field_area" id="youtube_check_field_area">
+  	  	  	  	<%= f.label :use_youtube, class:"field_label"%><br />
+  	  	  	  	<div class="input_field text_field select_area">
+  	  	  	  	  	<%= f.select :use_youtube, {'youtube': '1', 'ファイル':'0'}, include_blank: true, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  	  	  	  	</div>
+  	  	  	</div>
 
-      <div class="field_area youtube_field_area" id="youtube_id_field_area">
-        <%= f.label :youtube_id, class:"field_label"%><br />
-        <%= f.text_field :youtube_id, autofocus: true, autocomplete: "name", class:"input_field text_field", id:"youtube_id_field" %>
-        <div>※YouTube動画のIDとは動画のURLの「https://www.youtube.com/watch?v=」の後に続く11字の文字列です。</div>
-        <iframe class="youtube_video" id="youtube_video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      </div>
-    </div>
-    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.file_label_display_style %>">
-      <%= f.label :file, class:"field_label" %><br />
-      <%= f.fields_for :items do |item_form| %>
-        <% if item_form&.object&.id.present? %>
-          <%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.is_image? %>
-          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image %>
-          <%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete, data: {confirm:"削除しますか？"}%>
-          </br></br>
-        <% end %>
-        <% if !item_form.object.file.present? %>
-          <%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
-        <% end %>
-      <% end %>
-      <%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true, style:"display:#{request.file_field_display_style}" %>
-	  <span class="annotation">＊添付ファイルの上限数は<%=Request.new.max_items_count%>個です</span>
+  	  	  	<div class="field_area youtube_field_area" id="youtube_id_field_area">
+  	  	  	  	<%= f.label :youtube_id, class:"field_label"%><br />
+  	  	  	  	<%= f.text_field :youtube_id, autofocus: true, autocomplete: "name", class:"input_field text_field", id:"youtube_id_field" %>
+  	  	  	  	<div>※YouTube動画のIDとは動画のURLの「https://www.youtube.com/watch?v=」の後に続く11字の文字列です。</div>
+  	  	  	  	<iframe class="youtube_video" id="youtube_video" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  	  	  	</div>
+  	  	</div>
+  	  	<div class="field_area video_field_area" id="file_field_area" style="display:<%=request.file_label_display_style %>">
+  	  	  	<%= f.label :file, class:"field_label" %><br />
+  	  	  	<%= f.fields_for :items do |item_form| %>
+  	  	  	  	<% if item_form&.object&.id.present? %>
+  	  	  	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.is_image? %>
+  	  	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image %>
+  	  	  	  	  	<%= link_to "削除", remove_file_user_request_path(item_form.object), method: :delete, data: {confirm:"削除しますか？"}%>
+  	  	  	  	  	</br></br>
+  	  	  	  	<% end %>
+  	  	  	  	<% if !item_form.object.file.present? %>
+  	  	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
+  	  	  	  	<% end %>
+  	  	  	<% end %>
+  	  	  	<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true, style:"display:#{request.file_field_display_style}" %>
+				  <span class="annotation">＊添付ファイルの上限数は<%=Request.new.max_items_count%>個です</span>
 
-      <%= f.hidden_field :file_duration, id:"file_duration" %>
-      <div class="file_discription" id="file_discription"></div>
-      <div class="file_alarm" id="file_alarm"></div>
-    </div>
-    <div class="field_area video_field_area" id="file_field_area" style="display:<%=request.video_display_style=%>">
-      <%##= f.label :thumbnail, class:"field_label" %><br />
-    </div>
-  </div>
+  	  	  	<%= f.hidden_field :file_duration, id:"file_duration" %>
+  	  	  	<div class="file_discription" id="file_discription"></div>
+  	  	  	<div class="file_alarm" id="file_alarm"></div>
+  	  	</div>
+  	  	<div class="field_area video_field_area" id="file_field_area" style="display:<%=request.video_display_style=%>">
+  	  	  	<%##= f.label :thumbnail, class:"field_label" %><br />
+  	  	  	<%= f.file_field :thumbnail, autocomplete: "file", class:"input_field display_none",id:"thumbnail"%>
+  	  	  	<video id="video_display" style="width:100%"controls></video>
+  	  	</div>
+  	</div>
 
-  <div class="field_area">
-    <%= f.label :delivery_form, class:"field_label" %><br />
-    <%if service.present? %>
-      <h3 class="request_content"><%=service.delivery_form.japanese_name%></h3>
-    <% else %>
-      <div class="input_field text_field select_area">
-        <%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
-      </div>
-    <% end %>
-  </div>
+  	<div class="field_area">
+  	  	<%= f.label :delivery_form, class:"field_label" %><br />
+  	  	<%if service.present? %>
+  	  	  	<h3 class="request_content"><%=service.delivery_form.japanese_name%></h3>
+  	  	<% else %>
+  	  	  	<div class="input_field text_field select_area">
+  	  	  	  	<%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  	  	  	</div>
+  	  	<% end %>
+  	</div>
 
-  <div class="field_area">
-    <%if service.present? %>
-      <%= f.label :price, class:"field_label"%><br/>
-      <h3 class="request_content"><%=service.price%>円</h3>
-      <%= f.hidden_field :price, value: service.price %>
-    <% else %>
-      <%= f.label :max_price, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
-      <div class="input_field text_field select_area">
-      <%= f.select 'max_price', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.max_price), include_blank: true,  class:"price_field" ,required: true %>
-      </div>
-    <% end %>
-  </div>
+  	<div class="field_area">
+  	  	<%if service.present? %>
+  	  	  	<%= f.label :price, class:"field_label"%><br/>
+  	  	  	<h3 class="request_content"><%=service.price%>円</h3>
+  	  	  	<%= f.hidden_field :price, value: service.price %>
+  	  	<% else %>
+  	  	  	<%= f.label :max_price, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
+  	  	  	<div class="input_field text_field select_area">
+  	  	  		<%= f.select 'max_price', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.max_price), include_blank: true,  class:"price_field" ,required: true %>
+  	  	  	</div>
+  	  	<% end %>
+  	</div>
 
-  <%if !service.present? %>
-    <div class="field_area">
-      <%= f.label :suggestion_deadline, class:"field_label"%>（1〜<%= request.delivery_days_upper_limit%>日）<br/>
-        <div class="input_field text_field select_area">
-          <%= f.select 'delivery_days', options_for_select((1..30).step(1).map { |num| ["#{num}日", num] }, selected:  request.delivery_days), include_blank: true,  class:"" ,required: true %>
-        </div>
-      <div id="delivery_date" class="delivery_date"></div>
-    </div>
-  <%end%>
+  	<%if !service.present? %>
+  	  	<div class="field_area">
+  	  	  	<%= f.label :suggestion_deadline, class:"field_label"%>（1〜<%= request.delivery_days_upper_limit%>日）<br/>
+  	  	  	  	<div class="input_field text_field select_area">
+  	  	  	  	  	<%= f.select 'delivery_days', options_for_select((1..30).step(1).map { |num| ["#{num}日", num] }, selected:  request.delivery_days), include_blank: true,  class:"" ,required: true %>
+  	  	  	  	</div>
+  	  	  	<div id="delivery_date" class="delivery_date"></div>
+  	  	</div>
+  	<%end%>
 
-  <%if service.present? %>
-    <%= f.hidden_field :service_id, value: service.id%>
-  <% end %>
+  	<%if service.present? %>
+  	  	<%= f.hidden_field :service_id, value: service.id%>
+  	<% end %>
 
-  <%if request.persisted? %>
-    <div class="submit_area">
-      <%= link_to "戻る", user_request_preview_path(@parameters),class:"big_submit grey edit_link", id:"edit_link"%>
-    </div>
-  </br>
-  <% end %>
+	<%if request.persisted? %>
+	  	<div class="submit_area">
+	  	  	<%= link_to "戻る", user_request_preview_path(@parameters),class:"big_submit grey edit_link", id:"edit_link"%>
+	  	</div>
+		</br>
+	<% end %>
 
-  <div class="submit_area">
-    <%= f.submit submit_text, class:"big_submit", id:"submit"%>
-  </div>
-  </div>
+		<div class="submit_area">
+		  	<%= f.submit submit_text, class:"big_submit", id:"submit"%>
+		</div>
+	</div>
 <% end %>
 <script>
 <%= render 'user/requests/javascript/extension_controller.js.erb' %>

@@ -66,6 +66,13 @@
         }
 
     }
+    .parent_link{
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .parent_link:hover{
+        color: grey;
+    }
     /*
     .submit_area{
         text-align: center;

@@ -1,0 +1,8 @@
+<span class="link_area">
+  	<div class="parent_link" name="<%=category[:name]%>">
+	  	<%= category[:japanese_name] %>
+  	</div>
+  	<% category[:child_categories].each do |category| %>
+  	  	<div class="space"></div><%= render "user/shared/form/category_button", category:category %>
+  	<% end %>
+</span>

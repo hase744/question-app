@@ -157,7 +157,7 @@ class Request < ApplicationRecord
   end
 
   def delivery_form
-      Form.find_by(name: self.delivery_form_name)
+    Form.find_by(name: self.delivery_form_name)
   end
 
   def total_likes

@@ -28,14 +28,10 @@
         	  	    <%= f.fields_for :service_categories do |category_form| %>
         	  	      	<%if service.service_categories.length > 1%>
         	  	      	  	<%if category_form.object.category_name %>
-        	  	      	  	  	<div class="select_area">
-        	  	      	  	  	    <%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-        	  	      	  	  	</div>
+								<%= render 'user/shared/form/category_selector', f:category_form %>
         	  	      	  	<% end %>
         	  	      	<% else %>
-        	  	      	  	<div class="select_area">
-        	  	      	  	  	<%= category_form.select 'category_name', options_for_select(category_select_hash, category_form.object.category_name), include_blank: true,  class:"" , name:"名前" ,required: true %>
-        	  	      	  	</div>
+							<%= render 'user/shared/form/category_selector', f:category_form %>
         	  	      	<% end %>
         	  	    <% end %>
         	  	  	<% service.service_categories.each do |sc| %>
