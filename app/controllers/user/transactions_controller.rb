@@ -92,7 +92,6 @@ class User::TransactionsController < User::Base
     @transaction.assign_attributes(transaction_params)
     @transaction.category.name
     @items = generate_items&.flatten
-    @transaction.transaction_categories.build(category_name:"business")
     ActiveRecord::Base.transaction do
       if save_models
         flash.notice = "回答を編集しました"

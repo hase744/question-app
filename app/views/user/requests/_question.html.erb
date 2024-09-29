@@ -6,18 +6,18 @@
             <% end %>
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to request.user.name, user_account_path(request.user.id), class: '' %><%= %>　<%= readable_datetime(request.created_at)%></h5>
 			<div class="item_description_area">
-				<% if request.items.not_text_image.present? %>
+				<% unless request.items.first.is_text_image? %>
 					<div class='item_area'>
-						<%= image_tag request.items.not_text_image.first.file.thumb.url %>
+						<%= image_tag request.items.first.file.thumb.url %>
 					</div>
 				<% end %>
 				<div class="description_area">
             		<span class="three_line_text text description_text"><%= request.description%></span>
 				</div>
 			</div>
-			<% if request.items.not_text_image.present? %>
+			<% unless request.items.first.is_text_image? %>
 				<div class='items_area'>
-					<% request.items.not_text_image.each do |item| %>
+					<% request.items.each do |item| %>
 						<%= image_tag item.file.thumb.url %>
 					<% end %>
 				</div>

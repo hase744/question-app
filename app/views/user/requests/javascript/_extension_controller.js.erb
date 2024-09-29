@@ -14,6 +14,11 @@ select_file = function() {
     $("#video_display").hide();
     //$("#youtube_video").hide();
     submit.disabled = false;
+  } else if (selectedValue === 'free') {
+    $("#image_video_field_area").show();
+    $("#youtube_area").hide();
+    $("#video_display").hide();
+    $(".video_field_area").show();
   } else if (selectedValue === 'video') {
     console.log('<%= Request.acceptable_video_extensions%>')
     $('#fileInput').attr('accept','video/MOV,video/mov,video/wmv,video/mp4');

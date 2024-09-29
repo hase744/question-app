@@ -28,6 +28,7 @@ class Transaction < ApplicationRecord
   validate :validate_reject_reason
   validate :validate_review
   validate :validate_is_suggestion
+  validate :validate_item_count
   validate :previous_transaction
   validate :validate_service_renewed
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
@@ -519,6 +520,13 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def validate_item_count
+    return if self.items.count <= self.max_items_count
+    return unless self.will_save_change_to_is_published?
+    return unless self.is_published
+    errors.add(:items, "の数は#{self.max_items_count}個までです")
+  end
+  
   def validate_review
     if all_review_present? || all_review_empty?
     elsif self.is_transacted?
@@ -526,6 +534,10 @@ class Transaction < ApplicationRecord
       errors.add(:star_rating, "がありません") if !self.star_rating.present?
       errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?
     end
+  end
+
+  def max_items_count
+    10
   end
 
   def review_present?

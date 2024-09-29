@@ -54,7 +54,8 @@
             	  	  	  	<%#= item_form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
             	  	  	<% end %>
             	  	<% end %>
-									<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
+					<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
+					</br><span class="annotation">＊添付ファイルの上限数は<%=Transaction.new.max_items_count%>個です</span>
             	  	<div class="file_discription" id="file_discription"></div>
             	  	<div class="file_alarm" id="file_alarm"></div></br>
 					

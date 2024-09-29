@@ -40,6 +40,7 @@ class Request < ApplicationRecord
   validate :validate_max_price
   validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   validate :validate_can_stop_accepting
+  validate :validate_item_count
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -409,6 +410,13 @@ class Request < ApplicationRecord
   def need_text_image?
     self.request_form.name == "text" || (self.request_form.name == "free" && self.items.not_text_image.count < 1)
   end
+
+  def validate_item_count
+    return if self.items.count <= self.max_items_count
+    return unless self.will_save_change_to_is_published?
+    return unless self.is_published
+    errors.add(:items, "の数は#{self.max_items_count}個までです")
+  end
   
   def validate_max_price
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
@@ -565,5 +573,9 @@ class Request < ApplicationRecord
 
   def delivery_days_upper_limit
     30
+  end
+
+  def max_items_count
+    10
   end
 end
