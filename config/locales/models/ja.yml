@@ -60,6 +60,7 @@ ja:
         price: 料金
         use_youtube: アップロード方法
         youtube_id: YouTube動画のID
+        is_accepting: 取り下げ
       request_supplement:
         body: 補足内容
       request_item:

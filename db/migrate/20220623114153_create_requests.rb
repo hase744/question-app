@@ -18,7 +18,8 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       #t.string :youtube_id
       #t.boolean :use_youtube, default: false
 
-      t.boolean :is_inclusive, index:true
+      t.boolean :is_inclusive, index:true, null: false, default: true
+      t.boolean :is_accepting, index: true, null: false, default: true
       t.integer :suggestion_acceptable_duration, index:true
       t.datetime :suggestion_deadline, index:true
 

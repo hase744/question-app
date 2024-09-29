@@ -39,6 +39,7 @@ class Request < ApplicationRecord
   validate :validate_request_category
   validate :validate_max_price
   validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
+  validate :validate_can_stop_accepting
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -52,6 +53,7 @@ class Request < ApplicationRecord
     solve_n_plus_1
     .left_joins(:request_categories, :user)
     .where(
+      is_accepting: true,
       is_published: true, 
       is_inclusive: true, 
       user:{
@@ -188,6 +190,8 @@ class Request < ApplicationRecord
       false
     elsif self.supplements.present?
       false
+    elsif !self.is_suggestable?
+      false
     else
       true
     end
@@ -231,8 +235,18 @@ class Request < ApplicationRecord
     self.save
   end
 
-  def is_suggestable?(user)
+  def is_suggestable?(user=nil)
     if get_unsuggestable_message(user).present?
+      false
+    else
+      true
+    end
+  end
+
+  def can_stop_accepting?
+    if !self.is_accepting
+      false
+    elsif !self.is_inclusive
       false
     else
       true
@@ -250,13 +264,15 @@ class Request < ApplicationRecord
     end
   end
 
-  def get_unsuggestable_message(user)
+  def get_unsuggestable_message(user=nil)
     if !self.is_inclusive
       "その質問には提案できません"
     elsif self.user == user
       "自分の質問には提案できません"
     elsif  self.suggestion_deadline < DateTime.now
       "期限が過ぎています"
+    elsif !self.is_accepting
+      "取り下げられました。"
     else
       nil
     end
@@ -296,6 +312,8 @@ class Request < ApplicationRecord
     if self.is_inclusive
       if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now
         "期限切れ"
+      elsif !self.is_accepting
+        "取り下げ"
       else
         "受付中"
       end
@@ -318,7 +336,7 @@ class Request < ApplicationRecord
   
   def status_color
     if self.is_inclusive
-      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now
+      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now || !self.is_accepting
         'grey'
       else
         "green"
@@ -468,7 +486,7 @@ class Request < ApplicationRecord
       errors.add(:items, "が処理中です") unless all_items_processed?
     end
   end
-  
+
   def validate_request_form
     if self.service
       errors.add(:request_form, "が違います") if self.service.request_form != self.request_form
@@ -486,6 +504,13 @@ class Request < ApplicationRecord
       errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptable_duration_in_days > 30
       errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
+  end
+
+  def validate_can_stop_accepting
+    return if self.is_accepting
+    return if self.will_save_change_to_is_accepting?
+    return unless self.is_published
+    errors.add(:base, "取り下げに失敗しました")
   end
 
   def title_max_length
