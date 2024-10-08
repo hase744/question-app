@@ -379,7 +379,7 @@ class Service < ApplicationRecord
 
   def max_character_options
     array = []
-    array << ['制限なし', 0]
+    array << ['制限なし', 0] if Rails.env.development?
     (100..900).step(100) { |i| array << ["#{i}字", i] }
     (1000..20000).step(1000) { |i| array << ["#{i}字", i] }
     array

@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  root :to => 'abouts#index'
+  root :to => 'user/homes#show'
   resources :abouts, only:  [:index]
   get "abouts/question"
   get "abouts/inquiry"
@@ -31,10 +31,12 @@ Rails.application.routes.draw do
   get "abouts/how_to_cancel", as: "abouts_how_to_cancel"
   get "abouts/how_to_request", as: "abouts_how_to_request"
   get "abouts/how_to_charge", as: "abouts_how_to_charge"
+  get "abouts/how_to_pre_purchase_inquire", as: "abouts_how_to_pre_purchase_inquire"
   get "abouts/service_guide", as: "abouts_service_guide"
   get "abouts/term_of_service", as: "abouts_term_of_service"
   get "abouts/privacy_policy", as: "abouts_privacy_policy"
   get "abouts/tokushou", as: "abouts_tokushou"
+  get "abouts/terms", as: "abouts_terms"
   #get "abouts/how_to_sell", as: "abouts_how_to_sell"
 namespace :user do
   

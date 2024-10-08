@@ -30,6 +30,9 @@
         <script src="https://unpkg.com/@popperjs/core@2"></script>
         <script src="https://unpkg.com/tippy.js@6"></script>
     <% end %>
+    <% unless Rails.env.production?%>
+        <meta name="robots" content="noindex" />
+    <% end %>
     <%= favicon_link_tag '/favicon.ico' %>
     
     <%= include_gon %>

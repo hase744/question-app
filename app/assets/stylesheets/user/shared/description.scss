@@ -4,7 +4,7 @@
     height: auto;
     //padding: 0 5px;
     transition: .5s;
-    p{
+    .description_text{
         display: -webkit-box;
         margin: 0px;
         -webkit-box-orient: vertical;
@@ -12,6 +12,7 @@
         overflow: hidden;
         @media(max-width: 1000px){
           font-size: 13px;
+          line-height: 25px;
         }
     }
     .opening_text{

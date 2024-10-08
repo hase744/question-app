@@ -159,16 +159,6 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
-  create_table "question_answers", force: :cascade do |t|
-    t.string "sort"
-    t.text "question"
-    t.text "answer"
-    t.bigint "admin_user_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["admin_user_id"], name: "index_question_answers_on_admin_user_id"
-  end
-
   create_table "relationships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "target_user_id"

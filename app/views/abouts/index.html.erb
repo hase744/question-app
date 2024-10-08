@@ -31,6 +31,7 @@
         </br>
         </br>
         </br>
+        <!--
         <div class="brief_zone">
         <div class="brief_area">
             <div class="right_side_area brief_qa_area">
@@ -51,6 +52,7 @@
             </div>
         </div>
         </div>
+        -->
         <!--
         <div>
         <h1>日本初！<h1>
@@ -94,32 +96,40 @@
         -->
         <div class="feature-area">
             <h1><span class="three">３</span>つの特徴</h1>
+            <div class="feature-frame-area">
             <div class="feature-frame feature-frame-1">
                 <div class="feature-content feature-content-1">
-                    <div>
+                    <div class="title_area">
                         <h1>相談をプロに<span>依頼</span></h1>
                     </div>
-                    <%=image_tag "https://unblast.com/wp-content/uploads/2020/10/Online-Learning-Vector-Illustration.jpg", class:"feature-image"%>
-                    <p>相談を人に依頼することができるサービスです。画像や動画付きで質問できます！</p>
+                    <%=image_tag "https://cdni.iconscout.com/illustration/premium/thumb/boy-learning-online-illustration-download-in-svg-png-gif-file-formats--video-recorded-lecture-students-pack-school-education-illustrations-5470835.png?f=webp", class:"feature-image"%>
+                    <div class="text_area">
+                    <p>相談を人に依頼することができるプラットフォームです。</p>
+                    </div>
                 </div>
             </div>
             <div class="feature-frame feature-frame-2">
                 <div class="feature-content feature-content-2">
-                    <div>
+                    <div class="title_area">
                         <h1>回答して<span>報酬獲得</span></h1>
                     </div>
                     <%=image_tag "https://img.freepik.com/free-vector/happy-businessman-earning-money-illustration_74855-5522.jpg", class:"feature-image"%>
-                    <p>自由にサービスを出品できます。出品したサービスについた質問に回答を納品すれば報酬を獲得できます！</p>
+                    <div class="text_area">
+                    <p>相談室を出品して、届いた質問に回答を納品すれば報酬を獲得できます！</p>
+                    </div>
                 </div>
             </div>
             <div class="feature-frame feature-frame-3">
                 <div class="feature-content feature-content-3">
-                    <div>
+                    <div class="title_area">
                         <h1><span>公開</span>されたQ&A</h1>
                     </div>
                     <%=image_tag "https://www.creativefabrica.com/wp-content/uploads/2020/07/04/illustration-of-social-media-marketing-Graphics-4542536-1-580x378.jpg", class:"feature-image"%>
-                    <p>質問、回答は全て公開されるため、買い手は過去の回答の質で判断でき、売り手は質で差別化できます！</p>
+                    <div class="text_area">
+                    <p>質問、回答は全て公開されるため、誰でも閲覧して学べます！</p>
+                    </div>
                 </div>
+            </div>
             </div>
         </div>
         <!--
@@ -136,91 +146,41 @@
                 <div class="transaction_flow_flame">
                     <h2 class="flow_label">回答者を募集する場合</h2>
                     <div class="flow_group">
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">①質問者が質問を投稿</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引質問が先①.png">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">②回答者がサービスを提案</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引質問が先②.png">
-                                </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                            <div class="flow_description">③質問者がサービスを選択</div>
-                            <div class="flow_image_area">
-                                <img class="tranaction_flow_image" src="/取引質問が先③.png">
-                            </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">④回答者が回答を納品</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引質問が先④.png">
-                                </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
+                        <%= render "abouts/flow_unit", 
+                            title: "①質問者が質問を投稿", 
+                            src: "/flow/transaction_flow-1-1.png", 
+                            use_arrow: false %>
+                        <%= render "abouts/flow_unit", 
+                            title: "②回答者が相談室を提案", 
+                            src: "/flow/transaction_flow-1-2.png", 
+                            use_arrow: true %>
+                        <%= render "abouts/flow_unit", 
+                            title: "③質問者が相談室を選択", 
+                            src: "/flow/transaction_flow-1-3.png", 
+                            use_arrow: true %>
+                        <%= render "abouts/flow_unit", 
+                            title: "④回答者が回答を納品", 
+                            src: "/flow/transaction_flow-1-4.png", 
+                            use_arrow: true %>
                     </div>
                     <h2 class="flow_label">質問を募集する場合</h2>
                     <div class="flow_group">
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">①回答者がサービスを出品</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引サービスが先①.png">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">②質問者がサービスを選択</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引サービスが先②.png">
-                                </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                            <div class="flow_description">③質問者が質問を投稿</div>
-                            <div class="flow_image_area">
-                                <img class="tranaction_flow_image" src="/取引サービスが先③.png">
-                            </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
-                        <div class="flow_unit">
-                            <div class="component_area">
-                                <div class="flow_description">④回答者が回答を納品</div>
-                                <div class="flow_image_area">
-                                    <img class="tranaction_flow_image" src="/取引サービスが先④.png">
-                                </div>
-                            </div>
-                            <div class="arrow_area">
-                                <div class="arrow-right"></div>
-                            </div>
-                        </div>
+                        <%= render "abouts/flow_unit", 
+                            title: "①回答者が相談室を出品", 
+                            src: "/flow/transaction_flow-2-1.png", 
+                            use_arrow: false %>
+                        <%= render "abouts/flow_unit", 
+                            title: "②質問者が相談室を選択", 
+                            src: "/flow/transaction_flow-2-2.png", 
+                            use_arrow: true %>
+                        <%= render "abouts/flow_unit", 
+                            title: "③質問者が質問を投稿", 
+                            src: "/flow/transaction_flow-2-3.png", 
+                            use_arrow: true %>
+                        <%= render "abouts/flow_unit", 
+                            title: "④回答者が回答を納品", 
+                            src: "/flow/transaction_flow-2-4.png", 
+                            use_arrow: true %>
                     </div>
                 </div>
             </div>

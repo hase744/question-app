@@ -212,8 +212,23 @@
         }
     }
     .feature-frame{
+        .feature-image{
+            object-fit: cover;
+        }
         .feature-content{
-            div{
+            .text_area{
+                margin: 0px 5px;
+                width: calc(100% - 10px);
+                font-weight: bold;
+                line-height: 30px;
+                font-size: 17px;
+                //background-color: red;
+                height: 50px;
+                p{
+                    margin: 0px;
+                }
+            }
+            .title_area{
                 h1{
                     span{
                         background: linear-gradient(transparent 60%, orange 60%);
@@ -227,6 +242,11 @@
 
 @media (min-width:1000px){
     .feature-area{
+        .feature-frame-area{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
         .feature-frame{
             height: 400px;
             width:300px;
@@ -240,21 +260,21 @@
                 border-radius:10px;
                 background-color: white;
                 box-shadow: 0 0 2px lightgray;
-                position: relative;
-                div{
+                //position: relative;
+                .title_area{
                     top:-10px;
                     left:30px;
-                    position: absolute;
+                    //position: absolute;
                 }
                 .feature-image{
-                    position: absolute;
+                    //position: absolute;
                     top:63px;
                     left: 0px;
                     height: 200px;
                     width: 300px;
                 }
                 p{
-                    position: absolute;
+                    //position: absolute;
                     text-align: left;
                     top:263px;
                     width:300px;
@@ -300,59 +320,71 @@
     margin-left: auto;
     text-align: center;
     display: block;
+    h1{
+        margin-bottom: 0px;
+    }
     .flow_label{
         text-align: left;
-        //background-color: red;
         margin: 0px;
-        color: dimgray;
+        color: black;
         text-decoration: underline;
         margin-left: 10px;
     }
     .transaction_flow_flame{
-        //background-color: red;
-        //float: left;
-        //width: 100%;
-        //background-color: blue;
         display: inline-block;
         .flow_group{
             float: left;
-            //width: 100%;
-            //background-color: red;
             text-align: left;
             margin-bottom: 50px;
             
             .flow_unit{
                 float: left;
+                $component_width:200px;
                 .component_area{
-                    $component_width:200px;
                     width: $component_width;
                     height: $component_width;
                     @media(max-width:1000px){
                         width: calc(50vw - 55px);
-                        //height: calc(100vw - 30px);
                     }
                     @media(max-width:500px){
                         width: calc(100vw - 30px);
-                        //height: calc(100vw - 30px);
+                        display: flex;
                     }
                     display: inline-block;
                     .flow_description{
-                        font-size: 15px;
-
+                        font-size: 17px;
+                        font-weight: bold;
+                        text-align: center;
+                        @media(max-width:500px){
+                            display: flex;
+                            flex: 1; /* 残りのスペースを占める */
+                            text-align: left;
+                            align-items: center;
+                            span{
+                                display: inline-block;
+                            }
+                        }
                     }
                 }
                 .flow_image_area{
                     width: 100%;
                     //background-color: red;
                     text-align: center;
+                    @media(max-width:500px){
+                        width: auto;
+                        display: flex;
+                        width: calc(#{$component_width} * 0.7);
+                        //flex-shrink: 0;
+                    }
                 }
                 .tranaction_flow_image{
                     width: 185px;
                     height: 185px;
-                    //@media(max-width:500px){
-                    //    width: calc(100vw - 45px);
-                    //    height: calc(100vw - 45px);
-                    //}
+                    @media(max-width:500px){
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
                 }
                 .arrow_area{
                     height: 100%;

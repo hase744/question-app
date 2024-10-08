@@ -1,3 +1,4 @@
+@import "_variables";
 .index_link_zone{
     width: 100%;
     z-index: -0.5;
@@ -51,7 +52,8 @@
             //transform: translate(-50%, 50%);
             width: 1px;
             //height: calc(40%);
-            background: #d7e0dc;
+            //background: #d7e0dc;
+            background-color: rgb(230, 230, 210);
             content: "";
         }
         .index_link:hover{

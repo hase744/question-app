@@ -1,4 +1,4 @@
-<div class="inquiry_zone center_area">
+<div class="inquiry_zone center_area input_area">
     <h3 class="zone_title ">お問い合わせ</h3>
     <div class="inquiry_area component_area">
     <%= form_with model: @inquiry, url: :user_inquiries do |f| %>
@@ -21,7 +21,7 @@
         </div>
         <div class="field_area">
             <label class="field_label">お問い合わせ内容</label><br />
-            <%= f.text_area :body, class:"input_field string_field input_text_field" %>
+            <%= f.text_area :body, class:"input_field string_field input_text_field text_area" %>
         </div>
         <div class="submit_area">
             <%= f.submit "送信", class:"submit" %>

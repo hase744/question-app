@@ -1,3 +1,4 @@
+@import "variables";
 .how_to_zone{
     .step_area{
         margin: 0;
@@ -5,12 +6,91 @@
     }
     .step{
         list-style: none;
-        padding-left: 1.2em;
-        text-indent: -1.0em;
+        line-height: 30px;
+        font-weight: bold;
+    }
+    h1, h2{
+        margin-bottom: 0px;
+        margin-left: 5px;
+    }
+    h4{
+        margin: 0px;
+        line-height: 40px;
+    }
+    .check_step_area {
+        margin-left: 20px;
+        width: calc(100% - 20px);
+        list-style-type: none;
+        li {
+            position: relative;
+        }
+        li::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: .5em;
+            left: -1em;
+            width: 10px;
+            height: 5px;
+            border-left: 2px solid #25AF01;
+            border-bottom: 2px solid #25AF01;
+            transform: rotate(-45deg);
+        }
     }
     .caution{
         color: dimgray;
         font-size: 13px;
+        line-height: 20px;
+        font-weight: lighter;
+    }
+    .label_area{
+        background-color: $dark_text_yellow;
+        border-radius: 5px;
+        margin-top: 10px;
+        label{
+            color: white;
+            font-weight: 580;
+            padding: 3px 10px;
+            display: inline-block;
+            font-size: 20px;
+        }
+    }
+    .detail_area{
+        margin-left: 20px;
+        width: calc(100% - 20px);
+    }
+    table td:first-child {
+        white-space: nowrap;
+        font-weight: bold;
+        display: inline-block;
+        color: $text_grey;
+        font-size: 14px;
+        @media(max-width: 500px){
+            //display: none;
+        }
+        color: dimgrey;
+    }
+    table td:nth-child(2) {
+        font-weight: bold;
+        font-size: 17px;
+        line-height: 30px;
+        @media(max-width: 500px){
+        font-weight: 400;
+            //border-bottom: solid 2px lightgray;
+        }
+    }
+    p{
+        margin: 0px;
+        white-space: pre-line;
+        line-height: 30px;
+        font-size: 15px;
+        font-weight: 580;
+        a{
+            text-decoration: underline;
+        }
+    }
+    label{
+        color: dimgrey;
     }
 }
 .pdf{
