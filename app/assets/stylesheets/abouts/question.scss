@@ -4,32 +4,47 @@
     h1 {
        margin-top: 30px;
     }
-    .qu_title_area{
-        //text-align: center;
-    }
-    .qa-flame{
-        position: relative;
-        top: -20px;
-        padding-bottom: 50px;
-
-        margin: auto;
-        background-color: white;
-        box-shadow: 0 0 2px lightgray;
-        border-radius: 30px;
-        .qa-content{
-            position: relative;
-            top: 30px;
-            padding-right: 20px;
-            .question{
-                margin-bottom: 5px;
-            }
-            .answer{
-                margin-top: 3px;
-                margin-left: 20px;
-            }
+    .qa-content{
+        top: 30px;
+        padding-right: 20px;
+        .question{
+            margin-bottom: 0px;
         }
     }
-}
-.about_question_flame{
-
+  
+  .form-group {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .form-input {
+    width: calc(100% - 50px);
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .form-input:focus {
+    border-bottom: 2px solid #007bff;
+  }
+  
+  .form-submit {
+    width: 50px;
+    align-self: flex-start;
+    padding: 8px 4px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .form-submit:hover {
+    background-color: #0056b3;
+  }
+  
 }

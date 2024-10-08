@@ -26,7 +26,7 @@ ja:
       service:
         title: タイトル
         description: "詳細"
-        image: "サービス画像"
+        image: "画像"
         category: カテゴリー
         category_id: カテゴリー
         delivery_form: 回答形式

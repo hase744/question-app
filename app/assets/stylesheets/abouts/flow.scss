@@ -1,16 +1,19 @@
-.abouts_how_flame{
+.about_flow_zone{
     margin: 0 auto;
-        max-width: 1000px;
-        margin: auto;
-        .abouts_how_title{
-                margin-bottom: 0px;
-        }
+    margin: auto;
+    .abouts_how_title{
+            margin-bottom: 0px;
+    }
     .buyer_area{
         color: darkred;
     }
     .seller_area{
         color: darkblue;
         }
+table td:first-child {
+        white-space: nowrap;
+}
+    
 }
 .abouts_how_area{
         background-color: white;

@@ -1,32 +1,39 @@
 <div class="front_image_area">
     <%=image_tag "https://web-camp.io/magazine/wp-content/uploads/2022/05/shutterstock_1874747554.jpg", class:"top_image"%>
-<div class="top_image_background">
-</div>
-<div class="top_image_background_flame">
-    <div class="top_image_background_left background_left_0"></div>
-    <div class="top_image_background_left background_left_1"></div>
-    <div class="top_image_background_left background_left_2"></div>
-    <div class="top_image_background_left background_left_3"></div>
-    <div class="top_image_background_left background_left_4"></div>
-    <div class="top_image_background_left background_left_5"></div>
-</div>
-<div class="top_image_text_area">
-    <span class="break">
-	<!--
-    <span class="top_text">稼げるQ&Aサイト</span></br>
-	-->
-    <div class="explain_area">
-        <span class="explain">
-			<span class='component'>誰でも学べる、</span><span class='component'>答えて稼げる</span></br>
-            <span class='component'>質問と回答の</span><span class='component'>マーケットプレイス！</span>
-        </span>
+    <div class="top_image_background">
     </div>
-    <div class="sign_in_up_area">
-        <%= link_to "質問をする", new_user_request_path, class:"sign_up_link sign_link"%>
-        <%= link_to "回答をする", new_user_service_path, class:"sign_in_link sign_link"%>
+    <div class="top_image_background_flame">
+        <div class="top_image_background_left background_left_0"></div>
+        <div class="top_image_background_left background_left_1"></div>
+        <div class="top_image_background_left background_left_2"></div>
+        <div class="top_image_background_left background_left_3"></div>
+        <div class="top_image_background_left background_left_4"></div>
+        <div class="top_image_background_left background_left_5"></div>
     </div>
-</div>
-<div class="image_flame">
-    <%=image_tag "/QA_front_image_transparent.png", class:"image"%>
-</div>
+    <div class="top_image_text_area">
+        <span class="break">
+    	<!--
+        <span class="top_text">稼げるQ&Aサイト</span></br>
+    	-->
+        <div class="explain_area">
+            <span class="explain">
+    			<span class='component'>誰でも学べる、</span><span class='component'>答えて稼げる</span></br>
+                <span class='component'>質問と回答の</span><span class='component'>マーケットプレイス！</span>
+            </span>
+        </div>
+        <div class="image_flame narrow">
+            <%=image_tag "/QA_front_image_transparent.png", class:"image"%>
+            <div class="sign_in_up_area narrow">
+                <%= link_to "質問をする", new_user_request_path, class:"sign_up_link sign_link"%>
+                <%= link_to "回答をする", new_user_service_path, class:"sign_in_link sign_link"%>
+            </div>
+        </div>
+        <div class="sign_in_up_area wide">
+            <%= link_to "質問をする", new_user_request_path, class:"sign_up_link sign_link"%>
+            <%= link_to "回答をする", new_user_service_path, class:"sign_in_link sign_link"%>
+        </div>
+    </div>
+    <div class="image_flame wide">
+        <%=image_tag "/QA_front_image_transparent.png", class:"image"%>
+    </div>
 </div>

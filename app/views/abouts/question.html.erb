@@ -1,17 +1,19 @@
-<div class="abouts_question_zone about_zone">
-    <div class="about_flame about_question_flame">
+<div class="abouts_question_zone how_to_zone">
+    <h2>よくある質問</h2>
+    <div class="component_area">
         <div class="qa-area">
-            <div class="qu_title_area">
-                <h1>Q&A</h1>
-            </div>
-            <div class="qa-flame">
-                <% @question_answer.each do |qa|%>
-                    <div class="qa-content">
-                        <h3 class="question">Q.<%=qa.question%></h3>
-                        <p class="answer"><%=qa.answer%></p>
-                    </div>
-                <% end %>
-            </div>
+            <%= form_with url: abouts_question_path, method: :get, local: true, html: { class: 'search-form' } do |form| %>
+                <div class="form-group">
+                    <%= form.text_field :word, value: params[:word],placeholder:"質問を検索", class: 'form-input' %>
+                    <%= form.submit '検索', class: 'form-submit' %>
+                </div>
+            <% end %>
+            <% @question_answer.each do |qa|%>
+                <div class="qa-content">
+                    <h3 class="question">・<%=qa.question%></h3>
+                    <p class="answer"><%=qa.answer.gsub(/\n\r/, '<br>').html_safe%></p>
+                </div>
+            <% end %>
         </div>
     </div>
 </div>

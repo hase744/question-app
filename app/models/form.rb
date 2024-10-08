@@ -31,12 +31,24 @@ class Form
     ]
   end
 
+  def self.available
+    all.select { |form| form.start_at < DateTime.now }
+  end
+
+  def self.japanese_names
+    available.map(&:japanese_name).join('、')
+  end
+
   def selecter_hash
-    all.map{|f| [f.japanese_name, f.name]}.to_h
+    available.map{|f| [f.japanese_name, f.name]}.to_h
   end
 
   def name_sym
     self.name.to_sym
+  end
+
+  def names
+    where()
   end
 
   def self.where(criteria)

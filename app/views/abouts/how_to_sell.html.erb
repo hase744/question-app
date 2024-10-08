@@ -1,56 +1,50 @@
 <div class="how_to_zone center_zone">
     <div class="how_sell_area center_area">
-        <h2 class="zone_title">出品方法</h2>
-        <div class="component_area">
-            <div>①<%= link_to "ログインページ", new_user_session_path%>でログイン</div>
-            <div>②<%= link_to "回答者情報", user_connects_path%>で回答者として登録</div>
-        </div>
+        <h2 class="zone_title">相談室の出品方法</h2>
         <div class="component_area">
             <ol class="step_area">
+                <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
+                <li class="step">②<%= link_to "回答者情報", user_connects_path%>で回答者として登録</li>
                 <li class="step">③右上からサイドメニューを開く</li>
                 <li class="step">④「<%= link_to "相談室を出品", new_user_service_path %>」を選択</li>
-            </ol>
-            <!--
-            <%= image_tag "/how_to_use/service_new_link.png", class:"width_100"%>
-            -->
-        </div>
-        <div class="component_area">
-            <ol class="step_area">
-                <li class="step">⑤出品するサービスに必要事項を記入</li>
-            </ol>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:title) %></h3>
-            <span>20字以内でサービスのタイトルを記入してください。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:description) %></h3>
-            <span>1000字以内でサービスの内容を記入してください。どのようなサービスを提供するのかが分かりやすい説明にしてください。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:image) %></h3>
-            <span>サービスの選択画面で表示されます。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:category) %></h3>
-            <span>現在<%=@categories%>の中からのみ選択できます。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:request_form) %></h3>
-            <span><%=@forms%>の中から選択できます。文章の場合は依頼する内容が文章のみです。画像の場合は依頼する際に画像のアップロードが必須となります。動画の場合は依頼する際に動画のアップロードが必須となります。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_form) %></h3>
-            <span><%=@forms%>の中から選択できます。文章の場合は納品する内容が文章のみです。画像の場合は納品する際に画像のアップロードが必須となります。動画の場合は納品する際に動画のアップロードが必須となります。</span></br>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:transaction_message_enabled) %></h3>
-            <span>納品後に追加で質問を受け付けられる日数を選択してください。０日の場合、追加質問を受付が不可となります。追加質問への回答は義務ではありませんが、追加の質問、回答は公開されます。
-            </span>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:stock_quantity) %></h3>
-            <span>供給できるサービスの在庫を記入してください。</span>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:price) %></h3>
-            <span>サービスの料金を入力してください。0円以上10000円以下の範囲で100円ごとに設定できます。</span>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_days) %></h3>
-            <span>日単位で設定可能です。この日数が経過しても納品がされない場合は依頼人がキャンセルできるようになります。</span>
-            <h3 class="title_h3"><%=Service.human_attribute_name(:is_published) %></h3>
-            <span>出品する場合はここのチェック項目は必ずつけてください。</span>
-            </br>
-            </br>
-            <ol class="step_area">
+                <li class="step">⑤出品する相談室に必要事項を記入</li>
+                <!--
+                <%= image_tag "/how_to_use/service_new_link.png", class:"width_100"%>
+                -->
+                <div class="detail_area">
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:title) %></h3>
+                    <span><%=Service.new.title_max_length%>字以内で相談室のタイトルを記入してください。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:description) %></h3>
+                    <span><%=Service.new.description_max_length%>字以内で相談室の提供する内容を記入してください。何を提供するのかを明確に説明にしてください。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:image) %></h3>
+                    <span>相談室の選択画面で表示されます。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:category) %></h3>
+                    <span>関連するカテゴリーを選択してください。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:request_form) %></h3>
+                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は依頼する内容が文章のみです。画像の場合は質問する際に画像のアップロードが必須となります。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_form) %></h3>
+                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は納品する内容が文章のみです。画像の場合は納品する際に画像のアップロードが必須となります。</span></br>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:transaction_message_enabled) %></h3>
+                    <span>回答を納品後、納品前に質問者が追加で質問が可能になります。追加質問への回答は義務ではありませんが、追加の質問、回答は公開されます。
+                    </span>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:price) %></h3>
+                    <span>相談室の料金を入力してください。<%= Service.new.price_minimum_number%>円〜<%= Service.new.price_max_number%>円の範囲で100円ごとに設定できます。</span>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_days) %></h3>
+                    <span>日単位で設定可能です。この日数が経過しても納品がされない場合は依頼人がキャンセルできるようになります。</span>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:allow_pre_purchase_inquiry) %></h3>
+                    <span>購入前に100字以内で質問することができる機能です。主な用途として、作成している質問に対して、回答可能かなどの問い合わせの受付を設定できます。</span>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:is_for_sale) %></h3>
+                    <span>販売する場合は「販売中」を選択してください。</span>
+                    <h3 class="title_h3"><%=Service.human_attribute_name(:is_published) %></h3>
+                    <span>販売する場合は「公開」を選択してください。</span>
+                </div>
+                </br>
                 <li class="step">⑥「出品」を選択</li>
                 <li class="step">⑦「出品しますか？」に「OK」を選択</li>
             </ol>
-            <%= image_tag "/how_to_use/service_new.png", class:"width_100"%>
-        </div>
-        <div class="component_area">
-            出品するサービスの内容に悩まれている方は<%= link_to "出品するサービスの指針", abouts_service_guide_path %>をご参照ください。推奨されるサービスの内容を具体的に説明しております。
+            <%#= image_tag "/how_to_use/service_new.png", class:"width_100"%>
+            <div class="caution">＊相談室のヒントを知りたい方は<%= link_to "出品する相談室の指針", abouts_service_guide_path %>をご参照ください。
+            </div>
         </div>
     </div>
 </div>

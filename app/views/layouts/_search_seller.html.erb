@@ -16,7 +16,7 @@
             <div class="select_area">
               <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件以上", num] }, selected: 0), include_blank: true,  class:"" ,required: true %>
             </div>
-            <label class="field_label">ソート</label><br/>
+            <label class="field_label">並び替え</label><br/>
             <div>
                 <%= render "user/shared/form/request_sort_form", f:f %>
             </div>
