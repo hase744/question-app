@@ -17,6 +17,15 @@
         margin: 0px;
         line-height: 40px;
     }
+    .image_area{
+        text-align: center;
+    }
+    .image{
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        object-fit: cover;
+    }
     .check_step_area {
         margin-left: 20px;
         width: calc(100% - 20px);

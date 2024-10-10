@@ -1,11 +1,17 @@
 <div class="transaction_message_cell_area">
     <div class="image_name_area">
         <div class="image_area">
-            <%=image_tag content.sender.thumb_with_default, class:"user_image"%>
+        <%if content.sender.is_seller 
+        user_name = "回答者"
+        else
+        user_name = "質問者"
+        end
+        %>
+            <%=image_tag "/#{user_name}.png", class:"user_image"%>
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name one_line_text"><%=link_to content.sender.name, user_account_path(content.sender.id), class:"user_link" %></h2>
+                <h2 class="user_name one_line_text"><%=link_to user_name, user_account_path(content.sender.id), class:"user_link" %></h2>
                 <%=readable_datetime(content.created_at)%>
             </div>
         </div>

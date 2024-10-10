@@ -10,10 +10,18 @@
             <% end %>
             <% @question_answer.each do |qa|%>
                 <div class="qa-content">
-                    <h3 class="question">・<%=qa.question%></h3>
+                    <h3 class="question">・<%=qa.question%><span class="fas fa-angle-down"></span></h3>
                     <p class="answer"><%=qa.answer.gsub(/\n\r/, '<br>').html_safe%></p>
                 </div>
             <% end %>
         </div>
     </div>
 </div>
+<script>
+$(document).ready(function() {
+    $('.question').on('click', function() {
+        $(this).next('.answer').slideToggle();
+        $(this).find('span').toggleClass('fa-angle-down').toggleClass('fa-angle-up')
+    });
+});
+</script>
