@@ -140,11 +140,31 @@
                 </div>
         </div>
         -->
+        <div class="use_options">
+            <div class="buyer_area">
+                <%= image_tag "/buyer_image.png", class:"buyer_image" %>
+                <h2 class="label">質問の流れ</h2>
+                <ol class="step_area check_step_area">
+                    <li>登録してポイントを購入</li>
+                    <li>質問を公開して、相談室を募集</br><span class="or">or</span></br>相談室を探して質問を投稿</li>
+                    <li>回答を閲覧してレビュー</li>
+                </ol>
+            </div>
+            <div class="seller_area">
+                <h2 class="label">回答の流れ</h2>
+                <%= image_tag "/seller_image.png", class:"seller_image" %>
+                <ol class="step_area check_step_area">
+                    <li>登録してプロフィールを記入</li>
+                    <li>相談室を出品</br><span class="or">or</span></br>質問を探して相談室を提案</li>
+                    <li>質問に回答して報酬獲得</li>
+                </ol>
+            </div>
+        </div>
         <div class="transaction_flow_zone">
             <div class="transaction_flow_area">
                 <h1>取引の流れ</h1>
                 <div class="transaction_flow_flame">
-                    <h2 class="flow_label">回答者を募集する場合</h2>
+                    <h2 class="flow_label">質問を作成して相談室を募集する場合</h2>
                     <div class="flow_group">
                         <%= render "abouts/flow_unit", 
                             title: "①質問者が質問を投稿", 
@@ -163,7 +183,7 @@
                             src: "/flow/transaction_flow-1-4.png", 
                             use_arrow: true %>
                     </div>
-                    <h2 class="flow_label">質問を募集する場合</h2>
+                    <h2 class="flow_label">相談室を出品して質問を募集する場合</h2>
                     <div class="flow_group">
                         <%= render "abouts/flow_unit", 
                             title: "①回答者が相談室を出品", 

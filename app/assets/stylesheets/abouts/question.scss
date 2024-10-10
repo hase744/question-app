@@ -1,3 +1,4 @@
+@import "_variables";
 .qa-area{
     margin: 0 auto;
     max-width: 1000px;
@@ -9,6 +10,17 @@
         padding-right: 20px;
         .question{
             margin-bottom: 0px;
+            color: $text_grey;
+            cursor: pointer;
+            span{
+                color: gray;
+            }
+        }
+        .question:hover{
+            text-decoration: underline;
+        }
+        .answer{
+            display: none;
         }
     }
   

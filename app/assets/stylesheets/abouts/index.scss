@@ -307,10 +307,61 @@
         }
     }
 }
-
+.use_options{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    text-align: left;
+    margin-top: 100px;
+    .seller_area, .buyer_area{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        max-width: 450px;
+        width: 100%;
+        margin: 10px;
+        background-color: white;
+        border: 1px solid lightgray;
+        border-radius: 10px;
+        @media(max-width: 940px){
+            max-width: 700px;
+            margin-bottom: 50px;
+        }
+        .buyer_image, .seller_image{
+            position: absolute;
+            width: 250px;
+            top: -70px;
+            left: -30px;
+        }
+        .buyer_image{
+            margin-top: 10px;
+        }
+    }
+    .label{
+        margin-top: 30px;
+        margin-bottom: 10px;
+        margin-left: 180px;
+        font-size: 30px;
+        color: rgb(30,161,108);
+    }
+    li{
+        font-weight: bold;
+        font-size: 20px;
+        margin:7px 0px;
+        color: $text_grey;
+    }
+    .or{
+        color: grey;
+    }
+    ol{
+        margin-block-start: 1.5em;
+    }
+}
 .transaction_flow_zone{
     background-color: whitesmoke;
-    margin-top: 100px;
+    margin-top: 50px;
 }
 .transaction_flow_area{
     max-width: 1000px;
@@ -351,6 +402,7 @@
                         display: flex;
                     }
                     display: inline-block;
+                    flex-direction: row-reverse;
                     .flow_description{
                         font-size: 17px;
                         font-weight: bold;
