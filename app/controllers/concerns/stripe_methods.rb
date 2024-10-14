@@ -1,55 +1,129 @@
 class ProfitMismatchError < StandardError
   def initialize(total_profit, available_amount)
-    super("Profit (#{total_profit}) does not match available amount (#{available_amount})")
+    super("Prifit (#{total_profit}) does not match available amount (#{available_amount})")
+  end
+end
+
+class NonZeroBalanceError < StandardError
+  def initialize(pending_amount, available_amount)
+    message = ""
+    message += "pending_amount is #{pending_amount}" if pending_amount > 0
+    message += "available_amount is #{available_amount}" if available_amount > 0
+    super(message)
+  end
+end
+
+class ZeroTransferAmountError < StandardError
+  def initialize(revenue)
+    super("revenue is #{revenue}")
   end
 end
 
 module StripeMethods
-  def get_finance_info
-    if user_signed_in? && current_user.stripe_account_id
-      @profit_sum = 0
-      @margin_sum = 0
-      @balance_amount = 0
-      @balance = Stripe::Balance.retrieve(
-        {stripe_account: current_user.stripe_account_id}
-        )
-      @payouts = Stripe::Payout.list({
-        limit: 10, # 取得する送金記録の数を指定（例：10件）
+  def update_payments
+    if current_user.stripe_account_id
+      payouts = Stripe::Payout.list({
+        limit: 100, # 取得する送金記録の数を指定（例：10件）
         #status: 'in_transit'
-      }, {
-        stripe_account: current_user.stripe_account_id # ConnectアカウントIDを指定
-      })
-      if @payouts&.first&.created
-        last_credited_at = Time.at(@payouts&.first&.created)
-      else
-        last_credited_at = Time.now
+        }, {
+          stripe_account: current_user.stripe_account_id # ConnectアカウントIDを指定
+        }
+      )
+      payouts.each do |payout|
+        payout_model = @payouts.find { |p| p.stripe_payout_id == payout.id }
+        if payout_model.present? && payout_model&.status_name != payout.status
+          payout_model.update(status_name: payout.status) 
+        end
       end
-      
-      @pending_amount = @balance.pending[0].amount
-      @available_amount = @balance.available[0].amount
-      puts "料金"
-      puts @pending_amount
-      puts @available_amount
-      @balance_amount = @pending_amount + @available_amount
-      transactions = Transaction.all
+    end
+  end
+
+  def get_finance_info
+    @payouts = current_user.payouts.page(params[:page]).order(created_at: :desc).per(10)
+    Payouts::UpdateJob.perform_later(current_user)
+    if user_signed_in?
+      last_deposited_at = @payouts&.order(created_at: :desc)&.first&.created_at || DateTime.now
+
+      @transactions = Transaction.all
         .left_joins(:service)
         .where(service:{user: current_user}, is_transacted:true)
-        .where("transacted_at > ?", last_credited_at)
+        .where("transacted_at > ?", last_deposited_at)
         .order(created_at: :DESC)
-
-      @total_revenue = transactions.sum(:price)
-      @total_margin = transactions.sum(:margin)
-      @total_profit = @total_revenue - @total_margin
-
-      puts @total_profit != @available_amount
-
-      if @balance_amount - 200 < 0
-        @deposit_amount = 0
-      else
-        @deposit_amount = @balance_amount - 200
-      end
-      raise ProfitMismatchError.new(@total_profit, @available_amount) if @total_profit != @available_amount
+      @total_revenue = @transactions&.sum(:price) || 0
+      @total_margin = @transactions&.sum(:margin) || 0
+      @total_profit = @transactions&.sum(:profit) || 0
+      @amount_to_transfer = [@transactions.sum(:profit) - 200, 0].max
     end
+  end
+
+  def detect_error
+    return if current_user.stripe_account_id.nil?
+    transactions_without_stripe_id = Transaction
+      .left_joins(:service)
+      .where(
+        service:{user: current_user}, 
+        is_transacted:true,
+        stripe_transfer_id: nil
+        )
+    balance = Stripe::Balance.retrieve(
+      {stripe_account: current_user.stripe_account_id}
+      )
+    last_deposited_at = @payouts&.last&.created_at || DateTime.now
+    total_profit = @transactions.sum(:profit)
+    total_profit_with_stripe_id = transactions_without_stripe_id.sum(:profit)
+    
+    if total_profit != total_profit_with_stripe_id
+      raise ProfitMismatchError.new(total_profit, total_profit_with_stripe_id)
+    end
+
+    @pending_amount = balance.pending[0].amount
+    @available_amount = balance.available[0].amount
+    if @pending_amount + @available_amount > 0
+      raise NonZeroBalanceError.new(@pending_amount, @available_amount)
+    end
+  end
+
+  def excute_unfinished_transactions
+    transactions = Transaction
+      .where(stripe_transfer_id: nil)
+      .where(service:{user: current_user}, is_transacted:true)
+    transactions.each do |transaction|
+      if transaction.valid?
+        transfer = Stripe::Transfer.create(
+              amount: transaction.profit,
+              currency: 'jpy',
+              destination: current_user.stripe_account_id
+        )
+        transaction.stripe_transfer_id = transfer.id
+        transaction.is_reveresed = transfer.reversed
+        transaction.save
+      end
+    end
+  end
+
+  def execute_transfers # 最後に入金してから行われたtransaction全て
+    raise ZeroTransferAmountError.new(@total_revenue) if @amount_to_transfer <= 0
+    success = true
+    @transactions.each do |transaction|
+      if transaction.valid?
+        transfer = Stripe::Transfer.create(
+          amount: transaction.profit,
+          currency: 'jpy',
+          destination: current_user.stripe_account_id
+        )
+
+        unless transfer.reversed
+          transaction.stripe_transfer_id = transfer.id
+        end
+
+        unless transaction.save
+          success = false
+        end
+      else
+        success = false
+      end
+    end
+    success
   end
 
   def send_to_root_user(user)
@@ -58,8 +132,6 @@ module StripeMethods
       )
     @pending_amount = @balance.pending[0].amount
     @available_amount = @balance.available[0].amount
-    puts @pending_amount
-    puts @available_amount
     @balance_amount = @pending_amount + @available_amount
     transfer = Stripe::Transfer.create({
       amount: @available_amount,

@@ -33,27 +33,24 @@ class User::ConnectsController < User::Base
   def reward
     begin
       get_finance_info
+      detect_error
     rescue ProfitMismatchError => e
       @error_message = e.message
     end
   end
 
   def payments
-    @payouts = Stripe::Payout.list({
-      limit: 10, # 取得する送金記録の数を指定（例：10件）
-      starting_after: params[:last_id]
-    }, {
-      stripe_account: current_user.stripe_account_id # ConnectアカウントIDを指定
-    })
-    render partial: 'user/connects/payout', collection: @payouts.data, as: :payout
+    @payouts = current_user.payouts.order(created_at: :desc).page(params[:page]).per(10)
+    render partial: 'user/connects/payout', collection: @payouts, as: :payout
   end
   
   def credit
     begin
       get_finance_info
-      if @deposit_amount > 0
+      detect_error
+      if execute_transfers
         payout = Stripe::Payout.create({
-          amount: @deposit_amount, # Amount in cents (e.g., 1000 cents = $10.00)
+          amount: @amount_to_transfer, # Amount in cents (e.g., 1000 cents = $10.00)
           currency: 'jpy',
         }, {
           stripe_account:  current_user.stripe_account_id, # Connected account ID
@@ -66,8 +63,17 @@ class User::ConnectsController < User::Base
         }, {
           stripe_account: current_user.stripe_account_id,
         })
+        Payout.create(
+          user: current_user,
+          stripe_account_id: current_user.stripe_account_id,
+          stripe_payout_id: payout.id,
+          status_name: payout.status,
+          amount: @amount_to_transfer,
+          fee: 200,
+          total_deduction: @amount_to_transfer + 200,
+        )
       end
-      flash.notice = "#{@deposit_amount}円を入金しました"
+      flash.notice = "#{@amount_to_transfer}円を入金しました"
       redirect_to user_connect_reward_path
     rescue ProfitMismatchError => e
       @error_message = e.message

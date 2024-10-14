@@ -41,6 +41,7 @@ class User < ApplicationRecord
   has_many :request_likes, class_name: "RequestLike", foreign_key: :user_id
   has_many :payments, dependent: :destroy
   has_many :historyies, dependent: :destroy, class_name: "UserStateHistory", foreign_key: :user_id
+  has_many :payouts
   #has_many :transactions, through: :service
   
   validates :name, length: {maximum:15, minimum:1}

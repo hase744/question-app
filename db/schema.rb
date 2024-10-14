@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_09_21_234226) do
+ActiveRecord::Schema.define(version: 2024_10_13_125753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -157,6 +157,22 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "payouts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "amount", default: 0, null: false
+    t.integer "fee", default: 0, null: false
+    t.integer "total_deduction", default: 0, null: false
+    t.integer "status_name"
+    t.string "stripe_payout_id"
+    t.string "stripe_account_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["amount"], name: "index_payouts_on_amount"
+    t.index ["fee"], name: "index_payouts_on_fee"
+    t.index ["total_deduction"], name: "index_payouts_on_total_deduction"
+    t.index ["user_id"], name: "index_payouts_on_user_id"
   end
 
   create_table "relationships", force: :cascade do |t|
@@ -404,6 +420,9 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.boolean "is_published", default: false
     t.datetime "published_at"
     t.boolean "is_violating", default: false
+    t.boolean "violating_reason"
+    t.boolean "is_reveresed", default: false
+    t.datetime "reveresed_at"
     t.boolean "is_contracted", default: false
     t.datetime "contracted_at"
     t.boolean "is_suggestion", default: false
@@ -427,6 +446,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["is_contracted"], name: "index_transactions_on_is_contracted"
     t.index ["is_published"], name: "index_transactions_on_is_published"
     t.index ["is_rejected"], name: "index_transactions_on_is_rejected"
+    t.index ["is_reveresed"], name: "index_transactions_on_is_reveresed"
     t.index ["is_suggestion"], name: "index_transactions_on_is_suggestion"
     t.index ["is_transacted"], name: "index_transactions_on_is_transacted"
     t.index ["is_violating"], name: "index_transactions_on_is_violating"
@@ -436,6 +456,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["rejected_at"], name: "index_transactions_on_rejected_at"
     t.index ["request_form_name"], name: "index_transactions_on_request_form_name"
     t.index ["request_id"], name: "index_transactions_on_request_id"
+    t.index ["reveresed_at"], name: "index_transactions_on_reveresed_at"
     t.index ["seller_id"], name: "index_transactions_on_seller_id"
     t.index ["service_id"], name: "index_transactions_on_service_id"
     t.index ["star_rating"], name: "index_transactions_on_star_rating"
@@ -443,6 +464,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
     t.index ["title"], name: "index_transactions_on_title"
     t.index ["total_views"], name: "index_transactions_on_total_views"
     t.index ["transacted_at"], name: "index_transactions_on_transacted_at"
+    t.index ["violating_reason"], name: "index_transactions_on_violating_reason"
   end
 
   create_table "user_categories", force: :cascade do |t|
@@ -544,6 +566,7 @@ ActiveRecord::Schema.define(version: 2024_09_21_234226) do
   add_foreign_key "notifications", "users", column: "notifier_id"
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
+  add_foreign_key "payouts", "users"
   add_foreign_key "relationships", "users"
   add_foreign_key "relationships", "users", column: "target_user_id"
   add_foreign_key "request_categories", "requests"

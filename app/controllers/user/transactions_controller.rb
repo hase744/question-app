@@ -136,24 +136,12 @@ class User::TransactionsController < User::Base
     if @transaction.delivery_form.name != "text"
       @delivery_item = @transaction.items.first
     end
-    
-    if all_models_valid?([current_user, @transaction, @delivery_item])
-      if @transaction.profit > 0
-        transfer = Stripe::Transfer.create(
-              amount: @transaction.profit,
-              currency: 'jpy',
-              destination: @transaction.seller.stripe_account_id
-        )
-        if !transfer.reversed
-          @transaction.stripe_transfer_id = transfer.id
-          complete_delivery
-        else
-          flash.notice = "回答を納品できませんでした。"
-          redirect_to user_order_path(params[:id])
-        end
-      else
-        complete_delivery
-      end
+
+    if @transaction.save
+      EmailJob.perform_later(mode: :deliver, model: @transaction) if @transaction.buyer.can_email_transaction
+      create_notification(@transaction)
+      flash.notice = "回答を納品しました。"
+      redirect_to user_transaction_path(@transaction.id)
     else
       detect_models_errors([current_user, @transaction, @delivery_item])
       @transaction.is_transacted = false

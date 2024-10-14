@@ -4,46 +4,47 @@
     	<div class="component_area connect_reward_area">
 			<div class="connect_reward_flame">
 				<%if @error_message%>
-				 	<div class="message"><i class='fas fa-exclamation-triangle'></i>決済アカウントの収益と取引の収益に不一致があります。</div>
-				 	<div class="message"><%="#{@error_message}" %></div>
+				 	<div class="message"><i class='fas fa-exclamation-triangle'></i><%="#{@error_message}" %></div>
 				<% end %>
 				<table class="finance_component">
     			    <tr>
-    			        <th><span class="finance_label">売　　　上</span>
+    			        <th><span class="finance_label revenue">売上</span>
     			        </th>
     			        <th class="yen"><span>&nbsp;¥</span></th>
     			        <th class="finance_result"><span><%=@total_revenue %></span>
     			        </th>
     			    </tr>
     			    <tr>
-    			        <th><span class="finance_label">手　数　料</span>
+    			        <th><span class="finance_label fee">取引手数料</span>
     			        </th>
     			        <th class="yen"><span>-¥</span></th>
     			        <th class="finance_result"><span><%=@total_margin%></span>
     			        </th>
     			    </tr>
     			    <tr>
-    			        <th><span class="finance_label">入金手数料</span>
+    			        <th><span class="finance_label charge_fee">入金手数料</span>
     			        </th>
     			        <th class="yen"><span>-¥</span></th>
     			        <th class="finance_result"><span>200</span>
     			        </th>
     			    </tr>
     			    <tr>
-    			        <th><span class="finance_label">入金可能金額</span>
+    			        <th><span class="finance_label amount">入金可能金額</span>
     			        </th>
     			        <th class="yen"><span>&nbsp;¥</span></th>
-    			        <th class="finance_result"><span><%=@deposit_amount%></span>
+    			        <th class="finance_result"><span><%=@amount_to_transfer%></span>
     			        </th>
     			    </tr>
     			</table>
 				</br>
 				<div class="submit_area">
-				<%if (@deposit_amount == nil || @deposit_amount > 0) && current_user.stripe_account_id %>
-					<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@deposit_amount}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
-				<%else%>
-					<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>
-				<% end %>
+					<% if current_user.stripe_account_id.nil? %>
+						<a class="submit" onclick="alert('回答者として登録されていません')">銀行口座に入金する</a>
+					<% elsif @amount_to_transfer.nil? || @amount_to_transfer <= 0 %>
+						<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>
+					<% elsif @amount_to_transfer > 0 %>
+						<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@amount_to_transfer}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
+					<% end %>
 				<div class="caveat">＊入金完了には1~3営業日がかかります。</div>
 			</div>
 		</div>
@@ -66,26 +67,32 @@
 	<% end %>
 </div>
 <script>
-  $('#load_payments_button').on('click', function() {
-    var lastId = $('.finance_history tr:last').attr('id');
-	console.log(lastId)
-	$('#load_payments_button').css('display','none');
-	$('#loading_animation').css('display','block');
-    $.ajax({
-      url: '/user/connects/payments',
-      data: { last_id: lastId },
-      dataType: 'html',
-      success: function(data) {
-		$('#load_payments_button').css('display','block');
-	$('#loading_animation').css('display','none');
-	  	var $data = $(data);
-		var $trElements = $data.filter('tr');
-	  	console.log($trElements.length)
-        $('.finance_history tbody').append(data);
-		if($trElements.length < 10){
-		 	$('#load_payments_button').hide();
-		}
+$('#load_payments_button').on('click', function () {
+  const payoutCount = $('.finance_history tbody tr').length;
+  const nextPage = Math.floor(payoutCount / 10) + 1;
+
+  $('#load_payments_button').hide();
+  $('#loading_animation').show();
+
+  $.ajax({
+    url: '/user/connects/payments',
+    data: { page: nextPage },
+    dataType: 'html',
+    success: function (data) {
+      $('#load_payments_button').show();
+      $('#loading_animation').hide();
+
+      const $data = $(data);
+      const $trElements = $data.filter('tr');
+      console.log($trElements.length);
+
+      $('.finance_history tbody').append($data);
+
+      if ($trElements.length < 10) {
+        $('#load_payments_button').hide();
       }
-    });
+    }
   });
+});
+
 </script>

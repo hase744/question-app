@@ -23,7 +23,7 @@ class User::OrdersController < User::Base
     @transactions = @transactions.page(params[:page]).per(10)
     #パラメーターが空の時、ユーザー情報からデフォルトとしてパラメーターを設定
     unless params[:user].present?
-      if current_user.stripe_account_id.present?
+      if current_user.is_seller
         params[:user] = "seller"
         params[:scope] = "all"
       else

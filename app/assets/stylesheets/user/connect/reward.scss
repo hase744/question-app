@@ -25,6 +25,18 @@
           bottom: 2px;
           right: 0px;
         }
+        .finance_label.revenue{
+            padding-left: 20px;
+            letter-spacing: 20px
+        }
+        .finance_label.fee{
+            padding-left: 4px;
+            letter-spacing: 4px
+        }
+        .finance_label.charge_fee{
+            padding-left: 4px;
+            letter-spacing: 4px
+        }
         .finance_result span{
           color: black;
           float: right;
