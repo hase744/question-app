@@ -233,8 +233,6 @@ class Service < ApplicationRecord
       "アカウントが存在しません。"
     elsif self.user == user
       "自分の相談室に質問できません"
-    elsif !self.user.is_stripe_account_valid?
-      "回答者の決済が承認されていません。"
     elsif !self.user.is_normal
       "回答者のアカウントに問題が発生しました。"
     elsif self.request && self.request.user != user

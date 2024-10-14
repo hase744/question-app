@@ -55,22 +55,4 @@ user.process_image_upload = true
 user.image = file2
 user.save
 user.user_categories.create(category_name: Category.first.name)
-#sleep 10 #ファイルを非同期で保存するため
-#is_seller = [true, false]
-#categories = ["career","business","job_hunting"]#
 
-#20.times do |n|
-#    user = User.create!(
-#        email: "user#{n}@exmaple.com",
-#        name: "ユーザー#{n}",
-#        password: "password",
-#        confirmed_at: Time.now,
-#        is_seller: is_seller[n%2],
-#        is_dammy: true,
-#        #categories: categories[n%3],
-#        description:"ここに自己紹介文を表示させる。例えば、サービスの特徴、過去の実績、アピールポイントなどを自由に掲載可能。",
-#        last_login_at:DateTime.now
-#    )
-#    user.user_categories.create(category: Category.find(n%Category.count+1))
-#end
-#このファイルいずれ削除する

@@ -171,7 +171,7 @@ class Transaction < ApplicationRecord
 
   def set_default_values
     if Rails.env.development? && self.is_transacted && !will_save_change_to_is_transacted?
-      self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
+      #self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
     end
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
@@ -528,8 +528,8 @@ class Transaction < ApplicationRecord
   end
   
   def validate_review
-    if all_review_present? || all_review_empty?
-    elsif self.is_transacted?
+    return if all_review_present? || all_review_empty?
+    if self.is_transacted?
       errors.add(:review_description, "がありません") if !self.review_description.present?
       errors.add(:star_rating, "がありません") if !self.star_rating.present?
       errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?

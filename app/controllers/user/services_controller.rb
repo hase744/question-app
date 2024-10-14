@@ -319,10 +319,7 @@ class User::ServicesController < User::Base
   end
 
   private def check_can_sell_service
-    if !current_user.is_stripe_account_valid?
-      redirect_to user_connects_path
-      flash.notice = "回答者として登録が完了していません。"
-    elsif !current_user.is_seller
+    if !current_user.is_seller
       redirect_to edit_user_configs_path
       flash.notice = "回答者として登録してください"
     elsif Service.where(user: current_user, request_id: nil).count > 10

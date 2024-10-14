@@ -4,6 +4,8 @@ module ErrorHandlers
 included do
   rescue_from StandardError, with: :rescue500
   rescue_from ProfitMismatchError, with: :profit_mismatch_rescue
+  rescue_from NonZeroBalanceError, with: :no_zero_balance_rescue
+  rescue_from ZeroTransferAmountError, with: :zero_transfer_amount_rescue
   rescue_from ApplicationController::Forbidden, with: :rescue403
   rescue_from ApplicationController::IpAdressRejected, with: :rescue403
   rescue_from ActiveRecord::RecordNotFound, with: :rescue404
@@ -86,5 +88,17 @@ end
     @message = "Profit and available amount mismatch: #{e.message}"
     create_error_log(e)
     #render "errors/profit_mismatch", status: 500, layout: "alert"
+  end
+
+  private def no_zero_balance_rescue(e)
+    @error = e
+    @message = "Non zero balance error: #{e.message}"
+    create_error_log(e)
+  end
+
+  private def zero_transfer_amount_rescue(e)
+    @error = e
+    @message = "There is insufficient amount to to transfer: #{e.message}"
+    create_error_log(e)
   end
 end

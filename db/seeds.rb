@@ -6,7 +6,7 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 include Variables
-development_table_names = %w(user payment relationship message)
+development_table_names = %w(user payment relationship message payout)
 
 table_names = %w(state user_state category form announce question_answer role media)
 
