@@ -1,0 +1,40 @@
+<div class="point_record_zone">
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > ポイント履歴</h3>
+	<table class="common_table">
+	  	<thead>
+	  	  	<tr>
+				<th></th>
+	  	  	  	<th>概要</th>
+	  	  	  	<th>金額</th>
+	  	  	  	<th>日時</th>
+	  	  	</tr>
+	  	</thead>
+	  	<tbody>
+	  	  	<% @point_records.each do |record| %>
+				<% if record.transaction_id
+					path = user_order_path(record.deal.id)
+				elsif record.payment_id
+					path = user_payment_path(record.payment.id)
+				end %>
+	  	  	  	<tr href="<%=path%>">
+	  	  	  	  	<td><%= image_tag record.image_path, class:"image" %></td>
+	  	  	  	  	<td><%= record.type_name_japanese %></td>
+	  	  	  	  	<td>
+						<% if record.amount >= 0 
+							css = "fa-plus"
+						else
+							css = "fa-minus"
+						end %>
+						<span class="amount"><i class="fa-solid <%=css%>"></i><%=  "#{record.amount.abs}" %><span class="unit">p</span>
+						</span>
+					</td>
+	  	  	  	  	<td><%= l(record.created_at, format: :long) %></td>
+	  	  	  	</tr>
+	  	  	<% end %>
+	  	</tbody>
+	</table>
+    <div class="main_bottom"><%= paginate @point_records %></div>
+</div>
+<script>
+<%= render "user/shared/javascript/common_table.js.erb" %>
+</script>

@@ -42,6 +42,7 @@ class User < ApplicationRecord
   has_many :payments, dependent: :destroy
   has_many :historyies, dependent: :destroy, class_name: "UserStateHistory", foreign_key: :user_id
   has_many :payouts
+  has_many :point_records
   #has_many :transactions, through: :service
   
   validates :name, length: {maximum:15, minimum:1}
@@ -200,13 +201,12 @@ class User < ApplicationRecord
     delete_folder(public_temp_path)
   end
 
-  def update_total_points
-    total_charged_points = 0
-    Payment.where(user:self).each do |payment|
-      total_charged_points += payment.point
-    end
-    total_transactions = Transaction.left_joins(:request)
-    total_transactions = total_transactions.where(
+  def total_points
+    payments = Payment.where(user:self, status: 'succeeded')
+
+    total_transactions = Transaction
+    .left_joins(:request)
+    .where(
       buyer: self,
       is_canceled:false, 
       is_violating: false,
@@ -216,9 +216,7 @@ class User < ApplicationRecord
         is_published:true
       }
     )
-    total_charged_points -= total_transactions.sum(:price)
-    self.total_points = total_charged_points
-    self.save
+    payments.sum(:point) - total_transactions.sum(:price)
   end
 
   def update_total_sales_numbers

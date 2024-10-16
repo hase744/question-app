@@ -1,10 +1,10 @@
 class User::PaymentsController < User::Base
   layout "small"
-  before_action :check_login, only:[:show, :create]
+  before_action :check_login, only:[:index, :create]
   before_action :check_stripe_customer
-  def show
+  def index
     @point = current_user.total_points
-    @payments = current_user.payments
+    @payments = current_user.payments.order(created_at: :desc).page(params[:page]).per(50)
     @payment = Payment.new()
     @hash = {} #セレクトタグに使うハッシュ
     if params[:point]
@@ -15,23 +15,27 @@ class User::PaymentsController < User::Base
     @hash.store("#{@default_point}p","#{@default_point}")
   end
 
+  def show
+    @payment = Payment.find(params[:id])
+  end
+
   def create
     @payment = Payment.new(payment_params)
 
     charge = Stripe::Charge.create({
-      amount: @payment.price,
+      amount: @payment.value,
       currency: "jpy", # 請求通貨は円で固定していますが変更可能です
       customer: current_user.stripe_customer_id,
     })
 
     #payment = Stripe::PaymentIntent.create({
-    #   amount: @payment.price,
+    #   amount: @payment.value,
     #   currency: 'jpy',
     #   payment_method_types: ['card'],
     #   customer: current_user.stripe_customer_id,
     #   payment_method: current_user.stripe_card_id,
     #   confirm:false,
-    #   application_fee_amount: @payment.price,
+    #   application_fee_amount: @payment.value,
     #   transfer_data: {
     #        amount: 0,
     #        destination: User.first.stripe_account_id,
@@ -43,7 +47,7 @@ class User::PaymentsController < User::Base
     @payment.status = charge.status #ステータス
     @payment.save
     if charge.status == "succeeded"
-      flash.notice = "#{@payment.price}pチャージしました"
+      flash.notice = "#{@payment.value}pチャージしました"
       begin
         @service_id = session[:payment_service_id]
         @transaction_id = session[:payment_transaction_id]
@@ -52,10 +56,10 @@ class User::PaymentsController < User::Base
         elsif @service_id
           redirect_to new_user_request_path(service_id: @service_id)
         else
-          redirect_to user_configs_path
+          redirect_to user_payments_path
         end
       rescue
-        redirect_to user_configs_path
+        redirect_to user_payments_path
       end
     else
       flash.notice = "チャージできません"
@@ -66,7 +70,7 @@ class User::PaymentsController < User::Base
 
   def payment_params
     params.require(:payment).permit(
-      :price,
+      :value,
       :point
     )
   end

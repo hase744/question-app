@@ -6,15 +6,16 @@ charges = Stripe::Charge.search({
 })
 
 charges.each do |charge|
-    Payment.create(
-        user:User.second,
-        stripe_payment_id: charge.id, 
-        stripe_customer_id: customer_id,
-        stripe_card_id: card_id,
-        price: charge.amount,
-        point: charge.amount,
-        status:"normal",
-        is_succeeded:true,
-        is_refunded:false
-    )
+  puts Payment.create!(
+    user: User.second,
+    created_at: Time.at(charge.created).to_datetime,
+    stripe_payment_id: charge.id, 
+    stripe_customer_id: customer_id,
+    stripe_card_id: card_id,
+    value: charge.amount,
+    point: charge.amount,
+    status: charge.status,
+    is_succeeded: true,
+    is_refunded: false
+  )
 end

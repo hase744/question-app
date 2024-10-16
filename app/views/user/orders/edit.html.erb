@@ -1,10 +1,11 @@
 <h2 class="order_edit_title">回答を断る</h2>
 <%= render "user/shared/error_message", model: @transaction%>
-<%= render "user/shared/error_message", model: current_user %>
-<%= render "user/shared/error_message", model: @transaction.item %>
+<%= render "user/shared/error_message", model: @buyer %>
+<%= render "user/shared/error_message", model: @service %>
+<%= render "user/shared/error_message", model: @request %>
 <div class="order_edit_zone">
     <div class="order_edit_area input_area">
-    <%= form_with model: @transaction, url:user_reject_order_path(@transaction.id), method:"patch" do |f| %>
+    <%= form_with model: @transaction, url: user_reject_order_path(@transaction.id), method:"patch" do |f| %>
       
         <div class="field_area">
           <%= f.label :reject_reason, class:"field_label" %><span class="total_characters" length="<%=@transaction.reject_reason_max_length%>"></span><br />

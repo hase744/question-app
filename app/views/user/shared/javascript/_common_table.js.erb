@@ -1,0 +1,8 @@
+$(document).ready(function() {
+    $('.common_table tbody tr').click(function() {
+        var url = $(this).attr('href');  // href属性の値を取得
+        if (url) {
+            window.location.href = url;  // リンク先にリダイレクト
+        }
+    });
+});

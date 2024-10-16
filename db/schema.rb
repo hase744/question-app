@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_13_125753) do
+ActiveRecord::Schema.define(version: 2024_10_14_163232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,9 +151,9 @@ ActiveRecord::Schema.define(version: 2024_10_13_125753) do
     t.string "stripe_customer_id"
     t.boolean "is_succeeded", default: false
     t.boolean "is_refunded", default: false
-    t.string "status"
-    t.integer "price"
-    t.integer "point"
+    t.integer "status", null: false
+    t.integer "value", null: false
+    t.integer "point", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_payments_on_user_id"
@@ -173,6 +173,20 @@ ActiveRecord::Schema.define(version: 2024_10_13_125753) do
     t.index ["fee"], name: "index_payouts_on_fee"
     t.index ["total_deduction"], name: "index_payouts_on_total_deduction"
     t.index ["user_id"], name: "index_payouts_on_user_id"
+  end
+
+  create_table "point_records", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "payment_id"
+    t.bigint "transaction_id"
+    t.integer "amount", null: false
+    t.integer "type_name", null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payment_id"], name: "index_point_records_on_payment_id"
+    t.index ["transaction_id"], name: "index_point_records_on_transaction_id"
+    t.index ["user_id"], name: "index_point_records_on_user_id"
   end
 
   create_table "relationships", force: :cascade do |t|
@@ -531,7 +545,6 @@ ActiveRecord::Schema.define(version: 2024_10_13_125753) do
     t.integer "total_sales_amount", default: 0
     t.integer "total_sales_number", default: 0
     t.integer "total_notifications", default: 0
-    t.integer "total_points", default: 0
     t.float "average_star_rating"
     t.float "rejection_rate"
     t.float "cancellation_rate"
@@ -547,7 +560,6 @@ ActiveRecord::Schema.define(version: 2024_10_13_125753) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["state"], name: "index_users_on_state"
     t.index ["total_notifications"], name: "index_users_on_total_notifications"
-    t.index ["total_points"], name: "index_users_on_total_points"
     t.index ["total_reviews"], name: "index_users_on_total_reviews"
     t.index ["total_sales_amount"], name: "index_users_on_total_sales_amount"
     t.index ["total_sales_number"], name: "index_users_on_total_sales_number"
@@ -567,6 +579,9 @@ ActiveRecord::Schema.define(version: 2024_10_13_125753) do
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
   add_foreign_key "payouts", "users"
+  add_foreign_key "point_records", "payments"
+  add_foreign_key "point_records", "transactions"
+  add_foreign_key "point_records", "users"
   add_foreign_key "relationships", "users"
   add_foreign_key "relationships", "users", column: "target_user_id"
   add_foreign_key "request_categories", "requests"

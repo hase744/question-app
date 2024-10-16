@@ -40,7 +40,6 @@ module CommonConcern
       if models.instance_of?(Array) #配列である
         models.compact.each do |model|
           if model.invalid? #保存不可
-            puts "だめ"
             model.save
           end
         end

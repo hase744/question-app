@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   namespace :user do
+    get 'point_records/show'
+  end
+  namespace :user do
     get 'videos/show'
   end
   namespace :user do
@@ -115,7 +118,8 @@ namespace :user do
     resources :notifications, only: [ :index, :show]
     resources :histories, only: [ :index ,:new, :create]
     resources :request_supplements, only: [:create, :new]
-    resource :payments, only: [:show, :create]
+    resources :payments, only: [:index, :show, :create]
+    resource :point_records, only: [:show]
     resource :videos, only: [:show]
     resource :homes, only: [:show]
     resource :images, only: [:show]
