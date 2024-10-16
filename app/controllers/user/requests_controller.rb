@@ -238,7 +238,6 @@ class User::RequestsController < User::Base
 
     ActiveRecord::Base.transaction do
       if save_models
-        current_user.update_total_points
         EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
         create_notification
         flash.notice = "購入しました。"
@@ -470,7 +469,6 @@ class User::RequestsController < User::Base
 
   private def check_budget_sufficient
     if @service
-      current_user.update_total_points
       if current_user.total_points < @service.price
         @defficiency = @service.price - current_user.total_points
         flash.notice = "残高が#{@defficiency}ポイント足りません"

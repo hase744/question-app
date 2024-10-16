@@ -8,6 +8,7 @@ class Transaction < ApplicationRecord
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
+  has_many :point_records
   has_one :transaction_category
   has_one :category, through: :transaction_category
 
@@ -38,6 +39,7 @@ class Transaction < ApplicationRecord
   after_save :update_total_sales
   after_save :update_average_star_rating
   after_save :update_total_reviews
+  after_save :create_payment_record
   attr_accessor :use_youtube
   attr_accessor :youtube_id
   attr_accessor :file
@@ -314,6 +316,37 @@ class Transaction < ApplicationRecord
     self.request.update(
       deal:self
     )
+  end
+
+  def create_payment_record
+    puts "取引"
+    return if saved_change_to_id? #新規のデータではない
+    if self.saved_change_to_is_canceled?
+      self.point_records.create(
+        user: self.buyer,
+        deal: self,
+        amount: self.price,
+        type_name: 'cancel',
+        created_at: self.created_at,
+      )
+    end
+    if self.saved_change_to_is_contracted?
+      self.point_records.create(
+        user: self.buyer,
+        deal: self,
+        amount: -self.price,
+        type_name: 'contract',
+        created_at: self.created_at,
+      )
+    end
+    if self.saved_change_to_is_rejected?
+      self.point_records.create(
+        user: self.buyer,
+        amount: self.price,
+        type_name: 'rejection',
+        created_at: self.created_at,
+      )
+    end
   end
 
   def total_likes

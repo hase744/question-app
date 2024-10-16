@@ -70,7 +70,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.integer :total_sales_amount, default: 0, index:true
       t.integer :total_sales_number, default: 0, index:true
       t.integer :total_notifications, default: 0, index:true
-      t.integer :total_points, default: 0, index:true
 
       t.float :average_star_rating, default: nil, index:true
       t.float :rejection_rate, default: nil, index:true

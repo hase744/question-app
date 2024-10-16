@@ -1,47 +1,10 @@
 <div class="payment_show_zone">
     <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > ポイント</h3>
-    <div class="component_area payment_show_area">
-        <div class="payment_show_flame input_area">
-            <h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
-            <h3 class="point_description">１p = １円</h3>
-            <%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form",class:'field_area', onSubmit:"return check()"  do |f|%>
-                <label>購入するポイント</label></br>
-                <div class="input_field select_area">
-                    <%=f.select :price, options_for_select(Payment.point_options, selected: params[:point]), id:"payment_price"%>
-                </div>
-                <h3 class="point_sum">料金：<span id="price_display"><%=@default_point%></span>円</h3>
-                <div class="refund_label">＊返金不可</div>
-                <div class="submit_area">
-                    <%= f.submit "購入", class:"submit", id:"submit", onSubmit:"return submitCheck()", data: {confirm: "購入しますか？\n返金はできません"} %>
-                </div>
-            <% end %>
+        <div class="component_area">
+            <div><%=readable_datetime(@payment.created_at) %></div>
+            <h4 class="detail_line">&nbsp;購入ポイント：<%=@payment.point%>p</h4>
+            <h4 class="detail_line">&nbsp;支払い金額　：<%=@payment.value%>円</h4>
+            <h4 class="detail_line">&nbsp;ステータス　：<%=@payment.status%></h4>
         </div>
     </div>
-    <% @payments.each do |p|%>
-        <div class="component_area">
-            <div>
-            <%=readable_datetime(p.created_at) %>
-            </div>
-            <h4 class="detail_line">&nbsp;購入ポイント：<%=p.point%>p</h4>
-            <h4 class="detail_line">&nbsp;支払い金額　：<%=p.price%>円</h4>
-        </div>
-    <% end %>
 </div>
-<script>
-//↓なぜか機能しない
-function submitCheck(){
-    if(window.confirm(`${$("#payment_price").val()}pを${$("#payment_price").val()}円で購入しますか？`)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-//購入するポイントがが変更された
-$("#payment_price").change(function(){
-    console.log($(this).val())
-    $("#price_display").html(`${$(this).val()}`)
-    $("#payment_point").val(`${$(this).val()}`)
-    console.log($("#payment_point").val(`${$(this).val()}`))
-})
-</script>

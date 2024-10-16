@@ -8,13 +8,12 @@ class User::CardsController < User::Base
 
   def show
     @card = nil
-    if current_user.stripe_card_id != nil && current_user.stripe_customer_id != nil
+    if current_user.stripe_card_id.present? && current_user.stripe_customer_id.present?
       @card = Stripe::Customer.retrieve_source(
         current_user.stripe_customer_id,
-        current_user.stripe_card_id
+        current_user.stripe_card_id,
       )
     end
-    puts @card
   end
 
   def new
@@ -60,28 +59,23 @@ class User::CardsController < User::Base
   end
 
   def edit
-    key = ENV['STRIPE_PUBLISHABLE_KEY']
-    current_user = User.find_by(id:1)
   end
   
   def update
-    current_user = User.find_by(id:1)
     # トークンが生成されていなかった場合は何もせずリダイレクト
     if params['stripeToken'].blank?
       redirect_to user_cards_path
     else
-      # 送金元ユーザのStripeアカウントを生成
-      sender = Stripe::Customer.update_source(
+      sender = Stripe::Customer.update(
           # nameとemailは必須ではないが分かりやすくするために載せている
           current_user.stripe_customer_id,
-          current_user.stripe_card_id,
-          {name: 'hase744'},
+          {source: params['stripeToken']},
         )
       
       if sender
-        @user = User.find(current_user.id)
-        @user.stripe_card_id = sender.id
-        @user.stripe_customer_id = sender.customer
+        @user = current_user
+        @user.stripe_card_id = sender.default_source
+        @user.stripe_customer_id = sender.id
         if @user.save
           flash.notice = "クレジットカード情報を更新しました。"
           puts "保存成功"

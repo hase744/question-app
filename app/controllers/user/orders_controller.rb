@@ -79,7 +79,7 @@ class User::OrdersController < User::Base
     #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
-      if @transaction.save && @service.save && current_user.update_total_points
+      if @transaction.save && @service.save
         flash.notice = " 購入をキャンセルしました"
         redirect_to user_orders_path(user: "buyer", scope: "ongoing")
         create_cancel_notification
@@ -103,7 +103,7 @@ class User::OrdersController < User::Base
     #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
-      if @request.save && @buyer.update_total_points && @service.save && @transaction.save 
+      if @request.save && @service.save && @transaction.save 
         flash.notice = "質問を断りました"
         create_rejection_notification
         redirect_to user_orders_path(user: "seller", scope: "ongoing")

@@ -7,9 +7,9 @@ class CreatePayments < ActiveRecord::Migration[6.1]
       t.string :stripe_customer_id
       t.boolean :is_succeeded, default:false
       t.boolean :is_refunded, default:false
-      t.string :status
-      t.integer :price
-      t.integer :point
+      t.integer :status, null: false
+      t.integer :value, null: false
+      t.integer :point, null: false
 
       t.timestamps
     end
