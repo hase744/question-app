@@ -3,11 +3,20 @@
     <%= render "user/shared/error_message", model: @transaction%>
     <div class="order_show_flame component_area">
         <% if @transaction.is_canceled %>
-            <h3>取引は拒否されています</h3>
+            <span class="status orange">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <%=current_user == @transaction.seller ? "質問がキャンセル済みです" : "質問がキャンセルされています"%>
+            </span></br></br>
         <% elsif @transaction.is_rejected %>
-            <h3>取引はキャンセルされています</h3>
+            <span class="status grey">
+                <i class="fa-solid fa-ban"></i>
+                <%=current_user == @transaction.seller ? "質問がお断り済みです" : "質問がお断りされています"%>
+            </span></br>
         <% elsif @transaction.is_transacted %>
-            <h3>納品済み</h3>
+            <span class="status green">
+            <i class="fa-solid fa-check"></i>
+            取引が完了しています
+            </span>
         <% else %>
             <h3 class="links">
             <div class="submit_area">
@@ -22,7 +31,7 @@
             </h3>
         <% end %>
         <% if @transaction.is_rejected %>
-            <%= render "user/shared/small_label", text: "拒否理由" %>
+            <%= render "user/shared/small_label", text: "お断り理由" %>
             <div><%=@transaction.reject_reason%></div>
         <% end %>
         </br>

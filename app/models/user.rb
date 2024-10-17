@@ -202,21 +202,22 @@ class User < ApplicationRecord
   end
 
   def total_points
-    payments = Payment.where(user:self, status: 'succeeded')
-
-    total_transactions = Transaction
-    .left_joins(:request)
-    .where(
-      buyer: self,
-      is_canceled:false, 
-      is_violating: false,
-      is_rejected:false, 
-      is_contracted:true,
-      request:{
-        is_published:true
-      }
-    )
-    payments.sum(:point) - total_transactions.sum(:price)
+    #payments = Payment.where(user:self, status: 'succeeded')
+#
+    #total_transactions = Transaction
+    #.left_joins(:request)
+    #.where(
+    #  buyer: self,
+    #  is_canceled:false, 
+    #  is_violating: false,
+    #  is_rejected:false, 
+    #  is_contracted:true,
+    #  request:{
+    #    is_published:true
+    #  }
+    #)
+    #payments.sum(:point) - total_transactions.sum(:price)
+    self.point_records.sum(:amount)
   end
 
   def update_total_sales_numbers

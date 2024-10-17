@@ -347,14 +347,14 @@ class Request < ApplicationRecord
       if transactions.length >= 1 
         transaction = transactions[0]
         if transaction.is_canceled || transaction.is_rejected
-          "black"
+          "grey"
         elsif transaction.is_transacted
           "green"
         else
-          "yellow"
+          "orange"
         end
       else
-        "yellow"
+        "orange"
       end
     end
   end
