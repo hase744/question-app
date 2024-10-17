@@ -5,11 +5,13 @@
   	font-size: 1rem;
   	font-family: 'Arial', sans-serif;
   	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	margin-bottom: 10px;
   
     thead tr {
         background-color: $dark_text_yellow;
         color: #ffffff;
         text-align: left;
+		padding: 5px;
     }
 
     .amount{
@@ -24,11 +26,11 @@
     }
       
     th, td {
-        padding: 12px 15px;
         border-bottom: 1px solid #dddddd;
     }
     tbody td{
       	color: $text_grey;
+		cursor: pointer;
     }
       
     tbody tr {
@@ -42,9 +44,6 @@
     tbody tr:last-of-type {
         border-bottom: 2px solid $dark_text_yellow;
     }
-	tbody td{
-		cursor: pointer;
-	}
     table{
       	margin-bottom: 10px;
     }

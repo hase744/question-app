@@ -9,7 +9,22 @@
     .image{
         width: 100%;
     }
-    .service_area{}
+    .status{
+        font-size: 20px;
+        font-weight: bold;
+        padding: 3px 8px;
+        text-align: center;
+        display: block;
+    }
+    .status{
+        .fa-circle-xmark, .fa-xmark, .fa-circle-exclamation, .fa-ban{
+            color: red;
+            font-size: 25px;
+        }
+        .fa-circle-check, .fa-check{
+            color: $ok_green;
+        }
+    }
     .service_request_area{
         height: 70px;
         width: 100%;

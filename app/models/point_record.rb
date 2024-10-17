@@ -9,7 +9,7 @@ class PointRecord < ApplicationRecord
 
   def image_path
     if self.transaction_id
-      self.deal.request.items.first.file.url
+      self.deal.request.items.first.file.thumb.url
     elsif self.payment_id
       "/wallet-300x300.jpg"
     else
