@@ -39,16 +39,10 @@ module StripeMethods
   end
 
   def get_finance_info
-    @payouts = current_user.payouts.page(params[:page]).order(created_at: :desc).per(10)
+    @payouts = current_user.payouts.page(params[:page]).order(created_at: :desc).per(20)
     Payouts::UpdateJob.perform_later(current_user)
     if user_signed_in?
-      last_deposited_at = @payouts&.order(created_at: :desc)&.first&.created_at || DateTime.now
-
-      @transactions = Transaction.all
-        .left_joins(:service)
-        .where(service:{user: current_user}, is_transacted:true)
-        .where("transacted_at > ?", last_deposited_at)
-        .order(created_at: :DESC)
+      @transactions = current_user.transactions_from_last_deposit
       @total_revenue = @transactions&.sum(:price) || 0
       @total_margin = @transactions&.sum(:margin) || 0
       @total_profit = @transactions&.sum(:profit) || 0
@@ -68,7 +62,6 @@ module StripeMethods
     balance = Stripe::Balance.retrieve(
       {stripe_account: current_user.stripe_account_id}
       )
-    last_deposited_at = @payouts&.last&.created_at || DateTime.now
     total_profit = @transactions.sum(:profit)
     total_profit_with_stripe_id = transactions_without_stripe_id.sum(:profit)
     

@@ -43,6 +43,7 @@ class User < ApplicationRecord
   has_many :historyies, dependent: :destroy, class_name: "UserStateHistory", foreign_key: :user_id
   has_many :payouts
   has_many :point_records
+  has_many :balance_records
   #has_many :transactions, through: :service
   
   validates :name, length: {maximum:15, minimum:1}
@@ -201,23 +202,36 @@ class User < ApplicationRecord
     delete_folder(public_temp_path)
   end
 
+  def transactions_from_last_deposit
+    #入金がない場合、一番少ない値=DateTime.new(1, 1, 1, 0, 0, 0)を最後の入金日にする
+    last_deposited_at = self.payouts&.order(created_at: :desc)&.first&.created_at || DateTime.new(1, 1, 1, 0, 0, 0)
+    Transaction.all
+      .left_joins(:service)
+      .where(service:{user: self}, is_transacted:true)
+      .where("transacted_at > ?", last_deposited_at)
+      .order(created_at: :DESC)
+  end
+
   def total_points
-    #payments = Payment.where(user:self, status: 'succeeded')
-#
-    #total_transactions = Transaction
-    #.left_joins(:request)
-    #.where(
-    #  buyer: self,
-    #  is_canceled:false, 
-    #  is_violating: false,
-    #  is_rejected:false, 
-    #  is_contracted:true,
-    #  request:{
-    #    is_published:true
-    #  }
-    #)
-    #payments.sum(:point) - total_transactions.sum(:price)
     self.point_records.sum(:amount)
+  end
+
+  def total_points_from_transactions
+    payments = self.payments.where(status: 'succeeded')
+
+    total_transactions = Transaction
+    .left_joins(:request)
+    .where(
+      buyer: self,
+      is_canceled:false, 
+      is_violating: false,
+      is_rejected:false, 
+      is_contracted:true,
+      request:{
+        is_published:true
+      }
+    )
+    payments.sum(:point) - total_transactions.sum(:price)
   end
 
   def update_total_sales_numbers

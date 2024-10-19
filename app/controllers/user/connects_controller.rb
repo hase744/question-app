@@ -1,5 +1,5 @@
 class User::ConnectsController < User::Base
-  layout "small", only:[:edit, :new, :certify_phone, :show, :reward, :confirm]
+  layout "small", only:[:edit, :new, :certify_phone, :show, :confirm]
   before_action :check_login
   before_action :define_user, only:[:edit, :confirm]
   before_action :phone_valid?, only:[:update, :edit, :confirm]
@@ -30,57 +30,11 @@ class User::ConnectsController < User::Base
     define_countryies
   end
 
-  def reward
-    begin
-      get_finance_info
-      detect_error
-    rescue ProfitMismatchError => e
-      @error_message = e.message
-    end
-  end
-
   def payments
     @payouts = current_user.payouts.order(created_at: :desc).page(params[:page]).per(10)
     render partial: 'user/connects/payout', collection: @payouts, as: :payout
   end
   
-  def credit
-    begin
-      get_finance_info
-      detect_error
-      if execute_transfers
-        payout = Stripe::Payout.create({
-          amount: @amount_to_transfer, # Amount in cents (e.g., 1000 cents = $10.00)
-          currency: 'jpy',
-        }, {
-          stripe_account:  current_user.stripe_account_id, # Connected account ID
-        })
-        transfer = Stripe::Transfer.create({
-          amount: 200,
-          currency: 'jpy',
-          destination: ENV["ROOT_ACCOUNT_ID"], 
-          description: 'Transfer to admin account minus fee',
-        }, {
-          stripe_account: current_user.stripe_account_id,
-        })
-        Payout.create(
-          user: current_user,
-          stripe_account_id: current_user.stripe_account_id,
-          stripe_payout_id: payout.id,
-          status_name: payout.status,
-          amount: @amount_to_transfer,
-          fee: 200,
-          total_deduction: @amount_to_transfer + 200,
-        )
-      end
-      flash.notice = "#{@amount_to_transfer}円を入金しました"
-      redirect_to user_connect_reward_path
-    rescue ProfitMismatchError => e
-      @error_message = e.message
-      render "user/connects/reward", layout: "small"
-    end
-  end
-
   def certify_phone
     if request.post?
       @user = current_user

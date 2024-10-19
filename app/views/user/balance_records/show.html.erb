@@ -1,5 +1,5 @@
 <div class="point_record_zone">
-    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > ポイント履歴</h3>
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 収益の残高履歴</h3>
 	<table class="common_table">
 	  	<thead>
 	  	  	<tr>
@@ -10,11 +10,11 @@
 	  	  	</tr>
 	  	</thead>
 	  	<tbody>
-	  	  	<% @point_records.each do |record| %>
+	  	  	<% @balance_records.each do |record| %>
 				<% if record.transaction_id
 					path = user_order_path(record.deal.id)
-				elsif record.payment_id
-					path = user_payment_path(record.payment.id)
+				elsif record.payout_id
+					path = user_payout_path(record.payout.id)
 				end %>
 	  	  	  	<tr href="<%=path%>">
 	  	  	  	  	<td><%= image_tag record.image_path, class:"image" %></td>
@@ -25,7 +25,7 @@
 						else
 							css = "fa-minus"
 						end %>
-						<span class="amount"><i class="fa-solid <%=css%>"></i><%=  "#{record.amount.abs}" %><span class="unit">p</span>
+						<span class="amount"><i class="fa-solid <%=css%>"></i><span class="unit">￥</span><%=  "#{record.amount.abs}" %>
 						</span>
 					</td>
 	  	  	  	  	<td><%= l(record.created_at, format: :long) %></td>
@@ -33,7 +33,7 @@
 	  	  	<% end %>
 	  	</tbody>
 	</table>
-    <div class="main_bottom"><%= paginate @point_records %></div>
+    <div class="main_bottom"><%= paginate @balance_records %></div>
 </div>
 <script>
 <%= render "user/shared/javascript/common_table.js.erb" %>

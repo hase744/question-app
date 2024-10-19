@@ -68,9 +68,7 @@ namespace :user do
     post 'connects/certify_phone', to: "connects#certify_phone", as:"post_certify_phone"
     get 'connects/form', to: "connects#form"
     put 'connects/confirm', to: "connects#confirm"
-    get 'connects/reward', to: 'connects#reward', as:"connect_reward"
     get 'connects/payments', to: 'connects#payments', as:"connect_payments"
-    post 'connects/credit', to: 'connects#credit', as:"connect_credit"
     get 'images/answer'
     get 'accounts/likes/:id', to:"accounts#likes", as:"account_likes"
     get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"
@@ -119,7 +117,9 @@ namespace :user do
     resources :histories, only: [ :index ,:new, :create]
     resources :request_supplements, only: [:create, :new]
     resources :payments, only: [:index, :show, :create]
+    resources :payouts, only: [:index, :show, :create]
     resource :point_records, only: [:show]
+    resource :balance_records, only: [:show]
     resource :videos, only: [:show]
     resource :homes, only: [:show]
     resource :images, only: [:show]

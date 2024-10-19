@@ -1,0 +1,10 @@
+<div class="payment_show_zone">
+    <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > ポイント</h3>
+        <div class="component_area">
+            <div><%=readable_datetime(@payout.created_at) %></div>
+            <h4 class="detail_line">&nbsp;入金額　　　：￥<%=@payout.amount%></h4>
+            <h4 class="detail_line">&nbsp;振込手数料　：￥<%=@payout.fee%></h4>
+            <h4 class="detail_line">&nbsp;ステータス　：<%=@payout.status_japanese%></h4>
+        </div>
+    </div>
+</div>

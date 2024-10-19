@@ -1,5 +1,5 @@
 class User::PointRecordsController < ApplicationController
-  layout "small", only:[:edit, :new, :certify_phone, :show, :reward, :confirm]
+  layout "small", only:[:show]
   def show
     @point_records = current_user.point_records
       .includes(:deal, :payment)

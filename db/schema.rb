@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_14_163232) do
+ActiveRecord::Schema.define(version: 2024_10_17_111026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,20 @@ ActiveRecord::Schema.define(version: 2024_10_14_163232) do
     t.string "file"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "balance_records", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "payout_id"
+    t.bigint "transaction_id"
+    t.integer "amount", null: false
+    t.integer "type_name", null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payout_id"], name: "index_balance_records_on_payout_id"
+    t.index ["transaction_id"], name: "index_balance_records_on_transaction_id"
+    t.index ["user_id"], name: "index_balance_records_on_user_id"
   end
 
   create_table "delivery_items", force: :cascade do |t|
@@ -281,6 +295,20 @@ ActiveRecord::Schema.define(version: 2024_10_14_163232) do
     t.index ["transaction_id"], name: "index_requests_on_transaction_id"
     t.index ["transaction_message_days"], name: "index_requests_on_transaction_message_days"
     t.index ["user_id"], name: "index_requests_on_user_id"
+  end
+
+  create_table "revenue_records", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "payout_id"
+    t.bigint "transaction_id"
+    t.integer "amount", null: false
+    t.integer "type_name", null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["payout_id"], name: "index_revenue_records_on_payout_id"
+    t.index ["transaction_id"], name: "index_revenue_records_on_transaction_id"
+    t.index ["user_id"], name: "index_revenue_records_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -570,6 +598,9 @@ ActiveRecord::Schema.define(version: 2024_10_14_163232) do
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "admin_user_roles", "roles"
+  add_foreign_key "balance_records", "payouts"
+  add_foreign_key "balance_records", "transactions"
+  add_foreign_key "balance_records", "users"
   add_foreign_key "delivery_items", "transactions"
   add_foreign_key "error_logs", "users"
   add_foreign_key "inquiries", "admin_users"
@@ -590,6 +621,9 @@ ActiveRecord::Schema.define(version: 2024_10_14_163232) do
   add_foreign_key "request_likes", "users"
   add_foreign_key "request_supplements", "requests"
   add_foreign_key "requests", "users"
+  add_foreign_key "revenue_records", "payouts"
+  add_foreign_key "revenue_records", "transactions"
+  add_foreign_key "revenue_records", "users"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
   add_foreign_key "service_items", "services"

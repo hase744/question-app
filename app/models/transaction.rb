@@ -9,6 +9,7 @@ class Transaction < ApplicationRecord
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
   has_many :point_records
+  has_many :balance_records
   has_one :transaction_category
   has_one :category, through: :transaction_category
 
@@ -319,7 +320,6 @@ class Transaction < ApplicationRecord
   end
 
   def create_payment_record
-    puts "取引"
     return if saved_change_to_id? #新規のデータではない
     if self.saved_change_to_is_canceled?
       self.point_records.create(
@@ -327,7 +327,7 @@ class Transaction < ApplicationRecord
         deal: self,
         amount: self.price,
         type_name: 'cancel',
-        created_at: self.created_at,
+        created_at: self.update_at,
       )
     end
     if self.saved_change_to_is_contracted?
@@ -336,7 +336,7 @@ class Transaction < ApplicationRecord
         deal: self,
         amount: -self.price,
         type_name: 'contract',
-        created_at: self.created_at,
+        created_at: self.update_at,
       )
     end
     if self.saved_change_to_is_rejected?
@@ -344,7 +344,15 @@ class Transaction < ApplicationRecord
         user: self.buyer,
         amount: self.price,
         type_name: 'rejection',
-        created_at: self.created_at,
+        created_at: self.update_at,
+      )
+    end
+    if self.saved_change_to_is_transacted
+      self.balance_records.create(
+        user: self.seller,
+        amount: self.price,
+        type_name: 'deal',
+        created_at: self.update_at,
       )
     end
   end
@@ -477,6 +485,10 @@ class Transaction < ApplicationRecord
 
   def delivery_form
     Form.find_by(name: self.delivery_form_name)
+  end
+
+  def thumb_with_default
+    self.items&.first&.file&.thumb&.url.presence || "/profit-300x300.jpg"
   end
 
   def opponent_of(user)
