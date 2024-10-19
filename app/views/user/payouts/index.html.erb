@@ -43,56 +43,32 @@
 					<% elsif @amount_to_transfer.nil? || @amount_to_transfer <= 0 %>
 						<a class="submit" onclick="alert('入金できる金額がありません')">銀行口座に入金する</a>
 					<% elsif @amount_to_transfer > 0 %>
-						<%= link_to "銀行口座に入金する", user_connect_credit_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@amount_to_transfer}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
+						<%= link_to "銀行口座に入金する", user_payouts_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@amount_to_transfer}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
 					<% end %>
 				<div class="caveat">＊入金完了には1~3営業日がかかります。</div>
 			</div>
 		</div>
 	</div>
-	<%if @payouts.present? %>
-		<div class="finance_history_area">
-			<table class="finance_history">
-			    <tr>
-			      <th>金額</th>
-			      <th>ステータス</th>
-			      <th>日時</th>
-			    </tr>
-				<% @payouts.each do |payout|%>
-					<%= render "user/connects/payout", payout: payout%>
-				<% end %>
-			</table>
-			<a id="load_payments_button">続きを取得</a>
-			<%= render "user/shared/loading_animation" %>
-		</div>
-	<% end %>
+	<table class="common_table">
+		<thead>
+		  	<tr>
+        <th>金額</th>
+        <th>ステータス</th>
+        <th>日時</th>
+		  	</tr>
+		</thead>
+		<tbody>
+			<% @payouts.each do |p| %>
+				<tr href="<%=user_payout_path(p.id)%>">
+					<td class="number">￥<%= p.amount %></td>
+					<td><%= p.status_japanese %></td>
+					<td><%= readable_datetime(p.created_at) %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+  	<div class="main_bottom"><%= paginate @payouts %></div>
 </div>
 <script>
-$('#load_payments_button').on('click', function () {
-  const payoutCount = $('.finance_history tbody tr').length;
-  const nextPage = Math.floor(payoutCount / 10) + 1;
-
-  $('#load_payments_button').hide();
-  $('#loading_animation').show();
-
-  $.ajax({
-    url: '/user/connects/payments',
-    data: { page: nextPage },
-    dataType: 'html',
-    success: function (data) {
-      $('#load_payments_button').show();
-      $('#loading_animation').hide();
-
-      const $data = $(data);
-      const $trElements = $data.filter('tr');
-      console.log($trElements.length);
-
-      $('.finance_history tbody').append($data);
-
-      if ($trElements.length < 10) {
-        $('#load_payments_button').hide();
-      }
-    }
-  });
-});
-
+<%= render "user/shared/javascript/common_table.js.erb" %>
 </script>

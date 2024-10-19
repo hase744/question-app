@@ -4,9 +4,9 @@
     <div class="order_show_flame component_area">
         <% if @transaction.is_canceled %>
             <span class="status orange">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <%=current_user == @transaction.seller ? "質問がキャンセル済みです" : "質問がキャンセルされています"%>
-            </span></br></br>
+                <i class="fas fa-ban"></i>
+                <%=current_user == @transaction.seller ? "質問がキャンセルされています" : "質問がキャンセル済みです"%>
+            </span></br>
         <% elsif @transaction.is_rejected %>
             <span class="status grey">
                 <i class="fa-solid fa-ban"></i>

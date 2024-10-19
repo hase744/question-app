@@ -12,6 +12,7 @@
         color: #ffffff;
         text-align: left;
 		padding: 5px;
+		text-align: center;
     }
 
     .amount{
@@ -61,6 +62,10 @@
       	object-fit: cover;
       	border-radius: 5px;
     }
+	.number{
+		text-align: right;
+		padding-right: 5%;
+	}
       
     .fa-solid {
       	margin-right: 5px;
