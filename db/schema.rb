@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.integer "status", null: false
     t.integer "value", null: false
     t.integer "point", null: false
+    t.datetime "executed_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_payments_on_user_id"
@@ -178,9 +179,10 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.integer "amount", default: 0, null: false
     t.integer "fee", default: 0, null: false
     t.integer "total_deduction", default: 0, null: false
-    t.integer "status_name"
+    t.integer "status_name", null: false
     t.string "stripe_payout_id"
     t.string "stripe_account_id"
+    t.datetime "executed_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["amount"], name: "index_payouts_on_amount"
@@ -295,20 +297,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.index ["transaction_id"], name: "index_requests_on_transaction_id"
     t.index ["transaction_message_days"], name: "index_requests_on_transaction_message_days"
     t.index ["user_id"], name: "index_requests_on_user_id"
-  end
-
-  create_table "revenue_records", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "payout_id"
-    t.bigint "transaction_id"
-    t.integer "amount", null: false
-    t.integer "type_name", null: false
-    t.text "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["payout_id"], name: "index_revenue_records_on_payout_id"
-    t.index ["transaction_id"], name: "index_revenue_records_on_transaction_id"
-    t.index ["user_id"], name: "index_revenue_records_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -621,9 +609,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
   add_foreign_key "request_likes", "users"
   add_foreign_key "request_supplements", "requests"
   add_foreign_key "requests", "users"
-  add_foreign_key "revenue_records", "payouts"
-  add_foreign_key "revenue_records", "transactions"
-  add_foreign_key "revenue_records", "users"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
   add_foreign_key "service_items", "services"

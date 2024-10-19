@@ -8,7 +8,7 @@ charges = Stripe::Charge.search({
 charges.each do |charge|
   puts Payment.create!(
     user: User.second,
-    created_at: Time.at(charge.created).to_datetime,
+    executed_at: Time.at(charge.created).to_datetime,
     stripe_payment_id: charge.id, 
     stripe_customer_id: customer_id,
     stripe_card_id: card_id,

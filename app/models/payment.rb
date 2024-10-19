@@ -30,7 +30,7 @@ class Payment < ApplicationRecord
           payment: self,
           amount: self.value,
           type_name: 'charge',
-          created_at: self.update_at
+          created_at: self.executed_at
         )
       end
     end

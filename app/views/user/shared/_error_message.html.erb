@@ -1,4 +1,4 @@
-<%if model && model&.errors&.full_messages&.count > 0 %>
+<%if model && model&.errors&.full_messages&.any? %>
     <div class="error_component_area">
       <% model.errors.full_messages.each do |msg| %>
         <div class="alert alert-danger">

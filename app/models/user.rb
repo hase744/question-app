@@ -282,6 +282,7 @@ class User < ApplicationRecord
         self.user_categories.create(category_name: name)
       end
     end
+    self.user_categories.where.not(category_name: category_names).destroy_all
   end
 
   def get_category_count_pairs(category_names)

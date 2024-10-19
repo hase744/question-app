@@ -11,7 +11,7 @@ payouts.each do |payout|
     stripe_payout_id: payout.id,
     status_name: payout.status,
     amount: payout.amount,
-    created_at: Time.at(payout.created).to_datetime,
+    executed_at: Time.at(payout.created).to_datetime,
     fee: 200,
     total_deduction: payout.amount + 200,
   )

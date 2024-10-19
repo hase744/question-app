@@ -38,6 +38,7 @@ class User::PayoutsController < User::Base
           stripe_account_id: current_user.stripe_account_id,
           stripe_payout_id: payout.id,
           status_name: payout.status,
+          executed_at: Time.at(payout.created).to_datetime,
           amount: @amount_to_transfer,
           fee: 200,
           total_deduction: @amount_to_transfer + 200,
