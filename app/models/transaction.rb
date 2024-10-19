@@ -327,7 +327,7 @@ class Transaction < ApplicationRecord
         deal: self,
         amount: self.price,
         type_name: 'cancel',
-        created_at: self.update_at,
+        created_at: self.updated_at,
       )
     end
     if self.saved_change_to_is_contracted?
@@ -336,7 +336,7 @@ class Transaction < ApplicationRecord
         deal: self,
         amount: -self.price,
         type_name: 'contract',
-        created_at: self.update_at,
+        created_at: self.updated_at,
       )
     end
     if self.saved_change_to_is_rejected?
@@ -344,15 +344,15 @@ class Transaction < ApplicationRecord
         user: self.buyer,
         amount: self.price,
         type_name: 'rejection',
-        created_at: self.update_at,
+        created_at: self.updated_at,
       )
     end
     if self.saved_change_to_is_transacted
       self.balance_records.create(
         user: self.seller,
-        amount: self.price,
+        amount: self.profit,
         type_name: 'deal',
-        created_at: self.update_at,
+        created_at: self.updated_at,
       )
     end
   end

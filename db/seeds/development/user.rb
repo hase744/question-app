@@ -32,7 +32,6 @@ user.process_image_upload = true
 #user.assign_attributes(image:file)
 user.image = file
 user.save
-user.user_categories.create(category_name: Category.first.name)
 
 user = User.new(
     email: ENV["EMAIL2"],
@@ -54,5 +53,4 @@ user.process_image_upload = true
 #user.assign_attributes(image:file2)
 user.image = file2
 user.save
-user.user_categories.create(category_name: Category.first.name)
 

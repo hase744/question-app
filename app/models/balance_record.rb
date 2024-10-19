@@ -4,7 +4,7 @@ class BalanceRecord < ApplicationRecord
   belongs_to :deal, class_name: 'Transaction', optional: true, foreign_key: :transaction_id
   enum type_name: { deal: 0, payout: 1, fee: 2 }
   def type_name_japanese
-    {'deal'=> '販売', 'payout'=> '入金', 'fee'=> '入金手数料'}[self.type_name]
+    {'deal'=> '販売', 'payout'=> '入金'}[self.type_name]
   end
 
   def image_path

@@ -39,7 +39,10 @@ module StripeMethods
   end
 
   def get_finance_info
-    @payouts = current_user.payouts.page(params[:page]).order(created_at: :desc).per(20)
+    @payouts = current_user.payouts
+      .order(executed_at: :desc)
+      .page(params[:page])
+      .per(50)
     Payouts::UpdateJob.perform_later(current_user)
     if user_signed_in?
       @transactions = current_user.transactions_from_last_deposit

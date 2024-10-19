@@ -62,7 +62,7 @@
 				<tr href="<%=user_payout_path(p.id)%>">
 					<td class="number">￥<%= p.amount %></td>
 					<td><%= p.status_japanese %></td>
-					<td><%= readable_datetime(p.created_at) %></td>
+					<td><%= readable_datetime(p.executed_at) %></td>
 				</tr>
 			<% end %>
 		</tbody>

@@ -4,7 +4,10 @@ class User::PaymentsController < User::Base
   before_action :check_stripe_customer
   def index
     @point = current_user.total_points
-    @payments = current_user.payments.order(created_at: :desc).page(params[:page]).per(50)
+    @payments = current_user.payments
+      .order(executed_at: :desc)
+      .page(params[:page])
+      .per(50)
     @payment = Payment.new()
     @hash = {} #セレクトタグに使うハッシュ
     if params[:point]
@@ -45,6 +48,7 @@ class User::PaymentsController < User::Base
     @payment.user = current_user
     @payment.stripe_payment_id = charge.id #id
     @payment.status = charge.status #ステータス
+    @payment.executed_at = Time.at(charge.created).to_datetime
     @payment.save
     if charge.status == "succeeded"
       flash.notice = "#{@payment.value}pチャージしました"

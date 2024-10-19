@@ -43,6 +43,8 @@ ja:
         request_max_minutes: 質問動画の最大時間
         request_max_characters: 質問の最大字数
         allow_pre_purchase_inquiry: 購入前の質問
+      service/service_categories:
+        category_name: カテゴリー
       request:
         title: タイトル
         description: 質問・相談内容
@@ -61,6 +63,8 @@ ja:
         use_youtube: アップロード方法
         youtube_id: YouTube動画のID
         is_accepting: 取り下げ
+      request/request_categories:
+        category_name: カテゴリー
       request_supplement:
         body: 補足内容
       request_item:

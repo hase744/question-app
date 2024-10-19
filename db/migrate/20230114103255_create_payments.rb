@@ -10,6 +10,7 @@ class CreatePayments < ActiveRecord::Migration[6.1]
       t.integer :status, null: false
       t.integer :value, null: false
       t.integer :point, null: false
+      t.datetime :executed_at, null:false
 
       t.timestamps
     end

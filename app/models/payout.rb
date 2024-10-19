@@ -24,16 +24,9 @@ class Payout < ApplicationRecord
     balance_records.create(
       user: self.user,
       payout: self,
-      amount: -self.amount,
+      amount: -(self.amount + self.fee),
       type_name: 'payout',
-      created_at: self.update_at
-    )
-    balance_records.create(
-      user: self.user,
-      payout: self,
-      amount: -200,
-      type_name: 'fee',
-      created_at: self.update_at,
+      created_at: self.executed_at
     )
   end
 end

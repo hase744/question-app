@@ -30,7 +30,7 @@
 				<tr href="<%=user_payment_path(p.id)%>">
 					<td class="number"><%= p.point %>p</td>
 					<td class="number"><%= p.value %>円</td>
-					<td><%= readable_datetime(p.created_at) %></td>
+					<td><%= readable_datetime(p.executed_at) %></td>
 				</tr>
 			<% end %>
 		</tbody>

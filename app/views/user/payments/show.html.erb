@@ -1,7 +1,7 @@
 <div class="payout_show_zone">
     <h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > ポイント</h3>
         <div class="component_area">
-            <div><%=readable_datetime(@payment.created_at) %></div>
+            <div><%=readable_datetime(@payment.executed_at) %></div>
             <h4 class="detail_line">&nbsp;購入ポイント：<%=@payment.point%>p</h4>
             <h4 class="detail_line">&nbsp;支払い金額　：<%=@payment.value%>円</h4>
             <h4 class="detail_line">&nbsp;ステータス　：<%=@payment.status%></h4>
