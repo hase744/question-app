@@ -10,7 +10,7 @@
   <% else %>
     <%= render "user/services/suggestion_cell", service:@service, transaction: nil %>
   <% end %>
-  <h3 class="service_new_title">依頼内容</h3>
+  <h3 class="service_new_title">質問・相談内容</h3>
 <% else %>
   <h3 class="service_new_title">質問のプレビュー</h3>
 <% end %>
@@ -108,7 +108,10 @@
     </div>
 </div>
 <% if @transaction %>
-<%= render "user/shared/pre_inquery_modal", transaction: @transaction %>
+<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
+<script>
+<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
+</script>
 <script>
 pre_inquery_modal = $('.pre_inquery_modal');
 modal = $('.modal_window');

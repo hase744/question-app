@@ -17,7 +17,6 @@ class TransactionMessage < ApplicationRecord
   }
 
   scope :by_transaction_id_and_order, ->(params) {
-    puts params
     scope = includes(:sender).joins(:deal)
     scope = scope.where('transaction_messages.created_at > transactions.published_at') if params[:after_delivered]
     scope.where(transaction_id: params[:transaction_id])
@@ -43,7 +42,7 @@ class TransactionMessage < ApplicationRecord
 
   def can_send_message
     if !self.deal.can_send_message(self.sender)
-      errors.add(:deadline, "メッセージを保存できません")
+      errors.add(:deadline, "メッセージを送信できません")
     end
   end
 

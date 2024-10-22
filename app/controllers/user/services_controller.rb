@@ -156,13 +156,12 @@ class User::ServicesController < User::Base
         end
       end
     else
-      user_service_path(Service.last.id) if @service.service_categories.length == 0
       ActiveRecord::Base.transaction do
         if save_models
           create_notification(@service, "相談室が出品されました。")
           flash.alert = "相談室を出品しました。"
           service = Service.find_by(user: current_user)
-          redirect_to user_service_path(Service.last.id)
+          redirect_to user_service_path(@service.id)
         else
           @request = @service.request
           delete_temp_file_items 

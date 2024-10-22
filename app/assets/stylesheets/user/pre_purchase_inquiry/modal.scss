@@ -15,6 +15,17 @@
 			font-weight: bold;
             color: grey;
         }
+		#pre_purchase_inquiry_message{
+			text-align: left;
+			color: black; 
+			background-color: orange; 
+			p{
+				margin: 0px;
+			}
+			width: 100%;
+			max-height: 20vh;
+			overflow-x: scroll;
+		}
     }
     .message_area{
         display: flex;
@@ -44,6 +55,7 @@
             background-color: white;
 			height: calc(10vh + 10px);
             display: flex;
+			color: black;
             .service_image{
                 height: 10vh;
                 width: 10vh;

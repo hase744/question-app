@@ -1,0 +1,37 @@
+$(document).ready(function() {
+  // Use event delegation to handle form submission inside each .pre_inquery_modal
+  $(document).on("ajax:success", ".pre_inquery_modal .chat-form", function(event) {
+    const $form = $(this); // Current form inside the specific modal
+    const [data, status, xhr] = event.detail;
+    const $modal = $form.closest(".pre_inquery_modal"); // Find the closest modal for this form
+    const $messageDiv = $modal.find("#pre_purchase_inquiry_message");
+    const bodyInput = $form.find("input[name='transaction_message[body]']").val();
+    console.log(bodyInput)
+    const newMessageHtml = 
+    `<%= render "user/pre_purchase_inquiries/cell", 
+        image_url: current_user.thumb_with_default,
+        side: 'right',
+        body: '${bodyInput}'
+        %>`;
+    const $messageContainer = $modal.find(".modal_window_body .text_area");
+    $messageContainer.append(newMessageHtml);
+    $messageDiv.html(`<p>${data.message}</p>`);
+    $form.hide();
+    $modal.find('.submit_area .label_area').hide();
+    $modal.find(".submit_area .message").show();
+    $form[0].reset();
+  });
+
+  $(document).on("ajax:error", ".pre_inquery_modal .chat-form", function(event) {
+    const $form = $(this); // Current form inside the specific modal
+    const [data, status, xhr] = event.detail;
+    const $modal = $form.closest(".pre_inquery_modal"); // Find the closest modal for this form
+    const $messageDiv = $modal.find("#pre_purchase_inquiry_message");
+    if(data.message === undefined || data.errors === undefined ){
+      $messageDiv.html(`<p>エラー：</br>${data}</p>`);
+    }else{
+      $messageDiv.html(`<p>${data.message}<br/>${data.errors.join(", ")}</p>`);
+    }
+    $form.hide();
+  });
+});

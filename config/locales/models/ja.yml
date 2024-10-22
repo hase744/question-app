@@ -47,7 +47,7 @@ ja:
         category_name: カテゴリー
       request:
         title: タイトル
-        description: 質問・相談内容
+        description: 本文
         file: 添付ファイル
         items: 添付ファイル
         file_duration: 再生時間

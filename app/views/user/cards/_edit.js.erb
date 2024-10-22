@@ -1,5 +1,18 @@
 $(function(){
+  // Wait until the Stripe.js library is loaded
+  if (typeof Stripe !== 'undefined') {
+    initializeStripe();
+  } else {
+    // Retry initialization if Stripe is not ready yet
+    var intervalId = setInterval(function() {
+      if (typeof Stripe !== 'undefined') {
+        clearInterval(intervalId);
+        initializeStripe();
+      }
+    }, 100);
+  }
 
+  function initializeStripe() {
     const key = "<%=ENV['STRIPE_PUBLISHABLE_KEY']%>";
   
     const stripe = Stripe(key);
@@ -19,7 +32,7 @@ $(function(){
     const cardCvc = elements.create('cardCvc', {style: style, placeholder: ''});
     cardCvc.mount('#card-cvc');
   
-    // 項目入力時のエラー処理
+    // Handle input errors
     cardNumber.addEventListener('change', function(event) {
       const displayError = document.getElementById('card-errors');
       if (event.error) {
@@ -33,21 +46,21 @@ $(function(){
     form.addEventListener('submit', function(event) {
       event.preventDefault();
   
-      // トークンを作成
+      // Create token
       stripe.createToken(cardNumber).then(function(result) {
         if (result.error) {
-          // カード情報を登録しようとした結果、内容が不適切であればエラーメッセージを表示
+          // Show error message if card info is invalid
           var errorElement = document.getElementById('card-errors');
           errorElement.textContent = result.error.message;
         } else {
-          // カード情報が適切な内容であれば、トークンをフォームに入れてWebサーバに送信
+          // Submit the token to the server
           stripeTokenHandler(result.token);
         }
       });
     });
   
     function stripeTokenHandler(token) {
-      // トークンをフォームに内包する
+      // Insert the token into the form
       const form = document.getElementById('payment-form');
       const hiddenInput = document.createElement('input');
       hiddenInput.setAttribute('type', 'hidden');
@@ -55,7 +68,8 @@ $(function(){
       hiddenInput.setAttribute('value', token.id);
       form.appendChild(hiddenInput);
   
-      //フォームをWebサーバに送信
+      // Submit the form
       form.submit();
     }
-  });
+  }
+});
