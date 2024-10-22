@@ -12,6 +12,7 @@ class Transaction < ApplicationRecord
   has_many :balance_records
   has_one :transaction_category
   has_one :category, through: :transaction_category
+  has_one :latest_transaction_message, -> { order(created_at: :desc) }, class_name: 'TransactionMessage'
 
   delegate :user, to: :service
   validates :title, length: {maximum: :title_max_length}
@@ -54,7 +55,17 @@ class Transaction < ApplicationRecord
   end
 
   scope :solve_n_plus_1, -> {
-    includes(:seller, :buyer, :request, :service, :items, {request: :items}, {transaction_messages: :sender}, {transaction_messages: :receiver}).includes(transaction_messages: [:sender, :receiver])
+    includes(
+      :seller, 
+      :buyer, 
+      :request, 
+      :service, 
+      :items, 
+      :transaction_messages, 
+      {request: :items}, 
+      {transaction_messages: :sender}, 
+      {transaction_messages: :receiver}
+    ).includes(transaction_messages: [:sender, :receiver])
   }
 
   scope :from_seller, -> (user){
@@ -114,6 +125,22 @@ class Transaction < ApplicationRecord
       )
   }
 
+  scope :published, -> {
+    self.where(
+      is_rejected: false,
+      is_canceled: false,
+      is_published: true
+      )
+  }
+
+  scope :transacted, -> {
+    self.where(
+      is_rejected: false,
+      is_canceled: false,
+      is_transacted: true
+      )
+  }
+
   scope :filter_categories, -> (names){
     if names.present?
       names = names.split(',')
@@ -146,6 +173,11 @@ class Transaction < ApplicationRecord
     self.where.not(reviewed_at: nil)
   }
 
+  scope :by, -> (user){
+    left_joins(:service, :request)
+    .where(service: {user: user}).or(self.where(request: {user: user}))
+  }
+
   after_initialize do
     set_delivery_content
   end
@@ -164,7 +196,7 @@ class Transaction < ApplicationRecord
   def set_publish
     self.assign_attributes(is_published:true, published_at:DateTime.now)
   end
-  
+
   def reset_item
     self.item = nil
     self.file = nil
@@ -452,28 +484,21 @@ class Transaction < ApplicationRecord
 
   def can_send_message(user)
     #買った人である。かつ、transaction_messageを送る期限内である
-    if user == self.seller
-      true
-    elsif user != self.buyer
-      false
-    elsif !self.is_contracted
-      can_send_pre_purchase_inquiry(user)
-    elsif self.transaction_message_enabled
-      true
+    return false unless user == self.buyer || user == self.seller
+    if self.is_contracted
+      self.transaction_message_enabled || user == self.seller
     else
-      false
+      can_send_pre_purchase_inquiry(user)
     end
   end
 
   def can_send_pre_purchase_inquiry(user)
-    if !self.service.allow_pre_purchase_inquiry
-      false
-    elsif user == self.seller
-      false
-    elsif user != self.buyer
-      false
-    elsif (self.transaction_messages.blank? || self.transaction_messages&.last&.receiver == user)
-      true
+    return false unless self.service.allow_pre_purchase_inquiry
+    return false if self.is_contracted
+    if user == self.seller
+      self.latest_transaction_message&.receiver == user
+    elsif user == self.buyer
+      self.latest_transaction_message&.receiver == user || self.transaction_messages.blank?
     else
       false
     end

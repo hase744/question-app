@@ -15,7 +15,7 @@ class User::HomesController < ApplicationController
       .limit(10)
     @transactions = Transaction
       .solve_n_plus_1
-      .delivered
+      .published
       .order(total_views: :DESC)
       .limit(12)
   end

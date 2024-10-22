@@ -3,7 +3,7 @@ class User::TransactionsController < User::Base
   #layout "transaction_index", only: [:index]
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
   before_action :check_transaction_is_transacted, only:[:show, :like]
-  before_action :define_transaction, only:[:show, :update, :deliver, :messages, :pre_purchase_inquire]
+  before_action :define_transaction, only:[:show, :update, :deliver, :messages]
   before_action :filter_transaction, only:[:update, :deliver]
   before_action :define_transaction_message, only:[:show, :messages]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
@@ -148,52 +148,6 @@ class User::TransactionsController < User::Base
       flash.notice = "回答を納品できませんでした。"
       render "user/orders/show"
     end
-  end
-
-  def pre_purchase_inquire
-    if @transaction.service.allow_pre_purchase_inquiry
-      @transaction_message = TransactionMessage.new
-      @transaction_message.sender = current_user
-      @transaction_message.receiver = @transaction.opponent_of(current_user)
-      @transaction_message.assign_attributes(transaction_message_params)
-      @transaction = @transaction_message.deal
-      @transaction.pre_purchase_inquired_at ||= DateTime.now
-      if @transaction_message.save! && @transaction.save
-        flash.notice = "送信しました。"
-        redirect_back(fallback_location: root_path)
-        puts "質問 #{@transaction_message.receiver.can_email_transaction}"
-        if current_user == @transaction.seller
-          EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
-          message = "購入前質問に返信がされました。"
-        elsif current_user == @transaction.buyer
-          EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
-          message = "購入前質問がされました。"
-        end
-        Notification.create(
-          user: @transaction.opponent_of(current_user),
-          notifier_id: current_user.id,
-          title: message,
-          description: @transaction_message.body,
-          action: "pre_purchase_inquiry",
-          controller: "transactions",
-          parameter: "?transaction_id=#{@transaction.id}",
-          )
-      end
-    else
-      flash.notice = "お問い合わせできませんでした。"
-    end
-  end
-
-  def pre_purchase_inquiry
-    @transactions = Transaction.solve_n_plus_1
-      .where(seller: current_user)
-      .or(Transaction.where(buyer: current_user))
-      .where(is_contracted: false)
-      .where.not(pre_purchase_inquired_at:nil)
-      .left_joins(:transaction_messages)
-      .group('transactions.id')
-      .order(Arel.sql("CASE WHEN transactions.id = #{params[:transaction_id].to_i} THEN 0 ELSE 1 END, MAX(transaction_messages.created_at) DESC"))
-      .page(params[:page]).per(20)
   end
 
   private def transaction_message_params

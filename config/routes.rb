@@ -50,8 +50,6 @@ namespace :user do
     get "requests/mine", to: "requests#mine", as:"request_mine"
     post "transactions/like/:id", to:"transactions#like", as: "transactions_like"
     put "transactions/deliver/:id",  to:"transactions#deliver", as:"deliver_transaction"
-    post "transactions/pre_purchase_inquire/:id",  to:"transactions#pre_purchase_inquire", as:"inquire_transaction"
-    get "transactions/pre_purchase_inquiry",  to:"transactions#pre_purchase_inquiry", as:"pre_purchase_inquiry"
     get "notifications/notification_bar", to: "notifications#notification_bar"
     get "notifications/notification_cells", to: "notifications#notification_cells"
     get "notifications/get_data"
@@ -118,6 +116,7 @@ namespace :user do
     resources :request_supplements, only: [:create, :new]
     resources :payments, only: [:index, :show, :create]
     resources :payouts, only: [:index, :show, :create]
+    resources :pre_purchase_inquiries, only: [:index, :create]
     resource :point_records, only: [:show]
     resource :balance_records, only: [:show]
     resource :videos, only: [:show]

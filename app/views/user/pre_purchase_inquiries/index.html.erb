@@ -7,7 +7,7 @@
 	  	<% @transactions.each do |transaction| %>
 			<div class="pre_purchase_inquiry_cell open_button">
 				<div class="inner_pre_purchase_inquiry_cell">
-					<%=image_tag transaction.opponent_of(current_user).image.thumb.url, class:"image" %>
+					<%=image_tag transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
 					<div class="text_area">
 						<div class="message one_line_text"><%=transaction.transaction_messages.last.body %></div>
 						<div class="datetime">
@@ -16,13 +16,16 @@
 					</div>
 				</div>
 			</div>
-			<%= render "user/shared/pre_inquery_modal", transaction: transaction %>
+			<%= render "user/pre_purchase_inquiries/modal", transaction: transaction %>
 	  	<% end %>
 	</div>
 	<div class="main_bottom">
 		<%= paginate @transactions %>
 	</div>
 </div>
+<script>
+<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
+</script>
 <script>
 <% if params[:transaction_id] %>
 defined_pre_inquery_modal = $('#transaction<%=params[:transaction_id] %>');

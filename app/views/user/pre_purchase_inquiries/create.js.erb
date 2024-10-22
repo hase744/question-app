@@ -1,0 +1,7 @@
+<% if @success_message.present? %>
+  $('.pre_purchase_inquiry_message').text('<%= j @success_message %>');
+  $('.chat-input').val(''); // フォームのリセット
+<% elsif @error_message.present? %>
+  $('.pre_purchase_inquiry_message').text('<%= j @error_message %>');
+<% end %>
+console.log("クリエイト")

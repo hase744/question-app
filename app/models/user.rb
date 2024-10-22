@@ -376,7 +376,7 @@ class User < ApplicationRecord
 
   def validate_is_published
     if  !self.is_published
-      ongoing_transactions = Transaction.where(seller: self, is_transacted:false).or(Transaction.where(buyer: self, is_transacted:false))
+      ongoing_transactions = Transaction.where(is_transacted: false).by(self)
       if ongoing_transactions.count > 0 #取引中の依頼がああるか
         errors.add(:is_published)
       end
