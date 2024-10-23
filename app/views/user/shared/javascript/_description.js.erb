@@ -1,7 +1,6 @@
 open_description = function(object){
     console.log(object)
     var parent = object.closest(".description_area");
-    var description_text_area = parent.find(".description_text_area");
     var description_text = parent.find(".description_text");
 
     object.toggleClass("open_text");
