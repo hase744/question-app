@@ -102,7 +102,7 @@ namespace :user do
     resource :configs, only: [ :index, :show, :edit, :update, :destroy]
     resource :alerts, only: [:show]
     resource :accounts, only: [:edit, :update]
-    resources :reviews, only: [:update]
+    resources :reviews, only: [:create]
     resources :orders, only:[:index, :show, :edit]
     resources :transaction_messages, only: [:create, :show]
     resources :posts, only: [ :index, :show, :new, :edit, :create, :destroy, :update]

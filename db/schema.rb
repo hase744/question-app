@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_17_111026) do
+ActiveRecord::Schema.define(version: 2024_10_22_094458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -299,6 +299,17 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "transaction_id", null: false
+    t.integer "star_rating"
+    t.text "body"
+    t.text "reply"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["star_rating"], name: "index_reviews_on_star_rating"
+    t.index ["transaction_id"], name: "index_reviews_on_transaction_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "japanese_name"
@@ -363,8 +374,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.boolean "transaction_message_enabled", default: true
     t.boolean "allow_pre_purchase_inquiry", default: true
     t.integer "total_views", default: 0
-    t.integer "total_sales_numbers", default: 0
-    t.integer "total_sales_amount", default: 0
     t.integer "total_reviews", default: 0
     t.float "average_star_rating"
     t.float "rejection_rate"
@@ -385,8 +394,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.index ["request_max_files"], name: "index_services_on_request_max_files"
     t.index ["title"], name: "index_services_on_title"
     t.index ["total_reviews"], name: "index_services_on_total_reviews"
-    t.index ["total_sales_amount"], name: "index_services_on_total_sales_amount"
-    t.index ["total_sales_numbers"], name: "index_services_on_total_sales_numbers"
     t.index ["total_views"], name: "index_services_on_total_views"
     t.index ["user_id"], name: "index_services_on_user_id"
   end
@@ -463,10 +470,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.boolean "is_canceled", default: false
     t.datetime "canceled_at"
     t.boolean "transaction_message_enabled", default: false
-    t.integer "star_rating"
-    t.text "review_description"
-    t.datetime "reviewed_at"
-    t.text "review_reply"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["buyer_id"], name: "index_transactions_on_buyer_id"
@@ -489,7 +492,6 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.index ["reveresed_at"], name: "index_transactions_on_reveresed_at"
     t.index ["seller_id"], name: "index_transactions_on_seller_id"
     t.index ["service_id"], name: "index_transactions_on_service_id"
-    t.index ["star_rating"], name: "index_transactions_on_star_rating"
     t.index ["suggested_at"], name: "index_transactions_on_suggested_at"
     t.index ["title"], name: "index_transactions_on_title"
     t.index ["total_views"], name: "index_transactions_on_total_views"
@@ -555,12 +557,12 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
     t.integer "total_phone_confirmation_attempts", default: 0
     t.datetime "phone_confirmation_enabled_at"
     t.datetime "last_login_at"
-    t.integer "total_reviews", default: 0
     t.integer "total_target_users", default: 0
     t.integer "total_sales_numbers", default: 0
     t.integer "total_sales_amount", default: 0
     t.integer "total_sales_number", default: 0
     t.integer "total_notifications", default: 0
+    t.integer "total_reviews", default: 0
     t.float "average_star_rating"
     t.float "rejection_rate"
     t.float "cancellation_rate"
@@ -609,6 +611,7 @@ ActiveRecord::Schema.define(version: 2024_10_17_111026) do
   add_foreign_key "request_likes", "users"
   add_foreign_key "request_supplements", "requests"
   add_foreign_key "requests", "users"
+  add_foreign_key "reviews", "transactions"
   add_foreign_key "service_categories", "services"
   add_foreign_key "service_files", "services"
   add_foreign_key "service_items", "services"

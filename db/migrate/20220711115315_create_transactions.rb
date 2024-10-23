@@ -53,12 +53,6 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.boolean :transaction_message_enabled, default: false
       #t.datetime :transaction_message_deadline
 
-      #レビューに関連するカラム
-      t.integer :star_rating, index:true
-      t.text :review_description
-      t.datetime :reviewed_at
-      t.text :review_reply
-
       t.timestamps
     end
   end

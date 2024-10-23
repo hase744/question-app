@@ -12,13 +12,12 @@ class Transaction < ApplicationRecord
   has_many :balance_records
   has_one :transaction_category
   has_one :category, through: :transaction_category
+  has_one :review
   has_one :latest_transaction_message, -> { order(created_at: :desc) }, class_name: 'TransactionMessage'
 
   delegate :user, to: :service
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
-  validates :star_rating, numericality: {only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5, :allow_blank => true}
-  validates :review_description, length: {maximum: :review_description_max_length}
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
   validates :delivery_time, presence: true
@@ -29,7 +28,6 @@ class Transaction < ApplicationRecord
   validate :validate_item
   validate :validate_is_rejected
   validate :validate_reject_reason
-  validate :validate_review
   validate :validate_is_suggestion
   validate :validate_item_count
   validate :previous_transaction
@@ -40,7 +38,6 @@ class Transaction < ApplicationRecord
   after_save :create_transaction_category
   after_save :update_total_sales
   after_save :update_average_star_rating
-  after_save :update_total_reviews
   after_save :create_payment_record
   attr_accessor :use_youtube
   attr_accessor :youtube_id
@@ -170,7 +167,11 @@ class Transaction < ApplicationRecord
   }
 
   scope :reviewed, -> {
-    self.where.not(reviewed_at: nil)
+    joins(:review)
+  }
+
+  scope :not_reviewed, -> {
+    left_outer_joins(:review).where(reviews: { id: nil })
   }
 
   scope :by, -> (user){
@@ -205,9 +206,6 @@ class Transaction < ApplicationRecord
   end
 
   def set_default_values
-    if Rails.env.development? && self.is_transacted && !will_save_change_to_is_transacted?
-      #self.review_description ||= "ご助言いただき、ありがとうございます。自分の現状を見つめ直し、新しい挑戦を求める気持ちを具体的な行動に移すことの重要性を再認識しました。特に、興味や価値観を整理する時間を持つこと、スキルアップやネットワーキングに努めることが大切だと感じました。健康や生活の質にも注意を払いながら、将来を見据えて進んでいこうと思います。\nおかげさまで、今後のステップが少しずつ見えてきました。これからも前向きに取り組んでいきます。本当にありがとうございました。"
-    end
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
@@ -326,23 +324,15 @@ class Transaction < ApplicationRecord
 
   def update_total_sales
     if self.saved_change_to_is_transacted?
-      self.service.update_total_sales_numbers
       self.service.user.update_total_sales_numbers
     end
   end
   
   def update_average_star_rating
-    if self.saved_change_to_star_rating?
-      self.service.user.update_average_star_rating
-      self.service.update_average_star_rating
-    end
-  end
-
-  def update_total_reviews
-    if self.saved_change_to_star_rating?
-      self.service.update_total_reviews
-      self.service.user.update_total_reviews
-    end
+    #if self.saved_change_to_star_rating?
+    #  self.service.user.update_average_star_rating
+    #  self.service.update_average_star_rating
+    #end
   end
 
   def update_request
@@ -547,10 +537,6 @@ class Transaction < ApplicationRecord
   def description_max_length
     20000
   end
-  
-  def review_description_max_length
-    500
-  end
 
   def is_ongoing
     if !self.is_contracted
@@ -566,30 +552,6 @@ class Transaction < ApplicationRecord
     end
   end
 
-  def all_review_present? #一つでも空だったらfalse
-    if !self.review_description.present?
-      false
-    elsif !self.star_rating.present?
-      false
-    elsif !self.reviewed_at.present?
-      false
-    else
-      true
-    end
-  end
-
-  def all_review_empty? #一つでも値があればfalse
-    if self.review_description.present?
-      false
-    elsif self.star_rating.present?
-      false
-    elsif self.reviewed_at.present?
-      false
-    else
-      true
-    end
-  end
-
   def validate_item_count
     return if self.items.count <= self.max_items_count
     return unless self.will_save_change_to_is_published?
@@ -597,22 +559,7 @@ class Transaction < ApplicationRecord
     errors.add(:items, "の数は#{self.max_items_count}個までです")
   end
   
-  def validate_review
-    return if all_review_present? || all_review_empty?
-    if self.is_transacted?
-      errors.add(:review_description, "がありません") if !self.review_description.present?
-      errors.add(:star_rating, "がありません") if !self.star_rating.present?
-      errors.add(:reviewed_at, "がありません") if !self.reviewed_at.present?
-    end
-  end
-
   def max_items_count
     10
-  end
-
-  def review_present?
-  end
-
-  def review_nil_present?
   end
 end

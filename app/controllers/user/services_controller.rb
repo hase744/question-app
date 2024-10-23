@@ -84,10 +84,7 @@ class User::ServicesController < User::Base
     when 'requests'
       @models = Request.from_service(@service)
     when 'reviews'
-      @models = Transaction
-        .where.not(reviewed_at: nil)
-        .where.not(star_rating: nil)
-        .where(service: @service, is_published: true)
+      @models = @service.transactions.reviewed
     end
 
     current_element = @bar_elements.find{|e| 
@@ -239,7 +236,9 @@ class User::ServicesController < User::Base
   end
 
   def reviews
-    transactions = Transaction.where(service_id:params[:id], is_published: true).where.not(reviewed_at: nil).includes(:seller, :seller, :request).order(id: :DESC)
+    transactions = Transaction.solve_n_plus_1
+      .where(service_id:params[:id])
+      .order(id: :DESC)
     @transactions = transactions.page(params[:page]).per(@review_page)
     render partial: 'user/reviews/cell', collection: @transactions, as: :transaction
   end

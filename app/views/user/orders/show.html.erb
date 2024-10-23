@@ -207,7 +207,7 @@
             <% end %>
         <% end %>
     </div>
-    <% if @transaction.reviewed_at %>
+    <% if @transaction.review %>
         <%= render 'user/shared/common_label', text: 'レビュー', language: 'ja'%>
         <%= render "user/reviews/cell", transaction: @transaction %>
     <% end %>

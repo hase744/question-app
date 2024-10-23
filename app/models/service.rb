@@ -2,6 +2,7 @@ class Service < ApplicationRecord
   has_many :requests
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
+  has_many :reviews, through: :transactions
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
   has_one :service_category
   has_one :item, class_name: "ServiceItem", dependent: :destroy
@@ -35,7 +36,7 @@ class Service < ApplicationRecord
   accepts_nested_attributes_for :service_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
-    includes(:user, :transactions, :requests, :service_categories, :service_category, :item)
+    includes(:user, :transactions, :reviews, :requests, :service_categories, :service_category, :item)
   }
 
   scope :buyable, -> {
@@ -81,6 +82,21 @@ class Service < ApplicationRecord
     end
   }
 
+  scope :sort_by_total_sales_numbers, -> {
+    left_joins(:transactions)
+      .select('services.*, COUNT(CASE WHEN transactions.is_canceled = false AND transactions.is_rejected = false AND transactions.is_contracted = true THEN 1 END) AS total_sales_numbers')
+      .group('services.id')
+      .order('total_sales_numbers DESC')
+  }
+
+  scope :sort_by_average_star_rating, -> {
+    order(Arel.sql('average_star_rating DESC NULLS LAST'))
+    #left_joins(:reviews)
+    #  .select('services.*, AVG(reviews.star_rating) AS average_star_rating')
+    #  .group('services.id')
+    #  .order('average_star_rating DESC')
+  }
+
   scope :sort_by_default, ->{ #is_published=trueとなっている一番最新のtransactionのpublished_atが新しい順にserviceをソート
     left_joins(:transactions, :likes)
       .select('services.*, MAX(CASE WHEN transactions.is_published = true THEN transactions.published_at ELSE NULL END) AS latest_published_at')
@@ -94,6 +110,12 @@ class Service < ApplicationRecord
     left_joins(:likes)
       .group('services.id')
       .order('COUNT(service_likes.id) DESC')
+  }
+
+  scope :with_reviews_count, -> {
+    left_joins(:reviews)
+      .select('services.*, COUNT(reviews.id) AS reviews_count')
+      .group('services.id')
   }
 
   scope :transactions_count, -> {
@@ -141,22 +163,11 @@ class Service < ApplicationRecord
   end
 
   scope :with_minimum_rating, ->(min_rating) {
-    joins(:transactions)
-      .select('services.*, AVG(transactions.star_rating) as average_rating')
+    joins(:reviews)
+      .select('services.*, AVG(reviews.star_rating) as average_rating')
       .group('services.id')
-      .having('AVG(transactions.star_rating) >= ?', min_rating)
+      .having('AVG(reviews.star_rating) >= ?', min_rating)
   }
-
-  def average_star_rating
-    #n+1回避のためwhereなどは、あえて使わない
-    ratings = transactions.select {|transaction| 
-      transaction.star_rating.present?
-    }.map {|transaction|
-      transaction.star_rating
-    }
-    return nil if ratings.empty? #ratings.lengthが0の時NoNを返すのを回避するため
-    ratings.sum.fdiv(ratings.length)
-  end
 
   def exclusive_transaction
     Transaction.find_by(
@@ -201,19 +212,22 @@ class Service < ApplicationRecord
     self.update(average_star_rating: transactions.average(:star_rating).to_f)
   end
 
-  def update_total_sales_numbers
-    transactions = Transaction.where(
+  def total_sales_numbers #累計売上数
+    Transaction.where(
       service:self, 
       is_canceled:false, 
       is_rejected: false, 
       is_contracted:true
-      )
-    self.update(total_sales_numbers: transactions.count)
+    ).count
   end
 
-  def update_total_reviews
-    transactions = Transaction.where(service: self).where.not(star_rating: nil)
-    self.update(total_reviews: transactions.count)
+  def total_sales_amount #累計売上額
+    Transaction.where(
+      service:self, 
+      is_canceled:false, 
+      is_rejected: false, 
+      is_contracted:true
+    ).sum(:price)
   end
 
   def update_user_service_mini_price

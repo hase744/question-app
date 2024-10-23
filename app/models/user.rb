@@ -26,11 +26,9 @@ class User < ApplicationRecord
   has_many :followees, through: :followee_relationships, source: :target_user
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
-  has_many :transactions, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
   has_many :delivered_transactions, -> { delivered }, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
   has_many :buyable_services, -> { buyable }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
-  #has_many :categories, class_name: "UserCategory", dependent: :destroy
   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
   has_many :service_categories, through: :services, source: :service_categories
   has_many :buyable_service_categories, through: :buyable_services, source: :service_categories
@@ -44,7 +42,9 @@ class User < ApplicationRecord
   has_many :payouts
   has_many :point_records
   has_many :balance_records
-  #has_many :transactions, through: :service
+  has_many :sales, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
+  has_many :purchases, class_name: "Transaction", foreign_key: :buyer_id, dependent: :destroy
+  has_many :reviews, through: :sales
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
@@ -131,6 +131,13 @@ class User < ApplicationRecord
     left_joins(:follower_relationships)
       .group('users.id')
       .order('COUNT(relationships.id) DESC')
+  }
+
+  scope :with_reviews_count, -> {
+    order(total_reviews: :desc)
+    #left_joins(:reviews)
+    #  .select('users.*, COUNT(reviews.id) AS reviews_count')
+    #  .group('users.id')
   }
 
   def country
@@ -244,11 +251,6 @@ class User < ApplicationRecord
     self.update(average_star_rating: transactions.average(:star_rating).to_f)
   end
 
-  def update_total_reviews
-    transactions = Transaction.left_joins(:service).where(service:{user:self}).where.not(star_rating: nil)
-    self.update(total_reviews: transactions.count)
-  end
-  
   def update_service_mini_price
     self.update(mini_price: Service.where(user: self, request_id: nil, is_published:true).minimum(:price))
   end

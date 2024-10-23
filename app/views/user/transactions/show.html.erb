@@ -122,7 +122,7 @@
         </div>
         <div class="transaction_detail_area">
         </div>
-        <%if @transaction.star_rating %>
+        <%if @transaction.review %>
             <%= render 'user/shared/common_label', text: 'レビュー', language: 'ja'%>
             <%= render "user/reviews/cell", transaction: @transaction %>
         <% elsif @transaction.buyer == current_user %>

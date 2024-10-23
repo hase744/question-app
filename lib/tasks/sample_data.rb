@@ -203,9 +203,10 @@ class SampleData
           use_youtube:true,
           youtube_id: nil,
           transaction_message_enabled: service.transaction_message_enabled,
+        )
+        transaction.create_review(
           star_rating: 4 + (n % 2),
-          review_description: "レビュー内容をここに表示",
-          reviewed_at: DateTime.now - n,
+          body: "レビュー内容をここに表示",
         )
         transaction.transaction_categories.create(category_name: category.name)
         for i in 0..5
