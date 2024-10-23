@@ -236,8 +236,8 @@ class User::AccountsController < User::Base
     when 'reviews'
       @models = Transaction
         .from_seller(User.find(params[:id]))
+        .reviewed
         .where(is_transacted: true)
-        .where.not(reviewed_at: nil)
         .page(params[:page])
         .per(@review_page)
     end

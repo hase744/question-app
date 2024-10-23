@@ -64,14 +64,14 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
       t.datetime :last_login_at, index:true
 
-      t.integer :total_reviews, default: 0, index:true
       t.integer :total_target_users, default: 0, index:true
       t.integer :total_sales_numbers, default: 0, index:true
       t.integer :total_sales_amount, default: 0, index:true
       t.integer :total_sales_number, default: 0, index:true
       t.integer :total_notifications, default: 0, index:true
-
+      t.integer :total_reviews, default: 0, index:true
       t.float :average_star_rating, default: nil, index:true
+
       t.float :rejection_rate, default: nil, index:true
       t.float :cancellation_rate, default: nil, index:true
 

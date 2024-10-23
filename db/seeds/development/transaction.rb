@@ -22,9 +22,6 @@ service = Service.first
         use_youtube:true,
         youtube_id: youtube_ids[n % youtube_ids.length],
         transaction_message_days: service.transaction_message_days,
-        star_rating: n%6,
-        review_description: "レビュー内容をここに表示",
-        reviewed_at: DateTime.now - n,
         is_published:false
         #star_rating:n%5,
         #review_description:"ここにレビューが表示される",

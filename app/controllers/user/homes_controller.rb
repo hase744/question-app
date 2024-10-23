@@ -4,14 +4,12 @@ class User::HomesController < ApplicationController
     @services = Service
       .solve_n_plus_1
       .where(request_id: nil)
-      #.where.not(price: 0)
-      .order(total_sales_numbers: :DESC)
-      .order(Arel.sql('average_star_rating DESC NULLS LAST'))
+      .sort_by_total_sales_numbers
+      .sort_by_average_star_rating
       .limit(10)
     @users = User
       .solve_n_plus_1
       .where(is_seller:true)
-      .order(total_sales_numbers: :DESC)
       .limit(10)
     @transactions = Transaction
       .solve_n_plus_1
