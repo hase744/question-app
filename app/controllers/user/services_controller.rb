@@ -66,7 +66,7 @@ class User::ServicesController < User::Base
       "「稼げる相談サイト」コレテクの#{@service.user.name}さんの相談室はこちら。 気になる方は以下のリンクへ！"
     end
     if @service.item&.file&.url
-      @og_image = @service.item&.file&.url
+      $og_image = @service.item&.file&.url
     end
     @og_title = @service.title
     @og_description = @service.description

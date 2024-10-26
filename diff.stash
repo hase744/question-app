@@ -1,0 +1,1296 @@
+diff --git a/app/admin/operations.rb b/app/admin/operations.rb
+index 7dd39af..ab3181c 100644
+--- a/app/admin/operations.rb
++++ b/app/admin/operations.rb
+@@ -21,7 +21,7 @@ ActiveAdmin.register Operation do
+ 
+ 
+   permit_params do
+-    permitted = [:state_id, :start_at, :comment, :admin_user_id]
++    permitted = [:state, :start_at, :comment, :description, :admin_user_id]
+     permitted << :other if params[:action] == 'create' && admin_user_signed_in?
+     permitted
+   end
+@@ -35,6 +35,7 @@ ActiveAdmin.register Operation do
+       }
+       f.input :start_at, as: :datetime_picker
+       f.input :comment
++      f.input :description
+       f.input :admin_user_id, input_html: {value: current_admin_user.id}, as: :hidden
+     end
+     f.actions
+diff --git a/app/assets/stylesheets/abouts/question.scss b/app/assets/stylesheets/abouts/question.scss
+index 1439d77..3173378 100644
+--- a/app/assets/stylesheets/abouts/question.scss
++++ b/app/assets/stylesheets/abouts/question.scss
+@@ -37,6 +37,7 @@
+     margin-bottom: 10px;
+     font-size: 16px;
+     outline: none;
++    border-radius: 0px;
+   }
+   
+   .form-input:focus {
+@@ -45,6 +46,7 @@
+   
+   .form-submit {
+     width: 50px;
++    height: 42px;
+     align-self: flex-start;
+     padding: 8px 4px;
+     background-color: #007bff;
+diff --git a/app/assets/stylesheets/layout/alert.scss b/app/assets/stylesheets/layout/alert.scss
+index 3d8443d..6d9d74f 100644
+--- a/app/assets/stylesheets/layout/alert.scss
++++ b/app/assets/stylesheets/layout/alert.scss
+@@ -2,4 +2,10 @@
+     width: auto;
+     margin: 0 auto;
+     max-width: 1000px;
++    @media(max-width:1000px){
++        padding-top: 50px;
++    }
++    @media(min-width:1000px){
++        padding-top: 90px;
++    }
+ }
+\ No newline at end of file
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index f3a3dd1..61a58d9 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -4,18 +4,16 @@ class ApplicationController < ActionController::Base
+   include CommonConcern
+   include CommonMethods
+   include StripeMethods
+-  include OperationConfig
+   include FormConfig
+   include Variables
+   include ViewConcern
+-  include ErrorHandlers if Rails.env.production?
++  include OperationConfig
++  include ErrorHandlers #if Rails.env.production?
++  include AccessHandlers
++
+   layout :layout_by_resource
+   protect_from_forgery with: :exception
+   before_action :configure_permitted_parameters, if: :devise_controller?
+-  before_action :get_path
+-  before_action :set_view_value
+-  before_action :check_user_state
+-  before_action :check_session_point
+   before_action :set_current_nav_item
+   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+ 
+@@ -46,175 +44,6 @@ class ApplicationController < ActionController::Base
+     end
+   end
+ 
+-  def set_view_value
+-    @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+-  end
+-
+-  require 'nkf'
+-
+-  def check_user_state
+-    if user_signed_in?
+-      allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
+-      puts current_user.is_suspended
+-      if current_user.is_suspended && !allowed_controllers.include?(controller_name)
+-        redirect_to user_alerts_path
+-      end
+-
+-      if current_user.is_deleted
+-        reset_session
+-        flash.alert = "既に退会済みです"
+-      end
+-    end
+-  end
+-
+-  def save_models
+-    models_to_save = [@service, @request, @transaction, @item, @items].flatten.compact
+-    models_to_save.all?(&:save)
+-  end
+-
+-  def revive
+-    user = Usse.find_by(reset_password_token: params[:reset_password_token])
+-  
+-    if user.present? && user.is_deleted
+-      user.update(is_deleted:false)
+-      redirect_to new_user_session_path
+-    end
+-  end
+-
+-  def after_sign_in_path_for(resource)
+-    puts request.path_info
+-    puts "パラメータ"
+-    puts session[:path_params]
+-    if request.path_info == "/admin/login" 
+-      admin_dashboard_path
+-    elsif session[:path_params].present?
+-      if ['notifications'].include?(session[:path_params]['controller'])
+-        return redirect_to user_account_path(current_user.id)
+-      end
+-      if session[:path_params]['service_id']
+-        return url_for(
+-          controller: session[:path_params]['controller'],
+-          action: session[:path_params]['action'],
+-          service_id: session[:path_params]['service_id'],
+-          )
+-      end
+-      if session[:path_params]['id']
+-        return url_for(
+-          controller: session[:path_params]['controller'],
+-          action: session[:path_params]['action'],
+-          id: session[:path_params]['id'],
+-          )
+-      end
+-      url_for(
+-        controller: session[:path_params]['controller'],
+-        action: session[:path_params]['action'],
+-      )
+-    else
+-      user_account_path(current_user.id) # ログイン後に遷移するpathを設定
+-    end
+-  end
+-
+-  def after_sign_out_path_for(resource)
+-    user_transactions_path # ログアウト後に遷移するpathを設定
+-  end
+-
+-  def from_now(datetime)
+-    if datetime == nil
+-      "--:--"
+-    else
+-      past_time = datetime - DateTime.now#現在から何秒後
+-      if 0 < past_time
+-        word = "後"
+-      else
+-        word = "前"
+-      end
+-  
+-      difference = past_time.abs #絶対値
+-      minute = difference/60
+-      hour = minute/60
+-      day = hour/24
+-      week = day/7
+-      month = week/4
+-      year = day/365
+-      
+-      if (minute).to_i < 60#60分未満
+-        "#{minute.to_i }分"
+-      elsif hour.to_i < 24 #24時間未満
+-        "#{hour.to_i }時間"
+-      elsif day.to_i < 7 #７日未満
+-        "#{day.to_i}日"
+-      elsif week.to_i < 4 #4週間未満
+-        "#{week.to_i }週間"
+-      elsif  month.to_i < 12 #12ヶ月未満s
+-        "#{month.to_i }ヶ月"
+-      else
+-        "#{year.to_i}年"
+-      end
+-    end
+-  end
+-
+-  def convert_path(controller, action, id)
+-    paths = {"rooms" => {"show" => room_path(id)}}
+-    paths[controller][action]
+-  end
+-  
+-  def half_size_kana(word)
+-    NKF.nkf('-w -Z4 -x', word.tr('あ-ん', 'ア-ン'))
+-  end
+-
+-  def half_size_number(word)
+-    word.tr('０-９ａ-ｚＡ-Ｚ','0-9a-zA-Z')
+-  end
+-
+-  def image_extension
+-    []
+-  end
+-
+-  def get_path
+-    puts "パス情報"
+-    puts controller_name
+-    puts action_name
+-    puts request.method
+-    puts controller_path
+-    puts admin_user_signed_in?
+-    if user_signed_in?
+-      current_user.update(last_login_at: DateTime.now)
+-    end
+-    if controller_name == "abouts"
+-      @index_link = true
+-    elsif controller_name == "transactions" || action_name == "index"
+-      @index_link = true
+-    else
+-      @index_link = false
+-    end
+-  end
+-
+-  def for_admin_user
+-    if admin_user_signed_in? 
+-      true
+-    elsif controller_name == "dashboard" 
+-      true
+-    elsif controller_name == "sessions"
+-      true
+-    else
+-      false
+-    end
+-  end
+-  
+-  def delete_temp_file_items
+-    @item&.delete_temp_file
+-    @items&.each do |item|
+-      item.delete_temp_file
+-    end
+-  end
+-
+-  def check_session_point
+-    unless controller_name == "payments"
+-      session[:point] == nil
+-      session[:payment_service_id] = nil
+-      session[:payment_transaction_id] = nil
+-    end
+-  end
+   #ユーザー登録の時に名前を登録できるようにする。
+   protected
+   def configure_permitted_parameters
+diff --git a/app/controllers/concerns/common_methods.rb b/app/controllers/concerns/common_methods.rb
+index a4a4d89..2d0fef1 100644
+--- a/app/controllers/concerns/common_methods.rb
++++ b/app/controllers/concerns/common_methods.rb
+@@ -1,4 +1,5 @@
+ module CommonMethods
++  require 'nkf'
+   attr_accessor :current_nav_item
+   extend ActiveSupport::Concern
+ 
+@@ -6,6 +7,14 @@ module CommonMethods
+     NKF.nkf('-w -Z4', str)
+   end
+ 
++  def half_size_kana(word)
++    NKF.nkf('-w -Z4 -x', word.tr('あ-ん', 'ア-ン'))
++  end
++
++  def half_size_number(word)
++    word.tr('０-９ａ-ｚＡ-Ｚ','0-9a-zA-Z')
++  end
++
+   def current_nav_item
+     @current_nav_item
+   end
+@@ -20,4 +29,58 @@ module CommonMethods
+     @current_nav_item = params[:nav_item]
+     @current_nav_item ||= 'transactions'
+   end
++
++  def from_now(datetime)
++    if datetime == nil
++      "-/-/--:--"
++    else
++      if datetime.to_s.include?("T") #DateTimeの表記方法の違いで分岐
++        past_time = datetime.to_i - DateTime.now.to_i
++      else
++        past_time = datetime - DateTime.now#現在から何秒後
++      end
++      
++      if 0 < past_time
++        anterior_word = "あと"
++        posterior_word = ""
++      else
++        anterior_word = ""
++        posterior_word = "前"
++      end
++
++      difference = past_time.abs #絶対値
++      minute = difference/60
++      hour = minute/60
++      day = hour/24
++      week = day/7
++      month = week/4
++      year = day/365
++
++      if (minute).to_i < 60#60分未満
++        anterior_word + "#{minute.to_i }分" + posterior_word
++      elsif hour.to_i < 24 #24時間未満
++        anterior_word + "#{hour.to_i }時間" + posterior_word
++      elsif day.to_i < 7 #７日未満
++        anterior_word + "#{day.to_i}日" + posterior_word
++      elsif week.to_i < 4 #4週間未満
++        anterior_word + "#{week.to_i }週間" + posterior_word
++      elsif  month.to_i < 12 #12ヶ月未満s
++        anterior_word + "#{month.to_i }ヶ月" + posterior_word
++      else
++        anterior_word + "#{year.to_i}年" + posterior_word
++      end
++    end
++  end
++
++  def save_models
++    models_to_save = [@service, @request, @transaction, @item, @items].flatten.compact
++    models_to_save.all?(&:save)
++  end
++
++  def delete_temp_file_items
++    @item&.delete_temp_file
++    @items&.each do |item|
++      item.delete_temp_file
++    end
++  end
+ end
+\ No newline at end of file
+diff --git a/app/controllers/concerns/error_handlers.rb b/app/controllers/concerns/error_handlers.rb
+index 9ac9b69..ae1b411 100644
+--- a/app/controllers/concerns/error_handlers.rb
++++ b/app/controllers/concerns/error_handlers.rb
+@@ -17,6 +17,9 @@ included do
+   rescue_from Stripe::AuthenticationError, with: :stripe_authentication_rescue
+   rescue_from Stripe::APIConnectionError, with: :stripe_api_connection_rescue
+   rescue_from Stripe::StripeError, with: :stripe_rescue
++  rescue_from ReadOnlyAccessError, with: :read_only_access_rescue
++  rescue_from RegistrationOnlyAccessError, with: :registration_only_access_rescue
++  rescue_from SuspendedAccessError, with: :suspended_access_rescue
+ end
+ 
+   private def rescue400(e)
+@@ -101,4 +104,26 @@ end
+     @message = "There is insufficient amount to to transfer: #{e.message}"
+     create_error_log(e)
+   end
++
++
++  private def read_only_access_rescue(e)
++    @error = e
++    @message = "閲覧のみ可能です。アクセスが許可されていません。"
++    create_error_log(e)
++    render "errors/read_only_access", status: 403, layout: "alert"
++  end
++
++  private def registration_only_access_rescue(e)
++    @error = e
++    @message = "ユーザー登録のみ可能です。アクセスが許可されていません。"
++    create_error_log(e)
++    render "errors/registration_only_access", status: 403, layout: "alert"
++  end
++
++  private def suspended_access_rescue(e)
++    @error = e
++    @message = "アカウントが停止されています。アクセスできません。"
++    create_error_log(e)
++    render "errors/suspended_access", status: 403, layout: "alert"
++  end
+ end
+\ No newline at end of file
+diff --git a/app/controllers/concerns/operation_config.rb b/app/controllers/concerns/operation_config.rb
+index c950ae7..01f2a48 100644
+--- a/app/controllers/concerns/operation_config.rb
++++ b/app/controllers/concerns/operation_config.rb
+@@ -1,45 +1,32 @@
+ module OperationConfig
+   include ConfigMethods
+-  extend ActiveSupport::Concern
+-  def latest_state
+-    operation = Operation.where("start_at <= ?", DateTime.now).last
+-    operation.state
+-  end
+-
+-  def update_operation_config
+-    update_config(sort:"operation", key:"change_at", value: operation_next_change_at)
+-    update_config(sort:"operation", key:"state", value: latest_state)
+-  end
+-
+-  #現在のstateをファイルから確認、変更時期を過ぎていたらdbを参照して更新
++  # 現在の state をファイルから確認し、必要に応じて更新
+   def current_state
+-    puts "状態"
+     state = config_value(sort:"operation", key:"state")
+     change_at = config_value(sort:"operation", key:"change_at")
+-    #configのoperationのchange_atが過ぎていたら更新
+-    if change_at.present? && change_at < DateTime.now
++    change_at ||= DateTime.new(9999, 12, 31, 0, 0, 0)
++    #configのoperationgateのchange_atが過ぎていたら更新
++    if change_at.nil? || change_at < DateTime.now
+       update_operation_config
++      state ||= config_value(sort:"operation", key:"state")
+     end
+ 
+-    if !state.present?
+-      update_operation_config
+-      state = config_value(sort:"operation", key:"state")
+-    end
+     return state
+   end
+ 
+-  def operation_next_change_at
+-    changes = []
+-    operations = Operation.where("? < start_at",DateTime.now)
+-    start_at = operations.minimum(:start_at) #未来に始まるオペレーションの中で開始時刻が最小
+-    change_at = start_at
+-    return change_at
++  def latest_description
++    config_value(sort:"operation", key:"description")
+   end
+ 
+-  def first_running_operation
+-    operations = Operation.where(state:State.find_by(name:"running"))
+-    operations = operations.where("? < start_at",DateTime.now)
+-    operations = operations.order(start_at: "ASC")
+-    operations.first
++  def operation_start_at
++    config_value(sort:"operation", key:"operation_start_at")
++  end
++
++  # operation の設定を更新
++  def update_operation_config
++    update_config(sort: "operation", key: "description", value: Operation.latest_description)
++    update_config(sort: "operation", key: "operation_start_at", value: Operation.first_running_operation&.start_at)
++    update_config(sort: "operation", key: "change_at", value: Operation.operation_next_change_at)
++    update_config(sort: "operation", key: "state", value: Operation.latest_state)
+   end
+ end
+\ No newline at end of file
+diff --git a/app/controllers/concerns/view_concern.rb b/app/controllers/concerns/view_concern.rb
+index b519ee0..6745b87 100644
+--- a/app/controllers/concerns/view_concern.rb
++++ b/app/controllers/concerns/view_concern.rb
+@@ -3,6 +3,7 @@ module ViewConcern
+ 
+   included do
+     before_action :set_selector
++    before_action :set_view_value
+   end
+   $selector = {
+     '回答': "transaction", 
+@@ -39,6 +40,10 @@ module ViewConcern
+     end
+   end
+ 
++  def set_view_value
++    @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
++  end
++
+   $twitter_title = "コレテク　~稼げるQ&Aサイト~"
+   $twitter_site = "$3UJVrqxCS0V4bin"
+   $twitter_creator = "$3UJVrqxCS0V4bin"
+@@ -46,6 +51,6 @@ module ViewConcern
+   $og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
+   $og_description = "コレテクとはQ＆Aサイトとフリマサイトがお融合したサービスです。質問と回答のマーケットプレイス！登録して悩みを相談しよう！"
+   $og_site_name = "コレテク"
+-  @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+-  #@og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
++  $og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
++  #$og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+ end
+\ No newline at end of file
+diff --git a/app/controllers/user/accounts_controller.rb b/app/controllers/user/accounts_controller.rb
+index 0f91cce..e2f9066 100644
+--- a/app/controllers/user/accounts_controller.rb
++++ b/app/controllers/user/accounts_controller.rb
+@@ -61,7 +61,7 @@ class User::AccountsController < User::Base
+       @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
+     end
+     if @user.image.url
+-      @og_image = @user.image.url
++      $og_image = @user.image.url
+     end
+     @og_title = @user.name
+     @og_description = @user.description
+diff --git a/app/controllers/user/base.rb b/app/controllers/user/base.rb
+index cea2071..939ae51 100644
+--- a/app/controllers/user/base.rb
++++ b/app/controllers/user/base.rb
+@@ -1,10 +1,11 @@
+ class User::Base < ApplicationController
+-  before_action :check_operation_state
+   before_action :check_error
+-  before_action :check_deleted_account
+   after_action :create_access_log
++  after_action :save_current_path
++  #include RedirectHandlers
+   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+   def create_access_log
++    puts 
+     if user_signed_in?
+       puts "元のIPアドレス"
+       puts @remote_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
+@@ -17,9 +18,9 @@ class User::Base < ApplicationController
+         id_number: params[:id], 
+         parameter: params
+         )
+-      if AccessLog.count > 100000
+-        AccessLog.where(user: current_user).order(created_at: "DESC").last.destroy
+-      end
++      #if AccessLog.count > 100000
++      #  AccessLog.where(user: current_user).order(created_at: "DESC").last.destroy
++      #end
+     end
+   end
+ 
+@@ -30,181 +31,19 @@ class User::Base < ApplicationController
+     end
+   end
+ 
+-  #def check_user_status
+-  #    if user_signed_in?
+-  #        user_status = UserStatus.where("user_id = ? && start_at <= ?",current_user.id, DateTime.now).order(start_at: "ASC").last
+-  #        if user_status.present?
+-  #            allowed_controllers = ["sessions", "alerts", "abouts", "inquiries"]
+-  #            if user_status.state == "suspended" && !allowed_controllers.include?(controller_name)
+-  #                redirect_to user_alerts_path
+-  #            end
+-  #        end
+-  #    end
+-  #end
+-
+   def check_error
+-      if params[:error] != nil && params[:error] != ""
+-        @error = params[:error]
+-      end
+-  end
+-
+-  def check_deleted_account
+-      puts "アカウント状況"
+-      puts controller_name
+-      puts action_name
+-      if controller_name == "devise" && action_name == "registrations"
+-          puts "新規登録"
+-      end
+-  end
+-    
+-  def check_operation_state
+-    state = current_state
+-    puts "オペレーション"
+-    puts state
+-    if admin_user_signed_in? || for_admin_user
+-      puts current_admin_user.email
+-    else
+-      if state
+-        puts "システム状況" + state
+-        puts controller_name
+-        case state
+-        when "register" then
+-          puts "登録のみ"
+-          if state_register
+-          else
+-            flash.notice = "現在その機能はご利用いただけません。"
+-            puts "アクセス失敗"
+-            redirect_to_previous_path
+-          end
+-        when "suspended" then
+-          puts "システム停止"
+-          if state_suspended
+-          else
+-            flash.notice = "現在システムは停止しています。"
+-            redirect_to_previous_path
+-          end
+-        when "browse" then
+-          puts "閲覧のみ"
+-          if state_browse then
+-          else
+-            flash.notice = "現在その機能はご利用いただけません。"
+-            redirect_to_previous_path
+-          end
+-        when "running" then
+-          puts "稼働"
+-        else
+-          puts "その他"
+-        end
+-        
+-      end
+-    end
+-  end
+-    
+-  def redirect_to_previous_path
+-    #if request.referer
+-    #   redirect_to request.referer
+-    #else
+-    #   redirect_to abouts_path
+-    #end
+-    redirect_to abouts_path
+-  end
+-
+-  def state_suspended
+-    if [
+-      "abouts",
+-      "admin",
+-      "active_admins",
+-      "sessions",
+-      "dashboard",
+-      "alerts"
+-      ].include?(controller_name)
+-      true
+-    else
+-      false
+-    end
+-  end
+-  
+-  def state_browse
+-    if [
+-      "create",
+-      "delete",
+-      "destroy",
+-      "edit",
+-      "new",
+-      "update",
+-      "inquiries",
+-    ].include?(action_name)
+-      false
+-    else
+-      true
++    if params[:error] != nil && params[:error] != ""
++      @error = params[:error]
+     end
+   end
+ 
+-  def state_register
+-    if controller_name == "services" && action_name == "show" #自分のサービスページを閲覧
+-      if user_signed_in? && Service.find(params[:id]).user == current_user
+-        true
+-      else
+-        false
+-      end
+-    elsif controller_name == "requests" && action_name == "show" #自分の依頼ページを閲覧
+-      if user_signed_in? && Request.find(params[:id]).user == current_user
+-        true
+-      else
+-        false
+-      end
+-    elsif [
+-      "services",
+-      "requests",
+-      "accounts",
+-      "abouts",
+-      "admin",
+-      "active_admins",
+-      "cards",
+-      "configs",
+-      "confirmations",
+-      "connects",
+-      "dashboard",
+-      "inquiries",
+-      "images",
+-      "notifications",
+-      "omniauth_callbacks",
+-      "payments",
+-      "passwrords",
+-      "posts",
+-      "registrations",
+-      "sessions",
+-      "transactions",
+-      "unlocks",
+-      "inquiries",
+-      "alerts"
+-      ].include?(controller_name)
+-      true
+-    else
+-      #if controller_path.include?("admin")
+-      #   true
+-      #else
+-      #   false
+-      #end
+-      false
+-    end
+-  end
+-
+-  def check_meta_tag
+-    @twitter_title = "コレテク　~ノウハウを売買するQAサイト~"
+-    @twitter_site = "@3UJVrqxCS0V4bin"
+-    @twitter_creator = "@3UJVrqxCS0V4bin"
+-    @og_title = "コレテク　~ノウハウを売買するQAサイト~"
+-    @og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
+-    @og_description = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+-    @og_site_name = "コレテク"
+-    @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.png"
+-  end
+-  
+   private def check_login
+-    if !user_signed_in?
+-      session[:path_params] = params if request.method == 'GET'
++    unless user_signed_in? #ログインしていない
+       redirect_to new_user_session_path
+     end
+   end
++
++  def save_current_path
++    session[:path_params] = params if request.method == 'GET'
++  end
+ end
+\ No newline at end of file
+diff --git a/app/controllers/user/homes_controller.rb b/app/controllers/user/homes_controller.rb
+index b8635ba..33f68a2 100644
+--- a/app/controllers/user/homes_controller.rb
++++ b/app/controllers/user/homes_controller.rb
+@@ -1,5 +1,6 @@
+-class User::HomesController < ApplicationController
++class User::HomesController < User::Base
+   layout "with_footer"
++  before_action :detect_state
+   def show
+     @services = Service
+       .solve_n_plus_1
+@@ -17,4 +18,8 @@ class User::HomesController < ApplicationController
+       .order(total_views: :DESC)
+       .limit(12)
+   end
++
++  def detect_state
++    redirect_to abouts_path  if current_state != 'running'
++  end
+ end
+diff --git a/app/controllers/user/services_controller.rb b/app/controllers/user/services_controller.rb
+index f116fac..010a0a4 100644
+--- a/app/controllers/user/services_controller.rb
++++ b/app/controllers/user/services_controller.rb
+@@ -66,7 +66,7 @@ class User::ServicesController < User::Base
+       "「稼げる相談サイト」コレテクの#{@service.user.name}さんの相談室はこちら。 気になる方は以下のリンクへ！"
+     end
+     if @service.item&.file&.url
+-      @og_image = @service.item&.file&.url
++      $og_image = @service.item&.file&.url
+     end
+     @og_title = @service.title
+     @og_description = @service.description
+diff --git a/app/controllers/user/transactions_controller.rb b/app/controllers/user/transactions_controller.rb
+index b41efa1..0aad7a4 100644
+--- a/app/controllers/user/transactions_controller.rb
++++ b/app/controllers/user/transactions_controller.rb
+@@ -45,11 +45,7 @@ class User::TransactionsController < User::Base
+   end
+ 
+   def show
+-    if @transaction.request_form.name == "text"
+-      @og_image = @transaction.request.items.first.file.url
+-    elsif @transaction.service.item
+-      @og_image = @transaction.service.item&.file&.url
+-    end
++    $og_image = @transaction.request.items.first.file.url if @transaction.request.items.select{|item| item.file.is_image?}.present?
+     @transaction_along_messages =  TransactionMessage
+       .joins(:deal)
+       .where(transaction_id:@transaction.id)
+diff --git a/app/helpers/application_helper.rb b/app/helpers/application_helper.rb
+index 692d316..c43b5ba 100644
+--- a/app/helpers/application_helper.rb
++++ b/app/helpers/application_helper.rb
+@@ -1,74 +1,8 @@
+ module ApplicationHelper
+ include CommonMethods
+-include OperationConfig
+ include FormConfig
+ include Variables
+-  def from_now(datetime)
+-    if datetime == nil
+-      "-/-/--:--"
+-    else
+-      if datetime.to_s.include?("T") #DateTimeの表記方法の違いで分岐
+-        past_time = datetime.to_i - DateTime.now.to_i
+-      else
+-        past_time = datetime - DateTime.now#現在から何秒後
+-      end
+-      
+-      if 0 < past_time
+-        anterior_word = "あと"
+-        posterior_word = ""
+-      else
+-        anterior_word = ""
+-        posterior_word = "前"
+-      end
+-
+-      difference = past_time.abs #絶対値
+-      minute = difference/60
+-      hour = minute/60
+-      day = hour/24
+-      week = day/7
+-      month = week/4
+-      year = day/365
+-
+-      if (minute).to_i < 60#60分未満
+-        anterior_word + "#{minute.to_i }分" + posterior_word
+-      elsif hour.to_i < 24 #24時間未満
+-        anterior_word + "#{hour.to_i }時間" + posterior_word
+-      elsif day.to_i < 7 #７日未満
+-        anterior_word + "#{day.to_i}日" + posterior_word
+-      elsif week.to_i < 4 #4週間未満
+-        anterior_word + "#{week.to_i }週間" + posterior_word
+-      elsif  month.to_i < 12 #12ヶ月未満s
+-        anterior_word + "#{month.to_i }ヶ月" + posterior_word
+-      else
+-        anterior_word + "#{year.to_i}年" + posterior_word
+-      end
+-    end
+-  end
+-
+-  def from_now_exact(datetime)
+-    if datetime == nil
+-      "-/-/--:--"
+-    else
+-      past_time = datetime.to_i - DateTime.now.to_i
+-      if 0 < past_time
+-        anterior_word = "あと"
+-        posterior_word = ""
+-      else
+-        anterior_word = ""
+-        posterior_word = "前"
+-      end
+-      
+-      difference = past_time.abs #絶対値
+-      minute = difference/60
+-      hour = minute/60
+-      day = hour/24
+-      week = day/7
+-      month = week/4
+-      year = day/365
+-      anterior_word + "#{day}日#{hour%24}時間#{minute%60}分" + posterior_word
+-    end
+-  end
+-
++include OperationConfig
+   def readable_datetime(datetime)
+     if datetime
+       datetime.strftime("%Y/%m/%d %H:%M")
+@@ -81,23 +15,10 @@ include Variables
+     "#{datetime.strftime('%d')}"
+   end
+ 
+-  def user_image_default
+-    "/profile.jpg"
+-  end
+-
+   def minimum_total_reviews
+     1
+   end
+ 
+-  def convert_path(controller, action, id)
+-    {
+-      "contacts" => {"show" => user_contact_path(id)},
+-      "requests" => {"show" => user_request_path(id)},
+-      "transactions" => {"show" => user_transaction_path(id)},
+-      "services" => {"show" => user_service_path(id)}
+-    }[controller][action]
+-  end
+-
+   def notifications_length
+     Notification.where(user_id: current_user.id, is_notified:false).length
+   end
+@@ -117,12 +38,6 @@ include Variables
+     end
+   end
+ 
+-  def category_select_hash
+-    Category.all.each_with_object({}) do |category, hash|
+-      hash[category.japanese_name] = category.name
+-    end
+-  end
+-
+   def request_completed
+     transaction = Transaction.find_by(request_id: @request.id)
+     if transaction
+@@ -136,10 +51,6 @@ include Variables
+     end
+   end
+ 
+-  def javascript_path
+-    "#{controller_path}/#{action_name}.js"
+-  end
+-
+   def shared_paths
+     Dir.glob("app/javascript/packs/shared/*.js")  do |path|
+       path.slice(21, path.length).to_s
+diff --git a/app/models/application_record.rb b/app/models/application_record.rb
+index 8bb261b..641b20b 100644
+--- a/app/models/application_record.rb
++++ b/app/models/application_record.rb
+@@ -5,10 +5,10 @@ class ApplicationRecord < ActiveRecord::Base
+   self.abstract_class = true
+   include CommonMethods
+   include FormConfig
+-  include OperationConfig
+   include Variables
+   include CommonConcern
+   include TemplateConcern
++  include OperationConfig
+ 
+   def self.sorted_by(order)
+     case order
+diff --git a/app/models/operation.rb b/app/models/operation.rb
+index 615a871..eb5fcf9 100644
+--- a/app/models/operation.rb
++++ b/app/models/operation.rb
+@@ -1,5 +1,29 @@
+ class Operation < ApplicationRecord
+   belongs_to :admin_user
+-  enum state: CommonConcern.operation_states
++  enum state: CommonConcern.operation_states 
++  scope :running, -> { where(state: "running") }
++  scope :started, -> { where("start_at <= ?", DateTime.now) }
++  scope :not_started, -> { where("? < start_at", DateTime.now) }
++  scope :ordered_by_start, -> { order(start_at: :asc) }
+   after_commit :update_operation_config
++
++  # 次の operation の変更時刻を取得
++  def self.operation_next_change_at
++    not_started.minimum(:start_at)
++  end
++
++  # 最新の state を取得
++  def self.latest_state
++    started.ordered_by_start&.last&.state
++  end
++
++  # 最新の state を取得
++  def self.latest_description
++    started.ordered_by_start&.last&.description
++  end
++
++  # 最初の "running" 状態の operation を取得
++  def self.first_running_operation
++    running.not_started.ordered_by_start.first
++  end
+ end
+diff --git a/app/models/user.rb b/app/models/user.rb
+index a24530e..c7245cd 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -27,7 +27,7 @@ class User < ApplicationRecord
+   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
+   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
+   has_many :delivered_transactions, -> { delivered }, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
+-  has_many :buyable_services, -> { buyable }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
++  has_many :buyable_services, -> { buyable.solve_n_plus_1 }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
+   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
+   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
+   has_many :service_categories, through: :services, source: :service_categories
+@@ -121,7 +121,7 @@ class User < ApplicationRecord
+   }
+ 
+   scope :transactions_count, -> {
+-    left_joins(:transactions)
++    left_joins(:sales)
+       .select('users.*, COUNT(CASE WHEN transactions.is_published = true THEN 1 END) AS published_transactions_count')
+       .group('users.id')
+       .order('published_transactions_count DESC')
+diff --git a/app/views/layouts/_head.html.erb b/app/views/layouts/_head.html.erb
+index 7891f81..8f2d3ac 100644
+--- a/app/views/layouts/_head.html.erb
++++ b/app/views/layouts/_head.html.erb
+@@ -9,7 +9,7 @@
+     <meta property="og:url" content="<%= $og_url %>" />
+     <meta property="og:description" content="<%= $og_description %>" />
+     <meta property="og:site_name" content="<%= $og_site_name %>" />
+-    <meta property="og:image" content="<%= @og_image %>" />
++    <meta property="og:image" content="<%= $og_image %>" />
+     <meta property=”fb:app_id” content=”896718071686338”>
+     <%= csrf_meta_tags %>
+     <%= csp_meta_tag %>
+diff --git a/app/views/layouts/alert.html.erb b/app/views/layouts/alert.html.erb
+index ec77731..af2ccf7 100644
+--- a/app/views/layouts/alert.html.erb
++++ b/app/views/layouts/alert.html.erb
+@@ -2,6 +2,10 @@
+ <html lang="ja" prefix="og: http://ogp.me/ns#">
+   <%= render "layouts/head" %>
+   <body class="body">
++  	  	<div class="header" id="header">
++  	  	  	<%=render "layouts/menu"%>
++  	  	</div>
++  	  	<%=render "layouts/top_margin"%>
+     <div class="alert_main">
+       <%= yield %>
+     </div>
+diff --git a/app/views/user/accounts/_service_price_range.html.erb b/app/views/user/accounts/_service_price_range.html.erb
+index bc7f2cf..2d274ce 100644
+--- a/app/views/user/accounts/_service_price_range.html.erb
++++ b/app/views/user/accounts/_service_price_range.html.erb
+@@ -1,9 +1,10 @@
++<%mini_service_price = user.mini_service_price%>
+ <%=
+-if user.mini_service_price.blank?
++if mini_service_price.blank?
+ 	"--"
+-elsif user.mini_service_price == user.max_service_price
+-  	"#{user.mini_service_price}"
++elsif mini_service_price == user.max_service_price
++  	"#{mini_service_price}"
+ else
+-  	"#{user.mini_service_price} 〜 #{user.max_service_price}"
++  	"#{mini_service_price} 〜 #{user.max_service_price}"
+ end
+ %><span class="unit">円</span>
+\ No newline at end of file
+diff --git a/app/views/user/accounts/index.html.erb b/app/views/user/accounts/index.html.erb
+index 2161b78..cea7a13 100644
+--- a/app/views/user/accounts/index.html.erb
++++ b/app/views/user/accounts/index.html.erb
+@@ -1,34 +1,30 @@
+ <div class="searched_user_zone">
+-    <%if current_state == "register" %>
+-        <%= render "user/shared/state_register_alert" %>
+-    <%else%>
+-        <div class="main_header">
+-            <div class="left_side">
+-                <%= link_to "", user_homes_path, class:"fas fa-home" %>
+-                 > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+-                <%= render "user/shared/category_selector", 
+-			    	current_link: -> { user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently])}, 
+-			    	link: ->(category) { user_accounts_path(categories: category[:name], order: params[:order], signed_in_recently: params[:signed_in_recently])} %>
+-            </div>
+-            <div class="second_stage">
+-			    <%= link_to user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1'), class:"check_link" do %>
+-			    	<input class="checkbox" type="checkbox" <%='checked' if params[:signed_in_recently] == '1'%>>1週間以内にログイン
+-			    <% end %>
+-                <%= render "user/shared/sort_selector",
+-                    link: ->(order) {user_accounts_path(order: order, categories: params[:categories], signed_in_recently: params[:signed_in_recently]) } %>
+-            </div>
++    <div class="main_header">
++        <div class="left_side">
++            <%= link_to "", user_homes_path, class:"fas fa-home" %>
++             > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
++            <%= render "user/shared/category_selector", 
++                current_link: -> { user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently])}, 
++                link: ->(category) { user_accounts_path(categories: category[:name], order: params[:order], signed_in_recently: params[:signed_in_recently])} %>
+         </div>
+-        <div class="searched_user_area" id="searched_user_area">
+-            <div  id="searched_user_area">
+-                <% @users.each do |user|%>
+-                    <%= render "user/accounts/cell", user:user %>
+-                <% end %>
+-            </div>
++        <div class="second_stage">
++            <%= link_to user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1'), class:"check_link" do %>
++                <input class="checkbox" type="checkbox" <%='checked' if params[:signed_in_recently] == '1'%>>1週間以内にログイン
++            <% end %>
++            <%= render "user/shared/sort_selector",
++                link: ->(order) {user_accounts_path(order: order, categories: params[:categories], signed_in_recently: params[:signed_in_recently]) } %>
+         </div>
+-        <div class="main_bottom">
+-            <%= paginate @users %>
++    </div>
++    <div class="searched_user_area" id="searched_user_area">
++        <div  id="searched_user_area">
++            <% @users.each do |user|%>
++                <%= render "user/accounts/cell", user:user %>
++            <% end %>
+         </div>
+-    <% end %>
++    </div>
++    <div class="main_bottom">
++        <%= paginate @users %>
++    </div>
+ </div>
+ <script>
+ <%= render "user/accounts/index.js.erb" %>
+diff --git a/app/views/user/requests/index.html.erb b/app/views/user/requests/index.html.erb
+index 92080bc..2ec8a6b 100644
+--- a/app/views/user/requests/index.html.erb
++++ b/app/views/user/requests/index.html.erb
+@@ -1,30 +1,26 @@
+ <div class="request_index_zone">
+-    <%if current_state == "register" %>
+-        <%= render "user/shared/state_register_alert" %>
+-    <%else%>
+-        <div class="main_header">
+-            <div class="left_side">
+-        		<%= link_to "", user_homes_path, class:"fas fa-home"%>
+-        		 > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+-				<%= render "user/shared/category_selector", 
+-					current_link: -> { user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest]) }, 
+-					link: ->(category) { user_requests_path(categories: category[:name], order: params[:order], can_suggest: params[:can_suggest]) } %>
+-			</div>
+-            <div class="second_stage">
+-			    <%= link_to user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest] == '1' ? '0' : '1'), class:"check_link" do %>
+-			    	<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
+-			    <% end %>
+-            	<%= render "user/shared/sort_selector",
+-            	    link: ->(order) {user_requests_path(order: order, categories: params[:categories], can_suggest: params[:can_suggest]) } %>
+-			</div>
+-        </div>
+-        <div class="request_index_flame request_cell_flame">
+-            <% @requests.each do |request|%>
+-                <%= render "user/requests/cell", request:request%>
+-            <% end %>
+-        </div>
+-        <div class="main_bottom"><%= paginate @requests %></div>
+-    <% end %>
++	<div class="main_header">
++		<div class="left_side">
++			<%= link_to "", user_homes_path, class:"fas fa-home"%>
++			 > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
++			<%= render "user/shared/category_selector", 
++				current_link: -> { user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest]) }, 
++				link: ->(category) { user_requests_path(categories: category[:name], order: params[:order], can_suggest: params[:can_suggest]) } %>
++		</div>
++		<div class="second_stage">
++			<%= link_to user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest] == '1' ? '0' : '1'), class:"check_link" do %>
++				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
++			<% end %>
++			<%= render "user/shared/sort_selector",
++				link: ->(order) {user_requests_path(order: order, categories: params[:categories], can_suggest: params[:can_suggest]) } %>
++		</div>
++	</div>
++	<div class="request_index_flame request_cell_flame">
++		<% @requests.each do |request|%>
++			<%= render "user/requests/cell", request:request%>
++		<% end %>
++	</div>
++<div class="main_bottom"><%= paginate @requests %></div>
+ </div>
+ <script>
+ set_search_detail();
+diff --git a/app/views/user/services/index.html.erb b/app/views/user/services/index.html.erb
+index 4ec35eb..4bf3be5 100644
+--- a/app/views/user/services/index.html.erb
++++ b/app/views/user/services/index.html.erb
+@@ -1,35 +1,31 @@
+ <div class="services_index_zone">
+-    <%if current_state == "register" %>
+-        <%= render "user/shared/state_register_alert" %>
+-    <%else%>
+-        <div class="main_header">
+-            <div class="left_side">
+-                <%= link_to "", user_homes_path, class:"fas fa-home"%>
+-                 > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+-                <%= render "user/shared/category_selector", 
+-			    	current_link: -> { user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available]) }, 
+-			    	link: ->(category) { user_services_path(categories: category[:name], order: params[:order], is_available: params[:is_available]) } %>
+-            </div>
+-            <div class="second_stage">
+-			    <%= link_to user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available] == '1' ?  '0' : '1'), class:"check_link" do %>
+-			    	<input class="checkbox" type="checkbox" <%='checked' if params[:is_available] == '1'%>>受付中
+-			    <% end %>
+-                <%= render "user/shared/sort_selector",
+-                    link: ->(order) {user_services_path(order: order, categories: params[:categories], is_available: params[:is_available]) } %>
+-            </div>
++    <div class="main_header">
++        <div class="left_side">
++            <%= link_to "", user_homes_path, class:"fas fa-home"%>
++             > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
++            <%= render "user/shared/category_selector", 
++                current_link: -> { user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available]) }, 
++                link: ->(category) { user_services_path(categories: category[:name], order: params[:order], is_available: params[:is_available]) } %>
+         </div>
+-        <div class="service_index_flame service_cell_zone">
+-            <% @services.each do |service| %>
+-                    <%= render "user/services/cell", service: service%>
++        <div class="second_stage">
++            <%= link_to user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available] == '1' ?  '0' : '1'), class:"check_link" do %>
++                <input class="checkbox" type="checkbox" <%='checked' if params[:is_available] == '1'%>>受付中
+             <% end %>
+-            <% unless @services.present? %>
+-                <div class="service"></div>
+-            <% end %>
+-        </div>
+-        <div class="main_bottom">
+-            <%= paginate @services %>
++            <%= render "user/shared/sort_selector",
++                link: ->(order) {user_services_path(order: order, categories: params[:categories], is_available: params[:is_available]) } %>
+         </div>
+-    <% end %>
++    </div>
++    <div class="service_index_flame service_cell_zone">
++        <% @services.each do |service| %>
++                <%= render "user/services/cell", service: service%>
++        <% end %>
++        <% unless @services.present? %>
++            <div class="service"></div>
++        <% end %>
++    </div>
++<div class="main_bottom">
++    <%= paginate @services %>
++</div>
+ </div>
+ <script>
+ set_search_detail()
+diff --git a/app/views/user/shared/_state_register_alert.html.erb b/app/views/user/shared/_state_register_alert.html.erb
+index 12a88c6..9dbe2f9 100644
+--- a/app/views/user/shared/_state_register_alert.html.erb
++++ b/app/views/user/shared/_state_register_alert.html.erb
+@@ -4,10 +4,10 @@
+     <%=link_to "ログイン", new_user_session_path %>
+     </h2>
+     <h1>開始日時：
+-    <%if first_running_operation %>
+-        <%= readable_datetime(first_running_operation.start_at) %>
++    <%if operation_start_at %>
++        <%= readable_datetime(operation_start_at) %>
+     <% else %>
+-    未定
++        未定
+     <% end %>
+     </h1>
+ </div>
+\ No newline at end of file
+diff --git a/app/views/user/transactions/index.html.erb b/app/views/user/transactions/index.html.erb
+index 11ccb6f..e2d14af 100644
+--- a/app/views/user/transactions/index.html.erb
++++ b/app/views/user/transactions/index.html.erb
+@@ -1,25 +1,21 @@
+ <div class="transaction_zone">
+-    <%if current_state == "register" %>
+-        <%= render "user/shared/state_register_alert" %>
+-    <%else%>
+-        <div class="main_header">
+-            <div class="left_side">
+-                <%= link_to "", user_homes_path, class:"fas fa-home"%>
+-                 > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+-                 <%= render "user/shared/category_selector", 
+-			    	current_link: -> { user_transactions_path(categories: params[:categories], order: params[:order]) }, 
+-			    	link: ->(category) { user_transactions_path(categories: category[:name], order: params[:order]) } %>
+-            </div>
+-            <%= render "user/shared/sort_selector",
+-                link: ->(order) {user_transactions_path(order: order, categories: params[:categories]) } %>
+-        </div>
+-        <% @transactions.each do |transaction|%>
+-            <%= render "user/transactions/answer", transaction:transaction %>
+-        <% end %>
+-        <div class="main_bottom">
+-            <%= paginate @transactions %>
++    <div class="main_header">
++        <div class="left_side">
++            <%= link_to "", user_homes_path, class:"fas fa-home"%>
++             > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
++             <%= render "user/shared/category_selector", 
++                current_link: -> { user_transactions_path(categories: params[:categories], order: params[:order]) }, 
++                link: ->(category) { user_transactions_path(categories: category[:name], order: params[:order]) } %>
+         </div>
++        <%= render "user/shared/sort_selector",
++            link: ->(order) {user_transactions_path(order: order, categories: params[:categories]) } %>
++    </div>
++    <% @transactions.each do |transaction|%>
++        <%= render "user/transactions/answer", transaction:transaction %>
+     <% end %>
++    <div class="main_bottom">
++        <%= paginate @transactions %>
++    </div>
+ </div>
+ <script>
+ set_search_detail();
+diff --git a/db/migrate/20220814130120_create_operations.rb b/db/migrate/20220814130120_create_operations.rb
+index c92e584..12ec3dd 100644
+--- a/db/migrate/20220814130120_create_operations.rb
++++ b/db/migrate/20220814130120_create_operations.rb
+@@ -3,6 +3,7 @@ class CreateOperations < ActiveRecord::Migration[6.1]
+     create_table :operations do |t|
+       t.integer :state
+       t.datetime :start_at, null: false
++      t.text :description
+       t.text :comment
+       t.references :admin_user, foreign_key: true
+ 
+diff --git a/db/schema.rb b/db/schema.rb
+index 321bb1e..95e8588 100644
+--- a/db/schema.rb
++++ b/db/schema.rb
+@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 2024_10_22_094458) do
+   create_table "operations", force: :cascade do |t|
+     t.integer "state"
+     t.datetime "start_at", null: false
++    t.text "description"
+     t.text "comment"
+     t.bigint "admin_user_id"
+     t.datetime "created_at", precision: 6, null: false
+diff --git a/public/uploads/.DS_Store b/public/uploads/.DS_Store
+index 5e11e68..66d8d70 100644
+Binary files a/public/uploads/.DS_Store and b/public/uploads/.DS_Store differ

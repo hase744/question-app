@@ -37,6 +37,7 @@
     margin-bottom: 10px;
     font-size: 16px;
     outline: none;
+    border-radius: 0px;
   }
   
   .form-input:focus {
@@ -45,6 +46,7 @@
   
   .form-submit {
     width: 50px;
+    height: 42px;
     align-self: flex-start;
     padding: 8px 4px;
     background-color: #007bff;

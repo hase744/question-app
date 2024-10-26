@@ -1,25 +1,21 @@
 <div class="transaction_zone">
-    <%if current_state == "register" %>
-        <%= render "user/shared/state_register_alert" %>
-    <%else%>
-        <div class="main_header">
-            <div class="left_side">
-                <%= link_to "", user_homes_path, class:"fas fa-home"%>
-                 > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-                 <%= render "user/shared/category_selector", 
-			    	current_link: -> { user_transactions_path(categories: params[:categories], order: params[:order]) }, 
-			    	link: ->(category) { user_transactions_path(categories: category[:name], order: params[:order]) } %>
-            </div>
-            <%= render "user/shared/sort_selector",
-                link: ->(order) {user_transactions_path(order: order, categories: params[:categories]) } %>
+    <div class="main_header">
+        <div class="left_side">
+            <%= link_to "", user_homes_path, class:"fas fa-home"%>
+             > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+             <%= render "user/shared/category_selector", 
+                current_link: -> { user_transactions_path(categories: params[:categories], order: params[:order]) }, 
+                link: ->(category) { user_transactions_path(categories: category[:name], order: params[:order]) } %>
         </div>
-        <% @transactions.each do |transaction|%>
-            <%= render "user/transactions/answer", transaction:transaction %>
-        <% end %>
-        <div class="main_bottom">
-            <%= paginate @transactions %>
-        </div>
+        <%= render "user/shared/sort_selector",
+            link: ->(order) {user_transactions_path(order: order, categories: params[:categories]) } %>
+    </div>
+    <% @transactions.each do |transaction|%>
+        <%= render "user/transactions/answer", transaction:transaction %>
     <% end %>
+    <div class="main_bottom">
+        <%= paginate @transactions %>
+    </div>
 </div>
 <script>
 set_search_detail();

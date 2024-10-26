@@ -1,9 +1,10 @@
+<%mini_service_price = user.mini_service_price%>
 <%=
-if user.mini_service_price.blank?
+if mini_service_price.blank?
 	"--"
-elsif user.mini_service_price == user.max_service_price
-  	"#{user.mini_service_price}"
+elsif mini_service_price == user.max_service_price
+  	"#{mini_service_price}"
 else
-  	"#{user.mini_service_price} 〜 #{user.max_service_price}"
+  	"#{mini_service_price} 〜 #{user.max_service_price}"
 end
 %><span class="unit">円</span>

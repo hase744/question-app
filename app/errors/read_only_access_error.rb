@@ -1,0 +1,1 @@
+class ReadOnlyAccessError < StandardError; end

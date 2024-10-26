@@ -1,34 +1,30 @@
 <div class="searched_user_zone">
-    <%if current_state == "register" %>
-        <%= render "user/shared/state_register_alert" %>
-    <%else%>
-        <div class="main_header">
-            <div class="left_side">
-                <%= link_to "", user_homes_path, class:"fas fa-home" %>
-                 > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-                <%= render "user/shared/category_selector", 
-			    	current_link: -> { user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently])}, 
-			    	link: ->(category) { user_accounts_path(categories: category[:name], order: params[:order], signed_in_recently: params[:signed_in_recently])} %>
-            </div>
-            <div class="second_stage">
-			    <%= link_to user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1'), class:"check_link" do %>
-			    	<input class="checkbox" type="checkbox" <%='checked' if params[:signed_in_recently] == '1'%>>1週間以内にログイン
-			    <% end %>
-                <%= render "user/shared/sort_selector",
-                    link: ->(order) {user_accounts_path(order: order, categories: params[:categories], signed_in_recently: params[:signed_in_recently]) } %>
-            </div>
+    <div class="main_header">
+        <div class="left_side">
+            <%= link_to "", user_homes_path, class:"fas fa-home" %>
+             > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+            <%= render "user/shared/category_selector", 
+                current_link: -> { user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently])}, 
+                link: ->(category) { user_accounts_path(categories: category[:name], order: params[:order], signed_in_recently: params[:signed_in_recently])} %>
         </div>
-        <div class="searched_user_area" id="searched_user_area">
-            <div  id="searched_user_area">
-                <% @users.each do |user|%>
-                    <%= render "user/accounts/cell", user:user %>
-                <% end %>
-            </div>
+        <div class="second_stage">
+            <%= link_to user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1'), class:"check_link" do %>
+                <input class="checkbox" type="checkbox" <%='checked' if params[:signed_in_recently] == '1'%>>1週間以内にログイン
+            <% end %>
+            <%= render "user/shared/sort_selector",
+                link: ->(order) {user_accounts_path(order: order, categories: params[:categories], signed_in_recently: params[:signed_in_recently]) } %>
         </div>
-        <div class="main_bottom">
-            <%= paginate @users %>
+    </div>
+    <div class="searched_user_area" id="searched_user_area">
+        <div  id="searched_user_area">
+            <% @users.each do |user|%>
+                <%= render "user/accounts/cell", user:user %>
+            <% end %>
         </div>
-    <% end %>
+    </div>
+    <div class="main_bottom">
+        <%= paginate @users %>
+    </div>
 </div>
 <script>
 <%= render "user/accounts/index.js.erb" %>

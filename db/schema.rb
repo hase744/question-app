@@ -151,6 +151,7 @@ ActiveRecord::Schema.define(version: 2024_10_22_094458) do
   create_table "operations", force: :cascade do |t|
     t.integer "state"
     t.datetime "start_at", null: false
+    t.text "description"
     t.text "comment"
     t.bigint "admin_user_id"
     t.datetime "created_at", precision: 6, null: false

@@ -1,30 +1,26 @@
 <div class="request_index_zone">
-    <%if current_state == "register" %>
-        <%= render "user/shared/state_register_alert" %>
-    <%else%>
-        <div class="main_header">
-            <div class="left_side">
-        		<%= link_to "", user_homes_path, class:"fas fa-home"%>
-        		 > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-				<%= render "user/shared/category_selector", 
-					current_link: -> { user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest]) }, 
-					link: ->(category) { user_requests_path(categories: category[:name], order: params[:order], can_suggest: params[:can_suggest]) } %>
-			</div>
-            <div class="second_stage">
-			    <%= link_to user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest] == '1' ? '0' : '1'), class:"check_link" do %>
-			    	<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
-			    <% end %>
-            	<%= render "user/shared/sort_selector",
-            	    link: ->(order) {user_requests_path(order: order, categories: params[:categories], can_suggest: params[:can_suggest]) } %>
-			</div>
-        </div>
-        <div class="request_index_flame request_cell_flame">
-            <% @requests.each do |request|%>
-                <%= render "user/requests/cell", request:request%>
-            <% end %>
-        </div>
-        <div class="main_bottom"><%= paginate @requests %></div>
-    <% end %>
+	<div class="main_header">
+		<div class="left_side">
+			<%= link_to "", user_homes_path, class:"fas fa-home"%>
+			 > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
+			<%= render "user/shared/category_selector", 
+				current_link: -> { user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest]) }, 
+				link: ->(category) { user_requests_path(categories: category[:name], order: params[:order], can_suggest: params[:can_suggest]) } %>
+		</div>
+		<div class="second_stage">
+			<%= link_to user_requests_path(categories: params[:categories], order: params[:order], can_suggest: params[:can_suggest] == '1' ? '0' : '1'), class:"check_link" do %>
+				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
+			<% end %>
+			<%= render "user/shared/sort_selector",
+				link: ->(order) {user_requests_path(order: order, categories: params[:categories], can_suggest: params[:can_suggest]) } %>
+		</div>
+	</div>
+	<div class="request_index_flame request_cell_flame">
+		<% @requests.each do |request|%>
+			<%= render "user/requests/cell", request:request%>
+		<% end %>
+	</div>
+<div class="main_bottom"><%= paginate @requests %></div>
 </div>
 <script>
 set_search_detail();
