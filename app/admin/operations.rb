@@ -21,7 +21,7 @@ ActiveAdmin.register Operation do
 
 
   permit_params do
-    permitted = [:state_id, :start_at, :comment, :admin_user_id]
+    permitted = [:state, :start_at, :comment, :description, :admin_user_id]
     permitted << :other if params[:action] == 'create' && admin_user_signed_in?
     permitted
   end
@@ -35,6 +35,7 @@ ActiveAdmin.register Operation do
       }
       f.input :start_at, as: :datetime_picker
       f.input :comment
+      f.input :description
       f.input :admin_user_id, input_html: {value: current_admin_user.id}, as: :hidden
     end
     f.actions

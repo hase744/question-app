@@ -17,6 +17,9 @@ included do
   rescue_from Stripe::AuthenticationError, with: :stripe_authentication_rescue
   rescue_from Stripe::APIConnectionError, with: :stripe_api_connection_rescue
   rescue_from Stripe::StripeError, with: :stripe_rescue
+  rescue_from ReadOnlyAccessError, with: :read_only_access_rescue
+  rescue_from RegistrationOnlyAccessError, with: :registration_only_access_rescue
+  rescue_from SuspendedAccessError, with: :suspended_access_rescue
 end
 
   private def rescue400(e)
@@ -100,5 +103,27 @@ end
     @error = e
     @message = "There is insufficient amount to to transfer: #{e.message}"
     create_error_log(e)
+  end
+
+
+  private def read_only_access_rescue(e)
+    @error = e
+    @message = "閲覧のみ可能です。アクセスが許可されていません。"
+    create_error_log(e)
+    render "errors/read_only_access", status: 403, layout: "alert"
+  end
+
+  private def registration_only_access_rescue(e)
+    @error = e
+    @message = "ユーザー登録のみ可能です。アクセスが許可されていません。"
+    create_error_log(e)
+    render "errors/registration_only_access", status: 403, layout: "alert"
+  end
+
+  private def suspended_access_rescue(e)
+    @error = e
+    @message = "アカウントが停止されています。アクセスできません。"
+    create_error_log(e)
+    render "errors/suspended_access", status: 403, layout: "alert"
   end
 end

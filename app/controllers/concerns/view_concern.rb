@@ -3,6 +3,7 @@ module ViewConcern
 
   included do
     before_action :set_selector
+    before_action :set_view_value
   end
   $selector = {
     '回答': "transaction", 
@@ -39,6 +40,10 @@ module ViewConcern
     end
   end
 
+  def set_view_value
+    @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+  end
+
   $twitter_title = "コレテク　~稼げるQ&Aサイト~"
   $twitter_site = "$3UJVrqxCS0V4bin"
   $twitter_creator = "$3UJVrqxCS0V4bin"
@@ -46,6 +51,6 @@ module ViewConcern
   $og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
   $og_description = "コレテクとはQ＆Aサイトとフリマサイトがお融合したサービスです。質問と回答のマーケットプレイス！登録して悩みを相談しよう！"
   $og_site_name = "コレテク"
-  @og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
-  #@og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+  $og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
+  #$og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
 end

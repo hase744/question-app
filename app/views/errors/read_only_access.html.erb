@@ -1,0 +1,12 @@
+<div class="component_area">
+    <h2>現在システムは停止しています。</br>
+    </h2>
+    <h1>再開日時：
+    <%if operation_start_at %>
+        <%= readable_datetime(operation_start_at) %>
+    <% else %>
+    未定
+    <% end %>
+    </h1>
+	<p><%=latest_description%></p>
+</div>

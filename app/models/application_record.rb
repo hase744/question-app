@@ -5,10 +5,10 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
   include CommonMethods
   include FormConfig
-  include OperationConfig
   include Variables
   include CommonConcern
   include TemplateConcern
+  include OperationConfig
 
   def self.sorted_by(order)
     case order

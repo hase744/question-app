@@ -1,45 +1,32 @@
 module OperationConfig
   include ConfigMethods
-  extend ActiveSupport::Concern
-  def latest_state
-    operation = Operation.where("start_at <= ?", DateTime.now).last
-    operation.state
-  end
-
-  def update_operation_config
-    update_config(sort:"operation", key:"change_at", value: operation_next_change_at)
-    update_config(sort:"operation", key:"state", value: latest_state)
-  end
-
-  #現在のstateをファイルから確認、変更時期を過ぎていたらdbを参照して更新
+  # 現在の state をファイルから確認し、必要に応じて更新
   def current_state
-    puts "状態"
     state = config_value(sort:"operation", key:"state")
     change_at = config_value(sort:"operation", key:"change_at")
-    #configのoperationのchange_atが過ぎていたら更新
-    if change_at.present? && change_at < DateTime.now
+    change_at ||= DateTime.new(9999, 12, 31, 0, 0, 0)
+    #configのoperationgateのchange_atが過ぎていたら更新
+    if change_at.nil? || change_at < DateTime.now
       update_operation_config
+      state ||= config_value(sort:"operation", key:"state")
     end
 
-    if !state.present?
-      update_operation_config
-      state = config_value(sort:"operation", key:"state")
-    end
     return state
   end
 
-  def operation_next_change_at
-    changes = []
-    operations = Operation.where("? < start_at",DateTime.now)
-    start_at = operations.minimum(:start_at) #未来に始まるオペレーションの中で開始時刻が最小
-    change_at = start_at
-    return change_at
+  def latest_description
+    config_value(sort:"operation", key:"description")
   end
 
-  def first_running_operation
-    operations = Operation.where(state:State.find_by(name:"running"))
-    operations = operations.where("? < start_at",DateTime.now)
-    operations = operations.order(start_at: "ASC")
-    operations.first
+  def operation_start_at
+    config_value(sort:"operation", key:"operation_start_at")
+  end
+
+  # operation の設定を更新
+  def update_operation_config
+    update_config(sort: "operation", key: "description", value: Operation.latest_description)
+    update_config(sort: "operation", key: "operation_start_at", value: Operation.first_running_operation&.start_at)
+    update_config(sort: "operation", key: "change_at", value: Operation.operation_next_change_at)
+    update_config(sort: "operation", key: "state", value: Operation.latest_state)
   end
 end

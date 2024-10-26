@@ -45,11 +45,7 @@ class User::TransactionsController < User::Base
   end
 
   def show
-    if @transaction.request_form.name == "text"
-      @og_image = @transaction.request.items.first.file.url
-    elsif @transaction.service.item
-      @og_image = @transaction.service.item&.file&.url
-    end
+    $og_image = @transaction.request.items.first.file.url if @transaction.request.items.select{|item| item.file.is_image?}.present?
     @transaction_along_messages =  TransactionMessage
       .joins(:deal)
       .where(transaction_id:@transaction.id)

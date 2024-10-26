@@ -61,7 +61,7 @@ class User::AccountsController < User::Base
       @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
     end
     if @user.image.url
-      @og_image = @user.image.url
+      $og_image = @user.image.url
     end
     @og_title = @user.name
     @og_description = @user.description

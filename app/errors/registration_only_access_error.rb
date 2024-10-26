@@ -1,0 +1,1 @@
+class RegistrationOnlyAccessError < StandardError; end

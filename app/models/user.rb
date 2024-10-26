@@ -27,7 +27,7 @@ class User < ApplicationRecord
   has_many :requests, class_name: "Request", foreign_key: :user_id, dependent: :destroy
   has_many :services, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :delivered_transactions, -> { delivered }, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
-  has_many :buyable_services, -> { buyable }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
+  has_many :buyable_services, -> { buyable.solve_n_plus_1 }, class_name: "Service", foreign_key: :user_id, dependent: :destroy
   has_many :users, class_name: "User", foreign_key: :user_id, dependent: :destroy
   has_many :user_categories, class_name: "UserCategory", dependent: :destroy
   has_many :service_categories, through: :services, source: :service_categories
@@ -121,7 +121,7 @@ class User < ApplicationRecord
   }
 
   scope :transactions_count, -> {
-    left_joins(:transactions)
+    left_joins(:sales)
       .select('users.*, COUNT(CASE WHEN transactions.is_published = true THEN 1 END) AS published_transactions_count')
       .group('users.id')
       .order('published_transactions_count DESC')
