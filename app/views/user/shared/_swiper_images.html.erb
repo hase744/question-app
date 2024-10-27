@@ -1,11 +1,11 @@
 <% if model.items.map{|item| item.file.is_image? }.count == 1%>
-    <%= link_to(model.items.last.file.url, class: 'link') do %>
+    <%= link_to(model.last_item.file.url, class: 'link') do %>
         <%= 
-		if model.items.last.file_processing
+		if model.last_item.file_processing
 		elsif use_thumb
-			image_tag model.items.last.file.thumb.url, class:"image"
+			image_tag model.last_item.file.thumb.url, class:"image"
 		else
-			image_tag model.items.last.file.url, class:"image"
+			image_tag model.last_item.file.url, class:"image"
 		end
 		%>
     <% end %>

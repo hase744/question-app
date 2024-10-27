@@ -9,9 +9,9 @@
 				<div class="inner_pre_purchase_inquiry_cell">
 					<%=image_tag transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
 					<div class="text_area">
-						<div class="message one_line_text"><%=transaction.transaction_messages.last.body %></div>
+						<div class="message one_line_text"><%=transaction.transaction_messages.latest_body %></div>
 						<div class="datetime">
-							<%=	readable_datetime(transaction.transaction_messages.last.created_at) %>
+							<%=	readable_datetime(transaction.transaction_messages.latest_created_at) %>
 						</div>
 					</div>
 				</div>

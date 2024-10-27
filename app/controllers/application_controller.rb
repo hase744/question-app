@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   include Variables
   include ViewConcern
   include OperationConfig
-  include ErrorHandlers #if Rails.env.production?
+  include ErrorHandlers if Rails.env.production?
   include AccessHandlers
 
   layout :layout_by_resource

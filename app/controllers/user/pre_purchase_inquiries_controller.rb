@@ -19,7 +19,7 @@ class User::PrePurchaseInquiriesController < User::Base
     @transaction_message.receiver = @transaction.opponent_of(current_user)
     @transaction.pre_purchase_inquired_at ||= DateTime.now
     ActiveRecord::Base.transaction do
-      if @transaction_message.save && @transaction.save && false
+      if @transaction_message.save && @transaction.save
         message = if current_user == @transaction.seller
           "購入前質問に返信がされました。"
         elsif current_user == @transaction.buyer
@@ -35,6 +35,7 @@ class User::PrePurchaseInquiriesController < User::Base
           controller: "pre_purchase_inquiries",
           parameter: "?transaction_id=#{@transaction.id}",
           )
+        puts "OK"
         render json: { message: "送信しました", status: "success" }, status: :ok
       else
         render json: { message: "送信できませんでした", errors: @transaction_message.errors.full_messages, status: "error" }, status: :unprocessable_entity

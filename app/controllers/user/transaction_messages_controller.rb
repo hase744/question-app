@@ -9,11 +9,6 @@ class User::TransactionMessagesController < User::Base
           page: params[:page],
           after_delivered: params[:after_delivered] == 'true' || params[:after_delivered] == true
           )
-      if @transaction_messages.last == Transaction.last
-        @is_last_cell = true
-      else
-        @is_last_cell = false
-      end
       render partial: 'user/transaction_messages/cell', collection: @transaction_messages, as: :content
     end
   end
