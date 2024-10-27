@@ -19,6 +19,14 @@ include OperationConfig
     1
   end
 
+  def main_path(request)
+		if request.is_published
+			user_request_path(request.id)
+    else
+			user_request_preview_path(request.id, transaction_id: request.transaction&.id)
+		end
+  end
+
   def notifications_length
     Notification.where(user_id: current_user.id, is_notified:false).length
   end

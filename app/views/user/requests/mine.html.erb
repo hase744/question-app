@@ -1,15 +1,7 @@
 <div class="list_zone">
     <h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > 自分の質問 <%= paginate @requests %></h3>
   	<% @requests.each do |request| %>
-		<%
-		if request.is_published
-			path = user_request_path(request.id)
-    else
-			transaction_id = request.transactions&.last&.id
-			path = user_request_preview_path(request.id, transaction_id: transaction_id)
-		end
-		%>
-        <%= link_to(path, class:"order_cell") do %>
+        <%= link_to(main_path(request), class:"order_cell") do %>
             <div class="image_area">
                 <%= image_tag request.thumb_with_default, class:"image" %>
             </div>

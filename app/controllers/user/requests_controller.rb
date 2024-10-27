@@ -67,7 +67,7 @@ class User::RequestsController < User::Base
   def show
     @request = Request.find(params[:id])
     if !@request.is_published
-      flash.notice = "依頼が非公開です。"
+      flash.notice = "質問が非公開です。"
       redirect_to user_requests_path
     elsif !@request.user.is_published
       flash.notice = "アカウントが非公開です。"

@@ -16,6 +16,10 @@ class TransactionMessage < ApplicationRecord
     includes(:sender, :receiver, :deal)
   }
 
+  scope :sort_by_later, -> {
+    order(created_at: :desc)
+  }
+
   scope :by_transaction_id_and_order, ->(params) {
     scope = includes(:sender).joins(:deal)
     scope = scope.where('transaction_messages.created_at > transactions.published_at') if params[:after_delivered]
@@ -54,5 +58,13 @@ class TransactionMessage < ApplicationRecord
 
   def body_max_characters
     #1000
+  end
+
+  def self.latest_body
+    sort_by_later&.first&.body
+  end
+  
+  def self.latest_created_at
+    sort_by_later&.first&.created_at
   end
 end

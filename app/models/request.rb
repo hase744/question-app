@@ -160,6 +160,12 @@ class Request < ApplicationRecord
     Form.find_by(name: self.delivery_form_name)
   end
 
+  def transaction
+    return nil if self.is_published
+    return nil if self.transactions.count > 1
+    transactions.first
+  end
+
   def total_likes
     self.likes.count
   end
@@ -307,6 +313,15 @@ class Request < ApplicationRecord
     self.delivery_form_name = self.service.delivery_form_name
     self.category_id = self.service.category.id
     self.suggestion_deadline = nil
+  end
+
+  def main_link
+		if self.is_published
+			user_request_path(self.id)
+    else
+			transaction_id = self.transactions&.last&.id
+			user_request_preview_path(self.id, transaction_id: transaction_id)
+		end
   end
 
   def status

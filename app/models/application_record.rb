@@ -42,6 +42,10 @@ class ApplicationRecord < ActiveRecord::Base
     }.join(',')
   end
 
+  def last_item
+    items.order(created_at: :asc).last
+  end
+
   def validate_price
     if self.price.nil?
       errors.add(:price)

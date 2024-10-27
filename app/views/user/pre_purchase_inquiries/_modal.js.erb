@@ -1,6 +1,9 @@
 $(document).ready(function() {
-  // Use event delegation to handle form submission inside each .pre_inquery_modal
+  // 通知から同じページを開いたときに、処理が重複するためイベントを設定する前に、同じイベントが既に存在する場合は解除する
+  $(document).off("ajax:success", ".pre_inquery_modal .chat-form");
+  $(document).off("ajax:error", ".pre_inquery_modal .chat-form");
   $(document).on("ajax:success", ".pre_inquery_modal .chat-form", function(event) {
+    console.log("成功だよ")
     const $form = $(this); // Current form inside the specific modal
     const [data, status, xhr] = event.detail;
     const $modal = $form.closest(".pre_inquery_modal"); // Find the closest modal for this form
