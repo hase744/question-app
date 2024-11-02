@@ -1,0 +1,15 @@
+<h1><%=
+if model.attributes.key?("name")
+    model.name
+else
+    model.model_name.human 
+end%>の編集</h1>
+<%= render "/admin_user/shared/form", 
+    model: model,
+    column_names: column_names, 
+    path: path, 
+    method: 'PUT' %>
+<br>
+<%= link_to "Back to the #{model.model_name}", url_for(controller: "admin_user/#{model.model_name.route_key}", action: :show, id:1) %>
+</br>
+<%= link_to "Back to all #{model.model_name}s", url_for(controller: "admin_user/#{model.model_name.route_key}") %>

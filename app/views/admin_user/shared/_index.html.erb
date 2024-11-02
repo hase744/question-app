@@ -1,0 +1,68 @@
+<p style="color: green"><%= notice %></p>
+<% models_name = models.name.pluralize.underscore.pluralize%>
+<% columns = models.column_names.map{|name| name if column_names.include?(name) }.compact %>
+
+<h1><%=models.name.pluralize%></h1>
+<div id="models" class="container">
+  	<%if ['users', 'announcements'].include? models_name %>
+  	  	<%= form_with url: "", method: :get, local: true do |form| %>
+			<% request.query_parameters.each do |key, value| %>
+				<%= form.hidden_field key, value: value %>
+			<% end %>
+  	  	  	<%if models.column_names.include?('name') %>
+  	  	  	  	<%= form.label :name, '検索キーワード' %>
+  	  	  	  	<%= form.text_field :name, value: params[:name] %>
+  	  	  	<% end %>
+  	  	  	<%if models.column_names.include?('title') %>
+  	  	  	  	<%= form.label :title, '検索キーワード' %>
+  	  	  	  	<%= form.text_field :title, value: params[:title] %>
+  	  	  	<% end %>
+  	  	  	</br><%= form.submit "検索" %>
+  	  	<% end %>
+  	<% end %>
+  	<%= link_to "New #{models_name.gsub('_',' ')}", "#{models_name}/new" %>
+  	<%= paginate models %>
+  	<table>
+  	  	<thead>
+  	  	  	<tr>
+  	  	  	  	<% columns.each do |name| %>
+  	  	  	  	  	<th><%= name %></th>
+  	  	  	  	<% end %>
+  	  	  	  	<th>Actions</th>
+  	  	  	</tr>
+  	  	</thead>
+  	  	<tbody>
+  	  	  	<% models.each do |model| %>
+  	  	  	  	<tr>
+  	  	  	  	  	<% columns.each do |name| %>
+  	  	  	  	  	  	<td>
+  	  	  	  	  	  	<% case name %>
+  	  	  	  	  	  	<% when 'image' then %>
+  	  	  	  	  	  	  	<%= image_tag model.thumb_with_default %>
+  	  	  	  	  	  	<% when 'name' then %>
+  	  	  	  	  	  	  	<%= link_to model.attributes[name], user_account_path(model.id) %>
+  	  	  	  	  	  	<% when 'announcement_id' then %>
+  	  	  	  	  	  	  	<%= link_to Announcement.find(model.attributes[name]).title, admin_user_announcement_path(model.attributes[name]) %>
+  	  	  	  	  	  	<% when 'user_id' then %>
+  	  	  	  	  	  	  	<%= link_to User.find(model.attributes[name]).name, admin_user_user_path(model.attributes[name]) %>
+						<% when 'condition_type' then %>
+  	  	  	  	  	  	  	<%= model.type_name_japanese %>
+  	  	  	  	  	  	<% else %>
+  	  	  	  	  	  	  	<%= model.attributes[name] %>
+  	  	  	  	  	  	<% end %>
+  	  	  	  	  	  	</td>
+  	  	  	  	  	<% end %>
+  	  	  	  	  	<td>
+  	  	  	  	  	<%= link_to "Edit", "/admin_user/#{models_name}/#{model.id}/edit" if edit_exist %> 
+  	  	  	  	  	<%= link_to "Delete", "/admin_user/#{models_name}/#{model.id}", method: "delete", data: {confirm: '削除しますか?'} if delete_exist %> 
+  	  	  	  	  	<%= link_to "Show", "/admin_user/#{models_name}/#{model.id}" if show_exist %>
+					<% links.call(model).each do |element| %>
+						<%=link_to element[:text], element[:link] %>
+					<% end %>
+  	  	  	  	  	</td>
+  	  	  	  	</tr>
+  	  	  	<% end %>
+  	  	</tbody>
+  	</table>
+</div>
+

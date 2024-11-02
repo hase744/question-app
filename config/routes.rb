@@ -26,7 +26,6 @@ Rails.application.routes.draw do
   get "abouts/inquiry"
   get "abouts/detail"
   get "abouts/how"
-  get "abouts/announce"
   get "abouts/how_to_sell", as: "abouts_how_to_sell"
   get "abouts/how_to_purchase", as: "abouts_how_to_purchase"
   get "abouts/how_to_deliver", as: "abouts_how_to_deliver"
@@ -102,6 +101,7 @@ namespace :user do
     resource :configs, only: [ :index, :show, :edit, :update, :destroy]
     resource :alerts, only: [:show]
     resource :accounts, only: [:edit, :update]
+    resources :announcements, only: [:index, :show, :edit, :update]
     resources :reviews, only: [:create]
     resources :orders, only:[:index, :show, :edit]
     resources :transaction_messages, only: [:create, :show]
@@ -122,6 +122,7 @@ namespace :user do
     resource :videos, only: [:show]
     resource :homes, only: [:show]
     resource :images, only: [:show]
+    resource :homes, only: [:show]
     resource :service_likes, only: [:create, :destroy, :show]
     resource :request_likes, only: [:create, :destroy, :show]
     resource :transaction_likes, only: [:create, :destroy, :show]
@@ -135,6 +136,14 @@ namespace :user do
         delete :remove_file, to: 'transactions#remove_file'
       end
     end
+  end
+
+  namespace :admin_user do
+    root to: 'homes#show'
+    resources :notifications, only: [:create, :index, :show, :new, :edit]
+    resources :announcements, only: [:create, :index, :show, :new, :edit, :update, :destroy]
+    resources :users, only: [:create, :index, :show, :new, :edit, :update]
+    resources :announcement_receipts, only: [:create, :index, :show, :new, :edit, :destroy]
   end
 
   devise_for :users

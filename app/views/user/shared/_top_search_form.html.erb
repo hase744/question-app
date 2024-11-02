@@ -1,0 +1,9 @@
+<div class="top_search_form_area">
+	<%= form_with url: path, class:"top_search_form",method:"get", id:"" do |f| %>
+		<%= f.text_field :name, value: params[:name], class:"search_input", placeholder:"キーワード"%>
+		<div class="searchForm-submit">
+			<div class="search_glass"></div>
+			<%= f.submit '', class:"search_button", placeholder:"" %>
+		</div>
+	<% end %>
+</div>

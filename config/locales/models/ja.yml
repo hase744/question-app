@@ -6,10 +6,13 @@ ja:
       request: 質問
       admin: 管理者
       admin_user: 管理者
+      announcement: お知らせ
       post: 投稿
       potential_seller: 売り手候補
       media: メディア
       operation: オペレーション
+      notification: 通知
+      announcement_receipt: お知らせの受信
     attributes:
       name: ユーザー
       user:
@@ -23,6 +26,12 @@ ja:
         user_image: プロフィール画像
         header_image: ヘッダー画像
         is_seller: 回答者
+      user/state:
+        normal: 通常
+        suspended: 凍結
+        register: 登録のみ
+        browse: 閲覧のみ
+        deleted: 削除
       service:
         title: タイトル
         description: "詳細"
@@ -91,6 +100,18 @@ ja:
       review:
         body: 感想
         star_rating: 星評価
+      announcement:
+        title: タイトル
+        body: 本文
+        condition_type: 対象
+      announcement_receipt:
+        user: ユーザー
+        announcement: お知らせ
+      announcement/condition_type:
+        individual: 特定の人
+        all_users: すべてのユーザー
+        all_sellers: 売り手
+        all_buyers: 買い手
       delivery_item:
         file: ファイル
         file_duration: 再生時間
@@ -100,7 +121,7 @@ ja:
         price: 料金
         point: ポイント
       post:
-        body: "本文"
+        body: 本文
         file: ファイル
       admin_user:
         id: ID

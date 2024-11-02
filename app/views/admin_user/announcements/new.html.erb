@@ -1,0 +1,5 @@
+<%= render "/admin_user/shared/new", 
+    model: @announcement,
+    column_names: ['title', 'body', 'condition_type', 'published_at'], 
+    path: admin_user_announcements_path, 
+    method: 'POST' %>

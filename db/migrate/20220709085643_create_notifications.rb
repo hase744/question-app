@@ -11,6 +11,7 @@ class CreateNotifications < ActiveRecord::Migration[6.1]
       t.string :action, index:true
       t.integer :id_number, index:true
       t.string :parameter
+      t.datetime :published_at
 
       t.timestamps
     end

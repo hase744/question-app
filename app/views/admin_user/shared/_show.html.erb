@@ -1,0 +1,29 @@
+<p style="color: green"><%= notice %></p>
+<% model_name = model.class.name.pluralize.underscore.pluralize%>
+<% columns = model.class.column_names.map{|name| name if column_names.include?(name) }.compact %>
+
+<div class="container show_container">
+  	<div>
+		<table>
+  			<tbody>
+  			  	<% columns.each do |name| %>
+  			  	  	<tr>
+  			  	  	  <th><%= name %></th>
+  			  	  	  <td>
+					  	<div class="table_body">
+  			  	  	  	<%if name == 'image' %>
+					  		<%= image_tag model.thumb_with_default %>
+  			  	  	  	<% elsif name == 'header_image' && model.header_image.url%>
+					  		<%= image_tag model.header_image.thumb.url %>
+  			  	  	  	<% end %>
+  			  	  	  	<span><%= model.attributes[name] %></span>
+						</div>
+  			  	  	  </td>
+  			  	  	</tr>
+  			  	<% end %>
+  			</tbody>
+		</table>
+  	</div>
+  	<%= link_to "Edit", "/admin_user/#{model_name}/#{model.id}/edit" %> |
+  	<%= link_to "Delete", "/admin_user/#{model_name}/#{model.id}", method: "delete", data: {confirm: '削除しますか?'}  %>
+</div>

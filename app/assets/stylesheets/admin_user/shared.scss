@@ -1,0 +1,234 @@
+.admin_layout{
+  	font-family: Arial, sans-serif;
+  	background-color: #f4f4f4;
+  	display: flex;
+  	flex-direction: row;
+	@media (max-width: 700px) {
+		display: block;
+	}
+
+  	img{
+		width: calc(100vw / 10);
+		height: calc(100vw / 10);
+		object-fit: cover;
+  	}
+
+  	a{
+		color: blue;
+  	}
+
+  	.sidebar {
+		background-color: #333;
+		color: white;
+		width: 200px;
+		height: 100vh;
+		padding: 0px 20px;
+		display: flex;
+		flex-direction: column;
+  	}
+
+  	.main_area{
+		flex: 1;
+		overflow-y: auto;
+		padding-top: 0px;
+		margin: 0 auto;
+		@media (max-width: 700px) {
+			overflow-y: none;
+		}
+  	}
+
+  	.sidebar h2 {
+		text-align: center;
+  	}
+
+  	.sidebar ul {
+		list-style: none;
+		padding: 0;
+  	}
+
+  	.sidebar ul li a {
+		color: white;
+		text-decoration: none;
+		display: block;
+		padding: 10px;
+		border-bottom: 1px solid #444;
+  	}
+
+  	.sidebar ul li a:hover {
+		background-color: #555;
+  	}
+
+  	.container {
+		display: block;
+		flex-grow: 1;
+		//margin: 50px;
+		background: white;
+		box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		border-radius: 4px;
+  	}
+
+  	.show_container{
+		padding: 10px;
+  	}
+
+  	header {
+		background: #fff99d;
+		padding: 10px 20px;
+		text-align: center;
+  	}
+
+  	header h1 {
+		margin: 0;
+  	}
+
+  	form {
+		padding: 10px;
+  	}
+
+  	label {
+		display: block;
+		margin-bottom: 5px;
+  	}
+
+  	input[type="email"],
+  	input[type="password"],
+  	input[type="text"] {
+		width: calc(100% - 22px);
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 4px; /* ここに丸みを追加 */
+  	}
+  	input[type="number"] {
+		width: calc(100% - 22px);
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 4px; /* ここに丸みを追加 */
+  	}
+  	textarea{
+		width: calc(100% - 22px);
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 4px; /* ここに丸みを追加 */
+		height: 300px;
+		min-width: calc(100% - 22px);
+		max-width: calc(100% - 22px);
+  	}
+
+  	input[type="submit"] {
+		background-color: #007BFF;
+		color: white;
+		border: none;
+		padding: 10px 20px;
+		cursor: pointer;
+		border-radius: 4px;
+  	}
+
+  	input[type="submit"]:hover {
+		background-color: #0056b3;
+  	}
+
+  	select{
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 4px; /* ここに丸みを追加 */
+  	}
+
+  	/* Tab menu styling */
+	.tab-menu {
+	  	display: flex;
+	  	align-items: flex-start; /* Align tabs to the left */
+	  	background: #f4f4f4;
+	  	margin-top: 10px; /* Space above tabs */
+	  	box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Shadow for the whole tab menu */
+	  	margin-bottom: 0; /* No space below tabs */
+	}
+
+	.tab {
+  		padding: 5px 15px; /* Decreased height by reducing padding */
+  		text-decoration: none;
+  		color: blue;
+  		background-color: #eee;
+  		box-shadow: none;
+  		margin-right: -1px; /* Remove space between tabs */
+  		width: 100px; 
+  		text-align: center;
+	}
+
+	.selected_tab{
+	  	background: #333;
+	  	color: white;
+	}
+
+	.tab:first-child {
+	  	margin-left: 0; /* Ensure the first tab is aligned exactly to the left */
+	}
+
+	.tab:hover {
+	  	background-color: grey;
+	  	box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+	}
+
+	/*	 Active tab style */
+	.tab-active {
+	  	background-color: #fff;
+	  	box-shadow: 0 2px 5px rgba(0,0,0,0.25); /* Stronger shadow to highlight active tab */
+	}
+
+	.page_nate{
+	  	text-align: right; /* 右寄せに設定 */
+	  	display: inline-block;   /* spanはデフォルトでインライン要素なので、ブロック要素に変更 */
+	  	width: 100%; 
+	}
+	
+  	@media (max-width: 700px) {
+		flex-direction: column;
+		.sidebar {
+		    width: 100%;
+		    height: auto;
+		    padding: 0px;
+		}
+		.common{
+		  padding: 10px;
+		}
+		.container {
+			margin: 10px;
+		  width: calc(100% - 20px);
+		    //margin: 20px;
+		    //width: auto; /* コンテナの幅を自動調整に */
+		}
+  	}
+
+  	table {
+		width: 100%;
+		border-collapse: collapse;
+  	}
+
+  	thead {
+		background-color: #333;
+		color: white;
+  	}
+
+  	th, td {
+		text-align: left;
+		padding: 8px;
+		border-bottom: 1px solid #ddd;
+		.table_body{
+			display: flex;
+			align-items: center;
+		}
+  	}
+
+  	button {
+		padding: 5px 10px;
+		margin-right: 10px;
+		background-color: #0056b3;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+  	}
+
+  	button:hover {
+		background-color: #0056b3;
+  	}
+}

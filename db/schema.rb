@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_22_094458) do
+ActiveRecord::Schema.define(version: 2024_10_30_170813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,13 +64,27 @@ ActiveRecord::Schema.define(version: 2024_10_22_094458) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
-  create_table "announces", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
-    t.datetime "disclosed_at"
-    t.string "file"
+  create_table "announcement_receipts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "announcement_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["announcement_id"], name: "index_announcement_receipts_on_announcement_id"
+    t.index ["user_id"], name: "index_announcement_receipts_on_user_id"
+  end
+
+  create_table "announcements", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body", null: false
+    t.bigint "admin_user_id"
+    t.integer "condition_type", null: false
+    t.text "target_condition"
+    t.datetime "published_at", null: false
+    t.string "file"
+    t.boolean "is_notified", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["admin_user_id"], name: "index_announcements_on_admin_user_id"
   end
 
   create_table "balance_records", force: :cascade do |t|
@@ -138,6 +152,7 @@ ActiveRecord::Schema.define(version: 2024_10_22_094458) do
     t.string "action"
     t.integer "id_number"
     t.string "parameter"
+    t.datetime "published_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["action"], name: "index_notifications_on_action"

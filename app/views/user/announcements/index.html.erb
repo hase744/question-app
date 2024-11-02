@@ -1,0 +1,16 @@
+<div class="announcement_index_zone">
+    <div class="announcement_index_area">
+        <div class="announcement_index_header"><h2 class="announce_title">お知らせ</h2>
+		<%= render "user/shared/top_search_form", path: user_announcements_path %>
+        <% @announcements.each do |announcement| %>
+            <div class="announce_cell_area component_area">
+            <h3 class="announce_cell_title"><%= link_to announcement.title, user_announcement_path(announcement.id) %></h3>
+            <p class="announce_cell_body"><%=announcement.body%></p>
+            <div><%=  readable_datetime(announcement.published_at)%></div>
+            </div>
+        <% end %>
+    </div>
+    <div class="main_bottom">
+        <%= paginate @announcements %>
+    </div>
+</div>

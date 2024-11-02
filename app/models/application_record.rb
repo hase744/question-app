@@ -1,4 +1,5 @@
 class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
   require_relative "country.rb"
   require_relative "form.rb"
   require_relative "category.rb"
@@ -9,6 +10,11 @@ class ApplicationRecord < ActiveRecord::Base
   include CommonConcern
   include TemplateConcern
   include OperationConfig
+
+
+  scope :from_latest_order, ->() {
+    order(created_at: :desc)
+  }
 
   def self.sorted_by(order)
     case order
@@ -40,6 +46,14 @@ class ApplicationRecord < ActiveRecord::Base
     extensions = extensions.map{|extension|
       "video/#{extension}"
     }.join(',')
+  end
+
+  def self.human_attribute_enum_value(attr_name, value)
+    human_attribute_name("#{attr_name}.#{value}")
+  end
+
+  def human_attribute_enum(attr_name)
+    self.class.human_attribute_enum_value(attr_name, self[attr_name])
   end
 
   def last_item

@@ -93,3 +93,4 @@ gem 'rename'
 gem 'htmlcsstoimage-api'
 gem 'parallel'
 gem 'carrierwave_backgrounder'
+gem "whenever"

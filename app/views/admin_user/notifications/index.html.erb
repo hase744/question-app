@@ -1,0 +1,8 @@
+<%= render "/admin_user/shared/index", 
+  	models: @notifications, 
+  	column_names: ['id', 'title', 'description', 'user_id'],
+	show_exist: true,
+	delete_exist: true,
+	edit_exist: true,
+	links: -> (model){ []}
+  	%>
