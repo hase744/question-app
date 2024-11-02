@@ -385,6 +385,10 @@ class User < ApplicationRecord
     end
   end
 
+  def self.selector_hash
+    I18n.t('activerecord.attributes.user/state').invert
+  end
+
   def max_service_price
     buyable_services.maximum(:price)
   end

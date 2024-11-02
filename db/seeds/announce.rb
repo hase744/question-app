@@ -1,1 +1,1 @@
-Announce.create(title:"サービスのユーザー登録を開始しました。", body:"サービスを作成いたしました。", disclosed_at:DateTime.now)
+Announcement.create(title:"サービスのユーザー登録を開始しました。", condition_type: "all_users", body:"サービスを作成いたしました。", published_at:DateTime.now)

@@ -1,0 +1,5 @@
+<%= render "/admin_user/shared/new", 
+    model: @notification,
+    column_names: ['title', 'description', 'user_id'], 
+    path: admin_user_notifications_path, 
+    method: 'POST' %>

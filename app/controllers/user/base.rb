@@ -2,7 +2,7 @@ class User::Base < ApplicationController
   before_action :check_error
   after_action :create_access_log
   after_action :save_current_path
-  #include RedirectHandlers
+  include RedirectHandlers
   Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   def create_access_log
     if user_signed_in?

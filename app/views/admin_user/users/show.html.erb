@@ -1,0 +1,16 @@
+<%= render "/admin_user/shared/show", 
+  model: @user,
+  column_names: [
+    'name', 
+    'description', 
+    'state', 
+    'is_seller', 
+    'image', 
+    'header_image', 
+    'last_login_at',
+    'stripe_account_id',
+    'stripe_card_id',
+    'stripe_customer_id',
+    'stripe_connected_id'
+  ]
+%>

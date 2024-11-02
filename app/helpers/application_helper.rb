@@ -28,7 +28,7 @@ include OperationConfig
   end
 
   def notifications_length
-    Notification.where(user_id: current_user.id, is_notified:false).length
+    Notification.published.where(user_id: current_user.id, is_notified:false).length
   end
 
   def can_purchase

@@ -1,0 +1,2 @@
+module AdminUser::UsersHelper
+end

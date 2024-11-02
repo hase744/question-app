@@ -1,0 +1,21 @@
+<%= render "/admin_user/shared/edit", 
+    model: @announcement_receipt,
+    column_names: ['user_id', 'announcement_id'], 
+    path: admin_user_announcement_receipts_path, 
+    method: 'PUT' %>
+<%= render "/admin_user/shared/index", 
+  	models: @users, 
+  	column_names: ['image', 'name', 'is_seller'],
+    show_exist: true,
+    delete_exist: false,
+    edit_exist: true,
+    links: -> (model){ [{text: "選択", link: new_admin_user_announcement_receipt_path(request.query_parameters.merge(user_id: model.id))}]}
+  	%>
+<%= render "/admin_user/shared/index", 
+  	models: @announcements, 
+  	column_names: ['id', 'title', 'body', 'published_at'],
+	show_exist: true,
+	delete_exist: true,
+	edit_exist: true,
+    links: -> (model){ [{text: "選択", link: new_admin_user_announcement_receipt_path(request.query_parameters.merge(announcement_id: model.id))}]}
+  	%>

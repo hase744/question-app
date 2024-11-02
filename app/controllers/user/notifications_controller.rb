@@ -7,6 +7,7 @@ class User::NotificationsController < User::Base
   def notification_bar
     @notifications = Notification.solve_n_plus_1
       .where(user: current_user)
+      .published
       .order(is_notified: :asc, id: :desc)
       .page(params[:page])
       .per(15)
@@ -16,6 +17,7 @@ class User::NotificationsController < User::Base
   def notification_cells
     @notifications = Notification.solve_n_plus_1
       .where(user: current_user)
+      .published
       .order(is_notified: :asc, id: :desc)
       .page(params[:page])
       .per(15)
@@ -31,7 +33,7 @@ class User::NotificationsController < User::Base
     else
       redirect_to path[0]
     end
-    Notification.where(controller: notification.controller, action: notification.action, id_number: notification.id_number).each do |n|
+    Notification.published.where(controller: notification.controller, action: notification.action, id_number: notification.id_number).each do |n|
       n.update(is_notified:true)
     end
   end
@@ -39,6 +41,7 @@ class User::NotificationsController < User::Base
   def all_notified
     Notification.all
       .where(user: current_user, is_notified: false)
+      .published
       .update_all(is_notified: true)
     redirect_back(fallback_location: root_path)
   end

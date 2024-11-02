@@ -1,6 +1,6 @@
 require "test_helper"
 
-class AnnounceTest < ActiveSupport::TestCase
+class User::AnnouncementsControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

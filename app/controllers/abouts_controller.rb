@@ -23,13 +23,6 @@ class AboutsController < ApplicationController
     end
   end
 
-  def announce
-      #@announces = Announce.page(params[:page]).per(1)
-      @announces = Announce.where("disclosed_at < ?", DateTime.now)
-      @announces = @announces.order(disclosed_at: "DESC")
-      @announces = @announces.page(params[:page]).per(10)
-  end
-
   def layout
   end
 

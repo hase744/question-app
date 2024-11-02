@@ -1,0 +1,85 @@
+<% models_name = model.class.name.pluralize.underscore.pluralize%>
+<% columns = model.class.column_names.map{|name| name if column_names.include?(name) }.compact %>
+
+<div class="container">
+<%= form_with(model: model, url: path, method: method) do |form| %>
+  	<% if model.errors.any? %>
+  	  	<div class="form-group" style="color: red">
+  	  	  	<h2><%= pluralize(model.errors.count, "error") %> prohibited this model from being saved:</h2>
+  	  	  	<ul>
+  	  	  	  	<% model.errors.each do |error| %>
+  	  	  	  	  	<li><%= error.full_message %></li>
+  	  	  	  	<% end %>
+  	  	  	</ul>
+  	  	</div>
+  	<% end %>
+
+  	<% columns.each do |column| %>
+  	  	<div class="form-group" >
+  	  	<%= form.label column.to_sym, style: "display: block" %>
+  	  	<% case model.class.columns_hash[column].type.to_s %>
+  	  	<% when 'string' then %>
+  	  	  	<%if column == 'data'%>
+  	  	  	  	<%= form.file_field column.to_sym %>
+  	  	  	<% else %>
+  	  	  	  	<%= form.text_field column.to_sym %>
+  	  	  	<% end %>
+  	  	<% when 'datetime' then %>
+  	  	  	<%= form.datetime_select column.to_sym %>
+  	  	<% when 'text' then %>
+  	  	  	<%= form.text_area column.to_sym %>
+  	  	<% when 'integer' then %>
+  	  	  	<%if column == 'user_id' %>
+  	  	  	  	<%= form.number_field column.to_sym %></br>
+				<% if model.user %>
+  				<table>
+				  	<tbody>
+				  		<tr>
+				  			<td>
+							  	<%= image_tag model.user&.thumb_with_default %>
+				  			</td>
+				  			<td>
+							 	<%= model.user&.name %>
+				  			</td>
+				  			<td>
+				  			</td>
+				  		</tr>
+					</tbody>
+				</table>
+				<% end %>
+  	  	  	<%elsif column == 'announcement_id' %>
+  	  	  	  	<%= form.number_field column.to_sym %></br>
+				<% if model.announcement %>
+  				<table>
+				  	<tbody>
+				  		<tr>
+				  			<td>
+							  	<%= model.announcement&.title %>
+				  			</td>
+				  			<td>
+							 	<%= model.announcement&.body %>
+				  			</td>
+				  			<td>
+				  			</td>
+				  		</tr>
+					</tbody>
+				</table>
+				<% end %>
+  	  	  	<% elsif column == 'condition_type' %>
+				<%= form.select :condition_type, Announcement.selector_hash, include_blank: false %>
+			<% elsif column == 'state' %>
+				<%= form.select :condition_type, User.selector_hash, include_blank: false %>
+  	  	  	<% else %>
+  	  	  	  	<%= form.number_field column.to_sym %>
+  	  	  	<% end %>
+  	  	<% when 'float' then %>
+  	  	  	<%= form.number_field column.to_sym, step: "0.0000000000000001" %>
+  	  	<% end %>
+  	  	</div>
+  	<% end %>
+
+  	<div class="form-group" >
+  	  <%= form.submit %>
+  	</div>
+<% end %>
+</div>

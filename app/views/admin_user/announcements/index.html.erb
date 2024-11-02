@@ -1,0 +1,8 @@
+<%= render "/admin_user/shared/index", 
+  	models: @announcements, 
+  	column_names: ['id', 'condition_type', 'title', 'published_at'],
+	  show_exist: true,
+	  delete_exist: true,
+	  edit_exist: true,
+	  links: -> (model){ []}
+  	%>

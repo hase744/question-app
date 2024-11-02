@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns#">
+  	<%= render "layouts/head" %>
+  	<body class="body admin_layout">
+    	<div class="sidebar">
+    	  	<h2>Menu</h2>
+    	  	<ul>
+    	  	  	<li>
+					<%= link_to "ホーム", admin_user_root_path %>
+				</li>
+				<%[Notification, Announcement, User, AnnouncementReceipt].each do |model|%>
+  					<li>
+  					  	<%= link_to model.model_name.human, url_for(controller: "admin_user/#{model.model_name.route_key}") %>
+  					</li>
+				<% end %>
+                <li>
+					<%=link_to(destroy_user_session_path, method: :delete, class:"") do %>
+                        ログアウト
+                    <% end %>
+				</li>
+    	  	</ul>
+    	</div>
+  		<div class="main_area">
+  		  	<%= yield %>
+  		</div>
+  	</body>
+  	<%= render "layouts/bottom" %>
+</html>

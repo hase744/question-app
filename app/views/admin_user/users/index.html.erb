@@ -1,0 +1,8 @@
+<%= render "/admin_user/shared/index", 
+  	models: @users, 
+  	column_names: ['image', 'name', 'is_seller'],
+    show_exist: true,
+    delete_exist: false,
+    edit_exist: true,
+    links: -> (model){ []}
+  	%>

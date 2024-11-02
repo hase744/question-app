@@ -1,0 +1,8 @@
+<h1><%= model.model_name.human %>の編集</h1>
+<%= render "/admin_user/shared/form", 
+    model: model,
+    column_names: column_names, 
+    path: path, 
+    method: 'POST' %>
+<br>
+<%= link_to "Back to #{model.model_name}", admin_admin_users_path %>
