@@ -1,0 +1,46 @@
+@import "_variables";
+.coupon_cell_area {
+	display: block;
+  	border: 2px dashed #f0c14b;
+  	padding: 10px;
+  	margin: 15px;
+  	border-radius: 8px;
+  	background-color: #fff5e5;
+  	text-align: center;
+  	cursor: pointer;
+  	transition: transform 0.2s;
+	.discount {
+		font-size: 24px;
+		font-weight: bold;
+		color: #e47911;
+		.fa-check{
+			color: $ok_green;
+		}
+	}
+	.discount.used_up{
+		color: grey;
+	}
+	.coupon-details {
+		width: 100%;
+		font-size: 16px;
+		color: #555;
+	}
+	.coupon-details td {
+		//padding: 5px;
+	}
+	.coupon-details td:first-child {
+		font-weight: bold;
+		text-align: right;
+		width: 50%;
+	}
+	.coupon-details td:last-child {
+		text-align: left;
+	}
+	.caution{
+		font-size: 13px;
+		color: grey;
+	}
+}
+.coupon_cell_area:hover {
+	text-decoration: none;
+  }

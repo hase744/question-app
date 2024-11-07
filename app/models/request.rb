@@ -486,7 +486,10 @@ class Request < ApplicationRecord
     return unless self.is_published && will_save_change_to_is_published?
     case request_form.name
     when 'text'
-      errors.add(:items, "が不適切で") if self.items.text_image.count != 1
+      if self.items.text_image.count != 1
+        items.destroy_all
+        errors.add(:items, "が不適切です")
+      end
     when 'image'
       errors.add(:items, "をアップロードしてください") if self.items.not_text_image.count < 1
     end

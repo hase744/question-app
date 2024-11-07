@@ -37,6 +37,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.boolean :header_image_processing, null: false, default: false
       t.boolean :is_seller, default: false, index:true
       t.boolean :is_published, default: true, index:true
+      t.boolean :use_inactive_coupon, default: true, null: false
       
       t.text :admin_description
       #t.string :categories

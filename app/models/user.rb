@@ -45,6 +45,7 @@ class User < ApplicationRecord
   has_many :sales, class_name: "Transaction", foreign_key: :seller_id, dependent: :destroy
   has_many :purchases, class_name: "Transaction", foreign_key: :buyer_id, dependent: :destroy
   has_many :reviews, through: :sales
+  has_many :coupons
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
@@ -216,7 +217,7 @@ class User < ApplicationRecord
       .left_joins(:service)
       .where(service:{user: self}, is_transacted:true)
       .where("transacted_at > ?", last_deposited_at)
-      .order(created_at: :DESC)
+      .order(created_at: :ASC)
   end
 
   def total_points

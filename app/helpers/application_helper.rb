@@ -109,4 +109,15 @@ include OperationConfig
       result[info[:japanese_name]] = info[:name] if info
     end
   end
+
+  def discounted_price(service)
+    return unless user_signed_in?
+    transaction = service.transactions.new(
+      service: service,
+      request: Request.new,
+      price: service.price,
+      buyer: current_user
+    )
+    transaction.required_points
+  end
 end

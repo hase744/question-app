@@ -37,4 +37,14 @@ $(document).ready(function() {
     }
     $form.hide();
   });
+
+  $('.open_button').on('click', function(event){
+    $(this).next().addClass("open");
+  });
+  $('.modal_delete').on('click', function(){
+      $('.modal_window').removeClass("open");
+    });
+  $('.modal_background').on('click', function(e){
+      $('.modal_window').removeClass("open");
+  })
 });

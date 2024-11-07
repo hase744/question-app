@@ -2,7 +2,20 @@
     <% if @transaction&.suggestion_buyable(current_user) || !@transaction&.is_suggestion %>
         <div class="bottom_button_area purchase_button_area">
             <div class="bottom_button_flame">
-                <div class="label_area"><%= @service.price %><span class="yen">円</span></div>
+                    <%if discounted_price(@service) < @service.price %>
+                        <div class="label_flame discount_area">
+                            <div class="fake_label_area"><span class="fake_label">
+                                <%= @service.price %><span class="yen">円</span>
+                            </span></div>
+                            <div class="label_area">
+                                <%=discounted_price(@service)%><span class="yen">円</span>
+                            </div>
+                        </div>
+                    <% else %>
+                        <div class="label_flame">
+                            <%= @service.price %><span class="yen">円</span>
+                        </div>
+                    <% end %>
                 <%= yield if block_given? %> <!-- This is where the link will be rendered -->
             </div>
         </div>

@@ -1,5 +1,4 @@
 class ApplicationRecord < ActiveRecord::Base
-  self.abstract_class = true
   require_relative "country.rb"
   require_relative "form.rb"
   require_relative "category.rb"

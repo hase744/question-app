@@ -13,6 +13,7 @@ ja:
       operation: オペレーション
       notification: 通知
       announcement_receipt: お知らせの受信
+      coupon: クーポン
     attributes:
       name: ユーザー
       user:
@@ -23,9 +24,9 @@ ja:
         description: 紹介文
         category: 専門分野
         categories: 専門分野
-        user_image: プロフィール画像
+        image: プロフィール画像
         header_image: ヘッダー画像
-        is_seller: 回答者
+        is_seller: 回答者設定
       user/state:
         normal: 通常
         suspended: 凍結
@@ -101,12 +102,16 @@ ja:
         body: 感想
         star_rating: 星評価
       announcement:
+        id: ID
         title: タイトル
         body: 本文
         condition_type: 対象
+        published_at: 公開日時
       announcement_receipt:
-        user: ユーザー
+        user : ユーザー
         announcement: お知らせ
+        user_id : ユーザー
+        announcement_id: お知らせ
       announcement/condition_type:
         individual: 特定の人
         all_users: すべてのユーザー
@@ -123,6 +128,23 @@ ja:
       post:
         body: 本文
         file: ファイル
+      coupon:
+        user: ユーザー
+        user_id: ユーザーID
+        amount: 金額
+        usage_type: 利用タイプ
+        discount_rate: 割引率
+        start_at: 開始時期
+        end_at: 有効期限
+        minimum_purchase_amount: 最低購入金額
+      coupon/usage_type:
+        unlimited: 無制限
+        one_time: １回きり
+      notification:
+        id: ID
+        user_id: ユーザー
+        title: タイトル
+        description: 本文
       admin_user:
         id: ID
         name: 名前

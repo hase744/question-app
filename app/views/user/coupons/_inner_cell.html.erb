@@ -1,0 +1,50 @@
+
+<div class="discount <%= coupon.usable ? 'remaining' : 'used_up' %>">
+    <% if coupon.remaining_amount == 0 %>
+        使用済み
+    <% elsif coupon.end_at < DateTime.now %>
+        期限切れ
+    <% elsif coupon.is_active %>
+        <i class="fa-solid fa-check"></i>
+    <% end %>
+    <% if coupon.discount_rate >= 1 %>
+        <%= coupon.amount %>円分無料
+    <% else %>
+        <%= (coupon.discount_rate*100).to_i %>% OFF
+    <% end %>
+</div>
+<table class="coupon-details">
+    <tr>
+        <td>金額:</td>
+        <td>¥<%= coupon.amount %></td>
+    </tr>
+    <tr>
+        <td>最低購入金額:</td>
+        <td>¥<%= coupon.minimum_purchase_amount %></td>
+    </tr>
+    <% if coupon.end_at %>
+        <tr>
+            <td>有効期限:</td>
+            <td><%= readable_datetime(coupon.end_at) %></td>
+        </tr>
+    <% end %>
+    <% case coupon.usage_type %>
+    <% when "unlimited" %>
+        <tr>
+            <td>使用回数:</td>
+            <td>無制限</td>
+        </tr>
+        <tr>
+            <td>残り:</td>
+            <td>¥<%= coupon.remaining_amount %></td>
+        </tr>
+    <% when "one_time" %>
+        <tr>
+            <td>ステータス:</td>
+            <td><%= coupon.remaining_amount > 0 ? "無使用" : "使用済み" %></td>
+        </tr>
+    <% end %>
+</table>
+<% if coupon.usage_type == "one_time" %>
+    <div class="caution">※質問毎に一度のみ利用可能</div>
+<% end %>

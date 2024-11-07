@@ -10,6 +10,8 @@ class Transaction < ApplicationRecord
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
   has_many :point_records
   has_many :balance_records
+  has_many :coupon_usages
+  has_many :coupons, through: :coupon_usages
   has_one :transaction_category
   has_one :category, through: :transaction_category
   has_one :review
@@ -278,6 +280,82 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def required_points
+    coupon_model = appropriate_coupons
+    return self.price if coupon_model.nil?
+    if coupon_model.is_a?(Coupon) #単体のクーポンの時 == one_timeの時
+      self.price - ([coupon_model.remaining_amount, self.price].min*coupon_model.discount_rate).to_i
+    else #unlimitedの時は必ず、discount_rate= 1.00なので考慮しなくていい
+      self.price - [self.price, coupon_model.to_a.sum(&:remaining_amount)].min
+    end
+  end
+
+  def build_coupon_usages
+    coupon_model = appropriate_coupons
+    if coupon_model.is_a?(Coupon) #単体のクーポンの時 == one_timeの時
+      self.coupon_usages.build(amount: [coupon_model.remaining_amount, self.price].min*coupon_model.discount_rate, coupon: coupon_model)
+    else #複数のクーポンの時 = unlimitedの時
+      #unlimitedの時は必ず、discount_rate= 1.00なので割引率は考慮しなくていい
+      discounted_price = self.price
+      coupon_model.each do |coupon|
+        break if discounted_price == 0
+        amount_to_discount = [discounted_price, coupon.remaining_amount].min
+        self.coupon_usages.build(amount: amount_to_discount, coupon: coupon)
+        discounted_price -= amount_to_discount
+      end
+    end
+  end
+
+  def destroy_all_coupons
+    response = self.coupon_usages.respond_to?(:destroy_all)
+    if response
+      self.coupon_usages&.destroy_all
+    else
+      errors.add(:base, "クーポンに関するエラー")
+    end
+    response
+  end
+
+  def appropriate_coupons
+    unless self.buyer.use_inactive_coupon
+      active_coupons = self.buyer.coupons
+        .usable(price)
+        .where(is_active: true)
+      return active_coupons.first if active_coupons.count == 1
+      return active_coupons if active_coupons
+    end
+    latest_coupon = get_latest_coupon
+    if latest_coupon&.usage_type == 'one_time'
+      return latest_coupon
+    elsif latest_coupon&.usage_type == 'unlimited'
+      return unlimited_coupons
+    else #クーポンが存在しない
+      return nil
+    end
+  end
+
+  def get_latest_coupon
+    self.buyer.coupons
+      .usable(price)
+      .order(end_at: :asc)
+      .first
+  end
+
+  def unlimited_coupons
+    unlimitd_coupons = self.buyer.coupons
+      .usable(self.price)
+      .where(usage_type: 'unlimited')
+      .order(end_at: :asc)
+    selected_coupon_ids = []
+    sum = 0
+    unlimitd_coupons.each do |coupon|
+      selected_coupon_ids << coupon
+      sum += coupon.remaining_amount
+      break if sum >= self.price
+    end
+    unlimitd_coupons.where(id: selected_coupon_ids)
+  end
+
   def previous_transaction
     previous_transaction = Transaction.where(
       request: self.request, 
@@ -343,33 +421,34 @@ class Transaction < ApplicationRecord
 
   def create_payment_record
     return if saved_change_to_id? #新規のデータではない
-    if self.saved_change_to_is_canceled?
+    discounted_price = self.price - self.coupon_usages.sum(:amount)
+    if self.saved_change_to_is_canceled? && discounted_price > 0
       self.point_records.create(
         user: self.buyer,
         deal: self,
-        amount: self.price,
+        amount: discounted_price,
         type_name: 'cancel',
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_contracted?
+    if self.saved_change_to_is_contracted? && discounted_price > 0
       self.point_records.create(
         user: self.buyer,
         deal: self,
-        amount: -self.price,
+        amount: -discounted_price,
         type_name: 'contract',
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_rejected?
+    if self.saved_change_to_is_rejected? && discounted_price > 0
       self.point_records.create(
         user: self.buyer,
-        amount: self.price,
+        amount: discounted_price,
         type_name: 'rejection',
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_transacted
+    if self.saved_change_to_is_transacted && self.profit > 0
       self.balance_records.create(
         user: self.seller,
         amount: self.profit,

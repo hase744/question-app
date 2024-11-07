@@ -5,6 +5,25 @@
 .edit_link{
     line-height:30px;
 }
-
-
-
+.request_preview_zone{
+	.change_coupon{
+		margin-top: 0px;
+        color: $link_blue;
+        text-decoration: underline;
+        cursor: pointer;
+	}
+    .request_content.coupon{
+        white-space: normal;
+        a{
+            color: $text_grey;
+        }
+        .fa-regular{
+            color: $ok_green;
+            font-weight: bold;
+        }
+        input{
+            transform: scale(1.5);
+            color: $ok_green;
+        }
+    }
+}

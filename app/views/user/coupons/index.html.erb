@@ -1,0 +1,5 @@
+<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > クーポン一覧</h3>
+<% @coupons.each do |coupon| %>
+	<%= render "user/coupons/cell", coupon: coupon %>
+<% end %>
+<div class="main_bottom"><%= paginate @coupons %></div>

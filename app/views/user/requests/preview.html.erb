@@ -14,116 +14,139 @@
 <% else %>
   <h3 class="service_new_title">質問のプレビュー</h3>
 <% end %>
+<div class="request_preview_zone">
 <div class="service_new_zone">
     <div class="service_new_area input_area">
-    <%= form_with model: @request, url: @path, method:"post" do |f| %>
-        <div class="field_area">
-          <%= f.label :title, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.title %></h3>
-        </div>
-      
-        <div class="field_area">
-        <%= f.label :description, class:"field_label"%><br/>
-          <h5 class="request_content"><%=@request.description %></h5>
-        </div>
+    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
+    	    <div class="field_area">
+    	      	<%= f.label :title, class:"field_label"%><br/>
+    	      	<h3 class="request_content"><%=@request.title %></h3>
+    	    </div>
+		
+    	    <div class="field_area">
+    	    <%= f.label :description, class:"field_label"%><br/>
+    	      	<h5 class="request_content"><%=@request.description %></h5>
+    	    </div>
 
-        <div class="field_area">
-          <%= f.label :category, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.categories.map{|c| c.japanese_name }.join(',') %></h3>
-        </div>
+    	    <div class="field_area">
+    	      	<%= f.label :category, class:"field_label"%><br/>
+    	      	<h3 class="request_content"><%=@request.categories.map{|c| c.japanese_name }.join(',') %></h3>
+    	    </div>
 
-        <div class="field_area">
-          <%= f.label :request_form, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.request_form.japanese_name%></h3>
-        </div>
+    	    <div class="field_area">
+    	      	<%= f.label :request_form, class:"field_label"%><br/>
+    	      	<h3 class="request_content"><%=@request.request_form.japanese_name%></h3>
+    	    </div>
 
-        <div class="video_field_area" id="video_field_area">
-        <%= f.label :file, class:"field_label" %><br />
-            <%if @request.use_youtube%>
-                <div id="youtube_area">
-                  <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            <% end %>
-            <div class="field_area" id="file_field_area">
-                <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
-                  <% @request.items.each.with_index do |item, index| %>
-                    <%= image_tag item&.file&.url, class:"image" if item.file.url && item.file.is_image? %>
-                  <% end %>
-                <% end %>
-                <% if @request.request_form_name == "text" && @request.items %>
-                  <% @request.items.text_image.each do |item|%>
-                    <%= image_tag item.file.normal_size.url, class:"image"%>
-                  <% end %>
-                <% end %>
-                <% if @request.need_text_image?%>
-                  <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
-                  <img id="description_image" class="description_image">
-                <% end %>
-                <% if @request.request_form_name == "video"%>
-                  <%if @request.use_youtube%>
-                  <% else %>
-                    <%= video_tag @request.file.url, class:"image",id:"video_display", controls: true, autobuffer: true%>
-                    <%= f.hidden_field :file_duration, id:"file_duration" %>
-                  <% end %>
-                <% end %>
-            </div>
-        </div>
-        <%##= f.file_field  :thumbnail, id:"thumbnail_input" %>
-        <div class="imgArea"></div>
+    	    <div class="video_field_area" id="video_field_area">
+    	    <%= f.label :file, class:"field_label" %><br />
+    	      	<%if @request.use_youtube%>
+    	            <div id="youtube_area">
+    	              	<iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    	            </div>
+    	        <% end %>
+    	        <div class="field_area" id="file_field_area">
+    	            <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
+    	              	<% @request.items.each.with_index do |item, index| %>
+    	              	  	<%= image_tag item&.file&.url, class:"image" if item.file.url && item.file.is_image? %>
+    	              	<% end %>
+    	            <% end %>
+    	            <% if @request.request_form_name == "text" && @request.items %>
+    	              	<% @request.items.text_image.each do |item|%>
+    	              	  	<%= image_tag item.file.normal_size.url, class:"image"%>
+    	              	<% end %>
+    	            <% end %>
+    	            <% if @request.need_text_image?%>
+    	              	<span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+    	              	<img id="description_image" class="description_image">
+    	            <% end %>
+    	            <% if @request.request_form_name == "video"%>
+    	              	<%if @request.use_youtube%>
+    	              	<% else %>
+    	              	  	<%= video_tag @request.file.url, class:"image",id:"video_display", controls: true, autobuffer: true%>
+    	              	  	<%= f.hidden_field :file_duration, id:"file_duration" %>
+    	              	<% end %>
+    	            <% end %>
+    	        </div>
+    	    </div>
+    	    <%##= f.file_field  :thumbnail, id:"thumbnail_input" %>
+    	    <div class="imgArea"></div>
 
-        <div class="field_area">
-          <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
-        </div>
+    	    <div class="field_area">
+    	      <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
+    	    </div>
 
-        <% if !@service_exist%>
-        <div class="field_area">
-            <%= f.label :max_price, class:"field_label"%><br/>
-            <h3 class="request_content"><%=@request.max_price%>円</h3>
-        </div>
+    	    <% if !@service_exist%>
+    	    <div class="field_area">
+    	        <%= f.label :max_price, class:"field_label"%><br/>
+    	        <h3 class="request_content"><%=@request.max_price%>円</h3>
+    	    </div>
 
-        <div class="field_area">
-          <%= f.label :delivery_days, class:"field_label"%><br/>
-          <h3 class="request_content"><%=@request.delivery_days%>日</h3>
-        </div>
-        <% else %>
-        <%= f.hidden_field :service_id, value: @service.id %>
-        <% end %>
+    	    <div class="field_area">
+    	      	<%= f.label :delivery_days, class:"field_label"%><br/>
+    	      	<h3 class="request_content"><%=@request.delivery_days%>日</h3>
+    	    </div>
+    	    <% end %>
+    	<% end %>
 
-        <div class="submit_area">
-          <%= link_to "編集", @edit_path,class:"big_submit grey edit_link", id:"edit_link"%>
-        </div></br>
+    	    <% if @transaction && @transaction&.price > 0 %>
+				<% if current_user.coupons.usable(@transaction&.price).present? %>
+    	    	<div class="field_area">
+					<label>クーポンの使用</label>
+					<h3 class="request_content coupon">
+						<%= link_to(change_coupon_user_config_path, method: :put) do %>
+							<%if current_user.use_inactive_coupon %>
+								<input type="checkbox" checked="checked"></input>
+							<% else %>
+								<input type="checkbox"></input>
+							<% end %>
+							期限が近いクーポンから利用する
+						<% end %>
+					</h3>
+				</div>
+				<% end %>
 
-        <% if @service&.allow_pre_purchase_inquiry %>
-        <div class="submit_area">
-        	<div class="open_button big_submit grey edit_link">購入前に質問</div>
-        	</div></br>
-        <% end %>
+    	    	<div class="price_area">
+					<label>価格</label></br>
+					<% if @transaction.required_points < @transaction.price %>
+    	    	  		<h3 class="price fake_price"><span><%= @transaction.price %></span>円</h3></br>
+    	    	  		<h3 class="price true_price"><%= @transaction.required_points %>円	
+						</h3>
+						<span class="discount"> （ クーポンにより<%= @transaction.price - @transaction.required_points%>円引き）</span>
+					<% else %>
+    	    	  		<h3 class="price true_price"><%= @transaction.price %>円</h3>
+					<% end %>
+					<%if !current_user.use_inactive_coupon && current_user.coupons.usable %>
+						<h4 class="open_button change_coupon">クーポンを選択</h4>
+						<%= render "user/coupons/modal_window", price: @transaction.price %>
+					<% end %>
+    	    	</div>
+    	    <% end %>
 
-        <div class="submit_area">
-          <%= f.file_field  :file, id:"file_input", class:"display_none" %>
-          <%= f.hidden_field :transaction_id %>
-          <%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
-        </div>
-      <% end %>
+    	    <div class="submit_area">
+    	      	<%= link_to "編集", @edit_path,class:"big_submit grey edit_link", id:"edit_link"%>
+    	    </div></br>
+
+    	<% if @service&.allow_pre_purchase_inquiry %>
+    		<div class="submit_area">
+				<div class="open_button big_submit grey edit_link">購入前に質問</div>
+				<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
+    		</div></br>
+    	<% end %>
+    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
+    	    <div class="submit_area">
+    	      	<%= f.hidden_field :transaction_id %>
+    	      	<%= f.file_field  :file, id:"file_input", class:"display_none" %>
+    	    	<%= f.hidden_field :service_id, value: @service&.id %>
+    	      	<%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
+    	    </div>
+    	<% end %>
     </div>
 </div>
+</div>
 <% if @transaction %>
-<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
 <script>
-<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
-</script>
-<script>
-pre_inquery_modal = $('.pre_inquery_modal');
-modal = $('.modal_window');
-$('.open_button').on('click', function(){
-	pre_inquery_modal.addClass("open");
-});
-$('.modal_delete').on('click', function(){
-    modal.removeClass("open");
-  });
-$('.modal_background').on('click', function(e){
-    modal.removeClass('open');
-});
+	<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
 </script>
 <% end %>
 <%if @request.need_text_image? %>

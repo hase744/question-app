@@ -26,7 +26,7 @@
   	  	<thead>
   	  	  	<tr>
   	  	  	  	<% columns.each do |name| %>
-  	  	  	  	  	<th><%= name %></th>
+  	  	  	  	  	<th><%= I18n.t("activerecord.attributes.#{models.model_name.element}.#{name}") %></th>
   	  	  	  	<% end %>
   	  	  	  	<th>Actions</th>
   	  	  	</tr>
@@ -47,6 +47,8 @@
   	  	  	  	  	  	  	<%= link_to User.find(model.attributes[name]).name, admin_user_user_path(model.attributes[name]) %>
 						<% when 'condition_type' then %>
   	  	  	  	  	  	  	<%= model.type_name_japanese %>
+						<% when 'discount_rate' then %>
+  	  	  	  	  	  	  	<%= (model.attributes[name]*100).to_i %>％
   	  	  	  	  	  	<% else %>
   	  	  	  	  	  	  	<%= model.attributes[name] %>
   	  	  	  	  	  	<% end %>

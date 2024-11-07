@@ -11,6 +11,8 @@ class User::OrdersController < User::Base
       "small"
     when "edit"
       "small"
+    when "reject"
+      "small"
     else
       "application"
     end
@@ -79,9 +81,9 @@ class User::OrdersController < User::Base
     #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
-      if @transaction.save && @service.save
-        flash.notice = " 購入をキャンセルしました"
-        redirect_to user_orders_path(user: "buyer", scope: "ongoing")
+      if save_models && @transaction.destroy_all_coupons
+        flash.notice = "購入をキャンセルしました"
+        redirect_to user_order_path(id: @transaction.id)
         create_cancel_notification
         EmailJob.perform_later(mode: :cancel, model: @transaction) if @transaction.seller.can_email_transaction
       else
@@ -103,12 +105,13 @@ class User::OrdersController < User::Base
     #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
-      if @request.save && @service.save && @transaction.save 
-        flash.notice = "質問を断りました"
+      if save_models && @transaction.destroy_all_coupons
+        flash.notice = "お断りの連絡を送信しました"
         create_rejection_notification
-        redirect_to user_orders_path(user: "seller", scope: "ongoing")
+        redirect_to user_order_path(id: @transaction.id)
         EmailJob.perform_later(mode: :reject, model: @transaction) if @transaction.buyer.can_email_transaction
       else
+        flash.notice = "お断りの連絡を送信できませんでした"
         render "user/orders/edit"
       end
     end

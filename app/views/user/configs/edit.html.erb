@@ -9,6 +9,9 @@
             <%= f.check_box :can_email_transaction, class:"input_field check_box", checked:@user.can_email_transaction, id:"youtube_check_box" %>
             <label>取引や追加メッセージに関するメールの受信を許可する</label></br>
 
+            <%= f.check_box :use_inactive_coupon, class:"input_field check_box", checked:@user.use_inactive_coupon, id:"youtube_check_box" %>
+            <label>期限が近いクーポンから利用する</label></br>
+
             <%= f.check_box :is_published, class:"input_field check_box", checked:@user.is_published, id:"youtube_check_box" %>
             <label>アカウントを公開する</label></br>
             <% if current_user.stripe_account_id %>

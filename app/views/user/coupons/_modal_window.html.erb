@@ -1,0 +1,16 @@
+<div class="modal_window">
+    <div class="modal_background"></div>
+    <div class="modal_window_body">
+        <div class="service_area">
+        <div>クーポンを選択</div>
+        <% current_user.coupons.usable(price).each do |coupon| %>
+			<%= link_to activate_user_coupon_path(coupon.id), method: :put, class:"coupon_cell_area", data:{confirm: coupon.is_active ? "このクーポンを解除しますか？" : "このクーポンを使用しますか？"} do %>
+				<%= render "user/coupons/inner_cell", coupon: coupon %>
+			<% end %>
+        <% end %>
+        </div>
+        <div class="modal_delete_area">
+            <p class="modal_delete">閉じる</p>
+        </div>
+    </div>
+</div>
