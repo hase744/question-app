@@ -1,0 +1,13 @@
+<%= render "/admin_user/shared/edit", 
+    model: @coupon,
+    column_names: ['user_id', 'usage_type', 'start_at', 'end_at', 'amount', 'discount_rate', 'minimum_purchase_amount'],
+    path: admin_user_coupon_path, 
+    method: 'POST' %>
+<%= render "/admin_user/shared/index", 
+  	models: @users, 
+  	column_names: ['image', 'name', 'is_seller'],
+    show_exist: true,
+    delete_exist: false,
+    edit_exist: false,
+    links: -> (model){ [{text: "選択", link: edit_admin_user_coupon_path(request.query_parameters.merge(user_id: model.id))}]}
+  	%>

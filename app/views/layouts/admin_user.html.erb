@@ -8,7 +8,7 @@
     	  	  	<li>
 					<%= link_to "ホーム", admin_user_root_path %>
 				</li>
-				<%[Notification, Announcement, User, AnnouncementReceipt].each do |model|%>
+				<%[Notification, Announcement, User, AnnouncementReceipt, Coupon].each do |model|%>
   					<li>
   					  	<%= link_to model.model_name.human, url_for(controller: "admin_user/#{model.model_name.route_key}") %>
   					</li>

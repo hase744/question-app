@@ -15,6 +15,9 @@
 					  		<%= image_tag model.thumb_with_default %>
   			  	  	  	<% elsif name == 'header_image' && model.header_image.url%>
 					  		<%= image_tag model.header_image.thumb.url %>
+  			  	  	  	<% elsif name == 'user_id'%>
+					  		<%= image_tag model.user.thumb_with_default %>
+  			  	  	  		<span><%= model.user.name %></span>
   			  	  	  	<% end %>
   			  	  	  	<span><%= model.attributes[name] %></span>
 						</div>

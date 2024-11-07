@@ -39,6 +39,11 @@ class User::ConfigsController < User::Base
     end
   end
 
+  def change_coupon
+    current_user.update(use_inactive_coupon: !current_user.use_inactive_coupon)
+    redirect_back(fallback_location: root_path)
+  end
+
   #01をtrue, falseに変換
   def binary_to_boolean
     {"0"=>false, "1"=>true}
@@ -60,6 +65,7 @@ class User::ConfigsController < User::Base
       :can_email_advert,
       :can_email_transaction,
       :is_published,
+      :use_inactive_coupon,
       :is_seller
     )
   end

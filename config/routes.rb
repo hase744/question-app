@@ -126,6 +126,17 @@ namespace :user do
     resource :service_likes, only: [:create, :destroy, :show]
     resource :request_likes, only: [:create, :destroy, :show]
     resource :transaction_likes, only: [:create, :destroy, :show]
+    resources :coupons, only: [:index, :show]
+    resources :configs do
+      member do
+        put :change_coupon, to: 'configs#change_coupon'
+      end
+    end
+    resources :coupons do
+      member do
+        put :activate, to: 'coupons#activate'
+      end
+    end
     resources :requests do
       member do
         delete :remove_file, to: 'requests#remove_file'
@@ -144,6 +155,7 @@ namespace :user do
     resources :announcements, only: [:create, :index, :show, :new, :edit, :update, :destroy]
     resources :users, only: [:create, :index, :show, :new, :edit, :update]
     resources :announcement_receipts, only: [:create, :index, :show, :new, :edit, :destroy]
+    resources :coupons, only: [:create, :index, :show, :update, :new, :edit, :destroy]
   end
 
   devise_for :users

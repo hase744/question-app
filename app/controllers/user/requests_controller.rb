@@ -232,7 +232,9 @@ class User::RequestsController < User::Base
     @transaction.assign_attributes(
       is_contracted:true,
       contracted_at:DateTime.now,
+      delivery_time: DateTime.now + @service.delivery_days.to_i
       )
+    @transaction.build_coupon_usages
     #@service.stock_quantity = @service.stock_quantity-1 if @service.stock_quantity
     @request.set_service_values
 
@@ -468,15 +470,13 @@ class User::RequestsController < User::Base
   end
 
   private def check_budget_sufficient
-    if @service
-      if current_user.total_points < @service.price
-        @defficiency = @service.price - current_user.total_points
-        flash.notice = "残高が#{@defficiency}ポイント足りません"
-        session[:payment_service_id] = @service.id
-        session[:payment_transaction_id] = @transaction.id
-        redirect_to user_payments_path(point:@defficiency)
-      end
-    end
+    return if @service.nil? 
+    return if current_user.total_points >= @transaction.required_points
+    @defficiency = @service.price - current_user.total_points
+    flash.notice = "残高が#{@defficiency}ポイント足りません"
+    session[:payment_service_id] = @service.id
+    session[:payment_transaction_id] = @transaction.id
+    redirect_to user_payments_path(point:@defficiency)
   end
 
   private def check_already_contracted

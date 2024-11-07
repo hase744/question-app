@@ -1,0 +1,24 @@
+
+<h3 class="input_new_title"><%= link_to "クーポン一覧", user_coupons_path, class:"main_area_top_link" %> > クーポン</h3>
+<div class="coupon_cell_area">
+	<%= render "user/coupons/inner_cell", coupon: @coupon %>
+</div>
+
+<table class="common_table">
+	<thead>
+		<tr>
+			<th>利用金額</th>
+			<th>質問</th>
+			<th>日時</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @coupon.usages.each do |usage| %>
+			<tr href="<%=user_order_path(usage.deal.id)%>">
+				<td class="number">￥<%= usage.amount %></td>
+				<td><%=link_to usage.deal.request.title, user_order_path(usage.deal.id) %></td>
+				<td><%= readable_datetime(usage.created_at) %></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>

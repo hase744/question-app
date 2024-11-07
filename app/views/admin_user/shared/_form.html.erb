@@ -67,13 +67,15 @@
 				<% end %>
   	  	  	<% elsif column == 'condition_type' %>
 				<%= form.select :condition_type, Announcement.selector_hash, include_blank: false %>
+  	  	  	<% elsif column == 'usage_type' %>
+				<%= form.select :usage_type, Coupon.selector_hash, include_blank: false %>
 			<% elsif column == 'state' %>
 				<%= form.select :condition_type, User.selector_hash, include_blank: false %>
   	  	  	<% else %>
   	  	  	  	<%= form.number_field column.to_sym %>
   	  	  	<% end %>
   	  	<% when 'float' then %>
-  	  	  	<%= form.number_field column.to_sym, step: "0.0000000000000001" %>
+			<%= form.select column.to_sym, options_for_select((0.00..1.00).step(0.1).map { |n| [sprintf('%.2f', n), n] }, model.attributes[column]), {} %>
   	  	<% end %>
   	  	</div>
   	<% end %>

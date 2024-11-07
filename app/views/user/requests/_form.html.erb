@@ -93,11 +93,7 @@
   	</div>
 
   	<div class="field_area">
-  	  	<%if service.present? %>
-  	  	  	<%= f.label :price, class:"field_label"%><br/>
-  	  	  	<h3 class="request_content"><%=service.price%>円</h3>
-  	  	  	<%= f.hidden_field :price, value: service.price %>
-  	  	<% else %>
+  	  	<% unless service.present? %>
   	  	  	<%= f.label :max_price, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
   	  	  	<div class="input_field text_field select_area">
   	  	  		<%= f.select 'max_price', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.max_price), include_blank: true,  class:"price_field" ,required: true %>

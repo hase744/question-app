@@ -1,0 +1,19 @@
+<%= render "/admin_user/shared/index", 
+  	models: @coupons, 
+  	column_names: ['user_id', 'usage_type', 'start_at', 'end_at', 'amount', 'discount_rate', 'minimum_purchase_amount'],
+	show_exist: true,
+	delete_exist: true,
+	edit_exist: true,
+	links: -> (model){[
+		{text: "コピー", link: new_admin_user_coupon_path(request.query_parameters.merge(coupon: {
+			user_id: model.id,
+			user_id: model.user_id,
+			amount: model.amount,
+			discount_rate: model.discount_rate,
+			start_at: model.start_at,
+			end_at: model.end_at,
+			minimum_purchase_amount: model.minimum_purchase_amount,
+			usage_type: model.usage_type
+			}))}
+		]}
+  	%>

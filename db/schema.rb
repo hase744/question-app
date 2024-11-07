@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_30_170813) do
+ActiveRecord::Schema.define(version: 2024_11_03_094138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,31 @@ ActiveRecord::Schema.define(version: 2024_10_30_170813) do
     t.index ["payout_id"], name: "index_balance_records_on_payout_id"
     t.index ["transaction_id"], name: "index_balance_records_on_transaction_id"
     t.index ["user_id"], name: "index_balance_records_on_user_id"
+  end
+
+  create_table "coupon_usages", force: :cascade do |t|
+    t.bigint "coupon_id", null: false
+    t.bigint "transaction_id", null: false
+    t.integer "amount", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["coupon_id"], name: "index_coupon_usages_on_coupon_id"
+    t.index ["transaction_id"], name: "index_coupon_usages_on_transaction_id"
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "amount", default: 0, null: false
+    t.float "discount_rate", null: false
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.integer "minimum_purchase_amount", default: 0, null: false
+    t.integer "remaining_amount", default: 0, null: false
+    t.integer "usage_type", null: false
+    t.boolean "is_active", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_coupons_on_user_id"
   end
 
   create_table "delivery_items", force: :cascade do |t|
@@ -553,6 +578,7 @@ ActiveRecord::Schema.define(version: 2024_10_30_170813) do
     t.boolean "header_image_processing", default: false, null: false
     t.boolean "is_seller", default: false
     t.boolean "is_published", default: true
+    t.boolean "use_inactive_coupon", default: true, null: false
     t.text "admin_description"
     t.text "track_record"
     t.text "description"
@@ -607,6 +633,9 @@ ActiveRecord::Schema.define(version: 2024_10_30_170813) do
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"
+  add_foreign_key "coupon_usages", "coupons"
+  add_foreign_key "coupon_usages", "transactions"
+  add_foreign_key "coupons", "users"
   add_foreign_key "delivery_items", "transactions"
   add_foreign_key "error_logs", "users"
   add_foreign_key "inquiries", "admin_users"
