@@ -47,18 +47,9 @@
             </div>
             <div class="category_label_area">
                 <div class="category_label_flame">
-                    <label id="category_button">
-                    カテゴリ一覧&nbsp;<span class="fas fa-angle-down">&nbsp;</span>
-                    </label>
-                    <div id="category_list" class="category_list hidden">
-                        <ul>
-                        <% Category.all.each do |category|%>
-                            <div>
-                            <li><%= link_to category.japanese_name, user_transactions_path(categories: category.name), class:"category_link"%></li>
-                            </div>
-                        <% end %>
-                        </ul>
-                    </div>
+                    <%= render "user/shared/category_selector", 
+                        link: ->(category) { user_transactions_path(request.query_parameters.merge(categories: category[:name])) } 
+                    %>
                 </div>
             </div>
         </div>
@@ -92,6 +83,9 @@
             <% @transactions.each do |transaction|%>
                 <%= render "user/transactions/answer", transaction:transaction %>
             <% end %>
+            <div class="see_more_link_area">
+            <%= link_to "すべて見る", user_transactions_path, class: "see_more_link" %>
+            </div>
         </div>
     </div>
     <div class="category_area">

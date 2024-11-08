@@ -3,16 +3,17 @@
         <div class="left_side">
             <%= link_to "", user_homes_path, class:"fas fa-home"%>
              > <%= link_to "#{Service.model_name.human}一覧", user_services_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-            <%= render "user/shared/category_selector", 
-                current_link: -> { user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available]) }, 
-                link: ->(category) { user_services_path(categories: category[:name], order: params[:order], is_available: params[:is_available]) } %>
+             > <%= render "user/shared/category_selector", 
+                link: ->(category) { user_services_path(request.query_parameters.merge(categories: category[:name])) } 
+            %>
         </div>
         <div class="second_stage">
-            <%= link_to user_services_path(categories: params[:categories], order: params[:order], is_available: params[:is_available] == '1' ?  '0' : '1'), class:"check_link" do %>
+            <%= link_to user_services_path(request.query_parameters.merge(is_available: params[:is_available] == '1' ?  '0' : '1')), class:"check_link" do %>
                 <input class="checkbox" type="checkbox" <%='checked' if params[:is_available] == '1'%>>受付中
             <% end %>
             <%= render "user/shared/sort_selector",
-                link: ->(order) {user_services_path(order: order, categories: params[:categories], is_available: params[:is_available]) } %>
+                link: ->(order) {user_services_path(request.query_parameters.merge(order: order)) } 
+            %>
         </div>
     </div>
     <div class="service_index_flame service_cell_zone">

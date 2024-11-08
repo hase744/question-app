@@ -11,7 +11,7 @@
                 <% end %>
                 **** **** **** <%=@card["last4"]%> <%=@card.exp_month%>/<%= @card.exp_year.to_s[2, 2]%>
             </p>
-            <%= link_to "クレジットカード情報を更新", edit_user_cards_path %></br>
+            <%= link_to "クレジットカード情報を変更", edit_user_cards_path %></br>
             <%= link_to "クレジットカード情報を削除", user_cards_path, method:"delete",data: { confirm: "カード情報を削除しますか？" } %>
         <% elsif @error %>
                 <p>カード情報が見つかりませんでした。カード情報を削除し、再び登録してください。</p>

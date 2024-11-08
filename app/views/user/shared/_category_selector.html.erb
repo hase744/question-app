@@ -1,5 +1,5 @@
 <div class="category_selector">
-    > <span class="category_button">
+    <span class="category_button">
         <%= Category.find_by(name: params[:categories])&.japanese_name || "全てのカテゴリー " %>
         <span class="fa-solid fa-angle-down"></span>
     </span>

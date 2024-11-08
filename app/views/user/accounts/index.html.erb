@@ -3,16 +3,17 @@
         <div class="left_side">
             <%= link_to "", user_homes_path, class:"fas fa-home" %>
              > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
-            <%= render "user/shared/category_selector", 
-                current_link: -> { user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently])}, 
-                link: ->(category) { user_accounts_path(categories: category[:name], order: params[:order], signed_in_recently: params[:signed_in_recently])} %>
+             > <%= render "user/shared/category_selector", 
+                link: ->(category) { user_accounts_path(request.query_parameters.merge(categories: category[:name]))} 
+            %>
         </div>
         <div class="second_stage">
-            <%= link_to user_accounts_path(categories: params[:categories], order: params[:order], signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1'), class:"check_link" do %>
+            <%= link_to user_accounts_path(request.query_parameters.merge(signed_in_recently: params[:signed_in_recently] == '1' ? '0' : '1')), class:"check_link" do %>
                 <input class="checkbox" type="checkbox" <%='checked' if params[:signed_in_recently] == '1'%>>1週間以内にログイン
             <% end %>
             <%= render "user/shared/sort_selector",
-                link: ->(order) {user_accounts_path(order: order, categories: params[:categories], signed_in_recently: params[:signed_in_recently]) } %>
+                link: ->(order) {user_accounts_path(request.query_parameters.merge(order: order)) } 
+            %>
         </div>
     </div>
     <div class="searched_user_area" id="searched_user_area">

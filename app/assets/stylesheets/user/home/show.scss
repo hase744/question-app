@@ -99,6 +99,14 @@
             width: 100%;
         }
         float: left;
+        .transaction_group{
+            .see_more_link_area{
+                text-align: center;
+            }
+            .see_more_link{
+                padding-right: 5px;
+            }
+        }
     }
     
     .label_area{
@@ -114,7 +122,8 @@
         bottom: 0px;
         .category_label_flame{
             position: relative;
-
+            padding-right: 5px;
+            color: dimgray;
         }
         .category_list {
             display: inline-block;
