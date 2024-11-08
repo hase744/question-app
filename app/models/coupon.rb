@@ -42,6 +42,10 @@ class Coupon < ApplicationRecord
     #)", usage_types[:unlimited], usage_types[:one_time])
   }
 
+  scope :solve_n_plus_1, -> {
+    includes(:user)
+  }
+
   def deactivate_all
     return unless self.is_active
     self.update_all(is_active: false)

@@ -5,7 +5,7 @@ class User::RequestsController < User::Base
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_parameter, except:[:new]
   before_action :check_request_need_transaction, only:[:edit, :preview]
-  before_action :check_stripe_customer, only:[:publish] #Stripeのアカウントが有効である
+  before_action :check_stripe_customer, only:[:publish, :purchase] #Stripeのアカウントが有効である
   before_action :check_service_buyable, only:[:new, :edit, :create, :update, :previous, :publish] #サービスが購入可能である
   before_action :check_service_checked_at, only:[:preview, :edit, :create, :update, :publish]
   before_action :check_original_request, only:[:new, :create, :preview] #購入しようとしているサービスが自分の依頼に対する提案である
@@ -396,7 +396,7 @@ class User::RequestsController < User::Base
   end
 
   private def check_stripe_customer
-    unless current_user.is_stripe_customer_valid? || @service&.price == 0
+    unless current_user.is_stripe_customer_valid? || @transaction&.required_points == 0
       redirect_to  user_cards_path
     end
   end
@@ -431,10 +431,8 @@ class User::RequestsController < User::Base
       @service = @transaction.service
     elsif params[:service_id]
       @service = Service.find(params[:service_id])
-    elsif params[:request] #create  action
-      if params[:request][:service_id]
-        @service = Service.find(params[:request][:service_id])
-      end
+    elsif params.dig(:request, :service_id) #create  action
+      @service = Service.find(params[:request][:service_id])
     end
   end
 

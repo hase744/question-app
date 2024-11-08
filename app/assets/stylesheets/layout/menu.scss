@@ -636,8 +636,10 @@ $menu_link_height: 30px;
     }
     .search_mode .wide_detail_search_container{
         width: 100%;
-        height: calc(100vh - 50px);
-        overflow-x: scroll;
+        height: calc(100vh - 40px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+        overscroll-behavior-y: none;
     }
 }
 @media(min-width:1000px){

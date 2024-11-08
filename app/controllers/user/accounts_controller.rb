@@ -18,7 +18,7 @@ class User::AccountsController < User::Base
   def index
     @users = User.all
     @users = @users.is_sellable
-    @users = @users.where("users.name LIKE ?", "%#{params[:name]}%") if params[:name].present?
+    @users = @users.where("users.name LIKE ?", "%#{params[:word]}%") if params[:word].present?
     @users = @users.filter_categories(params[:categories])
     @users = @users.solve_n_plus_1
     @users = @users.include_price
@@ -61,7 +61,7 @@ class User::AccountsController < User::Base
       @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
     end
     if @user.image.url
-      $og_image = @user.image.url
+      @og_image = @user.image.url
     end
     @og_title = @user.name
     @og_description = @user.description

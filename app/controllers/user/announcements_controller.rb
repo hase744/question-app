@@ -3,7 +3,7 @@ class User::AnnouncementsController < User::Base
   def index
     @announcements = Announcement.published
       .order(published_at: :desc)
-      .where("announcements.title LIKE ? ", "%#{params[:name]}%")
+      .where("announcements.title LIKE ? ", "%#{params[:word]}%")
       .for_user(current_user)
       .page(params[:page])
       .per(50)

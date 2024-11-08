@@ -5,26 +5,12 @@
       	<div class="header" id="header">
         	<%=render "layouts/menu" %>
       	</div>
-		<div class="top_search_margin">
-		</div>
+		<div class="top_search_margin"></div>
     	<%=render "layouts/top_margin"%>
-      	<div class="top_search_form_area">
-			<div class="top_search_form">
-      	    	<input class="search_input" type="text" placeholder='<%=I18n.t("controllers.#{controller_name}")%>を検索'>
-      	    	<div class="searchForm-submit">
-      	    	    <div class="search_glass"></div>
-      	    	</div>
-			</div>
-			<div class="open_search_button open_search"></div>
-      	</div>
+		<%= render "user/shared/top_search_form", path: request.path %>
       	<div class="main_area">
         	<%= yield %>
       	</div>
   	</body>
 </html>
 <%= render "layouts/bottom" %>
-<script>
-$(".open_search").click(function() { // 検索バーを開く
-	$('.menu_bar').addClass('search_mode');
-});
-</script>

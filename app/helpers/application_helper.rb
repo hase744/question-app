@@ -111,7 +111,7 @@ include OperationConfig
   end
 
   def discounted_price(service)
-    return unless user_signed_in?
+    return service.price unless user_signed_in?
     transaction = service.transactions.new(
       service: service,
       request: Request.new,

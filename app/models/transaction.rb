@@ -8,10 +8,10 @@ class Transaction < ApplicationRecord
   has_many :transaction_categories, class_name: "TransactionCategory", dependent: :destroy
   has_many :likes, class_name: "TransactionLike", dependent: :destroy
   has_many :items, class_name: "DeliveryItem", foreign_key: :transaction_id, dependent: :destroy
-  has_many :point_records
-  has_many :balance_records
-  has_many :coupon_usages
-  has_many :coupons, through: :coupon_usages
+  has_many :point_records, dependent: :destroy
+  has_many :balance_records, dependent: :destroy
+  has_many :coupon_usages, dependent: :destroy
+  has_many :coupons, through: :coupon_usages, dependent: :destroy
   has_one :transaction_category
   has_one :category, through: :transaction_category
   has_one :review
@@ -307,9 +307,12 @@ class Transaction < ApplicationRecord
   end
 
   def destroy_all_coupons
+    return true if self.coupon_usages.blank?
     response = self.coupon_usages.respond_to?(:destroy_all)
     if response
+      coupon_ids = self.coupons.pluck(:id)
       self.coupon_usages&.destroy_all
+      Coupon.where(id: coupon_ids).each(&:save)
     else
       errors.add(:base, "クーポンに関するエラー")
     end
