@@ -314,8 +314,7 @@
     flex-wrap: wrap;
     text-align: left;
     margin-top: 100px;
-    .seller_area, .buyer_area{
-        position: relative;
+    .seller_flame, .buyer_flame{
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -328,6 +327,14 @@
         @media(max-width: 940px){
             max-width: 700px;
             margin-bottom: 50px;
+            .buyer_area, .seller_area{
+                max-width: 400px;
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
+        .buyer_area, .seller_area{
+            position: relative;
         }
         .buyer_image, .seller_image{
             position: absolute;

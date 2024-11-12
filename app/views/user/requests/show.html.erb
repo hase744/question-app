@@ -104,18 +104,6 @@
                         <span class="common_condition"><%=@request.delivery_form.japanese_name%></span>
                     </td>
                 </tr>
-                <tr>
-                    <td class="condition_label">
-                        <span class="condition_name "><%= Request.human_attribute_name(:category) %></span>
-                    </td>
-                    <td>
-                        <span class="common_condition">
-                        <% @request.categories.each do |category| %>
-                            <%= link_to category.japanese_name, user_requests_path(categories: category.name), class:"big_name_tag" %>
-                        <% end %>
-                        </span>
-                    </td>
-                </tr>
             </table>
             <div class="request_detail">
                 <%= render "user/shared/small_label", text:"本文"%>
@@ -123,6 +111,9 @@
                     <p id="request_detail_text" class="request_detail_text"><%=@request.description%></p>
                 </div>
             </div>
+            <% @request.categories.each do |category| %>
+                <%= link_to category.japanese_name, user_requests_path(categories: category.name), class:"big_name_tag" %>
+            <% end %>
             <div class="item_area">
                 <%if @request.use_youtube%>
                     <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

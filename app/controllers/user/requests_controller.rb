@@ -408,7 +408,7 @@ class User::RequestsController < User::Base
         request: {user: current_user}
         )
     elsif params[:service_id] && params[:id]
-      @transaction = Transaction.find_by(request_id: params[:id].to_i, service_id: params[:service_id].to_i)
+      @transaction = Transaction.find_by(request_id: params[:id], service_id: params[:service_id])
     elsif params.dig(:request, :service_id) && params[:id]
       @transaction = Transaction.find_by(
         service_id: params[:request][:service_id], 
@@ -431,7 +431,7 @@ class User::RequestsController < User::Base
       @service = @transaction.service
     elsif params[:service_id]
       @service = Service.find(params[:service_id])
-    elsif params.dig(:request, :service_id) #create  action
+    elsif params.dig(:request, :service_id).present? #create  action
       @service = Service.find(params[:request][:service_id])
     end
   end

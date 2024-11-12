@@ -577,12 +577,21 @@ class Request < ApplicationRecord
     end
   end
 
-  def description_max_length(service=nil)
-    if service
-      service.request_max_characters
+  def description_font_size(image_width)
+    mini_font_size = image_width * 0.031
+    max_font_size = image_width * 0.05
+    
+    text_length = self.description.length
+    
+    if text_length < 100
+      mini_font_size + ((max_font_size - mini_font_size) / 100) * text_length
     else
-      20000
+      mini_font_size
     end
+  end
+
+  def description_max_length(service=nil)
+    service&.request_max_characters.presence || 20000
   end
 
   def max_price_upper_limit

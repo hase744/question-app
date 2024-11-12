@@ -292,6 +292,7 @@ class Transaction < ApplicationRecord
 
   def build_coupon_usages
     coupon_model = appropriate_coupons
+    return if coupon_model.nil?
     if coupon_model.is_a?(Coupon) #単体のクーポンの時 == one_timeの時
       self.coupon_usages.build(amount: [coupon_model.remaining_amount, self.price].min*coupon_model.discount_rate, coupon: coupon_model)
     else #複数のクーポンの時 = unlimitedの時
@@ -508,16 +509,18 @@ class Transaction < ApplicationRecord
     end
   end
 
-  def validate_is_canceled
-    if self.is_canceled 
-      if DateTime.now < self.delivery_time
-        errors.add(:delivery_time, "を過ぎていません")
-      end
+  def is_cancelable_by(user)
+    return false if user != self.buyer
+    return false if DateTime.now < self.delivery_time
+    return false if self.is_rejected 
+    return false if self.is_transacted
+    true
+  end
 
-      if self.is_rejected || self.is_transacted
-        errors.add(:is_canceled, "はできません")
-      end
-    end
+  def validate_is_canceled
+    return unless self.is_canceled 
+    errors.add(:delivery_time, "を過ぎていません") if DateTime.now < self.delivery_time
+    errors.add(:is_canceled, "はできません") if self.is_rejected || self.is_transacted
   end
   
   def validate_is_rejected

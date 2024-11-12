@@ -138,16 +138,16 @@
 <div class="index_link_zone" id="index_link_zone">
     <div class="index_link_area">
         <div class="index_link_container">
-        <%= link_to(user_services_path, class: "index_link") do %>
+        <%= link_to(user_services_path, class: "index_link", onclick: "event.stopPropagation()") do %>
             <div class="index_link_text"><%=Service.model_name.human%>を探す</div>
         <% end %>
-        <%= link_to(user_accounts_path, class: "index_link") do %>
+        <%= link_to(user_accounts_path, class: "index_link", onclick: "event.stopPropagation()") do %>
             <div class="index_link_text">回答者を探す</div>
         <% end %>
-        <%= link_to(user_requests_path, class: "index_link") do %>
+        <%= link_to(user_requests_path, class: "index_link", onclick: "event.stopPropagation()") do %>
             <div class="index_link_text">質問を探す</div>
         <% end %>
-        <%= link_to(user_transactions_path, class: "index_link") do %>
+        <%= link_to(user_transactions_path, class: "index_link", onclick: "event.stopPropagation()") do %>
             <div class="index_link_text">回答を探す</div>
         <% end %>
         </div>

@@ -34,16 +34,6 @@ var newTextContent = newSentences.join('</br>')
 textContent = textContent.replace(/KAIGYOSTR/g, '</br>');
 $("#message_area").html(newTextContent);
 $("#message_area").html(textContent);
-mini_font_size = <%= image_width*0.03 %>;
-max_font_size = <%= image_width*0.05 %>;
-text_length = $("#message_area").text().length;
-console.log(text_length);
-if(text_length < 100){
-  var font_size = mini_font_size + ((max_font_size - mini_font_size)/100)*text_length;
-}else{
-  var font_size = mini_font_size;
-}
-$(".message_area").css("font-size",`${font_size}px`);
 
 var now = new Date();
 var year = now.getFullYear();
@@ -55,31 +45,65 @@ var sec = now.getSeconds();
 var datetime = `${year}${month}${date}${hour}${min}${sec}`;
 
 extension = 'jpg'
-function create_description_image(){
-  $("#display_setting").css("display","block");
-  document.getElementById("submit").disabled = true; //送信できなくする
-    var formData = new FormData();
-      html2canvas(document.querySelector("#canvas-box")).then(canvas => {
-        console.log("キャンバス")
-        var imageBlob = canvas.toBlob(function(blob) {
-          formData.append("request[file]",blob, `picture${datetime}.${extension}`);
-          const file = new File([blob], `description_image${datetime}.${extension}`, {type: `image/${extension}`});
-          const dt = new DataTransfer();
-          dt.items.add(file); //DataTransferにファイルを挿入
-          console.log(file_input);
-          file_input.files = dt.files; //送信フォームにDataTransferを挿入
-          description_image.src = URL.createObjectURL(blob); //画像要素にblobを挿入
-          $("#desctiption_to_image_text").css("display","none");
-          document.getElementById("submit").disabled = false; //送信可能にする
-        });
-        //以下はダウンロードさせる場合のコード
-        //var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
-        //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
-        //downloadEle.href = canvas.toDataURL(`image/${extension}`);
-        //downloadEle.download = `canvas.${extension}`;
-        //downloadEle.click(); //ダウンロードさせる場合
-      });
-    document.getElementById("submit").disabled = false; //送信できるようにする
-    $("#display_setting").css("display","none");
-    $("#canvas").css("display","none");
-}
+async function create_description_image() {
+	//$("#display_setting").css("display", "block");
+	document.getElementById("submit").disabled = true; // 送信ボタン無効化
+	
+	var targetElement = document.querySelector("#canvas-box");
+	const formData = new FormData();
+	const totalHeight = targetElement.scrollHeight;
+	const viewportHeight = 500;
+	const scaleFactor = window.devicePixelRatio || 1
+	const chunks = [];
+	
+	let offset = 0;
+  
+	while (offset < totalHeight) {
+	  // 対象エリアをスクロールして描画
+	  targetElement.scrollTop = offset;
+  
+	  const canvas = await html2canvas(targetElement, {
+			height: viewportHeight,  // 分割エリアの高さ
+			width: targetElement.scrollWidth,
+			y: offset  // オフセット
+	  });
+		console.log(canvas)
+  
+	  chunks.push(canvas);
+	  offset += viewportHeight;
+	}
+  
+	// 各チャンクを1つのキャンバスに統合
+	const combinedCanvas = document.createElement("canvas");
+	combinedCanvas.width = targetElement.clientWidth*scaleFactor;
+	combinedCanvas.height = targetElement.clientHeight*scaleFactor;
+	const ctx = combinedCanvas.getContext("2d");
+  
+	offset = 0;
+	chunks.forEach((chunkCanvas) => {
+	  ctx.drawImage(chunkCanvas, 0, offset);
+	  offset += chunkCanvas.height;
+		document.getElementById("canvas-container").appendChild(chunkCanvas);
+	});
+  //document.getElementById("canvas-container").appendChild(combinedCanvas);
+	// 結合されたキャンバスをBlobに変換し、画像として使用
+	var imageBlob = combinedCanvas.toBlob((blob) => {
+	  formData.append("request[file]", blob, `description_image_${datetime}.${extension}`);
+	  const file = new File([blob], `description_image_${datetime}.${extension}`, { type: `image/${extension}` });
+	  const dt = new DataTransfer();
+	  dt.items.add(file);
+	  file_input.files = dt.files; // 送信フォームにDataTransferを挿入
+	  description_image.src = URL.createObjectURL(blob); // 画像要素にblobを挿入
+	  document.getElementById("submit").disabled = false; // 送信ボタン有効化
+	});
+	$("#desctiption_to_image_text").css("display","none");
+	//$("#display_setting").css("display","none");
+  //$("#canvas").css("display","none");
+
+	//以下はダウンロードさせる場合のコード
+  //var blob = canvas.toBlob(function(){}, `image/${extension}`, 0.95);
+  //let downloadEle = document.createElement("a"); //ダウンロードする要素作成
+  //downloadEle.href = canvas.toDataURL(`image/${extension}`);
+  //downloadEle.download = `canvas.${extension}`;
+  //downloadEle.click(); //ダウンロードさせる場合
+  }

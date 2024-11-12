@@ -1,19 +1,22 @@
-.display_none{
-    /*display: none;*/
-}
-body{
+<% padding_length = image_width*0.03 %>
+#display_setting{
+    width: <%= image_width %>px;/*親要素で幅を設定しないとなぜかうまく表示されない*/
 }
 .answer_zone{
-    //margin-left: <%= -image_width*0.01%>px;
-    padding-bottom: <%= image_width*0.05%>px;
+    /*margin-left: <%= -image_width*0.01%>px;*/
+    padding-top: <%= image_width*0.04%>px;
     min-height: <%= image_width*0.3%>px;
     background-color: #FFFF66;
     text-align: center;
-    padding-right: <%= image_width*0.05%>px;
-    padding-left: <%= image_width*0.05%>px;
-    width: <%= image_width %>px;
+    padding-right: <%= padding_length %>px;
+    padding-left: <%= padding_length %>px;
+    /*この要素では幅をせていせず、親要素で幅を設定しないとなぜかうまく表示されない*/
 }
 .title_area{
+    color: white; 
+    text-align: left;
+    margin: 0px;
+    padding: 5px 0px;
     font-size: <%= image_width*0.03 %>px;
     text-shadow: 0 0 <%= image_width*0.01 %>px lightgray;
 }
@@ -22,29 +25,26 @@ body{
     min-height: <%= image_width*0.6%>px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: -<%= image_width*0.02%>px;
+    margin-top: -<%= image_width*0.01%>px;
     background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: <%= image_width*0.01%>px;
+    padding-right: <%= image_width*0.01%>px;
 }
 .message_area{
     max-width: 100%;
-    margin-top: <%= image_width*0.05%>px;
-    margin-bottom: <%= image_width*0.05%>px;
+    margin-top: <%= image_width*0.02%>px;
+    margin-bottom: <%= image_width*0.02%>px;
     letter-spacing: <%= image_width*0.005%>px;
-    font-size: <%= image_width*0.04 %>px;
-    //word-wrap: break-word;
-    //overflow-wrap: break-word;
+    font-size: <%= image_width*0.03 %>px;
+    /*word-wrap: break-word;*/
+    /*overflow-wrap: break-word;*/
     white-space: pre-line;
-    white-space: pre-wrap;
     word-wrap: break-word;
     font-family: "Azuki";
     font-weight: light;
+    font-size: <%= font_size %>px;
     line-height: <%= image_width*0.06%>px;
-}
-h1{
-color: white; 
 }

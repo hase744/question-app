@@ -25,36 +25,69 @@
             color: $ok_green;
         }
     }
+    .link_button{
+        display: block;
+        text-decoration: none;
+        border: 1px solid grey;
+        width: calc(100% - 10px);
+        padding: 5px;
+        text-align: center;
+        border-radius: 5px;
+        color: grey;
+        margin: 5px 0px ;
+        font-size: 15px;
+        font-weight: lighter;
+        line-height: 20px;
+    }
+    .link_button:hover{
+        border: 1px solid darkgrey;
+        color: darkgrey;
+    }
     .service_request_area{
-        height: 70px;
+        height: 60px;
         width: 100%;
         display: flex;
+        text-decoration: none;
+        color: $text_grey;
         .image_area{
-            height: 70px;
-            width: 70px;
+            height: 60px;
+            width: 60px;
             display: flex;
             .image{
-                height: 60px;
-                width: 60px;
+                height: 50px;
+                width: 50px;
                 margin: 5px;
                 margin-left: 0px;
+                border-radius: 5px;
                 object-fit: cover;
             }
         }
         .text_area{
-            height: 70px;
+            height: 60px;
             display: flex;
             flex: 1;
             flex-direction: column;
             justify-content: center;
             .title a{
                 color: $text_grey;
-                text-decoration: underline;
+                text-decoration: none;
             }
             .user_name{
                 color: grey;
                 font-size: 13px;
             }
         }
+        .arrow_area{
+            height: 30px;
+            width: 30px;
+            display: flex;
+            font-size: 30px;
+            padding: 15px 0px;
+            font-weight: light;
+        }
+    }
+
+    .service_request_area:hover{
+        opacity: 0.7;
     }
 }
