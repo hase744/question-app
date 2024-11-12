@@ -6,6 +6,7 @@
     line-height:30px;
 }
 .request_preview_zone{
+    position: relative;
 	.change_coupon{
 		margin-top: 0px;
         color: $link_blue;
@@ -25,5 +26,16 @@
             transform: scale(1.5);
             color: $ok_green;
         }
+    }
+    .request_content{
+        line-height: 30px;
+    }
+    canvas{
+        position: absolute;
+        left: 100vw;
+    }
+    #display_setting{
+        position: absolute;
+        left: 100vw;
     }
 }

@@ -3,11 +3,11 @@
     //background-color: blue;
     height: 0px;
     width: 200px;
-    @media(max-width: 1000px){
+    @media(max-width: 500px){
         width: 100%;
     }
     right: 0px;
-    transition-duration: 4s;
+    //transition-duration: 4s;
     display: none;
     position: fixed;
     height: 100%;

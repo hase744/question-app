@@ -4,113 +4,56 @@
             <%= link_to(user_service_path(service.id, transaction_id: transaction&.id), class:"service_link_area") do%>
                 <h3 class="service_title"><%= service.title%></h3>
             <% end %>
+            <div class="tag_area">
+                <span class="name_tag">
+                    <% case service.request_form.name %>
+                    <% when 'text' %>
+                        <span class="text">文章で質問</span>
+                    <% when 'image' %>
+                        <span class="text">文章＋画像で質問</span>
+                    <% when 'free' %>
+                        <span class="text">自由形式で質問</span>
+                    <% else %>
+                    <% end %>
+                </span>
+                <span class="name_tag">
+                    <% case service.delivery_form.name %>
+                    <% when 'text' %>
+                        <span class="text">文章で回答</span>
+                    <% when 'image' %>
+                        <span class="text">文章+画像で回答</span></span>
+                    <% when 'free' %>
+                        <span class="text">自由形式で回答</span>
+                    <% else %>
+                    <% end %>
+                </span>
+                <%service.categories.each do |category|%>
+                    <span class="name_tag"><%= category.japanese_name %></span>
+                <% end %>
+                <%if service.transaction_message_enabled%>
+                    <span class="name_tag">追加質問可能</span>
+                <% end %>
+                <%if service.allow_pre_purchase_inquiry%>
+                    <span class="name_tag">購入前質問可能</span>
+                <% end %>
+            </div>
             <div class="service_condition_image">
                 <div class="service_image_area">
                     <%=image_tag service.thumb_with_default, class:"service_image"%>
                 </div>
                 <div class="service_condition_area">
-                    <div class="price_area">
-                        <span class="price">&nbsp;<%=service.price%></span>円
-                    </div>
                     <%= link_to(user_account_path(service.user.id), class:"user_image_name_area") do %>
                         <%=image_tag service.user.thumb_with_default, class:"user_image"%>
                         <div class="user_name_area">
                             <span class="user_name"><%=service.user.name %></span>
                         </div>
                     <% end %>
-                    <!--
-                    <table class="service_condition_area">
-                        <tr>
-                            <td class="service_condition_icon">
-                                <span class="fas fa-yen-sign"></span>
-                            </td>
-                            <td>
-                                <span class="condition_name ">料金</span>
-                            </td>
-                            <td>
-                                <span class="service_condition"><%=service.price%>円</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="service_condition_icon">
-                                <span class="far fa-calendar-alt"></span>
-                            </td>
-                            <td>
-                                <span class="condition_name ">回答日数</span>
-                            </td>
-                            <td>
-                                <span class="service_condition"><%=service.delivery_days%>日</span>
-                            </td>
-                        </tr>
-                
-                        <%if !service.request.present?%>
-                        <%if service.request_form.name == "video" %>
-                        <tr>
-                            <td class="service_condition_icon">
-                                <span class="far fa-file-video"></span>
-                            </td>
-                            <td>
-                                <span class="condition_name"><%= Service.human_attribute_name(:request_max_minutes)%></span>
-                                </td>
-                            <td>
-                                <span class="service_condition"><%=service.request_max_minutes%>分</span>
-                            </td>
-                        </tr>
-                        <% end %>
-                        <% end %>
-                        <tr>
-                            <td class="service_condition_icon">
-                                <span class="far fa-comment-alt"></span>
-                            </td>
-                            <td>
-                                <span class="condition_name">追加質問</span>
-                            </td>
-                            <td>
-                                <span class="service_condition">
-                                <%if service.transaction_message_enabled%>
-                                可能
-                                <% else %>
-                                不可能
-                                <% end %>
-                                </span>
-                            </td>
-                        </tr>
-                    </table>
-                    -->
+                    <div class="price_area">
+                        <span class="price">&nbsp;<%=service.price%></span>円
+                    </div>
                 </div>
             </div>
         </div>
-        <span class="name_tag">
-            <% case service.request_form.name %>
-            <% when 'text' %>
-                <span class="text">文章で質問</span>
-            <% when 'image' %>
-                <span class="text">文章＋画像で質問</span>
-            <% when 'free' %>
-                <span class="text">自由形式で質問</span>
-            <% else %>
-            <% end %>
-        </span>
-        <span class="name_tag">
-            <% case service.delivery_form.name %>
-            <% when 'text' %>
-                <span class="text">文章で回答</span>
-            <% when 'image' %>
-                <span class="text">文章+画像で回答</span></span>
-            <% when 'free' %>
-                <span class="text">自由形式で回答</span>
-            <% else %>
-            <% end %>
-        </span>
-        <%service.categories.each do |category|%>
-            <span class="name_tag"><%= category.japanese_name %></span>
-        <% end %>
-        <%if service.transaction_message_enabled%>
-            <span class="name_tag">追加で質問可能</span>
-        <% end %>
-        <%if service.allow_pre_purchase_inquiry%>
-            <span class="name_tag">購入前に質問可能</span>
-        <% end %>
         <div class="service_title_description_area">
             <div class="service_description_area">
                 <%= render "user/shared/description", text: service %>

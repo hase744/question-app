@@ -86,6 +86,9 @@
                     margin-top: 5px;
                 }
                 .request_detail_content{
+                    margin: 0px 10px;
+                    width: calc(100% - 20px);
+                    line-height: 30px;
                     .request_detail_text{
                         margin: 0px;
                         white-space: pre-line;

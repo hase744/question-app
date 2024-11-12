@@ -17,22 +17,33 @@
             <i class="fa-solid fa-check"></i>
             取引が完了しています
             </span>
-        <% else %>
-            <h3 class="links">
-            <div class="submit_area">
-            <% if current_user == @transaction.seller %>
-                <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"big_submit fas fa-edit grey"%>
-                <%=link_to " 回答を拒否", edit_user_order_path(@transaction.id), class:"big_submit fas fa-handshake-alt-slash grey"%>
-            <% elsif @transaction.delivery_time < DateTime.now %>
-                <%=link_to "取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash grey", data: {confirm: "依頼をキャンセルしますか？\nポイントの元に戻りますが、購入したポイントは返金されません。"} %>
-            <% end %>
-            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope big_submit grey" %>
-            </div>
-            </h3>
         <% end %>
         <% if @transaction.is_rejected %>
             <%= render "user/shared/small_label", text: "お断り理由" %>
             <div><%=@transaction.reject_reason%></div>
+        <% end %>
+        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
+        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
+            <div class="image_area">
+                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
+            </div>
+            <div class="text_area">
+                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
+            </div>
+            <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
+        <% if @transaction.can_send_message(current_user) %>
+            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+        <% end %>
+        <% if @transaction.is_ongoing %>
+            <div class="submit_area">
+            <% if current_user == @transaction.seller %>
+                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
+                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
+                <% end %>
+            <% end %>
+            </div>
         <% end %>
         </br>
         <%= render "user/shared/small_label", text: "契約内容" %>
@@ -118,18 +129,20 @@
         </div>
 
         <%= render "user/shared/small_label", text: "相談室" %>
-        <div class="service_request_area">
+        <%= link_to(user_service_path(@transaction.service.id), class: "service_request_area") do %>
             <div class="image_area">
                 <%=image_tag @transaction.service.thumb_with_default, class:"image"%>
             </div>
             <div class="text_area">
-                <h4 class="title margin0px one_line_text"><%= link_to @transaction.service_title, user_service_path(@transaction.service.id) %></h4>
+                <h4 class="title margin0px one_line_text"><%= @transaction.service_title %></h4>
                 <div class="user_name one_line_text">回答者: <%= @transaction.seller.name %></div>
             </div>
-        </div>
+            <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
         </br>
         <%= render "user/shared/small_label", text: "質問" %>
-        <div class="service_request_area">
+        <%= link_to(user_request_path(@transaction.request.id), class: "service_request_area") do %>
             <div class="image_area">
                 <% if @transaction.request.request_form_has_image? %>
                     <%= image_tag @transaction.request.items.first.file.thumb.url, class:"image" %>
@@ -138,13 +151,15 @@
                 <% end %>
             </div>
             <div class="text_area">
-                <h4 class="margin0px one_line_text title"><%= link_to @transaction.request.title, user_request_path(@transaction.request.id) %></h4>
+                <h4 class="margin0px one_line_text title"><%= @transaction.request.title %></h4>
                 <div class="user_name one_line_text">質問者: <%= @transaction.buyer.name %></div>
             </div>
-        </div>
+            <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
         </br>
-        <%= render "user/shared/small_label", text: "回答" %>
         <% if current_user == @transaction.seller || @transaction.is_transacted%>
+        <%= render "user/shared/small_label", text: "回答" %>
             <div class="information_component">
                 <label><%= Transaction.human_attribute_name(:title)%></label></br>
                 <h3 class="margin0px">
@@ -154,7 +169,7 @@
                         <% else %>
                             <%= @transaction.title %>
                         <% end %>
-                    <%else%>
+                    <% else %>
                         未記入
                     <% end %>
                 </h3>
@@ -196,14 +211,22 @@
                         <%= image_tag @transaction.items, class:"image"%>
                     <% end %>
                 <% end %>
-                </div>
-            <% if can_deliver(@transaction)%>
-                <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
-                    <%= f.hidden_field :is_transacted, value:true, class:"input_field" ,required: true%>
-                    <%= f.hidden_field :is_published, value:true, class:"input_field" ,required: true%>
-                    <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
-                    <%= f.submit "納品", class:"big_submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
-                <% end %>
+            </div>
+        <% end %>
+        <% if @transaction.is_ongoing && current_user == @transaction.seller %>
+            <%=link_to "回答を編集", edit_user_transaction_path(@transaction.id), class:"link_button fas fa-edit"%>
+        <% end %>
+        <% if @transaction.is_cancelable_by(current_user) %>
+            <div class="submit_area">
+                <%=link_to " 取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash", data: {confirm: "依頼をキャンセルしますか？\nポイントやクーポンは元に戻りますが、ポイントの購入は返金されません。"} %>
+            </div>
+        <% end %>
+        <% if can_deliver(@transaction) && current_user == @transaction.seller%>
+            <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
+                <%= f.hidden_field :is_transacted, value:true, class:"input_field" ,required: true%>
+                <%= f.hidden_field :is_published, value:true, class:"input_field" ,required: true%>
+                <%#= f.file_field  :file, id:"file_input", class:"display_none" %>
+                <%= f.submit "回答を納品", class:"big_submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n取引を完了しますか？"} %>
             <% end %>
         <% end %>
     </div>
