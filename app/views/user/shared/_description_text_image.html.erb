@@ -1,0 +1,47 @@
+<div class="description_text_image">
+	<div class="request_description_area" id="request_description_area">
+	  <p id="request_description" class="request_description"><%=request.description%></p>
+	</div>
+	<% if request.has_pure_image %>
+	    <%= render "user/shared/swiper_images", model: request, use_thumb:false %>
+	<% elsif request.request_form.name == "video" %>
+	    <%= video_tag request.file.url,poster:request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+	<% end %>
+	<% if request.items.text_image.present? %>
+	    <%= image_tag request.item.file.normal_size.url, class:"image text_image" %>
+		<div class="change_button_area">
+		    <div class="change_button" id="change_button">
+		        <%= image_tag request.thumb_with_default, class:"thumbnail" %>
+		        <span class="fa-solid fa-arrow-rotate-right"></span><label>画像を表示</label>
+		    </div>
+		</div>
+	<% end %>
+</div>
+<script>
+$(document).ready(function() {
+    // ページ読み込み時にCookieを確認し、サイドバーの表示状態を設定
+    change_image_and_text();
+    function change_image_and_text(){
+        if (Cookies.get('text_image') === 'show' && $('.change_button_area').length) {
+            $('.description_text_image').addClass('image_mode');
+            $('.description_text_image').removeClass('text_mode');
+            $('#change_button label').text('文章を表示');
+        } else {
+            $('.description_text_image').addClass('text_mode');
+            $('.description_text_image').removeClass('image_mode');
+            $('#change_button label').text('画像を表示');
+        }
+    }
+
+    // ボタンがクリックされたときの処理
+    $('#change_button').on('click', function() {
+        // 現在の表示状態をCookieに保存
+        if ($('.text_image').is(':visible')) {
+            Cookies.set('text_image', 'hide', { expires: 7 }); // 7日間有効
+        } else {
+            Cookies.set('text_image', 'show', { expires: 7 }); // 7日間有効
+        }
+        change_image_and_text();
+    });
+});
+</script>

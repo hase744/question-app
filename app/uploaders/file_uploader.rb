@@ -17,7 +17,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb, if: :is_image? do
-    process resize_to_fit: [300, 300]
+    process resize_to_fit: [300, nil]
     process convert: 'jpg'
 
     def full_filename(for_file)
@@ -26,7 +26,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   version :normal_size, if: :is_image? do
-    process resize_to_fit: [1000, 1000]
+    process resize_to_fit: [1000, nil]
     process convert: 'jpg'
 
     def full_filename(for_file)

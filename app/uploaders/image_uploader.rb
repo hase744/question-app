@@ -18,7 +18,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb do
-    process resize_to_fit: [300, 300]
+    process resize_to_fit: [300, nil] #高さは無制限
     process convert: 'jpg'
 
     def full_filename(for_file)
@@ -27,7 +27,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   version :normal_size do
-    process resize_to_fit: [1000, 1000]
+    process resize_to_fit: [1000, nil] #高さは無制限
     process convert: 'jpg'
 
     def full_filename(for_file)

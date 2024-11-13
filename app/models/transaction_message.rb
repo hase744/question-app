@@ -59,12 +59,4 @@ class TransactionMessage < ApplicationRecord
   def body_max_characters
     #1000
   end
-
-  def self.latest_body
-    sort_by_later&.first&.body
-  end
-  
-  def self.latest_created_at
-    sort_by_later&.first&.created_at
-  end
 end

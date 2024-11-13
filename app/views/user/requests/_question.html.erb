@@ -6,7 +6,7 @@
             <% end %>
             <h5 class="one_line_text user_and_date text">質問者：&nbsp;<%= link_to request.user.name, user_account_path(request.user.id), class: '' %><%= %>　<%= readable_datetime(request.created_at)%></h5>
 			<div class="item_description_area">
-				<% unless request.items.first.is_text_image? %>
+				<% if request.has_pure_image %>
 					<div class='item_area'>
 						<%= image_tag request.items.first.file.thumb.url %>
 					</div>
@@ -15,14 +15,14 @@
             		<span class="three_line_text text description_text"><%= request.description%></span>
 				</div>
 			</div>
-			<% unless request.items.first.is_text_image? %>
+			<% unless request.has_text_image %>
 				<div class='items_area'>
 					<% request.items.each do |item| %>
 						<%= image_tag item.file.thumb.url %>
 					<% end %>
 				</div>
 			<% end %>
-            <% request.transactions.where(is_published: true).each do |transaction| %>
+            <% request.published_transactions.each do |transaction| %>
             	<div class="answer_area">
             	    <div class="seller_container">
             	        <%= link_to(user_account_path(transaction.seller.id), class: 'seller_area') do %>
@@ -53,6 +53,6 @@
     </div>
     <div class='open_text_area'>
 	<div class="smoke"></div>
-        <div class="open_text" id="open_text">&nbsp;<%=request.transactions.where(is_published: true).count%>件の回答<span class='fas fa-angle-down'>&nbsp;</span>&nbsp;</div>
+        <div class="open_text" id="open_text">&nbsp;<%=request.published_transactions.count%>件の回答<span class='fas fa-angle-down'>&nbsp;</span>&nbsp;</div>
     </div>
 </div>
