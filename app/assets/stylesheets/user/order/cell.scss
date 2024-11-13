@@ -16,6 +16,7 @@ $image_width: 80px;
   	width: calc(100% - 20px);
   	display: flex;
   	color: black;
+	height: $image_height;
   	.image_area{
   	    height: $image_height;
   	    width: $image_width;

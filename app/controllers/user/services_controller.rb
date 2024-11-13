@@ -237,6 +237,7 @@ class User::ServicesController < User::Base
 
   def reviews
     transactions = Transaction.solve_n_plus_1
+      .reviewed
       .where(service_id:params[:id])
       .order(id: :DESC)
     @transactions = transactions.page(params[:page]).per(@review_page)

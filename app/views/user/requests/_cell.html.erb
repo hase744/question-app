@@ -27,14 +27,14 @@
             </span>
             <% end %>
         </div>
-        <%if request.items.first.is_text_image %>
-        <div class="request_condition_area">
-            <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
-            <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
-            <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
-        </div>
+        <% if request.has_text_image || request.items.blank? %>
+            <div class="request_condition_area">
+                <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
+            </div>
         <% end %>
-        <% unless request.items.first.is_text_image %>
+        <% if request.has_pure_image %>
             <div class="item_area">
                 <%= render "user/shared/swiper_images", model: request, use_thumb:true %>
             </div>

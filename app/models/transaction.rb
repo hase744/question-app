@@ -61,6 +61,7 @@ class Transaction < ApplicationRecord
       :service, 
       :items, 
       :transaction_messages, 
+      {service: :item}, 
       {request: :items}, 
       {transaction_messages: :sender}, 
       {transaction_messages: :receiver}
@@ -462,10 +463,6 @@ class Transaction < ApplicationRecord
     end
   end
 
-  def total_likes
-    self.likes.count
-  end
-
   def validate_title
     if self.title.present?
       errors.add(:title, "を入力して下さい") if self.title.length <= 0 && self.is_published
@@ -541,6 +538,26 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def total_likes
+    self.likes.count
+  end
+
+  def messages_sort_by_later
+    transaction_messages.to_a.sort_by(&:created_at).reverse
+  end
+
+  def messages_sort_by_earlier
+    transaction_messages.to_a.sort_by(&:created_at)
+  end
+
+  def latest_message_body
+    messages_sort_by_later.last.body
+  end
+  
+  def latest_message_created_at
+    messages_sort_by_later.last.created_at
+  end
+
   def suggestion_buyable(user)
     if user.nil?
       false
@@ -571,9 +588,9 @@ class Transaction < ApplicationRecord
     return false unless self.service.allow_pre_purchase_inquiry
     return false if self.is_contracted
     if user == self.seller
-      self.latest_transaction_message&.receiver == user
+      messages_sort_by_later.last&.receiver == user
     elsif user == self.buyer
-      self.latest_transaction_message&.receiver == user || self.transaction_messages.blank?
+      messages_sort_by_later.last&.receiver == user || self.transaction_messages.blank?
     else
       false
     end

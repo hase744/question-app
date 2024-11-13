@@ -2,9 +2,11 @@
     <h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link"%> > 自分の質問 <%= paginate @requests %></h3>
   	<% @requests.each do |request| %>
         <%= link_to(main_path(request), class:"order_cell") do %>
+          	<% if request.has_pure_image %>
             <div class="image_area">
                 <%= image_tag request.thumb_with_default, class:"image" %>
             </div>
+        	<% end %>
             <div class="text_area">
                 <h4 class="title two_line_text"><%= request.title%></h4>
                 <div class="from_now one_line_text">

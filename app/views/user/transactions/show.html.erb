@@ -18,25 +18,14 @@
                             <p class="buyer_name"><%=@transaction.buyer.name%></p>
                         </div>
                     <% end %>
-                    <div class="description_area"><%= @transaction.request.description%></div>
-
-                    <%if @transaction.request.items.first.is_text_image %>
-                        <%= render 'user/shared/adjustable_image', request: @transaction.request%>
-                    <% else %>
+                    <%= render "user/shared/description_text_image", request: @transaction.request %>
+                    <%if @transaction.request.has_pure_image %>
                         <% @transaction.request.items.each do |item| %>
                             <%= link_to(item.file.url, class: 'item_link') do %>
                                 <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
                             <% end %>
-                            <% if item.use_youtube %>
-                                <div class="item_file_flame 16_to_9" id="item_file_flame">
-                                    <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%= item.youtube_id %>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>
-                            <% elsif item.file.is_video? %>
-                                <%= image_tag @transaction.request.file.url, class:"image" %>
-                            <% end %>
                         <% end %>
                     <% end %>
-                    <%##= render "/user/shared/description", text:@transaction.request%>
                 </div>
             </div>
         </div>
@@ -89,13 +78,6 @@
                     <%= link_to(item.file.url, class: 'item_link') do %>
                         <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
                     <% end %>
-                    <% if item.use_youtube %>
-                        <div class="item_file_flame 16_to_9" id="item_file_flame">
-                            <iframe class="item_file 16_to_9"  id="item_file" src="https://www.youtube.com/embed/<%=item.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        </div>
-                    <% elsif item.file.is_video? %>
-                        <%= image_tag item.file.url, class:"image" %>
-                    <% end %>
                 <% end %>
                 <div class="like_share_area">
                     <div class="like_area">
@@ -141,57 +123,5 @@
     </div>
 </div>
 <script>
-function open_along_messages(){
-    $('.along_message_area').css('display','none')
-    $('.along_messages').css('display','block')
-}
-
-var item_file_flame = document.getElementById("item_file_flame");
-var item_file = document.getElementById("item_file");
-var transaction_flame = document.getElementById("transaction_flame");
-var like_count = document.getElementById("like_count");
-
-$("#like_button")[0].addEventListener('ajax:success', function(event) {
-  // 成功時の処理
-  var res = event.detail[0];
-  $(".like_button").toggleClass("liked_button");
-  if(res){
-    notify_for_seconds("いいねしました。");
-    like_count.textContent = parseFloat(like_count.textContent) + 1
-  }else{
-    notify_for_seconds("いいねを解除しました。");
-    like_count.textContent = parseFloat(like_count.textContent) - 1
-  }
-  
-});
-
-$("#like_button")[0].addEventListener('ajax:error', function(event) {
-  // 失敗時の処理
-  console.log("いいねできませんでした。")
-  var res = event.detail[0];
-  console.log(res["is_liked"]);
-  $(".like_button").toggleClass("liked_button");
-  notify_for_seconds("いいねできませんでした。");
-  like_count.textContent = parseFloat(like_count.textContent) - 1
-});
-
-<% if @transaction.service.delivery_form.name == "video"%>
-function resize_item_file_flame(){
-    item_file_flame.style.width = "100%"
-    item_file.style.height = "100%"
-    item_file.style.width = "100%"
-    transaction_flame.style.width = "calc(100% - 10px)"
-    let width = transaction_flame.clientWidth
-    item_file_flame.style.height = width/16*9 + "px"
-    //console.log(item_file_flame.style.height)
-    //console.log("resize_item_file_flame")
-    //console.log(item_file_flame.style.height)
-}
-//応急処置
-//setInterval(resize_item_file_flame, 1000);
-<% end %>
-//resize_item_file_flame()
-//window.addEventListener("load",resize_item_file_flame(),false)
-//window.addEventListener("resize", resize_item_file_flame)
-
+<%= render "user/transactions/show.js.erb" %>
 </script>

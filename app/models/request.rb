@@ -10,6 +10,7 @@ class Request < ApplicationRecord
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
   has_many :supplements, class_name: "RequestSupplement", dependent: :destroy
   has_one :request_category, dependent: :destroy
+  has_one :item, dependent: :destroy, class_name: "RequestItem"
   delegate :category, to: :request_category, allow_nil: true
   has_many :likes, class_name: "RequestLike"
 
@@ -47,7 +48,7 @@ class Request < ApplicationRecord
   accepts_nested_attributes_for :request_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
-    includes(:user, :services, :request_categories, :items)
+    includes(:user, :services, :request_categories, :items, :transactions)
   }
 
   scope :suggestable, -> {
@@ -242,6 +243,18 @@ class Request < ApplicationRecord
     self.save
   end
 
+  def has_pure_image
+    self.items.any? { |item| !item.is_text_image } #N+1回避のためwhereを使わない
+  end
+
+  def has_text_image
+    self.items.any? { |item| item.is_text_image } #N+1回避のためwhereを使わない
+  end
+
+  def published_transactions
+    self.transactions.select { |transaction| transaction.is_published } #N+1回避のためwhereを使わない
+  end
+
   def is_suggestable?(user=nil)
     if get_unsuggestable_message(user).present?
       false
@@ -349,6 +362,10 @@ class Request < ApplicationRecord
       end
     end
   end
+
+  def description_length
+    self.description.gsub(/\r\n/, "\n").length
+  end
   
   def status_color
     if self.is_inclusive
@@ -423,7 +440,10 @@ class Request < ApplicationRecord
   end
 
   def need_text_image?
-    self.request_form.name == "text" || (self.request_form.name == "free" && self.items.not_text_image.count < 1)
+    return false if description_length > required_text_image_description_length
+    return true if self.request_form.name == "text"
+    return true if self.request_form.name == "free" && self.items.not_text_image.count < 1
+    false
   end
 
   def validate_item_count
@@ -474,11 +494,12 @@ class Request < ApplicationRecord
     end
 
     #新規の作成 or 作成後に相談室の最大文字数が変更され、最大文字数がひっかかった場合
-    if self.service && (new_record? || self.is_published && will_save_change_to_is_published?)
-      if self.service.request_max_characters && self.service.request_max_characters < self.description.gsub(/(\r\n?|\n)/,"a").length
-        over_character_count = self.description.gsub(/(\r\n?|\n)/,"a").length - self.service.request_max_characters
-        errors.add(:description, "文字数を#{self.service.request_max_characters}字以下にしてください。（#{over_character_count}字オーバー）")
-      end
+    return unless self.service.present? 
+    return if new_record? || self.is_published && will_save_change_to_is_published?
+    return if self.service.request_max_characters.nil?
+    over_character_count = description_length - self.service.request_max_characters
+    if over_character_count > 0
+      errors.add(:description, "文字数を#{self.service.request_max_characters}字以下にしてください。（#{over_character_count}字オーバー）")
     end
   end
 
@@ -486,7 +507,7 @@ class Request < ApplicationRecord
     return unless self.is_published && will_save_change_to_is_published?
     case request_form.name
     when 'text'
-      if self.items.text_image.count != 1
+      if need_text_image? && self.items.text_image.count != 1
         items.destroy_all
         errors.add(:items, "が不適切です")
       end
@@ -499,11 +520,6 @@ class Request < ApplicationRecord
           errors.add(:items, "が不適切です。 #{message}")
         end
       end
-    end
-    if self.items
-      #self.items.first.file_duration = self.file_duration
-    else
-      errors.add(:items, "がありません")
     end
   end
 
@@ -592,6 +608,10 @@ class Request < ApplicationRecord
 
   def description_max_length(service=nil)
     service&.request_max_characters.presence || 20000
+  end
+
+  def required_text_image_description_length
+    1000
   end
 
   def max_price_upper_limit
