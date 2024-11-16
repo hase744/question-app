@@ -301,7 +301,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.integer "delivery_form_name", null: false
     t.string "title"
     t.text "description"
-    t.string "image"
     t.integer "max_price"
     t.integer "mini_price"
     t.boolean "is_inclusive", default: true, null: false
@@ -313,7 +312,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.integer "total_files", default: 0
     t.integer "total_views", default: 0
     t.integer "total_services", default: 0
-    t.integer "transaction_message_days"
     t.bigint "transaction_id"
     t.boolean "is_published", default: false
     t.datetime "published_at"
@@ -336,7 +334,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["total_services"], name: "index_requests_on_total_services"
     t.index ["total_views"], name: "index_requests_on_total_views"
     t.index ["transaction_id"], name: "index_requests_on_transaction_id"
-    t.index ["transaction_message_days"], name: "index_requests_on_transaction_message_days"
     t.index ["user_id"], name: "index_requests_on_user_id"
   end
 
@@ -410,7 +407,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.integer "delivery_days"
     t.integer "request_max_characters"
     t.integer "request_max_duration"
-    t.integer "request_max_files"
     t.datetime "renewed_at"
     t.boolean "transaction_message_enabled", default: true
     t.boolean "allow_pre_purchase_inquiry", default: true
@@ -432,7 +428,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["request_id"], name: "index_services_on_request_id"
     t.index ["request_max_characters"], name: "index_services_on_request_max_characters"
     t.index ["request_max_duration"], name: "index_services_on_request_max_duration"
-    t.index ["request_max_files"], name: "index_services_on_request_max_files"
     t.index ["title"], name: "index_services_on_title"
     t.index ["total_reviews"], name: "index_services_on_total_reviews"
     t.index ["total_views"], name: "index_services_on_total_views"

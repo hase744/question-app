@@ -24,10 +24,7 @@ class Service < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}, presence: true
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :delivery_days, numericality: {only_integer: true, fgreater_than_or_equal_to: :delivery_days_minimum_number, less_than_or_equal_to: :delivery_days_max_number}, presence: true
-  #validates :stock_quantity, numericality: {only_integer: true, greater_than_or_equal_to: :stock_quantity_minimum_number, less_than_or_equal_to: :stock_quantity_max_number}#, presence: true
-  #validates :transaction_message_days, numericality: {only_integer: true, greater_than_or_equal_to: :minimum_transaction_message_days, less_than_or_equal_to: :max_transaction_message_days}, presence: true
   validate :validate_price
-  validate :validate_request_max_length
   validate :validate_request_max_duration
   validate :validate_service_category
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
@@ -186,8 +183,6 @@ class Service < ApplicationRecord
       "delivery_days", 
       "request_max_characters",
       "request_max_duration",
-      "request_max_files",
-      "transaction_message_days",
       "transaction_message_enabled",
       "service_category",
       "allow_pre_purchase_inquiry",
@@ -340,24 +335,6 @@ class Service < ApplicationRecord
     end
   end
 
-  def validate_request_max_length
-    if  !self.request.present?
-      case self.request_form.name
-      when "text"
-        #errors.add(:request_max_minutes, "#{max_request_max_characters}が空です") if request_max_characters == nil
-        #errors.add(:request_max_characters, "は#{max_request_max_characters}字までです") if self.request_max_characters > max_request_max_characters
-        #errors.add(:request_max_characters, "は#{mini_request_max_characters}字以上です") if self.request_max_characters < mini_request_max_characters
-      when "video"
-        #errors.add(:request_max_minutes, "#{max_request_max_minutes}が空です") if request_max_minutes == nil
-        #errors.add(:request_max_minutes, "は#{max_request_max_minutes}分までです") if self.request_max_minutes.to_i > max_request_max_minutes
-        #errors.add(:request_max_minutes, "は#{mini_request_max_minutes}字以上です") if self.request_max_minutes.to_i < mini_request_max_minutes
-      when "image"
-        request_max_files = nil
-      else
-      end
-    end
-  end
-
   def video_display_style
     if self.request_form == 'video'
       'block'
@@ -382,17 +359,9 @@ class Service < ApplicationRecord
     10000
   end
 
-  def stock_options
-    array = (0..stock_quantity_max_number)
-      .step(1)
-      .map { |num| ["#{num}個", num] }
-    array.unshift(["無制限",nil])
-    array
-  end
-
   def max_character_options
     array = []
-    array << ['制限なし', 0] if Rails.env.development?
+    array << ['制限なし', 0]
     (100..900).step(100) { |i| array << ["#{i}字", i] }
     (1000..20000).step(1000) { |i| array << ["#{i}字", i] }
     array
@@ -408,22 +377,6 @@ class Service < ApplicationRecord
           ["#{num}円", num]
         end
       }
-  end
-  #供給数
-  def stock_quantity_max_number#最大値
-    100
-  end
-
-  def max_transaction_message_days
-    30
-  end
-
-  def minimum_transaction_message_days
-    0
-  end
-
-  def stock_quantity_minimum_number#最小値
-    0
   end
 
   #納品日数

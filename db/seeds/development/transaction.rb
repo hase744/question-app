@@ -21,7 +21,6 @@ service = Service.first
         #category_id:Category.find_by(name: categories[n%3]).id,
         use_youtube:true,
         youtube_id: youtube_ids[n % youtube_ids.length],
-        transaction_message_days: service.transaction_message_days,
         is_published:false
         #star_rating:n%5,
         #review_description:"ここにレビューが表示される",

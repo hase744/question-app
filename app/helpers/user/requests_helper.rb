@@ -10,16 +10,4 @@ module User::RequestsHelper
             false
         end
     end
-
-    def service_request_text_max_length
-        if @service
-            if @service.request_form.name == "text"
-                @request_max_length
-            else
-                1000
-            end
-        else
-            1000
-        end
-    end
 end

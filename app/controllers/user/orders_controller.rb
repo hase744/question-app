@@ -78,7 +78,6 @@ class User::OrdersController < User::Base
     @service = @transaction.service
 
     @transaction.assign_attributes(is_canceled: true, canceled_at: DateTime.now)
-    #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
       if save_models && @transaction.destroy_all_coupons
@@ -102,7 +101,6 @@ class User::OrdersController < User::Base
 
     @transaction.assign_attributes(reject_params)
     @transaction.rejected_at = DateTime.now
-    #@service.stock_quantity = @service.stock_quantity+1 if @service.stock_quantity
 
     ActiveRecord::Base.transaction do
       if save_models && @transaction.destroy_all_coupons

@@ -236,7 +236,6 @@ class User::RequestsController < User::Base
       delivery_time: DateTime.now + @service.delivery_days.to_i
       )
     @transaction.build_coupon_usages
-    #@service.stock_quantity = @service.stock_quantity-1 if @service.stock_quantity
     @request.set_service_values
 
     ActiveRecord::Base.transaction do
