@@ -132,12 +132,18 @@ GEM
       warden (~> 1.2.3)
     devise-i18n (1.12.1)
       devise (>= 4.9.0)
+    diff-lcs (1.5.1)
     dotenv (3.1.2)
     dotenv-rails (3.1.2)
       dotenv (= 3.1.2)
       railties (>= 6.1)
     erubi (1.13.0)
     excon (0.111.0)
+    factory_bot (6.5.0)
+      activesupport (>= 5.0.0)
+    factory_bot_rails (6.4.4)
+      factory_bot (~> 6.5)
+      railties (>= 5.0.0)
     faraday (2.10.1)
       faraday-net_http (>= 2.0, < 3.2)
       logger
@@ -359,6 +365,23 @@ GEM
     retriable (3.1.2)
     rexml (3.3.6)
       strscan
+    rspec-core (3.13.2)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.3)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (6.1.5)
+      actionpack (>= 6.1)
+      activesupport (>= 6.1)
+      railties (>= 6.1)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
+    rspec-support (3.13.1)
     ruby-vips (2.2.2)
       ffi (~> 1.12)
       logger
@@ -459,6 +482,7 @@ DEPENDENCIES
   devise
   devise-i18n
   dotenv-rails
+  factory_bot_rails
   fog-aws
   gon
   google-api-client (~> 0.11)
@@ -476,6 +500,7 @@ DEPENDENCIES
   rails (~> 6.1.4, >= 6.1.4.4)
   rails-i18n
   rename
+  rspec-rails
   sass-rails (>= 6)
   selenium-webdriver
   spring
