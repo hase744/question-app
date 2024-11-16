@@ -204,6 +204,7 @@ class Service < ApplicationRecord
   end
 
   def thumb_with_default
+    return "/updating_normal_size.jpg" if self.item&.file_processing
     self.item&.file&.thumb&.url.presence || "/corretech_icon.png"
   end
 

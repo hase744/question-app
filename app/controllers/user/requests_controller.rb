@@ -162,6 +162,7 @@ class User::RequestsController < User::Base
     @request_item = RequestItem.find(params[:id])
     @request = @request_item.request
     if @request_item.delete
+      flash.notice = "削除しました"
       redirect_back(fallback_location: root_path)
     end
   end
@@ -186,7 +187,7 @@ class User::RequestsController < User::Base
     @request.set_publish
     if @request.need_text_image?
       @item = @request.items.new()
-      @item.process_file_upload = true
+      @item.process_file_upload = false
       @item.assign_attributes(file: params[:request][:file], is_text_image: true)
     end
     if @transaction #サービスの購入である
@@ -313,7 +314,7 @@ class User::RequestsController < User::Base
     return [] unless params.dig(:items, :file).present?
     params.dig(:items, :file)&.map do |file|
       item = @request.items.new()
-      item.process_file_upload = true
+      item.process_file_upload = false
       item.file = file
       item 
     end

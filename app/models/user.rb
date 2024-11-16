@@ -54,6 +54,8 @@ class User < ApplicationRecord
   
   before_validation :set_default_values
   after_commit :create_user_state_hitrory
+  after_save :update_image_src
+  after_save :update_header_image_src
 
   attr_accessor :certification
   attr_accessor :first_name_kanji
@@ -81,6 +83,7 @@ class User < ApplicationRecord
   attr_accessor :is_male
   attr_accessor :gender
   attr_accessor :is_dammy
+  attr_accessor :old_image_path, :old_image_thumb_url, :old_image_normal_size_url
   enum country_id: Country.all.map{|c| c.name.to_sym}
   enum state: CommonConcern.user_states
 
@@ -145,16 +148,40 @@ class User < ApplicationRecord
     Country.find_by(name: self.country_id)
   end
 
+  def header_with_default
+    return "/updating_normal_size.jpg" if self.header_image_processing
+    self.header_image.normal_size.url.presence || "/grey.jpg"
+  end
+
   def image_with_default
+    return "/updating_normal_size.jpg" if self.image_processing
     self.image.url.presence || "/profile.jpg"
   end
 
   def normal_image_with_default
+    return "/updating_normal_size.jpg" if self.image_processing
     self.image.normal_size.url.presence || "/profile.jpg"
   end
 
   def thumb_with_default
+    return "/updating_thumb.jpg" if self.image_processing
     self.image.thumb.url.presence || "/profile.jpg"
+  end
+
+  def image_style_class
+    "user-image-#{self.id}"
+  end
+
+  def image_thumb_style_class
+    "user-image-thumb-#{self.id}"
+  end
+
+  def header_style_class
+    "header-image-#{self.id}"
+  end
+
+  def header_thumb_style_class
+    "header-image-thumb-#{self.id}"
   end
 
   def self.categories
@@ -196,6 +223,38 @@ class User < ApplicationRecord
     if saved_change_to_attribute?(:state)
       UserStateHistory.create(user: self, state: self.state, description: self.admin_description)
     end
+  end
+
+  def update_header_image_src
+    return unless saved_change_to_attribute?(:header_image_processing) && !self.header_image_processing
+    old_header_image_name, new_header_image_name = header_image_previous_change
+    update_file_src(
+      user: self,
+      img_mapping: [
+        {
+        style_class: header_style_class, 
+        img_url: header_with_default
+        }
+      ]
+    )
+  end
+
+  def update_image_src
+    return unless saved_change_to_attribute?(:image_processing) && !self.image_processing
+    old_image_name, new_image_name = image_previous_change
+    update_file_src(
+      user: self,
+      img_mapping: [
+        {
+        style_class: image_thumb_style_class, 
+        img_url: thumb_with_default
+        },
+        {
+        style_class: image_style_class, 
+        img_url: image_with_default
+        }
+      ]
+    )
   end
 
   def delete_temp_file

@@ -178,7 +178,7 @@ class User::ServicesController < User::Base
       unless @item.present?
         @item = @service.items.new
       end
-      @item.process_file_upload = true
+      @item.process_file_upload = false
       @item.assign_attributes(file: params.dig(:item, :file)[0])
     end
     ActiveRecord::Base.transaction do

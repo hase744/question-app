@@ -3,7 +3,7 @@
     <div class="modal_window_body">
         <div class="user_area">
 			<% opponent = transaction.opponent_of(current_user) %>
-            <%= image_tag opponent.image_with_default, class: "image" %>
+            <%= image_tag opponent.thumb_with_default, class: "image" %>
 			<%= link_to opponent.name, user_account_path(opponent.id), class:"user_name_area one_line_text" %>
 				<div id="pre_purchase_inquiry_message">
 				</div>

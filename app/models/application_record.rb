@@ -2,6 +2,7 @@ class ApplicationRecord < ActiveRecord::Base
   require_relative "country.rb"
   require_relative "form.rb"
   require_relative "category.rb"
+  require_relative "category.rb"
   self.abstract_class = true
   include CommonMethods
   include FormConfig
@@ -9,6 +10,7 @@ class ApplicationRecord < ActiveRecord::Base
   include CommonConcern
   include TemplateConcern
   include OperationConfig
+  include ItemConcern
 
 
   scope :from_latest_order, ->() {
@@ -135,6 +137,12 @@ class ApplicationRecord < ActiveRecord::Base
       self.save
       delete_folder(original_tmp_foloder_path)
     end
+  end
+
+  def update_file_src(user: nil, img_mapping: [])
+    FileChannel.broadcast_to(user, {
+      img_mapping: img_mapping
+    })
   end
 
   def delete_folder(path)

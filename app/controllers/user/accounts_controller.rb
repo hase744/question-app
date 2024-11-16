@@ -69,8 +69,8 @@ class User::AccountsController < User::Base
 
   def update
     @user = current_user
-    @user.process_image_upload = true
-    @user.process_header_image_upload = true
+    @user.process_image_upload = false
+    @user.process_header_image_upload = false
     @user.assign_attributes(user_params)
 
     if @user.save

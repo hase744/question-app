@@ -6,7 +6,7 @@
         <%end%>
         <% if user_signed_in?%>
             <div class="open_sidebar_menu_button">
-                <%=image_tag current_user.thumb_with_default, class:"open_sidebar_menu_button_image"%>
+                <%=image_tag current_user.thumb_with_default, class:"open_sidebar_menu_button_image #{current_user.image_thumb_style_class}"%>
             </div>
             <div class="menu_notification">
                 <% if notifications_length > 0 %>
