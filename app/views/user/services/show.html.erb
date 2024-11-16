@@ -193,8 +193,8 @@
                     </tr>
                 </table>
                 <div class="service_image_area">
-                    <%if @service.item&.file&.url.present? %>
-                        <%=image_tag @service.item.file.normal_size.url, class:"service_image",id:"service_image"%>
+                    <% if @service.item&.file_is_image? %>
+                        <%=image_tag @service.item.normal_file_with_default, class:"service_image #{@service.item.normal_style_class}",id:"service_image"%>
                     <% end %>
                 </div>
                 <div class="service_detail_area">

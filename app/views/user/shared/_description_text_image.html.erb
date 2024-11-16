@@ -8,10 +8,10 @@
 	    <%= video_tag request.file.url,poster:request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
 	<% end %>
 	<% if request.items.text_image.present? %>
-	    <%= image_tag request.item.file.normal_size.url, class:"image text_image" %>
+	    <%= image_tag request.item.normal_file_with_default, class:"image text_image #{request.item.normal_style_class}" %>
 		<div class="change_button_area">
 		    <div class="change_button" id="change_button">
-		        <%= image_tag request.thumb_with_default, class:"thumbnail" %>
+		        <%= image_tag request.thumb_with_default, class:"thumbnail #{request.item.image_thumb_style_class}" %>
 		        <span class="fa-solid fa-arrow-rotate-right"></span><label>画像を表示</label>
 		    </div>
 		</div>

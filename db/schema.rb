@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["user_id"], name: "index_coupons_on_user_id"
   end
 
-  create_table "delivery_items", force: :cascade do |t|
+  create_table "delivery_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "transaction_id", null: false
     t.string "file"
     t.string "file_tmp"
@@ -265,7 +265,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["request_id"], name: "index_request_categories_on_request_id"
   end
 
-  create_table "request_items", force: :cascade do |t|
+  create_table "request_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "request_id", null: false
     t.string "file"
     t.string "file_tmp"
@@ -376,7 +376,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["service_id"], name: "index_service_files_on_service_id"
   end
 
-  create_table "service_items", force: :cascade do |t|
+  create_table "service_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "service_id", null: false
     t.string "file"
     t.string "file_tmp"

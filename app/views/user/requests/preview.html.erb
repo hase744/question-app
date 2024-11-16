@@ -49,12 +49,12 @@
 	    	        <div class="field_area" id="file_field_area">
 	    	            <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
 	    	              	<% @request.items.each.with_index do |item, index| %>
-	    	              	  	<%= image_tag item&.file&.url, class:"image" if item.file.url && item.file.is_image? %>
+	    	              	  	<%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
 	    	              	<% end %>
 	    	            <% end %>
 	    	            <% if @request.request_form_name == "text" && @request.items %>
 	    	              	<% @request.items.text_image.each do |item|%>
-	    	              	  	<%= image_tag item.file.normal_size.url, class:"image"%>
+	    	              	  	<%= image_tag item.file.normal_size.url, class:"image #{item.file_name}"%>
 	    	              	<% end %>
 	    	            <% end %>
 	    	            <% if @request.need_text_image?%>

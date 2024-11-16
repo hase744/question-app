@@ -1,7 +1,7 @@
 <div class="config_index_zone">
     <div class="user_top_area">
         <div class="user_image_area">
-            <%=image_tag @user.normal_image_with_default, class:"user_image"%>
+            <%=image_tag @user.normal_image_with_default, class:"user_image #{current_user.image_style_class}"%>
         </div>
         <div class="user_text_area">
             <h2 class="user_name"><%= link_to @user.name, user_account_path(@user.id), class:"link" %></h2>

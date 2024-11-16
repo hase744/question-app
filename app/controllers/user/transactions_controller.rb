@@ -103,7 +103,7 @@ class User::TransactionsController < User::Base
   def generate_items
     params.dig(:items, :file)&.map do |file|
       item = @transaction.items.new()
-      item.process_file_upload = true
+      item.process_file_upload = false
       item.assign_attributes(
         file: file
       )

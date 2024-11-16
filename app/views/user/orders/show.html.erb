@@ -191,7 +191,7 @@
                         <% else %>
                             <% if @transaction.delivery_form_has_image? %>
                                 <% @transaction.items.each do |item|%>
-                                    <%= image_tag item.file.normal_size.url, class:"image" if item.file.is_image?%>
+                                    <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
                                 <% end %>
                             <% elsif @transaction.service.delivery_form.name == "video" %>
                                 <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>

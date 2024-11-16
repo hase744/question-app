@@ -10,12 +10,10 @@
         <div class="user_profile_introduction">
             <div class="user_info_image">
                 <div class="header_image_area">
-                    <% if @user.header_image.url %>
-                        <%=image_tag @user.header_image.url, class:"header_image"%>
-                    <% end %>
+                    <%=image_tag @user.header_with_default, class:"header_image #{@user.header_style_class}"%>
                 </div>
                 <div class="user_image_area">
-                    <%=image_tag @user.thumb_with_default, class:"user_image"%>
+                    <%=image_tag @user.thumb_with_default, class:"user_image #{@user.image_thumb_style_class}"%>
                 </div>
                 
                 <div class="user_edit_area user_edit1">

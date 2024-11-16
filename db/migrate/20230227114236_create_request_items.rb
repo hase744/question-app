@@ -1,6 +1,6 @@
 class CreateRequestItems < ActiveRecord::Migration[6.1]
   def change
-    create_table :request_items do |t|
+    create_table :request_items, id: :uuid do |t|
       t.references :request, null: false, foreign_key: true, index:true
       t.string :file
       t.string :file_tmp

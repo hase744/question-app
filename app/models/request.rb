@@ -525,7 +525,7 @@ class Request < ApplicationRecord
 
   def validate_is_published
     if  self.is_published
-      errors.add(:items, "が処理中です") unless all_items_processed?
+      #errors.add(:items, "が処理中です") unless all_items_processed?
     end
   end
 
