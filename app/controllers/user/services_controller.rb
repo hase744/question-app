@@ -43,7 +43,6 @@ class User::ServicesController < User::Base
 
     if params[:is_available] == "1"
       @services = @services.where(is_for_sale: true)
-      #@services = @services.where("stock_quantity IS NULL OR stock_quantity >= ?", 1) || @services.stock_quantity.nil?
     end
     #上限価格が入力されている
     if params[:max_price] != nil && params[:max_price] != ""
@@ -107,7 +106,6 @@ class User::ServicesController < User::Base
     else
       @service = Service.new()
       @service.service_categories.build
-      #@service.stock_quantity = nil
     end
     set_form_values
   end
@@ -414,7 +412,6 @@ class User::ServicesController < User::Base
       :price,
       :category_id,
       :transaction_message_enabled,
-      :stock_quantity,
       :close_date,
       :delivery_days,
       :request_max_minutes,

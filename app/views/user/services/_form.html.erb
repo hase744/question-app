@@ -86,15 +86,6 @@
         	  	</div>
         	</div>
 
-        	<%if false#request.nil? %>
-        	  	<div class="field_area">
-        	  	  	<%= f.label :stock_quantity, class:"field_label"%><br/>
-        	  	  	<div class="select_area">
-        	  	  	  	<%= f.select 'stock_quantity', options_for_select(service.stock_options, selected: service.stock_quantity), include_blank: true,  class:"" ,required: true %>
-        	  	  	</div>
-        	  	</div>
-        	<% end %>
-
         	<div class="field_area">
         	  	<%= f.label :price, class:"field_label"%>（<%=service.price_minimum_number%>〜<%=service.price_max_number%>円）<br/>
         	  	<div class="select_area">

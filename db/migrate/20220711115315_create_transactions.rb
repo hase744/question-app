@@ -48,8 +48,7 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
 
       t.boolean :is_canceled, default: false #キャンセルされているか
       t.datetime :canceled_at, index:true
-      
-      #t.integer :transaction_message_days, default:0
+
       t.boolean :transaction_message_enabled, default: false
       #t.datetime :transaction_message_deadline
 

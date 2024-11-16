@@ -69,14 +69,12 @@ class SampleData
           description: services[n]['description'],
           price: (n+1)*100,
           category_id: category.id,
-          #stock_quantity: n + 1,
           transaction_message_enabled: true,
           delivery_days: n%14 + 1,
           request_form_name: Form.find_by(name: 'text').name_sym,
           delivery_form_name: Form.find_by(name: 'text').name_sym,
           request_max_characters: (n+1)*200,
           request_max_minutes: n,
-          request_max_files: 0,
           service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
         item = service.items.new()
@@ -172,14 +170,12 @@ class SampleData
           title: services[n]['title'],
           description: services[n]['description'],
           price: (n+1)*100,
-          #stock_quantity: n + 1,
           transaction_message_enabled: true,
           delivery_days: n%14 + 1,
           request_form_name: Form.find_by(name: 'text').name_sym,
           delivery_form_name: Form.find_by(name: 'text').name_sym,
           request_max_characters: (n+1)*50,
           request_max_minutes: n,
-          request_max_files: 0,
           service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
         item = service.items.new()
