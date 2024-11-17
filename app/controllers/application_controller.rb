@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_current_nav_item
-  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+  Stripe.api_key = Rails.env.production? ? ENV['STRIPE_SECRET_KEY'] : ENV['STRIPE_SECRET_KEY_DEV']
 
   def create_error_log(e)
     @error_log = ErrorLog.new(

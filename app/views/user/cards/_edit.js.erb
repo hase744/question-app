@@ -13,7 +13,7 @@ $(function(){
   }
 
   function initializeStripe() {
-    const key = "<%=ENV['STRIPE_PUBLISHABLE_KEY']%>";
+    const key = "<%= Rails.env.production? ? ENV['STRIPE_PUBLISHABLE_KEY'] : ENV['STRIPE_PUBLISHABLE_KEY_DEV'] %>";
   
     const stripe = Stripe(key);
   

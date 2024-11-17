@@ -1,6 +1,5 @@
 class User::ConfigsController < User::Base
   before_action :check_login
-  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   layout :choose_layout
 
   private def choose_layout
@@ -15,7 +14,7 @@ class User::ConfigsController < User::Base
   def show
     get_finance_info
     @user = current_user
-    @account = Stripe::Account.retrieve(current_user.stripe_account_id)
+    @account = Stripe::Account.retrieve(current_user.stripe_account_id) if current_user.stripe_account_id
   end
 
   def edit

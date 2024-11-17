@@ -8,8 +8,7 @@ class User::ConnectsController < User::Base
   before_action :check_ongoing_transaction, only:[:destroy]
   before_action :check_phone_confirmation_enabled, only:[:certify_phone, :create, :new, :send_token]
   before_action :save_in_session, only:[:confirm]
-  
-  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
+
   def show
     @account = nil
     if current_user.stripe_account_id
@@ -162,7 +161,7 @@ class User::ConnectsController < User::Base
     #  @address_kanji = development_individual["address_kanji"]
     #  @bank_account = development_individual["external_accounts"]
     #end
-    #set_edit_value
+    set_edit_value
   end
 
   def set_edit_value
@@ -181,14 +180,17 @@ class User::ConnectsController < User::Base
       @user.town_kanji =  ENV["TOWN_ADDRESS_KANJI"]
       @user.town_kana =  ENV["TOWN_KANA"]
       @user.line1_kanji = ENV["LINE1_ADDRESS_KANJI"]
-      @user.line2_kanji = ENV["LINE1_ADDRESS_KANJI"]
+      @user.line2_kanji = ENV["LINE2_KANJI"]
       @user.line2_kana = ENV["LINE2_KANA"]
       @user.birth_date = Date.new(2000, 04, 9)
-      @user.postal_code = "1620835"
-      @user.account_number = "5467253"
-      @user.bank_number = "0017"
-      @user.branch_number = "364"
-      @user.account_holder_name = "Ko Hasegawa"
+      @user.postal_code = ENV["POSTAL_CODE"]
+      @user.first_postal_code = ENV["POSTAL_CODE"].slice(0, 3)
+      @user.last_postal_code = ENV["POSTAL_CODE"].slice(3, 6)
+      @user.account_number = ENV["ACCOUNT_NUMBER"]
+      @user.bank_number = ENV["BANK_NUMBER"]
+      @user.branch_number = ENV["BRANCH_NUMBER"]
+      @user.account_number = ENV["ACCOUNT_NUMBER"]
+      @user.account_holder_name = ENV["ACCOUNT_HOLDER_NAME"]
     elsif defined?(@account.individual)# || Rails.env.development? 
       @user.last_name_kanji = @account.individual["last_name_kanji"]
       @user.last_name_kana = @account.individual["last_name_kana"]
@@ -208,18 +210,11 @@ class User::ConnectsController < User::Base
       @user.bank_number = @bank_account["routing_number"][0..3]
       @user.branch_number = @bank_account["routing_number"][4..7]
       
-      puts "初期値"
-      puts "口座番号"
     @user.bank_number
     end
   end
 
   def update
-    str_today = "2018-12-05"    # 文字列型の日付（変換前） 
-    str_today.to_date    # Date型の日付（変換後）
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
-    puts params[:file]
-    
     file = File.new(params[:user][:certification])
     @stripe_file = nil
     if current_user.stripe_account_id
@@ -227,7 +222,6 @@ class User::ConnectsController < User::Base
       puts @stripe_file
     end
 
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
     if Rails.env == "development"
       url = "https://twitter.com/hase97531"
     else
@@ -241,17 +235,16 @@ class User::ConnectsController < User::Base
             current_user.stripe_account_id,
             {
             tos_acceptance: {date: Time.parse(Date.today.to_s).to_i, ip: '8.8.8.8'},
-            business_profile:business_profile_hash,
+            business_profile: business_profile_hash,
             business_type: "individual",
             email: current_user.email,
-            external_account:external_accounts_hash,
-            individual:individual_hash,
+            external_account: external_accounts_hash,
+            individual: individual_hash,
             capabilities: {
                 card_payments: {requested: true},
                 transfers: {requested: true},
                 },
             })
-    puts account
     if account
       if current_user.save
         flash.notice = "振込先情報が登録されました。承認までしばらくお待ちください。"
@@ -261,7 +254,6 @@ class User::ConnectsController < User::Base
         render = "user/connects/edit"
       end
     else
-      puts "accountなし"
       @error += "エラーID:#{@error_log.id}<br>"
       @error += "<br>以上を運営まで連絡してください"
       flash.notice = "エラーが潰瘍しない場合、更新したい場合はエラーIDとともに運営までご連絡してください。"
@@ -270,7 +262,6 @@ class User::ConnectsController < User::Base
   end
 
   def create_stripe_file(file)
-    Stripe.api_key = ENV['STRIPE_SECRET_KEY']
     Stripe::File.create({
         purpose: 'identity_document',
         file: file,
@@ -306,7 +297,7 @@ class User::ConnectsController < User::Base
   end
 
   def external_accounts_hash
-    if true
+    if Rails.env.production?
     {
     object: "bank_account",
     country: "jp",
@@ -322,7 +313,7 @@ class User::ConnectsController < User::Base
     country: "jp",
     currency: "jpy",
     account_number: @user.account_number,
-    routing_number: "000123456789",
+    routing_number: "#{@user.bank_number}#{@user.branch_number}",
     account_holder_name: @user.account_holder_name,
     #account_holder_type: nil,
     }
@@ -330,8 +321,6 @@ class User::ConnectsController < User::Base
   end
 
   def individual_hash
-    puts "パラメーター"
-    puts @user.city_kana
     {
     address_kana: {
     city: half_size_kana(@user.city_kana),
@@ -473,13 +462,9 @@ class User::ConnectsController < User::Base
   end
 
   private def check_ongoing_transaction
-    Transaction.where(seller:current_user ,is_transacted:false, is_canceled:false).each do |transaction|
-      if !transaction.is_rejected
-        flash.notice = "取引中の依頼があります。依頼を完了するか断って下さい。"
-        redirect_to user_connects_path
-        break
-      end
-    end
+    return if  current_user.sales.ongoing.blank?
+    flash.notice = "回答前の質問があります。回答を納品するかお断りをして下さい"
+    redirect_to user_connects_path
   end
 
   private def check_connect_unregistered
@@ -489,16 +474,13 @@ class User::ConnectsController < User::Base
   end
   
   private def check_connect_registered
-    if !current_user.stripe_account_id.present?
-      redirect_to user_connects_path
-    end
+    return if current_user.stripe_account_id.present?
+    redirect_to user_connects_path
   end
 
   private def phone_valid?
-    if current_user.phone_confirmed_at.present?
-    else
-      redirect_to new_user_connects_path
-    end
+    return if current_user.phone_confirmed_at.present?
+    redirect_to new_user_connects_path
   end
   
   private def user_params
@@ -545,7 +527,8 @@ class User::ConnectsController < User::Base
     params[:user] ||= session[:user] if session[:user]
     if params[:user]
       @user.assign_attributes(user_params)
-      @user.birth_date = Date.parse(@user.birth_date)
+      puts "@user.birth_date #{@user.birth_date}"
+      @user.birth_date = Date.new(@user.birth_date[1].to_i, @user.birth_date[2].to_i, @user.birth_date[3].to_i) #Date.parse(@user.birth_date)
       if params[:user][:certification].is_a?(ActionDispatch::Http::UploadedFile)
         file = params[:user][:certification].tempfile
         blob_data = file.read

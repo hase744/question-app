@@ -1,3 +1,4 @@
+@import "_variables";
 .connect_show_zone{
     .title_label{
         margin-bottom: 0px;
@@ -9,16 +10,16 @@
         font-weight: bolder;
     }
     .payment_enabled{
-        border-radius: 3px;
-        padding: 0px 3px;
+        color: white;
+        border-radius: 15px;
+        padding: 0px 20px;
         font-weight: lighter;
+        font-size: 15px;
     }
     .false{
         background-color: orange;
-        color: saddlebrown;
     }
     .true{
-        background-color: greenyellow;
-        color: grey;
+        background-color: $ok_green;
     }
 }

@@ -31,7 +31,9 @@
                 </div>
                 <div class="form_group">
                     <label for="birthdate">生年月日</label></br>
-                    <%=form.date_field :birth_date, class:"form_input", id:"birthdate", names:"birthdate",  required:true%>
+                    <%= form.date_select :birth_date, {start_year: 1900, end_year: DateTime.now.year,
+                        include_blank: true, use_two_digit_numbers: true},
+                        {class: "input-tab birthday-select form_input", names:"birthdate", id:"birthdate", required:true} %>
                 </div>
                 <div class="form_group">
                     <label for="first-name">性別</label></br>
@@ -45,7 +47,7 @@
                     <%=form.text_field :first_postal_code, class:"p-postal-code form_input",id:"first_postal_code", names:"zipcode", maxlength:"3",size:"3",  required:true%> -
                     <%=form.text_field :last_postal_code, class:"p-postal-code form_input",id:"last_postal_code", names:"zipcode", maxlength:"4",size:"4",  required:true%>
                     
-                    <%=form.text_field :postal_code, class:"form_input display_none",id:"postal_code", names:"zipcode", placeholder:"例：123-4567", maxlength:"8",  required:true%>
+                    <%=form.text_field :postal_code, class:"form_input display_none", id:"postal_code", names:"zipcode", placeholder:"例：123-4567", maxlength:"8",  required:true%>
                 </div>
                 <div class="form_group">
                     <label for="prefecture">都道府県</label></br>
@@ -89,7 +91,7 @@
                     <%=form.text_field :account_number, class:"form_input",id:"account_number", names:"account_number", required:true%>
                 </div>
                 <div class="form-group">
-                  <%= form.check_box :is_seller, checked:true %>
+                  <%= form.check_box :is_seller, checked: true %>
                   <%= form.label :is_seller, "回答者として登録" %>
                 </div>
             </div>
@@ -119,6 +121,24 @@ femaleCheckbox.addEventListener('change', function() {
   }
 });
 
+check_all_is_valid = function(){
+    console.log("確認")
+    let isValid = true;
+    $('input[required]').each(function() {
+      if ($(this).val() === '') {
+        isValid = false;
+        return false; // break the loop
+      }
+    });
+    if (isValid) {
+      $('.submit_area div').addClass('display_none');
+      $('.submit_area input').removeClass('display_none');
+    }else{
+        $('.submit_area div').removeClass('display_none');
+        $('.submit_area input').addClass('display_none');
+    }
+}
+
 //前半と後半に分けた郵便番号inputを郵便番号全体のフォームに入力
 $('.p-postal-code').on('input', function() {
     var firstPostalCode = $('#first_postal_code').val();
@@ -144,20 +164,6 @@ $('.submit_area div').on('click', function() {
 
 
 //全ての必須の入力箇所が満たされたら正規の入力ボタンが出現
-$('input').on('input', function() {
-    let isValid = true;
-    $('input[required]').each(function() {
-      if ($(this).val() === '') {
-        isValid = false;
-        return false; // break the loop
-      }
-    });
-    if (isValid) {
-      $('.submit_area div').addClass('display_none');
-      $('.submit_area input').removeClass('display_none');
-    }else{
-        $('.submit_area div').removeClass('display_none');
-        $('.submit_area input').addClass('display_none');
-    }
-});
+$('input').on('input', ()=>check_all_is_valid() );
+check_all_is_valid();
 </script>
