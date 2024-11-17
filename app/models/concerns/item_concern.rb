@@ -19,6 +19,7 @@ module ItemConcern
   end
 
   def update_item_src
+    puts "アップデート"
     return unless saved_change_to_attribute?(:file_processing) && !self.file_processing
     update_file_src(
       user: self.user,

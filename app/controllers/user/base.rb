@@ -3,7 +3,6 @@ class User::Base < ApplicationController
   after_action :create_access_log
   after_action :save_current_path
   include RedirectHandlers
-  Stripe.api_key = ENV['STRIPE_SECRET_KEY']
   def create_access_log
     if user_signed_in?
       puts "元のIPアドレス"

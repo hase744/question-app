@@ -18,13 +18,13 @@ user = User.new(
     password_confirmation: ENV["PASSWORD"],
     #image: file,
     confirmed_at: Time.now,
-    is_seller: true,
+    #is_seller: true,
     youtube_id: "",
     is_dammy: true,
     #categories: "business",
-    phone_number: ENV["PHONE_NUMBER"],
-    stripe_account_id: ENV["STRIPE_ACCOUNT_ID"],
-    phone_confirmed_at: Time.now,
+    #phone_number: ENV["PHONE_NUMBER"],
+    #stripe_account_id: ENV["STRIPE_ACCOUNT_ID"],
+    #phone_confirmed_at: Time.now,
     description:"ここにユーザーの自己紹介を表示させる。例えば特技、暦何年かなどを自由に記入できる。",
     last_login_at:DateTime.now
 )
@@ -40,12 +40,12 @@ user = User.new(
     password_confirmation: ENV["PASSWORD"],
     #image: file2,
     confirmed_at: Time.now,
-    is_seller: true,
+    #is_seller: true,
     youtube_id: "",
     is_dammy: true,
     #categories: "business",
-    stripe_customer_id:ENV["STRIPE_CUSTOMER_ID"],
-    stripe_card_id: ENV["STRIPE_CARD_ID"],
+    #stripe_customer_id:ENV["STRIPE_CUSTOMER_ID"],
+    #stripe_card_id: ENV["STRIPE_CARD_ID"],
     description:"ここにユーザーの自己紹介を表示させる。例えば特技、暦何年かなどを自由に記入できる。",
     last_login_at:DateTime.now
 )

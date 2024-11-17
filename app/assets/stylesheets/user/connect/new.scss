@@ -45,7 +45,7 @@ $select_width: 100px;
     }
     select {
         width: 100%;
-        padding-right: 1em;
+        //padding-right: 1em;
         cursor: pointer;
         text-indent: 0.01px;
         text-overflow: ellipsis;
@@ -60,12 +60,13 @@ $select_width: 100px;
         color: black;
     }
     .phone_input{
-        height: 28px;
+        all: unset; //これがないと端末によって高さが変わる
+        height: 30px;
         border-radius: 0px 5px 5px 0px;
         border: 1px solid gray;
         position: absolute;
         top: 10px;
-        left: #{$select_width};
+        left: calc(#{$select_width} + 1px);
         width: calc(100% - #{$select_width});
     }
     .input_fields{

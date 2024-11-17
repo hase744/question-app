@@ -2,6 +2,7 @@
 <div class="connect_show_zone component_zone">
     <div class="connect_show_area component_area">
         <% if defined?(@account.individual) && @account.details_submitted %>
+            <label>ステータス</label></br>
             <%if @account.requirements.disabled_reason == "under_review" %>
             <span class="payment_enabled false">審査中</span>
                 <div class="caveat">＊審査はStripe及びクレジットカード会社が行います。</div>

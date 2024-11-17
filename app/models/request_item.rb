@@ -1,6 +1,6 @@
 class RequestItem < ApplicationRecord
   belongs_to :request, optional: true
-  delegate :user, to: :service
+  delegate :user, to: :request
   attr_accessor :use_youtube
   attr_accessor :service
   attr_accessor :file_duration
