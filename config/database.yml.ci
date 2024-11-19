@@ -1,0 +1,7 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  username: root
+  password: <%= Rails.application.credentials.postgresql[:password] %>
+  host: <%= Rails.application.credentials.postgresql[:host] %>
+  database: question_app_test
