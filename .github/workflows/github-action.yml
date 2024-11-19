@@ -60,5 +60,5 @@ jobs:
           POSTGRES_HOST: postgres
           POSTGRES_PORT: 5432
         run: |
-          bundle exec rails db:setup
-          bundle exec rails test
+          bundle exec rails db:create RAILS_ENV=test
+          bundle exec rails db:migrate RAILS_ENV=test
