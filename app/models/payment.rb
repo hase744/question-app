@@ -22,17 +22,16 @@ class Payment < ApplicationRecord
   end
 
   def create_record
-    if saved_change_to_status?
-      case status
-      when "succeeded"
-        PointRecord.create(
-          user: self.user,
-          payment: self,
-          amount: self.value,
-          type_name: 'charge',
-          created_at: self.executed_at
-        )
-      end
+    return unless saved_change_to_status?
+    case status
+    when "succeeded"
+      PointRecord.create(
+        user: self.user,
+        payment: self,
+        amount: self.value,
+        type_name: 'charge',
+        created_at: self.executed_at
+      )
     end
   end
 end

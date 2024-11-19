@@ -5,8 +5,6 @@ class User::Base < ApplicationController
   include RedirectHandlers
   def create_access_log
     if user_signed_in?
-      puts "元のIPアドレス"
-      puts @remote_ip = request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
       AccessLog.create(
         user: current_user, 
         ip_adress: request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip,

@@ -9,7 +9,6 @@ module CategoryBase
     end
 
     def update_user_category
-      puts "アップデート"
       self.user.update_categories
     end
   end

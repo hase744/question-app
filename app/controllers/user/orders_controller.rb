@@ -76,8 +76,7 @@ class User::OrdersController < User::Base
     @transaction = Transaction.left_joins(:request).find_by(id:params[:id], request:{user: current_user})
     @request = @transaction.request
     @service = @transaction.service
-
-    @transaction.assign_attributes(is_canceled: true, canceled_at: DateTime.now)
+    @transaction.set_cansel
 
     ActiveRecord::Base.transaction do
       if save_models && @transaction.destroy_all_coupons
@@ -98,9 +97,8 @@ class User::OrdersController < User::Base
     @service = @transaction.service
     @request = @transaction.request
     @buyer = @request.user
-
     @transaction.assign_attributes(reject_params)
-    @transaction.rejected_at = DateTime.now
+    @transaction.set_rejection
 
     ActiveRecord::Base.transaction do
       if save_models && @transaction.destroy_all_coupons
@@ -182,7 +180,6 @@ class User::OrdersController < User::Base
 
   private def reject_params
     params.require(:transaction).permit(
-      :is_rejected,
       :reject_reason
     )
   end

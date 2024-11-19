@@ -4,7 +4,7 @@ require 'carrierwave/storage/fog'
 
 CarrierWave.configure do |config|
     config.storage :fog
-    config.fog_provider = 'fog/aws'
+    #config.fog_provider = 'fog/aws'
     #config.fog_directory  = 'prototype0615' # 作成したバケット名を記述
     config.fog_directory  = 'cloud-converter-test' # 作成したバケット名を記述
     config.fog_credentials = {

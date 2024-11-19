@@ -120,15 +120,7 @@ class User::TransactionsController < User::Base
   end
 
   def deliver
-    @transaction.assign_attributes(deliver_params)
-    @transaction.transacted_at = DateTime.now
-    @transaction.assign_attributes(
-      is_published: true,
-      published_at: DateTime.now,
-      is_transacted: true,
-      transacted_at: DateTime.now,
-    )
-
+    @transaction.set_delivery
     if @transaction.delivery_form.name != "text"
       @delivery_item = @transaction.items.first
     end
@@ -262,13 +254,6 @@ class User::TransactionsController < User::Base
       :file,
       :use_youtube,
       :youtube_id,
-    )
-  end
-
-  private def deliver_params
-    params.require(:transaction).permit(
-      :is_transacted,
-      :is_published
     )
   end
 

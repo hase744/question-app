@@ -262,6 +262,37 @@ class Transaction < ApplicationRecord
     self.buyer = self.request.user
   end
 
+  def set_contraction
+    self.assign_attributes(
+      is_contracted: true,
+      contracted_at: DateTime.now,
+      delivery_time: DateTime.now + self.service.delivery_days.to_i
+      )
+  end
+
+  def set_delivery
+    self.assign_attributes(
+      is_published: true,
+      published_at: DateTime.now,
+      is_transacted: true,
+      transacted_at: DateTime.now,
+    )
+  end
+
+  def set_cansel
+    self.assign_attributes(
+      is_canceled: true, 
+      canceled_at: DateTime.now
+      )
+  end
+
+  def set_rejection
+    self.assign_attributes(
+      is_rejected: true, 
+      rejected_at: DateTime.now
+      )
+  end
+
   def validate_is_suggestion
     if self.is_suggestion && self.service.request_id.nil?
       if self.request.user.is_deleted

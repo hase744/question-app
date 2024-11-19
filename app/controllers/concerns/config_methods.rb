@@ -54,7 +54,6 @@ module ConfigMethods
         begin #DateTimeなどrubyに変換できる元はrubyで返す
           return JSON.parse(value)
         rescue => e #json以外の形式の時
-          puts e
           return value
         end
       rescue => e#読み込みに失敗した時、エラーを返す
