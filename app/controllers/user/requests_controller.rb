@@ -230,11 +230,7 @@ class User::RequestsController < User::Base
   end
 
   def create_contract
-    @transaction.assign_attributes(
-      is_contracted:true,
-      contracted_at:DateTime.now,
-      delivery_time: DateTime.now + @service.delivery_days.to_i
-      )
+    @transaction.set_contraction
     @transaction.build_coupon_usages
     @request.set_service_values
 

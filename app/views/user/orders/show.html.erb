@@ -145,7 +145,7 @@
         <%= link_to(user_request_path(@transaction.request.id), class: "service_request_area") do %>
             <div class="image_area">
                 <% if @transaction.request.request_form_has_image? %>
-                    <%= image_tag @transaction.request.items.first.file.thumb.url, class:"image" %>
+                    <%= image_tag @transaction.request.thumb_with_default, class:"image" %>
                 <% elsif @transaction.request.request_form.name == "video" %>
                     <%= video_tag @transaction.request.file.url, poster:@transaction.request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                 <% end %>

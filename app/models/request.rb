@@ -391,18 +391,6 @@ class Request < ApplicationRecord
     end
   end
 
-  def validate_request_category
-    unless self.request_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
-      throw(:abort)
-    end
-
-    if self.request_categories.count > 1
-      errors.add(:base)
-      throw(:abort)
-    end
-  end
-
   def set_item_values
     if self.items.present?
       self.request_file = self.items.first
@@ -452,7 +440,19 @@ class Request < ApplicationRecord
     return unless self.is_published
     errors.add(:items, "の数は#{self.max_items_count}個までです")
   end
-  
+
+  def validate_request_category
+    unless self.request_categories.present?
+      errors.add(:base, 'カテゴリーが選択されていません')
+      throw(:abort)
+    end
+
+    if self.request_categories.count > 1
+      errors.add(:base)
+      throw(:abort)
+    end
+  end
+
   def validate_max_price
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
       errors.add(:max_price, "を設定してください") if max_price.nil?
