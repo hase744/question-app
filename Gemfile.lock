@@ -512,7 +512,6 @@ DEPENDENCIES
   twilio-ruby
   tzinfo-data
   unicorn (= 6.0.0)
-  uri (= 1.0.2)
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
