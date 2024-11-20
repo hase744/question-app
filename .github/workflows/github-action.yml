@@ -11,6 +11,7 @@ jobs:
       postgres:
         image: postgres:12
         env:
+          POSTGRES_USER: runner
           POSTGRES_PASSWORD: password
         ports:
           - 5432:5432

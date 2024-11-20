@@ -25,6 +25,7 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  username: runner
   database: question_app_test
   host: <%= ENV["POSTGRES_HOST"] %>
   password: password
