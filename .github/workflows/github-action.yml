@@ -57,7 +57,9 @@ jobs:
         env: # Or as an environment variable
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
         run: |
+          cp config/database.ci.yml config/database.yml
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
