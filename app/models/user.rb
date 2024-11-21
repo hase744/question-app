@@ -50,7 +50,8 @@ class User < ApplicationRecord
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
   validate :validate_is_published
-  validate :validate_is_seller
+  validate :validate_registering_is_seller
+  validate :validate_unregistering_is_seller
   
   before_validation :set_default_values
   after_commit :create_user_state_hitrory
@@ -398,50 +399,49 @@ class User < ApplicationRecord
   end
 
   def can_respond_order(request)
-      #ログインしている
-      transactions = request.transactions.left_joins(:service).where(
-        is_contracted:true, 
-        is_rejected: false,
-        is_canceled: false,
-        is_transacted: false,
-        service:{user: self}
-        )
-      #特定のサービスの出品者である
-      transaction = transactions.last
-      if transaction.present? #契約中のサービスがある
-          true
-      else
-          false
-      end
-  end
-
-  def validate_is_seller
-    if will_save_change_to_is_seller? && is_dammy == false
-      if self.is_seller && self.stripe_account_id #!is_stripe_account_valid?
-        errors.add(:is_seller, "登録をできません")
-      elsif !self.is_seller && ongoing_transaction_exist?
-        errors.add(:is_seller, "登録を解除できません。取引を全て終わらせてください。")
-      end
+    #ログインしている
+    transactions = request.transactions.left_joins(:service).where(
+      is_contracted:true, 
+      is_rejected: false,
+      is_canceled: false,
+      is_transacted: false,
+      service:{user: self}
+      )
+    #特定のサービスの出品者である
+    transaction = transactions.last
+    if transaction.present? #契約中のサービスがある
+        true
+    else
+        false
     end
   end
 
-  def ongoing_transaction_exist?
-    exist = false
-    Transaction.where(seller:self ,is_transacted:false, is_canceled:false).each do |transaction|
-      if !transaction.is_rejected
-        exist = true
-        break
+  def validate_registering_is_seller
+    return unless will_save_change_to_is_seller? && !self.is_seller
+    return unless self.sales.ongoing.present?
+    errors.add(:base, "回答者登録を解除するには、回答待ちの取引を終了させる必要があります")
+  end
+
+  def validate_unregistering_is_seller
+    return unless self.is_seller
+    if will_save_change_to_is_seller? || will_save_change_to_description?
+      if text_length(self.description) < mini_seller_description_length
+        self.description = description_was
+        errors.add(:base, "回答者登録するには100字以上の自己紹介が必要です")
       end
     end
-    return exist
+
+    if will_save_change_to_is_seller? || will_save_change_to_image?
+      if self.image.blank?
+        errors.add(:base, "回答者登録するにはプロフィール画像が必要です")
+      end
+    end
   end
 
   def validate_is_published
-    if  !self.is_published
-      ongoing_transactions = Transaction.where(is_transacted: false).by(self)
-      if ongoing_transactions.count > 0 #取引中の依頼がああるか
-        errors.add(:is_published)
-      end
+    return unless !self.is_published && will_save_change_to_is_published?
+    if  self.sales.ongoing.present?
+      errors.add(:base, "非公開にするには、回答待ちの取引を終了させる必要があります")
     end
   end
 
@@ -455,5 +455,9 @@ class User < ApplicationRecord
 
   def mini_service_price
     buyable_services.minimum(:price)
+  end
+
+  def mini_seller_description_length
+    100
   end
 end

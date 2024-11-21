@@ -1,53 +1,37 @@
 <h2 class="account_edit_title">プロフィール編集</h2>
 <%= render "user/shared/error_message", model: @user%>
 <div class="account_edit_zone">
-  <div class="account_edit_area input_area">
-    <%= form_with model: @user, url: user_accounts_path do |f| %>
-        <div class="field_area">
-          <%= f.label :name, class:"field_label"%>（<%=@user.name_max_length%>字以内）<br />
-          <%= f.text_field :name, maxlength:@user.name_max_length, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
-        </div>
-        <div class="field_area">
-          <%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=User.new.description_max_length%>"></span></br>
-          <%= f.text_area :description, class:"input_field text_area" %>
-        </div>
-      
-        <!--
-        <div class="field_area">
-          <%= f.label :categories, class:"field_label" %><br />
-          <%= f.hidden_field :category_ids, value: @user.categories, id:"category_field"%>
-        </div>
-        <div class="field_area">
-          <div id="labelContainer"><input class="input_field string_field"></div>
-          <div class="checkboxContainer">
-            <% @categories.each do |category| %>
-              <label>
-                <% if User.first.categories.include?(category)%>
-                  <input type="checkbox" value="<%=category.japanese_name%>" id="<%=category.id%>" checked> 
-                <% else %>
-                  <input type="checkbox" value="<%=category.japanese_name%>" id="<%=category.id%>"> 
-                <% end %>
-                <%=category.japanese_name%>
-              </label>
-            <% end %>
-          </div>
-        </div>
-        -->
-
-        <div class="field_area">
-          <%= f.label :image, class:"field_label" %><br />
-          <%= f.file_field :image, autocomplete: "image", class:"input_field" %>
-        </div>
-
-        <div class="field_area">
-          <%= f.label :header_image, class:"field_label" %><br />
-          <%= f.file_field :header_image, autocomplete: "image", class:"input_field", id:"thumbnail" %>
-        </div>
-        
-        <div class="submit_area">
-          <%= f.submit "保存", class:"submit" %>
-        </div>
-      <% end %>
+  	<div class="account_edit_area input_area">
+    	<%= form_with model: @user, url: user_accounts_path do |f| %>
+    	    <div class="field_area">
+    	      	<%= f.label :name, class:"field_label"%>（<%=@user.name_max_length%>字以内）<br />
+    	      	<%= f.text_field :name, maxlength:@user.name_max_length, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
+    	    </div>
+    	    <div class="field_area">
+    	      	<%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=User.new.description_max_length%>"></span></br>
+    	      	<%= f.text_area :description, class:"input_field text_area" %>
+    	    </div>
+    	    <div class="field_area">
+    	      	<%= f.label :image, class:"field_label" %><br />
+    	      	<%= f.file_field :image, autocomplete: "image", class:"input_field" %>
+    	    </div>
+    	    <div class="field_area">
+    	      	<%= f.label :header_image, class:"field_label" %><br />
+    	      	<%= f.file_field :header_image, autocomplete: "image", class:"input_field", id:"thumbnail" %>
+    	    </div>
+    	    <div class="field_area">
+    	      	<%= f.label :is_seller, class:"field_label" %><br />
+				<div class="check_box_area">
+					<div class="check_box_flame">
+						<%= f.check_box :is_seller, class:"input_field check_box", checked: @user.is_seller %>
+					</div>
+					<label class="checkbox_label">回答者として登録する</label>
+				</div>
+    	    </div>
+    	    <div class="submit_area">
+    	      	<%= f.submit "保存", class:"submit" %>
+    	    </div>
+      	<% end %>
     </div>
 </div>
 <script>

@@ -94,6 +94,8 @@
     }
     .check_link{
         font-size: 13px;
+        display: flex;
+        align-items: center;
     }
     .check_link:hover{
         text-decoration: none;

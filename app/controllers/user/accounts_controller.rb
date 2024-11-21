@@ -8,6 +8,8 @@ class User::AccountsController < User::Base
 
   private def choose_layout
     case action_name
+    when 'update'
+      'medium_layout'
     when 'edit'
       'medium_layout'
     when "index"
@@ -74,7 +76,7 @@ class User::AccountsController < User::Base
     @user.assign_attributes(user_params)
 
     if @user.save
-        flash.notice = "ユーザー情報を更新しました"
+        flash.notice = "プロフィール情報を更新しました"
         redirect_to user_account_path(@user.id)
     else
         @categories = Category.all
@@ -258,6 +260,7 @@ class User::AccountsController < User::Base
     params.require(:user).permit(
         :name, 
         :description, 
+        :is_seller,
         :image, 
         :header_image
     )

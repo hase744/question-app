@@ -9,7 +9,6 @@ class User::ServicesController < User::Base
   before_action :check_can_create_service, only:[:new, :create, :edit, :update]
   #before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
   before_action :check_can_suggest, only:[:new, :create]
-  before_action :check_account_description, only: [:new, :create, :edit, :update]
   before_action :define_page_count
   after_action :update_total_views, only:[:show]
   layout :choose_layout
@@ -315,23 +314,13 @@ class User::ServicesController < User::Base
     end
   end
 
-  private def check_can_sell_service
-    if !current_user.is_seller
-      redirect_to edit_user_configs_path
-      flash.notice = "回答者として登録してください"
-    elsif Service.where(user: current_user, request_id: nil).count > 10
-        redirect_to user_account_path(current_user.id)
-        flash.notice = "出品できるサービス数が上限に達しています。"
-    end
-  end
-
   private def check_can_create_service
     if !current_user.is_seller
-      redirect_to edit_user_configs_path
+      redirect_to edit_user_accounts_path
       flash.notice = "回答者として登録してください"
     elsif Service.where(user: current_user, request_id: nil).count > 10
         redirect_to user_account_path(current_user.id)
-        flash.notice = "出品できるサービス数が上限に達しています。"
+        flash.notice = "出品できる相談室数が上限に達しています。"
     end
   end
 
@@ -398,13 +387,6 @@ class User::ServicesController < User::Base
     end
   end
 
-  def check_account_description
-    if current_user.description.nil? || current_user.description.length < 100
-      flash.notice = message = "プロフィールの自己紹介を100字以上入力してください"
-      redirect_to edit_user_accounts_path
-    end
-  end
-  
   private def service_params
     params.require(:service).permit(
       :title,

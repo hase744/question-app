@@ -1,64 +1,34 @@
+$(document).ready(function() {
+    $('#user_is_seller').on('change', function() {
+        if ($(this).is(':checked')) { // チェックされた場合
+            let descriptionLength = $('#user_description').val().length;
+            let hasImage = ($('#user_image').val().length > 0 || <%= @user.image.present?%><%%>);
+            console.log($('#user_image').val().length > 0)
+            if (descriptionLength <= 100) {
+                let $checkbox = $(this);
+                setTimeout(() => {
+                    alert('回答者登録には自己紹介が100字以上必要です');
+                    $checkbox.prop('checked', false);
+                }, 0);
+                return;
+            }
 
-var checkboxes = document.querySelectorAll('.checkboxContainer input[type="checkbox"]');
-var labelContainer = document.getElementById('labelContainer');
 
-checkboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-      add_value();
-        if (this.checked) {
-            addLabel(this.value);
-        } else {
-            removeLabel(this.value);
+            if (!hasImage) {
+                let $checkbox = $(this);
+                setTimeout(() => {
+                    alert('回答者登録にはプロフィール画像が必要です');
+                    $checkbox.prop('checked', false);
+                }, 0);
+                return;
+            }
         }
     });
-});
-
-checkboxes.forEach(checkbox => {
-  if (checkbox.checked) {
-    console.log('aa');
-      addLabel(checkbox.value);
-  } else {
-      removeLabel(checkbox.value);
-  }
-});
-
-function addLabel(text) {
-    const label = document.createElement('div');
-    label.className = 'label';
-    label.textContent = text;
-
-    const closeBtn = document.createElement('span');
-    closeBtn.className = 'close';
-    closeBtn.textContent = '×';
-    closeBtn.onclick = function() {
-        label.remove();
-        const correspondingCheckbox = Array.from(checkboxes).find(checkbox => checkbox.value === text);
-        if (correspondingCheckbox) {
-            correspondingCheckbox.checked = false;
+    $('.check_box_area').on('click', function() {
+        if ($(event.target).hasClass('check_box')) {
+            return;
         }
-    };
-
-    label.appendChild(closeBtn);
-    labelContainer.appendChild(label);
-}
-
-function removeLabel(text) {
-    const labels = document.querySelectorAll('.label');
-    labels.forEach(label => {
-        if (label.textContent.replace('×', '').trim() === text) {
-            label.remove();
-        }
+        let $checkbox = $(this).find('.check_box');
+        $checkbox.prop('checked', !$checkbox.prop('checked')).trigger('change');
     });
-}
-
-function add_value(){
-  categories = []
-  for (let i = 0; i < checkboxes.length; i++) {
-      if(checkboxes[i].checked){
-        //console.log(checkboxes[i]);
-        console.log(checkboxes[i].id);
-        categories.unshift(checkboxes[i].id);
-      }
-  }
-  category_field.value = `${categories}`;
-}
+});

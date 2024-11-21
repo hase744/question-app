@@ -1,4 +1,4 @@
-class FileUploader < CarrierWave::Uploader::Base
+class FileUploader < UploaderBase
   include CarrierWave::MiniMagick
   include ::CarrierWave::Backgrounder::Delay
   # Include RMagick or MiniMagick support:

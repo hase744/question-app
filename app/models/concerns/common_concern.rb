@@ -52,6 +52,15 @@ module CommonConcern
     end
   end
 
+  def delete_folder(path)
+    if File.exist?(path) && path.include?('/tmp/')
+      FileUtils.rm_rf(path)
+      Rails.logger.info "Folder #{path} deleted successfully due to save failure"
+    else
+      Rails.logger.warn "File #{path} not found"
+    end
+  end
+
   def file_html_path
     file_array = self.file.path.split('/')
     file_array = file_array.take(file_array.length - 1)
@@ -64,6 +73,11 @@ module CommonConcern
     file_array = file_array.take(file_array.length - 1)
     file_path = file_array.join('/')
     file_key = "#{file_path}/index.html"
+  end
+
+  def text_length(text)
+    return 0 if text.nil?
+    text.gsub(/\r\n/, "\n").length
   end
 
   def self.user_states

@@ -262,7 +262,7 @@ class Service < ApplicationRecord
     elsif request.request_form != self.request_form || self.request_form_name != 'free'
       "質問形式が違います"
     elsif self.request_max_characters < request.description.length
-      "相談室の文字数が足りません"
+      "相談室の文字数が不足しています"
     else
       nil
     end

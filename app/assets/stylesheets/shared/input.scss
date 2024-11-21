@@ -1,5 +1,6 @@
 .account_edit_title{
     margin: 0px;
+    margin-left: 5px;
 }
 .input_new_title{
     margin-left: 10px;
@@ -36,7 +37,6 @@
         .input_field {
             height: 30px;
             box-sizing: border-box;
-            
             border-radius: 5px;
             border: 1px solid gray;
         }
@@ -45,15 +45,30 @@
         }
         .text_area{
             height: 200px;
-            line-height: 20px;
+            line-height: 23px;
         }
         .request_content{
             margin-top: 0px;
             white-space: pre-line;
         }
+        .check_box_area{
+            display: flex;
+            .check_box_flame{
+                display: flex;
+                align-items: center;
+            }
+        }
         .check_box{
-            height: 20px;
-            width: 20px;
+            height: 17px;
+            width: 17px;
+            margin: 0px;
+            margin-right: 5px;
+        }
+        .checkbox_label{
+            font-weight: bolder;
+            font-size: large;
+            margin: 0px;
+            flex: 1;
         }
         textarea{
             max-width: 100%;
