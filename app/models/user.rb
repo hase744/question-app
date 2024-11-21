@@ -419,7 +419,7 @@ class User < ApplicationRecord
   def validate_registering_is_seller
     return unless will_save_change_to_is_seller? && !self.is_seller
     return unless self.sales.ongoing.present?
-    errors.add(:base, "回答者登録を解除するには、回答待ちの取引を終了させる必要があります")
+    errors.add(:is_seller, "回答者登録を解除するには、回答待ちの取引を終了させる必要があります")
   end
 
   def validate_unregistering_is_seller
@@ -427,13 +427,13 @@ class User < ApplicationRecord
     if will_save_change_to_is_seller? || will_save_change_to_description?
       if text_length(self.description) < mini_seller_description_length
         self.description = description_was
-        errors.add(:base, "回答者登録するには100字以上の自己紹介が必要です")
+        errors.add(:is_seller, "回答者登録するには100字以上の自己紹介が必要です")
       end
     end
 
     if will_save_change_to_is_seller? || will_save_change_to_image?
       if self.image.blank?
-        errors.add(:base, "回答者登録するにはプロフィール画像が必要です")
+        errors.add(:is_seller, "回答者登録するにはプロフィール画像が必要です")
       end
     end
   end
@@ -441,7 +441,7 @@ class User < ApplicationRecord
   def validate_is_published
     return unless !self.is_published && will_save_change_to_is_published?
     if  self.sales.ongoing.present?
-      errors.add(:base, "非公開にするには、回答待ちの取引を終了させる必要があります")
+      errors.add(:is_published, "非公開にするには、回答待ちの取引を終了させる必要があります")
     end
   end
 

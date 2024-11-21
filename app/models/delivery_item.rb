@@ -55,16 +55,16 @@ class DeliveryItem < ApplicationRecord
   def validate_youtube_id
     if self.will_save_change_to_youtube_id?
       if  self.delivery_form.name == "text"
-        errors.add(:youtube_id, "が適切ではありません") if self.youtube_id != nil
+        errors.add(:youtube_id, "YouTubeのIDが適切ではありません") if self.youtube_id != nil
       elsif self.delivery_form.name == "image"
-        errors.add(:youtube_id, "が適切ではありません") if self.youtube_id != nil
+        errors.add(:youtube_id, "YouTubeのIDが適切ではありません") if self.youtube_id != nil
       elsif self.delivery_form.name == "video"
         if self.use_youtube
           if !is_youtube_id_valid? #&& self.validate_published
-            errors.add(:youtube_id, "が適切ではありません")
+            errors.add(:youtube_id, "YouTubeのIDが適切ではありません")
           end
         else
-          errors.add(:youtube_id, "が適切ではありません") if self.youtube_id != nil
+          errors.add(:youtube_id, "YouTubeのIDが適切ではありません") if self.youtube_id != nil
         end
       end
     end
@@ -73,14 +73,14 @@ class DeliveryItem < ApplicationRecord
   def validate_file
     return unless self.is_published
     if  self.delivery_form.name == "text"
-      errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+      errors.add(:file, "ファイルをアップロードして下さい") if !self.file.present? #&& self.validate_published
       #errors.add(:file, "のフォーマットが正しくありません") if !is_image_extension #&& self.validate_published
     elsif self.delivery_form.name == "image"
-      errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+      errors.add(:file, "ファイルをアップロードして下さい") if !self.file.present? #&& self.validate_published
     elsif self.delivery_form.name == "video"
       if !self.use_youtube
         errors.add(:file, "のフォーマットが正しくありません") if !is_video_extension #&& self.validate_published
-        errors.add(:file, "をアップロードして下さい") if !self.file.present? #&& self.validate_published
+        errors.add(:file, "ファイルをアップロードして下さい") if !self.file.present? #&& self.validate_published
       end
     end
   end

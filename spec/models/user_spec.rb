@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
     it "回答者になるには100字以上の自己紹介が必要" do
       user.description = ''
       user.save
-      expect(user.errors.attribute_names).to include(:base)
+      expect(user.errors.attribute_names).to include(:is_seller)
     end
   end
 end

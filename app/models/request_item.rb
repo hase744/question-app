@@ -87,12 +87,12 @@ class RequestItem < ApplicationRecord
   def validate_youtube_id
     if self.will_save_change_to_youtube_id?
       if  self.request_form.name == "text"
-        errors.add(:youtube_id, "が適切ではありません") if self.youtube_id.present?
+        errors.add(:youtube_id, "YouTubeのIDが適切ではありません") if self.youtube_id.present?
       elsif self.request_form.name == "image"
-        errors.add(:youtube_id, "が適切ではありません") if self.youtube_id.present?
+        errors.add(:youtube_id, "YouTubeのIDが適切ではありません") if self.youtube_id.present?
       elsif self.request_form.name == "video"
         if self.use_youtube && !is_youtube_id_valid?
-          errors.add(:youtube_id, "が適切ではありません")
+          errors.add(:youtube_id, "YouTubeのIDが適切ではありません")
         end
       end
     end
@@ -102,9 +102,9 @@ class RequestItem < ApplicationRecord
     if self.request_form.name == "video"
       if self.service.present? && self.service.request_max_duration
         if !self.duration.present?
-          errors.add(:duration, "がありません")
+          errors.add(:duration, "動画時間がありません")
         elsif self.duration.to_i > self.service.request_max_duration
-          errors.add(:duration, "は最大#{self.service.request_max_duration}秒です")
+          errors.add(:duration, "動画時間は最大#{self.service.request_max_duration}秒です")
         end
       end
     end
@@ -115,17 +115,17 @@ class RequestItem < ApplicationRecord
     return unless self.is_published
     case self.request_form.name
     when "text"
-      errors.add(:file, "をアップロードして下さい") unless self.file.present?
-      errors.add(:base, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.file.is_image?
-      errors.add(:base, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.is_text_image
+      errors.add(:file, "ファイルをアップロードして下さい") unless self.file.present?
+      errors.add(:file, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.file.is_image?
+      errors.add(:file, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.is_text_image
     when "image"
-      errors.add(:file, "をアップロードして下さい") unless self.file.present?
-      errors.add(:base, "アップロードできるのは画像のみです") unless self.file.is_image?
+      errors.add(:file, "ファイルをアップロードして下さい") unless self.file.present?
+      errors.add(:file, "アップロードできるのは画像のみです") unless self.file.is_image?
     when "video"
       unless self.use_youtube
-        errors.add(:file, "のフォーマットが正しくありません") unless is_video_extension
-        errors.add(:file, "をアップロードして下さい") unless self.file.present?
-        errors.add(:base, "アップロードできるのは動画のみです") unless self.file.is_video?
+        errors.add(:file, "ファイルのフォーマットが正しくありません") unless is_video_extension
+        errors.add(:file, "ファイルをアップロードして下さい") unless self.file.present?
+        errors.add(:file, "アップロードできるのは動画のみです") unless self.file.is_video?
       end
     end
   end
@@ -134,10 +134,10 @@ class RequestItem < ApplicationRecord
     if  self.request_form.name == "text"
       #errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present?
     elsif self.request_form.name == "image"
-      errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present?
+      errors.add(:thumbnail, "サムネイルが不正な値です") if !self.thumbnail.url.present?
     elsif self.request_form.name == "video"
       if !self.use_youtube
-        errors.add(:thumbnail, "が不正な値です") if !self.thumbnail.url.present? #&& self.validate_published
+        errors.add(:thumbnail, "サムネイルが不正な値です") if !self.thumbnail.url.present? #&& self.validate_published
       end
     end
   end

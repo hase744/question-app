@@ -29,7 +29,7 @@ RSpec.describe Service, type: :model do
       it "無効である" do
         service.price = 550
         expect(service).to_not be_valid
-        expect(service.errors[:price]).to include("は100円ごとにしか設定できません")
+        expect(service.errors[:price]).to include("価格は100円ごとにしか設定できません")
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Service, type: :model do
       it "無効である" do
         service.service_categories = []
         expect(service).to_not be_valid
-        expect(service.errors[:base]).to include("カテゴリーが選択されていません")
+        expect(service.errors[:service_categories]).to include("カテゴリーが選択されていません")
       end
     end
   end

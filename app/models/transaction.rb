@@ -296,11 +296,11 @@ class Transaction < ApplicationRecord
   def validate_is_suggestion
     if self.is_suggestion && self.service.request_id.nil?
       if self.request.user.is_deleted
-        errors.add(:base,  "アカウントが存在しません。")
+        errors.add(:buyer,  "アカウントが存在しません。")
       elsif !self.request.user.is_stripe_customer_valid?
-        errors.add(:base,  "質問者の決済が承認されていません。")
+        errors.add(:buyer,  "質問者の決済が承認されていません。")
       elsif self.request.request_form.name != self.service.request_form.name && self.request_form.name != 'free'
-        errors.add(:base,  "質問形式が違います")
+        errors.add(:request_form,  "質問形式が違います")
       elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
       elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
@@ -347,7 +347,7 @@ class Transaction < ApplicationRecord
       self.coupon_usages&.destroy_all
       Coupon.where(id: coupon_ids).each(&:save)
     else
-      errors.add(:base, "クーポンに関するエラー")
+      errors.add(:coupon_usages, "クーポンに関するエラー")
     end
     response
   end
@@ -399,21 +399,21 @@ class Transaction < ApplicationRecord
     ).where.not(id: self.id)
     if previous_transaction.present?
       if self.is_suggestion
-        errors.add(:base, "既に提案済みです")
+        errors.add(:is_suggestion, "既に提案済みです")
       else
-        errors.add(:base, "既に質問済みです")
+        errors.add(:is_suggestion, "既に質問済みです")
       end
     end
   end
 
   def validate_transaction_category
     unless self.transaction_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
+      errors.add(:transaction_categories, 'カテゴリーが選択されていません')
       throw(:abort)
     end
 
     if self.transaction_categories.count > 1
-      errors.add(:base)
+      errors.add(:transaction_categories)
       throw(:abort)
     end
   end
@@ -496,17 +496,17 @@ class Transaction < ApplicationRecord
 
   def validate_title
     if self.title.present?
-      errors.add(:title, "を入力して下さい") if self.title.length <= 0 && self.is_published
+      errors.add(:title, "ひとこと回答を入力して下さい") if self.title.length <= 0 && self.is_published
     else
-      errors.add(:title, "を入力して下さい") if self.is_published
+      errors.add(:title, "ひとこと回答を入力して下さい") if self.is_published
     end
   end
 
   def validate_description
     if self.description.present?
-      errors.add(:description, "を入力して下さい") if self.description.length <= 0 && self.is_published
+      errors.add(:description, "本文を入力して下さい") if self.description.length <= 0 && self.is_published
     else
-      errors.add(:description, "を入力して下さい") if self.is_published
+      errors.add(:description, "本文を入力して下さい") if self.is_published
     end
   end
 
@@ -520,7 +520,7 @@ class Transaction < ApplicationRecord
         end
       end
     elsif self.delivery_form.name == "image"
-      errors.add(:base, "画像ファイルを添付してください")
+      errors.add(:items, "画像ファイルを添付してください")
     end
   end
 
@@ -547,25 +547,25 @@ class Transaction < ApplicationRecord
 
   def validate_is_canceled
     return unless self.is_canceled 
-    errors.add(:delivery_time, "を過ぎていません") if DateTime.now < self.delivery_time
-    errors.add(:is_canceled, "はできません") if self.is_rejected || self.is_transacted
+    errors.add(:delivery_time, "納品期限を過ぎていません") if DateTime.now < self.delivery_time
+    errors.add(:is_canceled, "キャンセルはできません") if self.is_rejected || self.is_transacted
   end
   
   def validate_is_rejected
     if (self.is_transacted || self.is_canceled) && self.is_rejected #納品済み または　キャンセル済み
-      errors.add(:is_rejected, "は現在できません")
+      errors.add(:is_rejected, "お断りは現在できません")
     end
   end
 
   def validate_reject_reason
     if (self.is_transacted || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
-      errors.add(:reject_reason, "は現在で記入きません")
+      errors.add(:reject_reason, "お断り理由は現在、作成できません")
     end
   end
 
   def validate_service_renewed
     if self.request.is_published && self.request.will_save_change_to_is_published? && self.service_checked_at < self.service.renewed_at
-      errors.add(:base, "相談室の内容が変更されました。")
+      errors.add(:service, "相談室の内容が変更されました")
     end
   end
 
@@ -689,7 +689,7 @@ class Transaction < ApplicationRecord
     return if self.items.count <= self.max_items_count
     return unless self.will_save_change_to_is_published?
     return unless self.is_published
-    errors.add(:items, "の数は#{self.max_items_count}個までです")
+    errors.add(:items, "納品ファイルの数は#{self.max_items_count}個までです")
   end
   
   def max_items_count

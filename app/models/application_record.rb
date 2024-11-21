@@ -65,7 +65,7 @@ class ApplicationRecord < ActiveRecord::Base
     if self.price.nil?
       errors.add(:price)
     elsif self.price % 100 != 0
-      errors.add(:price, "は100円ごとにしか設定できません")
+      errors.add(:price, "価格は100円ごとにしか設定できません")
     elsif self.price < 0
       errors.add(:price)
     end

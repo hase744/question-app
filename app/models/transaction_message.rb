@@ -52,7 +52,7 @@ class TransactionMessage < ApplicationRecord
 
   def validate_sender
     if self.sender != @buyer && self.sender != @seller
-      errors.add(:sendr, "が不適切です")
+      errors.add(:sender, "送信者が不適切です")
     end
   end
 

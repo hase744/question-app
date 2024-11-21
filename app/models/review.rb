@@ -17,7 +17,7 @@ class Review < ApplicationRecord
 
   def validate_user(user)
     unless self.deal.buyer == self.user
-      errors.add(:base, "ユーザーが不適切です")
+      errors.add(:user, "ユーザーが不適切です")
     end
   end
 

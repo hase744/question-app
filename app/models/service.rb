@@ -312,7 +312,7 @@ class Service < ApplicationRecord
 
   def validate_service_category
     unless self.service_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
+      errors.add(:service_categories, 'カテゴリーが選択されていません')
       throw(:abort)
     end
   end
@@ -324,13 +324,13 @@ class Service < ApplicationRecord
     if self.request_form.name == "video"
       if self.request_max_duration.present?
         if self.request_max_duration < 60
-            errors.add(:request_max_minutes, "は最低1分です")
+            errors.add(:request_max_minutes, "質問動画の最大時間は最低1分です")
         end
         if self.request_max_duration > 600
-            errors.add(:request_max_minutes, "は最大10分です")
+            errors.add(:request_max_minutes, "質問動画の最大時間は最大10分です")
         end
       elsif !self.request.present? #依頼に対する提案ではない
-        errors.add(:request_max_minutes, "に値が空です")
+        errors.add(:request_max_minutes, "質問動画の最大時間に値が空です")
       end
     end
   end
