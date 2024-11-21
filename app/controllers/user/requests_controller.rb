@@ -467,7 +467,7 @@ class User::RequestsController < User::Base
     return if @service.nil? 
     return if current_user.total_points >= @transaction.required_points
     @defficiency = @service.price - current_user.total_points
-    flash.notice = "残高が#{@defficiency}ポイント足りません"
+    flash.notice = "残高が#{@defficiency}ポイント不足しています"
     session[:payment_service_id] = @service.id
     session[:payment_transaction_id] = @transaction.id
     redirect_to user_payments_path(point:@defficiency)

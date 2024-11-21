@@ -67,4 +67,21 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   
+  config.before(:suite) do
+    CarrierWave.configure do |carrierwave_config|
+      carrierwave_config.storage = :file
+      carrierwave_config.enable_processing = false
+    end
+
+    # モデルでCarrierWaveをモック
+    RequestItem.mount_uploader(:file, MockUploader)
+    User.mount_uploader(:image, MockUploader)
+  end
+
+  config.after(:suite) do
+    # テスト用アップロードディレクトリを削除
+    FileUtils.rm_rf(Dir["#{Rails.root}/public/spec/"])
+    FileUtils.rm_rf(Dir.glob("#{Rails.root}/public/uploads/tmp/*"))
+  end
 end
+

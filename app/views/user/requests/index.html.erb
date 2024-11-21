@@ -9,7 +9,8 @@
 		</div>
 		<div class="second_stage">
 			<%= link_to user_requests_path(request.query_parameters.merge(can_suggest: params[:can_suggest] == '1' ? '0' : '1')), class:"check_link" do %>
-				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
+				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>
+				<label class="checkbox_label">受付中</label>
 			<% end %>
 			<%= render "user/shared/sort_selector",
 				link: ->(order) {user_requests_path(request.query_parameters.merge(order: order)) } 

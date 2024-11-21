@@ -17,6 +17,11 @@
             <i class="fa-solid fa-check"></i>
             取引が完了しています
             </span>
+        <% else %>
+            <span class="status green">
+            <i class="fas fa-clock"></i>
+            回答待ち
+            </span>
         <% end %>
         <% if @transaction.is_rejected %>
             <%= render "user/shared/small_label", text: "お断り理由" %>
@@ -177,7 +182,7 @@
             <div  class="information_component">
                 </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
                 <% if @transaction.description %>
-                    <h5 class="margin0px break_word"><%=@transaction.description %></h5>
+                    <h5 class="margin0px break_word description_area"><%=@transaction.description %></h5>
                 <% else %>
                     <h5 class="margin0px break_word">未記入</h5>
                 <% end %>

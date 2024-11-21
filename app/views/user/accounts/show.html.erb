@@ -1,11 +1,11 @@
 <div id="user_profile" class="user_show_zone">
-<% if @user.is_seller%>
-<div class="main_header">
-    <%= link_to "", user_homes_path, class:"fas fa-home"%>
-     > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%>
-     > <%=@user.name%>
-</div>
-<% end %>
+    <% if @user.is_seller%>
+        <div class="main_header">
+            <%= link_to "", user_homes_path, class:"fas fa-home"%>
+             > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%>
+             > <%=@user.name%>
+        </div>
+    <% end %>
     <div class="user_profile_area">
         <div class="user_profile_introduction">
             <div class="user_info_image">

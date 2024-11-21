@@ -16,6 +16,9 @@
         text-align: center;
         display: block;
     }
+    .description_area{
+        line-height: 30px;
+    }
     .status{
         .fa-circle-xmark, .fa-xmark, .fa-circle-exclamation, .fa-ban{
             color: red;

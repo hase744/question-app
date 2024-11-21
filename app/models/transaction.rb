@@ -304,7 +304,7 @@ class Transaction < ApplicationRecord
       elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
       elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
-        errors.add(:base,  "相談室の文字数が足りません")
+        errors.add(:base,  "相談室の文字数が不足しています")
       else
         nil
       end

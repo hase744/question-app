@@ -145,15 +145,6 @@ class ApplicationRecord < ActiveRecord::Base
     })
   end
 
-  def delete_folder(path)
-    if File.exist?(path) && path.include?('/tmp/')
-      FileUtils.rm_rf(path)
-      Rails.logger.info "Folder #{path} deleted successfully due to save failure"
-    else
-      Rails.logger.warn "File #{path} not found"
-    end
-  end
-
   def all_items_processed?
     self.items
       .where(file_processing: true)

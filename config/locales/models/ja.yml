@@ -21,7 +21,7 @@ ja:
         first_name: 名
         family_name: 姓
         name: ユーザー名
-        description: 紹介文
+        description: 自己紹介
         category: 専門分野
         categories: 専門分野
         image: プロフィール画像
