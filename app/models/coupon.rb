@@ -78,20 +78,20 @@ class Coupon < ApplicationRecord
   end
 
   def validate_minimum_purchase_amount
-    errors.add(:base, "金額は100円毎にしか設定できません") if self.minimum_purchase_amount % 100 != 0
+    errors.add(:amount, "金額は100円毎にしか設定できません") if self.minimum_purchase_amount % 100 != 0
   end
 
   def validate_amount
     if self.amount < self.minimum_purchase_amount && self.discount_rate < 1
-      errors.add(:base, "割引率が100%未満の時、金額は最低購入金額より低く設定できません")
+      errors.add(:discount_rate, "割引率が100%未満の時、金額は最低購入金額より低く設定できません")
     end
-    errors.add(:base, "金額は100円毎にしか設定できません") if self.amount % 100 != 0
+    errors.add(:amount, "金額は100円毎にしか設定できません") if self.amount % 100 != 0
   end
 
   def validate_usage_type
     case usage_type
     when "unlimited"
-      errors.add(:base, "無制限の際は割引率は100%未満に設定できません") if discount_rate < 1
+      errors.add(:discount_rate, "無制限の際は割引率は100%未満に設定できません") if discount_rate < 1
     when "one_time"
       #errors.add(base, "１度きりの際は割引率は100%に設定できません") if discount_rate >= 1
     end
@@ -100,7 +100,7 @@ class Coupon < ApplicationRecord
   def validate_is_active
     one_time_active_coupons = self.user.coupons.usable.where(is_active: true, usage_type: "one_time")
     if one_time_active_coupons.present? && self.is_active && will_save_change_to_is_active?
-      errors.add(:base, "１度きりのクーポンは一つしか使用できません")
+      errors.add(:is_active, "１度きりのクーポンは一つしか使用できません")
     end
   end
 
@@ -112,6 +112,6 @@ class Coupon < ApplicationRecord
   end
 
   def validate_span
-    errors.add(:base, "公開時期より先に期限を設定できません") if self.start_at > self.end_at
+    errors.add(:end_at, "公開時期より先に期限を設定できません") if self.start_at > self.end_at
   end
 end

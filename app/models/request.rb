@@ -443,24 +443,24 @@ class Request < ApplicationRecord
 
   def validate_request_category
     unless self.request_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
+      errors.add(:request_categories, 'カテゴリーが選択されていません')
       throw(:abort)
     end
 
     if self.request_categories.count > 1
-      errors.add(:base)
+      errors.add(:request_categories)
       throw(:abort)
     end
   end
 
   def validate_max_price
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
-      errors.add(:max_price, "を設定してください") if max_price.nil?
+      errors.add(:max_price, "予算を設定してください") if max_price.nil?
     end
     if self.max_price.present?
-      errors.add(:max_price, "は100円ごとにしか設定できません") if max_price % 100 != 0
-      errors.add(:max_price, "は100円以上に設定して下さい") if max_price < 100
-      errors.add(:max_price, "は10000円以下に設定して下さい") if max_price_upper_limit < max_price
+      errors.add(:max_price, "予算は100円ごとにしか設定できません") if max_price % 100 != 0
+      errors.add(:max_price, "予算は100円以上に設定して下さい") if max_price < 100
+      errors.add(:max_price, "予算は10000円以下に設定して下さい") if max_price_upper_limit < max_price
     end
   end
 
@@ -480,17 +480,17 @@ class Request < ApplicationRecord
 
   def validate_title
     if self.title.present?
-      errors.add(:title, "を入力して下さい") if self.title.length <= 0 #&& self.validate_published
+      errors.add(:title, "タイトルを入力して下さい") if self.title.length <= 0 #&& self.validate_published
     else
-      errors.add(:title, "を入力して下さい") if self.validate_published
+      errors.add(:title, "タイトルを入力して下さい") if self.validate_published
     end
   end
 
   def validate_description
     if self.description.present?
-      errors.add(:description, "を入力して下さい") if self.description.length <= 0 #&& self.validate_published
+      errors.add(:description, "本文を入力して下さい") if self.description.length <= 0 #&& self.validate_published
     else
-      errors.add(:description, "を入力して下さい") if self.validate_published
+      errors.add(:description, "本文を入力して下さい") if self.validate_published
     end
 
     #新規の作成 or 作成後に相談室の最大文字数が変更され、最大文字数がひっかかった場合
@@ -509,15 +509,15 @@ class Request < ApplicationRecord
     when 'text'
       if need_text_image? && self.items.text_image.count != 1
         items.destroy_all
-        errors.add(:items, "が不適切です")
+        errors.add(:items, "ファイルが不適切です")
       end
     when 'image'
-      errors.add(:items, "をアップロードしてください") if self.items.not_text_image.count < 1
+      errors.add(:items, "ファイルをアップロードしてください") if self.items.not_text_image.count < 1
     end
     self.items.each do |item|
       unless item.valid?
         item.errors.full_messages.each do |message|
-          errors.add(:items, "が不適切です。 #{message}")
+          errors.add(:items, "ファイルが不適切です。 #{message}")
         end
       end
     end
@@ -531,20 +531,20 @@ class Request < ApplicationRecord
 
   def validate_request_form
     if self.service
-      errors.add(:request_form, "が違います") if self.service.request_form != self.request_form
+      errors.add(:request_form, "質問形式が違います") if self.service.request_form != self.request_form
     end
   end
 
   def validate_delivery_form
     if self.service
-      errors.add(:delivery_form, "が違います") if self.service.delivery_form != self.delivery_form
+      errors.add(:delivery_form, "回答形式が違います") if self.service.delivery_form != self.delivery_form
     end
   end
 
   def validate_delivery_days
     if self.delivery_days && self.will_save_change_to_suggestion_acceptable_duration?
-      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptable_duration_in_days > 30
-      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
+      errors.add(:delivery_days, "回答までにかかる日数は30日以内に設定して下さい") if self.acceptable_duration_in_days > 30
+      errors.add(:delivery_days, "回答までにかかる日数は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
   end
 
