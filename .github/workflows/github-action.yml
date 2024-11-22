@@ -59,7 +59,12 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           POSTGRES_HOST: localhost
+          POSTGRES_USER: runner
           POSTGRES_PORT: 5432
         run: |
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
+      - name: Rails tests
+        env:
+          RAILS_ENV: test
+        run: bundle exec rails db:reset RAILS_ENV=test && rspec
