@@ -57,10 +57,6 @@ class ApplicationRecord < ActiveRecord::Base
     self.class.human_attribute_enum_value(attr_name, self[attr_name])
   end
 
-  def last_item
-    items.order(created_at: :asc).last
-  end
-
   def validate_price
     if self.price.nil?
       errors.add(:price)
@@ -114,7 +110,8 @@ class ApplicationRecord < ActiveRecord::Base
   def delete_temp_file
     # Requestなどの親モデルの保存に成功してもrequest_categoryなどの子モデルの保存に失敗すると
     # 保存が失敗した場合のみファイルを削除
-    relative_path = self.file.url
+    relative_path = self.file&.url.presence || self.file_tmp&.url
+    return unless relative_path
     splited_path = relative_path.split('/')
     path_length = splited_path.length
     root_temp_path = Rails.root.to_s + "/tmp/" + splited_path[-2]

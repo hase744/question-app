@@ -45,6 +45,7 @@ class Request < ApplicationRecord
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
+  accepts_nested_attributes_for :item, allow_destroy: true
   accepts_nested_attributes_for :request_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
@@ -231,8 +232,8 @@ class Request < ApplicationRecord
       self.acceptable_duration_in_days=(delivery_days)
     end
 
-    if self.is_inclusive && self.is_published
-      #self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
+    if self.is_inclusive && self.is_published && will_save_change_to_is_published?
+      self.suggestion_deadline = Time.now + self.suggestion_acceptable_duration
     end
   end
 
@@ -505,12 +506,11 @@ class Request < ApplicationRecord
 
   def validate_request_item
     return unless self.is_published && will_save_change_to_is_published?
+    if need_text_image? && !has_only_text_image?
+      items.destroy_all
+      errors.add(:items, "ファイルが不適切です")
+    end
     case request_form.name
-    when 'text'
-      if need_text_image? && self.items.text_image.count != 1
-        items.destroy_all
-        errors.add(:items, "ファイルが不適切です")
-      end
     when 'image'
       errors.add(:items, "ファイルをアップロードしてください") if self.items.not_text_image.count < 1
     end
@@ -565,6 +565,22 @@ class Request < ApplicationRecord
     else
       false
     end
+  end
+
+  def has_only_text_image?
+    return false if saving_text_image_item.blank?
+    return false if saving_items.count > 1
+    return self.item.file.present? || self.item.file_tmp.present?
+  end
+
+  def saving_text_image_item
+    return nil unless self.item&.is_text_image
+    return nil if self.item&.marked_for_destruction?
+    self.item
+  end
+
+  def saving_items
+    self.items.reject(&:marked_for_destruction?)
   end
 
   def file_field_display_style

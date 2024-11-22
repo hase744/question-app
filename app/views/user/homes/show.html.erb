@@ -53,32 +53,6 @@
                 </div>
             </div>
         </div>
-        <script>
-            var category_button = document.getElementById('category_button');
-            var category_list = document.getElementById('category_list');
-
-            function showCategory_list() {
-                category_list.classList.remove('hidden');
-            }
-
-            function hideCategory_list() {
-                category_list.classList.add('hidden');
-            }
-
-            function toggleHidden() {
-                category_list.classList.toggle('hidden');
-            }
-
-            category_button.addEventListener('click', function() {
-                category_list.classList.toggle('hidden');
-            });
-
-            category_button.addEventListener('mouseover', showCategory_list);
-            category_button.addEventListener('mouseout', hideCategory_list);
-
-            category_list.addEventListener('mouseover', showCategory_list);
-            category_list.addEventListener('mouseout', hideCategory_list);
-        </script>
         <div class="transaction_group">
             <% @transactions.each do |transaction|%>
                 <%= render "user/transactions/answer", transaction:transaction %>

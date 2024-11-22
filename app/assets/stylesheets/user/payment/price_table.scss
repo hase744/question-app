@@ -1,0 +1,38 @@
+
+.price_condition_area{
+  width: 100%;
+  margin: 10px 0px;
+  tr{
+      width: 100%;
+      display: flex;
+      td, th{
+          border-top: none;
+          border:1px solid grey;
+          padding: 7px;
+      }
+      th{
+          border-right: none;
+          width: 130px;
+          font-weight: bold;
+          background-color: #f1f1f1;
+      }
+      td{
+          border-left: none;
+          flex: 1;
+      }
+  }
+  tr:first-child th, tr:first-child td{
+      border-bottom: none;
+  }
+  .open_button{
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+      color: blue;
+  }
+  .red{
+      color: darkred;
+      font-weight: bold;
+      font-size: 20px;
+  }
+}

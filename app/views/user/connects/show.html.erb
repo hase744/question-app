@@ -5,8 +5,8 @@
             <label>ステータス</label></br>
             <%if @account.requirements.disabled_reason == "under_review" %>
             <span class="payment_enabled false">審査中</span>
-                <div class="caveat">＊審査はStripe及びクレジットカード会社が行います。</div>
-                <div class="caveat">＊審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください。</div></br>
+                <div class="caveat">※審査はStripe及びクレジットカード会社が行います。</div>
+                <div class="caveat">※審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください。</div></br>
             <% elsif @account.requirements.disabled_reason == nil %>
                 <span class="payment_enabled true">審査済</span></br>
             <% end %>

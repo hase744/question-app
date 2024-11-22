@@ -21,7 +21,7 @@ consumer.subscriptions.create("FileChannel", {
       });
     })
     if(data.img_mapping.length > 0){
-      notify_for_seconds("画像を更新しました");
+      notify_for_seconds("画像のアップロードが完了しました");
     }
     // Called when there's incoming data on the websocket for this channel
   }

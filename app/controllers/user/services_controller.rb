@@ -63,6 +63,12 @@ class User::ServicesController < User::Base
       @tweet_text = 
       "「稼げる相談サイト」コレテクの#{@service.user.name}さんの相談室はこちら。 気になる方は以下のリンクへ！"
     end
+
+    if @transaction
+      @deficient_point = [@transaction.required_points - current_user.total_points, 0].max
+      @payment = Payment.new(point: @deficient_point || 100)
+    end
+
     if @service.item&.file&.url
       $og_image = @service.item&.file&.url
     end
@@ -122,7 +128,7 @@ class User::ServicesController < User::Base
     @service.total_views = 0
     if params.dig(:item, :file)
       @item = @service.items.new()
-      @item.process_file_upload = true
+      @item.process_file_upload = false
       @item.assign_attributes(file: params.dig(:item, :file)[0])
     end
     if @request
