@@ -8,7 +8,7 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       t.text :description
 
       t.integer :max_price, index:true
-      t.integer :mini_price, index:true #予算の下限　＊現在は未使用
+      t.integer :mini_price, index:true #予算の下限　※現在は未使用
 
       t.boolean :is_inclusive, index:true, null: false, default: true
       t.boolean :is_accepting, index: true, null: false, default: true

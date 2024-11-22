@@ -3,7 +3,7 @@
 <%= render "user/shared/error_message", model: @transaction %>
 <%= render "user/shared/error_message", model: @service%>
 <%= render "user/shared/error_message", model: current_user%>
-<%if @service_exist %>
+<%if @service %>
   <h3 class="service_new_title"><%=@service.user.name%>へ質問を作成</h3>
   <% if @transaction.is_suggestion %>
     <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
@@ -18,7 +18,7 @@
 <div class="request_preview_zone">
 	<div class="service_new_zone">
 	    <div class="service_new_area input_area">
-	    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
+	    	<%= form_with model: @request, url: user_request_publish_path, method:"post" do |f| %>
 	    	    <div class="field_area">
 	    	      	<%= f.label :title, class:"field_label"%><br/>
 	    	      	<h3 class="request_content"><%=@request.title %></h3>
@@ -77,7 +77,7 @@
 	    	      <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
 	    	    </div>
 							
-	    	    <% if !@service_exist%>
+	    	    <% unless @service%>
 	    	    <div class="field_area">
 	    	        <%= f.label :max_price, class:"field_label"%><br/>
 	    	        <h3 class="request_content"><%=@request.max_price%>円</h3>
@@ -89,7 +89,6 @@
 	    	    </div>
 	    	    <% end %>
 	    	<% end %>
-							
 	    	    <% if @transaction && @transaction&.price > 0 %>
 					<% if current_user.coupons.usable(@transaction&.price).present? %>
 	    	    	<div class="field_area">
@@ -122,6 +121,8 @@
 							<%= render "user/coupons/modal_window", price: @transaction.price %>
 						<% end %>
 	    	    	</div>
+
+                    <%= render "user/payments/price_table" %>
 	    	    <% end %>
 							
 	    	    <div class="submit_area">
@@ -134,14 +135,23 @@
 					<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
 	    		</div></br>
 	    	<% end %>
-	    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
-	    	    <div class="submit_area">
-	    	      	<%= f.hidden_field :transaction_id %>
-	    	      	<%= f.file_field  :file, id:"file_input", class:"display_none" %>
-	    	    	<%= f.hidden_field :service_id, value: @service&.id %>
-	    	      	<%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
-	    	    </div>
-	    	<% end %>
+	    	<div class="submit_area">
+				<%if @deficient_point && @deficient_point > 0 %>
+					<div class="big_submit" id="payment_modal_button"><%= @submit_text %></div>
+					<script>
+					$('#payment_modal_button').on('click',function() {
+					  	$('.payment_modal').addClass('open');
+					});
+					</script>
+				<% else %>
+	    			<%= form_with model: @request, url: user_request_publish_path, method:"post" do |f| %>
+	    		    <%= f.hidden_field :transaction_id %>
+	    		    <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+	    		    <%= f.hidden_field :service_id, value: @service&.id %>
+	    		    <%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
+	    			<% end %>
+				<% end %>
+	    	</div>
 	    </div>
 	</div>
 <div class="text_image_area">

@@ -102,9 +102,6 @@ class User::RequestsController < User::Base
   end
 
   def preview
-    if @transaction
-      @request.service = @transaction.service
-    end
     @request.set_item_values
     set_preview_values
   end
@@ -167,53 +164,36 @@ class User::RequestsController < User::Base
     end
   end
 
-  def save_request_and_item
-    if @request_item
-      if @request.save && @request_item.save
-        true
-      else
-        false
-      end
-    else
-      if @request.save
-        true
-      else
-        false
-      end
-    end
-  end
-
   def publish
     @request.set_publish
     if @request.need_text_image?
-      @item = @request.items.new()
+      @item = @request.build_item
       @item.process_file_upload = false
       @item.assign_attributes(file: params[:request][:file], is_text_image: true)
     end
     if @transaction #サービスの購入である
       @request.service = @service
-      if save_item && create_contract #validationのため、先に文章画像を保存
+      if create_contract #validationのため、先に文章画像を保存
         redirect_to user_request_path(@request.id, @parameters)
+        return
       else
-        @item&.delete_temp_file
-        @item&.destroy
-        render "user/requests/preview"
+        flash.notice = "購入できませんでした。"
       end
     else #公開依頼のとき
-      @request.suggestion_deadline = Time.now + @request.suggestion_acceptable_duration
-      if save_item && @request.save
+      if save_models_at_once
         flash.notice ="質問を公開しました"
         redirect_to user_request_path(@request.id, @parameters)
+        return
       else
-        detect_models_errors([@transaction, current_user, @request, @service, @request_item])
-        @item&.delete_temp_file
-        @item&.destroy
         flash.notice = "公開できませんでした。"
         @request.set_item_values
-        set_preview_values
-        render "user/requests/preview"
       end
     end
+    detect_models_errors([@transaction, current_user, @request, @service, @request_item])
+    #@item&.delete_temp_file
+    #@item&.destroy
+    set_preview_values
+    render "user/requests/preview"
   end
 
   def save_item
@@ -226,30 +206,6 @@ class User::RequestsController < User::Base
       redirect_to user_request_path(@request.id)
     else
       render  "user/services/show"
-    end
-  end
-
-  def create_contract
-    @transaction.set_contraction
-    @transaction.build_coupon_usages
-    @request.set_service_values
-
-    ActiveRecord::Base.transaction do
-      if save_models
-        EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
-        create_notification
-        flash.notice = "購入しました。"
-        true
-      else
-        puts "失敗 #{@request.items.count}"
-        #flash.notice = "購入できませんでした。" +
-        #[@service.errors.full_messages,
-        # @request.errors.full_messages,
-        # @transaction.errors.full_messages].flatten.join("\n")
-        @request.set_item_values
-        set_preview_values
-        false
-      end
     end
   end
 
@@ -317,24 +273,44 @@ class User::RequestsController < User::Base
   
   def set_preview_values
     if @service
-      if @transaction.is_suggestion
-        @path = user_request_purchase_path(transaction_id: @transaction.id)
-      else
-        @path = user_request_publish_path
-      end
-      
       @submit_text = "購入"
-      @service_exist = true
+      @request.service = @transaction.service
+      @deficient_point = [@transaction.required_points - current_user.total_points, 0].max
+      @payment = Payment.new(point: @deficient_point || 100)
+      @request.set_item_values
     else
-      @path = user_request_publish_path
       @submit_text = "公開"
-      @service_exist = false
     end
 
-    if !@request.is_inclusive
-      @edit_path = edit_user_request_path(@request.id, transaction_id:@transaction.id)
-    else
+    if @request.is_inclusive
       @edit_path = edit_user_request_path(@request.id)
+    else
+      @edit_path = edit_user_request_path(@request.id, transaction_id:@transaction.id)
+    end
+  end
+
+  private def create_contract
+    @transaction.set_contraction
+    @transaction.build_coupon_usages
+    @request.set_service_values
+    if save_models_at_once
+      EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
+      create_notification
+      flash.notice = "購入しました。"
+      true
+    else
+      false
+    end
+  end
+
+  private def save_models_at_once
+    ActiveRecord::Base.transaction do
+      if save_models
+        true
+      else
+        @request.set_item_values
+        false
+      end
     end
   end
 
@@ -392,9 +368,9 @@ class User::RequestsController < User::Base
   end
 
   private def check_stripe_customer
-    unless current_user.is_stripe_customer_valid? || @transaction&.required_points == 0
-      redirect_to  user_cards_path
-    end
+    return if current_user.is_stripe_customer_valid? || @transaction&.required_points == 0
+    flash.notice = "クレジットカードを登録してください"
+    redirect_to  new_user_cards_path
   end
 
   private def define_transaction

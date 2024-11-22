@@ -1,7 +1,7 @@
 <%= render "user/requests/cell", request: @request %>
 <%= render "user/shared/error_message", model: @request_supplement %>
 <h3 class="input_new_title">質問の補足</h3>
-＊補足は一度までしかできません
+※補足は一度までしかできません
 <div class="request_supplement_new_zone input_new_zone">
   	<div class="request_supplement_new_area input_area">
   	  <%= form_with model: @request_supplement, url: user_request_supplements_path, method:"post" do |f| %>

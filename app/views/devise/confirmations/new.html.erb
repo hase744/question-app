@@ -8,7 +8,7 @@
       <div class="form_group">
         <%= f.label :email %><br />
         <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), class:"form_input" %>
-        <span>＊再設定用のurlを上記のメールアドレスに送信します</span></br>
+        <span>※再設定用のurlを上記のメールアドレスに送信します</span></br>
       </div>
     
       <div class="actions">

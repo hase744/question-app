@@ -1,32 +1,18 @@
 <% if model.items.map{|item| item.file.is_image? }.count == 1%>
-    <%= link_to(model.last_item.file.url, class: 'link') do %>
-        <%= 
-		if model.last_item.file_processing
-		elsif use_thumb
-			image_tag model.last_item.file.thumb.url, class:"image"
-		else
-			image_tag model.last_item.file.url, class:"image"
-		end
-		%>
+    <%= link_to(model.item.file.url, class: 'link') do %>
+        <%= image_tag (use_thumb ? model.thumb_with_default : model.thumb_with_default), class:"image" unless model.item.file_processing %>
     <% end %>
 <% else %>
-    <div  id="bullets" class="swiper-container">
+    <div id="bullets" class="swiper-container">
         <div class="swiper-wrapper">
             <% model.items.select{|item| item.file.is_image? }.each do |item| %>
                 <%= link_to(item.file.url, class: 'link swiper-slide') do %>
-					<%=
-					if item.file_processing
-					elsif use_thumb
-						image_tag item.file.thumb.url, class:"image"
-					else
-						image_tag item.file.url, class:"image"
-					end
-					%>
+					<%= image_tag (use_thumb ? model.thumb_with_default : model.thumb_with_default), class:"image" unless model.item.file_processing %>
                 <% end %>
             <% end %>
         </div>
         <div class="swiper-button-next swiper-button-custom"></div>
         <div class="swiper-button-prev swiper-button-custom"></div>
-				<div class="swiper-pagination"></div>
+		<div class="swiper-pagination"></div>
     </div>
 <% end %>

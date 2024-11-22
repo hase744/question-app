@@ -12,9 +12,9 @@
             <%if @balance.present? %>
                 <%if @account.requirements.disabled_reason == "under_review" %>
                 <span class="payment_enabled false">審査中</span>
-                <div class="caveat">＊審査中であっても出品可能です。</div>
+                <div class="caveat">※審査中であっても出品可能です。</div>
                 <!--
-                    <div class="caveat">＊審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください</div>
+                    <div class="caveat">※審査は通常24時間以内に完了します。登録後、1週間経過しても無効の場合は運営までご報告ください</div>
                 -->
                 <% elsif @account.requirements.disabled_reason == nil %>
                     <span class="payment_enabled true">審査済</span>
@@ -68,7 +68,7 @@
                     </th>
                 </tr>
             </table>
-            <div class="caveat">＊<%=date_of_payment%></div>
+            <div class="caveat">※<%=date_of_payment%></div>
         </div>
     </div>
     <%= render "user/configs/button", path: user_orders_path, icon: "far fa-handshake", label: "取引一覧" %>

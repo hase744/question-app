@@ -56,6 +56,7 @@
         	  	  	<div class="select_area">
         	  	  	  	<%= f.select 'request_max_characters', options_for_select(service.max_character_options, selected: service.request_max_characters),  class:"" %>
         	  	  	</div>
+					<div class="annotation">※添付ファイルがなく、本文が<%= Request.new.required_text_image_description_length%>字以下の場合にのみ、文章が質問箱として画像に変換されます</div>
         	  	</div>
 
         	  	<% if Form.find_by(name: 'video').present? %>
@@ -98,7 +99,7 @@
         	  	<div class="select_area">
         	  	  	<%= f.select 'delivery_days', options_for_select((1..service.delivery_days_max_number).step(1).map { |num| ["#{num}日以内", num] }, selected: service.delivery_days), include_blank: true,  class:"price_field" ,required: true %>
         	  	</div>
-        	  	<div class="annotation">＊購入からこの日数を過ぎても回答されなかった場合、質問者が取引キャンセル可能になります。</div>
+        	  	<div class="annotation">※購入からこの日数を過ぎても回答されなかった場合、質問者からキャンセルされる可能性があります。</div>
         	</div>
 
         	<div class="field_area">

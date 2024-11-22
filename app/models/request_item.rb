@@ -116,8 +116,8 @@ class RequestItem < ApplicationRecord
     case self.request_form.name
     when "text"
       errors.add(:file, "ファイルをアップロードして下さい") unless self.file.present?
-      errors.add(:file, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.file.is_image?
-      errors.add(:file, "アップロードできるのは文章のみです、ファイルを削除してください") unless self.is_text_image
+      errors.add(:file, "アップロードできるのは文章のみです") unless self.file.is_image?
+      errors.add(:file, "アップロードできるのは文章のみです") unless self.is_text_image
     when "image"
       errors.add(:file, "ファイルをアップロードして下さい") unless self.file.present?
       errors.add(:file, "アップロードできるのは画像のみです") unless self.file.is_image?
