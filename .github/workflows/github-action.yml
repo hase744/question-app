@@ -72,7 +72,5 @@ jobs:
         env:
           RAILS_ENV: test
         run: bundle exec rspec
-      - name: Run RSpec
-        run: bundle exec rspec spec/models spec/requests  spec/system 
       - name: Run RuboCop
         run: bundle exec rubocop
