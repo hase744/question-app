@@ -67,4 +67,8 @@ jobs:
       - name: Rails tests
         env:
           RAILS_ENV: test
-        run: bundle exec rails db:reset RAILS_ENV=test && rspec
+        run: bundle exec rspec
+      - name: Run RSpec
+        run: bundle exec rspec spec/models spec/requests  spec/system 
+      - name: Run RuboCop
+        run: bundle exec rubocop
