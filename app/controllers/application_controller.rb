@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   include OperationConfig
   include ErrorHandlers if Rails.env.production?
   include AccessHandlers
+  include ImageGenerator
 
   layout :layout_by_resource
   protect_from_forgery with: :exception

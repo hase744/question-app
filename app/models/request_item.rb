@@ -42,6 +42,13 @@ class RequestItem < ApplicationRecord
     self.request.is_published
   end
 
+  def assign_image_from_content(html_content, css_content)
+    generated_image_url = generate_image_from_content(html_content, css_content) + '.png'
+    downloaded_file = download_file_from_url(generated_image_url)
+    self.file = downloaded_file
+    self.is_text_image = true
+  end
+
   def set_default_values
     request = self.request
     case self.use_youtube
