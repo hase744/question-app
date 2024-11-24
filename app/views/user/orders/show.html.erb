@@ -27,30 +27,54 @@
             <%= render "user/shared/small_label", text: "お断り理由" %>
             <div><%=@transaction.reject_reason%></div>
         <% end %>
-        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
-        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
-            <div class="image_area">
-                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
-            </div>
-            <div class="text_area">
-                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
-            </div>
-            <div class="arrow_area fa-solid fa-chevron-right">
-            </div>
+        <% if false #!@transaction.is_transacted %>
+        <% elsif current_user == @transaction.seller %>
+            <table class="price_condition_area">
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">売上</span>
+            	    </th>
+            	    <td>
+            	        <span class="common_condition">￥<%=@transaction.price%></span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">利益</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition">￥<%=@transaction.profit%></span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">手数料</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition">￥<%=@transaction.margin%></span>
+            	    </td>
+            	</tr>
+            </table>
+        <% else %>
+            <table class="price_condition_area">
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">消費ポイント</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition"><%=@transaction.price - @transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">クーポン割引額</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition"><%=@transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
+            	    </td>
+            	</tr>
+            </table>
         <% end %>
-        <% if @transaction.can_send_message(current_user) %>
-            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
-        <% end %>
-        <% if @transaction.is_ongoing %>
-            <div class="submit_area">
-            <% if current_user == @transaction.seller %>
-                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
-                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
-                <% end %>
-            <% end %>
-            </div>
-        <% end %>
-        </br>
         <%= render "user/shared/small_label", text: "契約内容" %>
         <table class="common_condition_area">
             <tr>
@@ -160,6 +184,30 @@
                 <div class="user_name one_line_text">質問者: <%= @transaction.buyer.name %></div>
             </div>
             <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
+        </br>
+        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
+        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
+            <div class="image_area">
+                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
+            </div>
+            <div class="text_area">
+                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
+            </div>
+            <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
+        <% if @transaction.can_send_message(current_user) %>
+            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+        <% end %>
+        <% if @transaction.is_ongoing %>
+            <div class="submit_area">
+            <% if current_user == @transaction.seller %>
+                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
+                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
+                <% end %>
+            <% end %>
             </div>
         <% end %>
         </br>

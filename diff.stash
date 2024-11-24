@@ -1294,3 +1294,411 @@ index 321bb1e..95e8588 100644
 diff --git a/public/uploads/.DS_Store b/public/uploads/.DS_Store
 index 5e11e68..66d8d70 100644
 Binary files a/public/uploads/.DS_Store and b/public/uploads/.DS_Store differ
+diff --git a/.DS_Store b/.DS_Store
+index af52b7f..bd3e2cd 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/app/assets/stylesheets/user/payment/price_table.scss b/app/assets/stylesheets/user/payment/price_table.scss
+index c78ac57..f031341 100644
+--- a/app/assets/stylesheets/user/payment/price_table.scss
++++ b/app/assets/stylesheets/user/payment/price_table.scss
+@@ -1,38 +1,40 @@
+ 
+ .price_condition_area{
+-  width: 100%;
+-  margin: 10px 0px;
+-  tr{
+-      width: 100%;
+-      display: flex;
+-      td, th{
+-          border-top: none;
+-          border:1px solid grey;
+-          padding: 7px;
+-      }
+-      th{
+-          border-right: none;
+-          width: 130px;
+-          font-weight: bold;
+-          background-color: #f1f1f1;
+-      }
+-      td{
+-          border-left: none;
+-          flex: 1;
+-      }
+-  }
+-  tr:first-child th, tr:first-child td{
+-      border-bottom: none;
+-  }
+-  .open_button{
+-      text-decoration: underline;
+-      cursor: pointer;
+-      font-size: 14px;
+-      color: blue;
+-  }
+-  .red{
+-      color: darkred;
+-      font-weight: bold;
+-      font-size: 20px;
+-  }
++    width: 100%;
++    margin: 10px 0px;
++    tr{
++        width: 100%;
++        display: flex;
++        td, th{
++            border-top: none;
++            border:1px solid grey;
++            padding: 7px;
++            border-bottom: none;
++        }
++        th{
++            border-right: none;
++            width: 130px;
++            font-weight: bold;
++            background-color: #f1f1f1;
++            border-bottom: none;
++        }
++        td{
++            border-left: none;
++            flex: 1;
++        }
++    }
++    tr:last-child th, tr:last-child td{
++        border-bottom: 1px solid grey;
++    }
++    .open_button{
++        text-decoration: underline;
++        cursor: pointer;
++        font-size: 14px;
++        color: blue;
++    }
++    .red{
++        color: darkred;
++        font-weight: bold;
++        font-size: 20px;
++    }
+ }
+\ No newline at end of file
+diff --git a/app/assets/stylesheets/user/shared/common_table.scss b/app/assets/stylesheets/user/shared/common_table.scss
+index 0c4e22c..b7d09df 100644
+--- a/app/assets/stylesheets/user/shared/common_table.scss
++++ b/app/assets/stylesheets/user/shared/common_table.scss
+@@ -31,7 +31,7 @@
+   	        padding-bottom: 0px;
+   	        border-radius: 5px;
+   	        display: inline-block;
+-  	        text-decoration: underline;
++  	        //text-decoration: underline;
+   	    }
+ 		  .ok, .not_ok{
+ 			border-radius: 50px;
+diff --git a/app/assets/stylesheets/user/transaction_message/cells.scss b/app/assets/stylesheets/user/transaction_message/cells.scss
+index e8c912e..2d4289e 100644
+--- a/app/assets/stylesheets/user/transaction_message/cells.scss
++++ b/app/assets/stylesheets/user/transaction_message/cells.scss
+@@ -58,7 +58,7 @@
+     .image_area{
+         //margin: 5px;
+         .image{
+-            width: calc(100% - 20px);
++            width: calc(100% - 10px);
+             margin: 5px;
+             object-fit: cover;
+         }
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index d0eaa7b..351b7ac 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
+   include OperationConfig
+   include ErrorHandlers if Rails.env.production?
+   include AccessHandlers
++  include ImageGenerator
+ 
+   layout :layout_by_resource
+   protect_from_forgery with: :exception
+diff --git a/app/controllers/user/requests_controller.rb b/app/controllers/user/requests_controller.rb
+index c912510..3930b47 100644
+--- a/app/controllers/user/requests_controller.rb
++++ b/app/controllers/user/requests_controller.rb
+@@ -169,7 +169,12 @@ class User::RequestsController < User::Base
+     if @request.need_text_image?
+       @item = @request.build_item
+       @item.process_file_upload = false
+-      @item.assign_attributes(file: params[:request][:file], is_text_image: true)
++      if params[:request][:file].present?
++        @item.assign_attributes(file: params[:request][:file], is_text_image: true)
++      else
++        html_content, css_content = generate_html_css_from_request(@request)
++        @item.assign_image_from_content(html_content, css_content)
++      end
+     end
+     if @transaction #サービスの購入である
+       @request.service = @service
+diff --git a/app/models/application_record.rb b/app/models/application_record.rb
+index a349ead..88daad2 100644
+--- a/app/models/application_record.rb
++++ b/app/models/application_record.rb
+@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
+   include TemplateConcern
+   include OperationConfig
+   include ItemConcern
++  include ImageGenerator
+ 
+ 
+   scope :from_latest_order, ->() {
+diff --git a/app/models/concerns/template_concern.rb b/app/models/concerns/template_concern.rb
+index c2d9916..3bc8054 100644
+--- a/app/models/concerns/template_concern.rb
++++ b/app/models/concerns/template_concern.rb
+@@ -3,7 +3,7 @@ module TemplateConcern
+   def set_request_content
+     if Rails.env.development?
+       self.title ||= "仕事に対するモチベーション"
+-      self.description ||= "最近、仕事に対するモチベーションが低下しています。やりがいを感じられず、将来への不安が募っています。今の仕事を続けるべきか、それとも新しい道を模索すべきか悩んでいます。同じ環境でのルーティンに疲れ、新しい挑戦を求めていますが、安定感も捨てがたいです。どのようにして自分に合った仕事を見つけ、人生をより充実させることができるでしょうか？仕事と生活のバランスを取りながら、将来の展望を見据えるためのステップは何でしょうか？ご助言いただければ幸いです。"
++      self.description ||= "最近、仕事に対するモチベーションが低下しています。やりがいを感じられず、将来への不安が募っています。今の仕事を続けるべきか、それとも新しい道を模索すべきか悩んでいます。同じ環境でのルーティンに疲れ、新しい挑戦を求めていますが、安定感も捨てがたいです。どのようにして自分に合った仕事を見つけ、人生をより充実させることができるでしょうか？仕事と生活のバランスを取りながら、将来の展望を見据えるためのステップは何でしょうか？\r\nご助言いただければ幸いです。"
+     end
+   end
+ 
+diff --git a/app/models/request_item.rb b/app/models/request_item.rb
+index db85373..afad8ba 100644
+--- a/app/models/request_item.rb
++++ b/app/models/request_item.rb
+@@ -42,6 +42,13 @@ class RequestItem < ApplicationRecord
+     self.request.is_published
+   end
+ 
++  def assign_image_from_content(html_content, css_content)
++    generated_image_url = generate_image_from_content(html_content, css_content) + '.png'
++    downloaded_file = download_file_from_url(generated_image_url)
++    self.file = downloaded_file
++    self.is_text_image = true
++  end
++
+   def set_default_values
+     request = self.request
+     case self.use_youtube
+diff --git a/app/views/user/images/_description.css.erb b/app/views/user/images/_description.css.erb
+index aebf1ef..20683b7 100644
+--- a/app/views/user/images/_description.css.erb
++++ b/app/views/user/images/_description.css.erb
+@@ -1,4 +1,10 @@
+ <% padding_length = image_width*0.03 %>
++<%if donwlaod_font %>
++@font-face {
++    font-family: 'Azuki';
++    src: url('https://cloud-converter-test.s3.eu-west-1.amazonaws.com/azuki.ttf') format('truetype');    
++}
++<% end %>
+ #display_setting{
+     width: <%= image_width %>px;/*親要素で幅を設定しないとなぜかうまく表示されない*/
+ }
+diff --git a/app/views/user/orders/show.html.erb b/app/views/user/orders/show.html.erb
+index 1557a4c..b033591 100644
+--- a/app/views/user/orders/show.html.erb
++++ b/app/views/user/orders/show.html.erb
+@@ -27,30 +27,54 @@
+             <%= render "user/shared/small_label", text: "お断り理由" %>
+             <div><%=@transaction.reject_reason%></div>
+         <% end %>
+-        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
+-        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
+-            <div class="image_area">
+-                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
+-            </div>
+-            <div class="text_area">
+-                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
+-            </div>
+-            <div class="arrow_area fa-solid fa-chevron-right">
+-            </div>
+-        <% end %>
+-        <% if @transaction.can_send_message(current_user) %>
+-            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+-        <% end %>
+-        <% if @transaction.is_ongoing %>
+-            <div class="submit_area">
+-            <% if current_user == @transaction.seller %>
+-                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
+-                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
+-                <% end %>
+-            <% end %>
+-            </div>
++        <% if false #!@transaction.is_transacted %>
++        <% elsif current_user == @transaction.seller %>
++            <table class="price_condition_area">
++            	<tr>
++            	    <th class="condition_label">
++            	        <span class="condition_name ">売上</span>
++            	    </th>
++            	    <td>
++            	        <span class="common_condition">￥<%=@transaction.price%></span>
++            	    </td>
++            	</tr>
++            	<tr>
++            	    <th class="condition_label">
++            	        <span class="condition_name ">利益</span>
++            	    </th>
++            	    <td>
++                    <span class="common_condition">￥<%=@transaction.profit%></span>
++            	    </td>
++            	</tr>
++            	<tr>
++            	    <th class="condition_label">
++            	        <span class="condition_name ">手数料</span>
++            	    </th>
++            	    <td>
++                    <span class="common_condition">￥<%=@transaction.margin%></span>
++            	    </td>
++            	</tr>
++            </table>
++        <% else %>
++            <table class="price_condition_area">
++            	<tr>
++            	    <th class="condition_label">
++            	        <span class="condition_name ">消費ポイント</span>
++            	    </th>
++            	    <td>
++                    <span class="common_condition"><%=@transaction.price - @transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
++            	    </td>
++            	</tr>
++            	<tr>
++            	    <th class="condition_label">
++            	        <span class="condition_name ">クーポン割引額</span>
++            	    </th>
++            	    <td>
++                    <span class="common_condition"><%=@transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
++            	    </td>
++            	</tr>
++            </table>
+         <% end %>
+-        </br>
+         <%= render "user/shared/small_label", text: "契約内容" %>
+         <table class="common_condition_area">
+             <tr>
+@@ -163,6 +187,30 @@
+             </div>
+         <% end %>
+         </br>
++        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
++        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
++            <div class="image_area">
++                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
++            </div>
++            <div class="text_area">
++                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
++            </div>
++            <div class="arrow_area fa-solid fa-chevron-right">
++            </div>
++        <% end %>
++        <% if @transaction.can_send_message(current_user) %>
++            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
++        <% end %>
++        <% if @transaction.is_ongoing %>
++            <div class="submit_area">
++            <% if current_user == @transaction.seller %>
++                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
++                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
++                <% end %>
++            <% end %>
++            </div>
++        <% end %>
++        </br>
+         <% if current_user == @transaction.seller || @transaction.is_transacted%>
+         <%= render "user/shared/small_label", text: "回答" %>
+             <div class="information_component">
+diff --git a/app/views/user/requests/preview.html.erb b/app/views/user/requests/preview.html.erb
+index 38e9fb2..9e955c7 100644
+--- a/app/views/user/requests/preview.html.erb
++++ b/app/views/user/requests/preview.html.erb
+@@ -154,60 +154,27 @@
+ 	    	</div>
+ 	    </div>
+ 	</div>
+-<div class="text_image_area">
+-	<% if @transaction %>
+-		<script>
+-			<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
+-		</script>
+-	<% end %>
+ 	<%if @request.need_text_image? %>
+-		<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+-		<%= render "/user/images/description.html.erb",title: @request.title, text:@request.description, image_width: 500%>
+-		<div id="canvas-container"></div>
+-		<script>
+-		<%= render 'user/images/description.js.erb',title: @request.title, text: @request.description, image_width: 500, user_name: current_user.name %>
+-		</script>
+-		<style>
+-		<%= render 'user/images/description.css.erb', text: @request.description, image_width: 500, font_size: @request.description_font_size(500) %>
+-		</style>
+-</div>
+-<script>
+-try{
+-  let isLoaded = false;
+-  window.addEventListener('load', (event) => {
+-    isLoaded = true;
+-    if(<%=@request.need_text_image?%>){
+-	  create_description_image();
+-    }
+-  })
+-  // タイムアウトの設定
+-  const timeout = setTimeout(() => {
+-    if (!isLoaded) {
+-      location.reload();
+-      console.error("ページのロードがタイムアウトしました");
+-      // タイムアウト時の処理をここに追加
+-    }
+-  }, 5000); // 5秒のタイムアウト
+-
+-  // タイムアウトをクリアするための処理
+-  window.addEventListener('unload', () => {
+-    //service/showからrequest/previeに遷移するWindowのロードに失敗する
+-    clearTimeout(timeout);
+-  });
+-  //create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
+-  function reload_description_image(){
+-      if($("#desctiption_to_image_text").css("display") == "none"){
+-      }else{
+-          window.location.reload();
+-      }
+-  }
+-  if("<%=@request.request_form_name%>" == "text"){
+-      //window.setTimeout(reload_description_image, 5000);
+-  }
+-}catch(e){
+-  console.log(`エラー：${e}`)
+-  window.location.reload();
+-}
+-</script>
+-<% end %>
++		<div class="text_image_area">
++			<%= render "/user/images/description.html.erb", 
++				title: @request.title, text:@request.description, 
++				image_width: 500%>
++			<div id="canvas-container"></div>
++			<script>
++				<%= render "user/shared/javascript/html2canvas.js.erb" %>
++				<%= render 'user/images/description.js.erb', 
++					title: @request.title, text: @request.description, 
++					image_width: 500, user_name: current_user.name %>
++			</script>
++			<style>
++			<%= render 'user/images/description.css.erb', 
++				text: @request.description, image_width: 500, 
++				font_size: @request.description_font_size(500),
++				donwlaod_font: false %>
++			</style>
++		</div>
++	<script>
++		<%= render "user/requests/preview.js.erb" %>
++	</script>
++	<% end %>
+ </div>
+\ No newline at end of file
+diff --git a/config/credentials.yml.enc b/config/credentials.yml.enc
+index 345ec0a..21d80e8 100644
+--- a/config/credentials.yml.enc
++++ b/config/credentials.yml.enc
+@@ -1 +1 @@
+-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--s/13vZGus5670NS/--nkLd3LBhXj0ezEudiaCEVw==
+\ No newline at end of file
++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--8T+jGXUlk7UT+HkE--q9L4beVcaZL1Xl2+UKmu1Q==
+\ No newline at end of file

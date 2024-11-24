@@ -169,7 +169,12 @@ class User::RequestsController < User::Base
     if @request.need_text_image?
       @item = @request.build_item
       @item.process_file_upload = false
-      @item.assign_attributes(file: params[:request][:file], is_text_image: true)
+      if params[:request][:file].present?
+        @item.assign_attributes(file: params[:request][:file], is_text_image: true)
+      else
+        html_content, css_content = generate_html_css_from_request(@request)
+        @item.assign_image_from_content(html_content, css_content)
+      end
     end
     if @transaction #サービスの購入である
       @request.service = @service

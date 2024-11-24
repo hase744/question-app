@@ -154,60 +154,27 @@
 	    	</div>
 	    </div>
 	</div>
-<div class="text_image_area">
-	<% if @transaction %>
-		<script>
-			<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
-		</script>
-	<% end %>
 	<%if @request.need_text_image? %>
-		<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-		<%= render "/user/images/description.html.erb",title: @request.title, text:@request.description, image_width: 500%>
-		<div id="canvas-container"></div>
-		<script>
-		<%= render 'user/images/description.js.erb',title: @request.title, text: @request.description, image_width: 500, user_name: current_user.name %>
-		</script>
-		<style>
-		<%= render 'user/images/description.css.erb', text: @request.description, image_width: 500, font_size: @request.description_font_size(500) %>
-		</style>
-</div>
-<script>
-try{
-  let isLoaded = false;
-  window.addEventListener('load', (event) => {
-    isLoaded = true;
-    if(<%=@request.need_text_image?%>){
-	  create_description_image();
-    }
-  })
-  // タイムアウトの設定
-  const timeout = setTimeout(() => {
-    if (!isLoaded) {
-      location.reload();
-      console.error("ページのロードがタイムアウトしました");
-      // タイムアウト時の処理をここに追加
-    }
-  }, 5000); // 5秒のタイムアウト
-
-  // タイムアウトをクリアするための処理
-  window.addEventListener('unload', () => {
-    //service/showからrequest/previeに遷移するWindowのロードに失敗する
-    clearTimeout(timeout);
-  });
-  //create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
-  function reload_description_image(){
-      if($("#desctiption_to_image_text").css("display") == "none"){
-      }else{
-          window.location.reload();
-      }
-  }
-  if("<%=@request.request_form_name%>" == "text"){
-      //window.setTimeout(reload_description_image, 5000);
-  }
-}catch(e){
-  console.log(`エラー：${e}`)
-  window.location.reload();
-}
-</script>
-<% end %>
+		<div class="text_image_area">
+			<%= render "/user/images/description.html.erb", 
+				title: @request.title, text:@request.description, 
+				image_width: 500%>
+			<div id="canvas-container"></div>
+			<script>
+				<%= render "user/shared/javascript/html2canvas.js.erb" %>
+				<%= render 'user/images/description.js.erb', 
+					title: @request.title, text: @request.description, 
+					image_width: 500, user_name: current_user.name %>
+			</script>
+			<style>
+			<%= render 'user/images/description.css.erb', 
+				text: @request.description, image_width: 500, 
+				font_size: @request.description_font_size(500),
+				donwlaod_font: false %>
+			</style>
+		</div>
+	<script>
+		<%= render "user/requests/preview.js.erb" %>
+	</script>
+	<% end %>
 </div>

@@ -1,4 +1,10 @@
 <% padding_length = image_width*0.03 %>
+<%if donwlaod_font %>
+@font-face {
+    font-family: 'Azuki';
+    src: url('https://cloud-converter-test.s3.eu-west-1.amazonaws.com/azuki.ttf') format('truetype');    
+}
+<% end %>
 #display_setting{
     width: <%= image_width %>px;/*親要素で幅を設定しないとなぜかうまく表示されない*/
 }

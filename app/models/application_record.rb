@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
   include TemplateConcern
   include OperationConfig
   include ItemConcern
+  include ImageGenerator
 
 
   scope :from_latest_order, ->() {
