@@ -201,10 +201,6 @@ class User::RequestsController < User::Base
     render "user/requests/preview"
   end
 
-  def save_item
-    @item ? @item.save : true
-  end
-
   def purchase
     @request.set_publish
     if create_contract
@@ -331,10 +327,6 @@ class User::RequestsController < User::Base
       )
   end
 
-  private def email_mailer(request)
-    NotificationMailer.transaction(request)
-  end
-
   private def create_payment
     #以下直接顧客から回答者に決済をする用の処理
     Stripe::PaymentIntent.create({
@@ -349,27 +341,6 @@ class User::RequestsController < User::Base
             destination: @service.user.stripe_account_id,
             }
     })
-    #Stripe::Transfer.create(
-    #  amount: @service.price,
-    #  curreny: 'jpy',
-    #  destination: @service.user.stripe_account_id
-    #)
-  end
-  
-  private def create_image_from_text
-    if @request.request_form.name == "text"
-      @text = @request.description
-      name = SecureRandom.hex
-      @request.file = new_image(name)
-      File.delete("./app/assets/images/#{name}.png")
-    end
-  end
-
-  private def new_image(name) #元々使っていたがライブラリの不具合で今は使っていない
-    erb = File.read('./app/views/user/images/answer.html.erb')
-    kit = IMGKit.new(ERB.new(erb).result(binding))
-    img = kit.to_img(:jpg)
-    kit.to_file("./app/assets/images/#{name}.png")
   end
 
   private def check_stripe_customer
@@ -391,7 +362,6 @@ class User::RequestsController < User::Base
         service_id: params[:request][:service_id], 
         request_id: params[:id]
         )
-    else
     end
   end
 

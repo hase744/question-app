@@ -1,1 +1,0 @@
-User.first.follower_relationships.create(user: User.second)

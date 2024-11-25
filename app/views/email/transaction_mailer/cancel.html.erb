@@ -1,4 +1,4 @@
-<p>納期までに納品がなされなかったため依頼人がキャンセルしました。</p>
+<p>納期までに納品がなされなかったため質問者がキャンセルしました。</p>
 
 <table>
   <tr>
@@ -6,11 +6,11 @@
     <td>：<%=@transaction.id%></td>
   </tr>
   <tr>
-    <td>依頼</td>
+    <td>質問</td>
     <td>：<%= link_to @transaction.request.title, user_request_url(@transaction.request.id) %></td>
   </tr>
   <tr>
-    <td>サービス</td>
+    <td>相談室</td>
     <td>：<%= link_to @transaction.service.title, user_service_url(@transaction.service.id) %></td>
   </tr>
   <tr>

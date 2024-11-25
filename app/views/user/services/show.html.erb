@@ -44,24 +44,6 @@
                         <% end %>
                     </div>
                 </div>
-                <!--
-                <% if @service.user == current_user%>
-                    <div class="edit_delete_area">
-                        <%if @service.is_inclusive%>
-                            <%= link_to "編集", edit_user_service_path(@service.id), class:"edit" %>
-                        <% else %>
-                            <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
-                        <% end %>
-                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
-                    </div>
-                <% else %>
-                    <div class="like_area">
-                        <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
-                            <span class="far fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
-                        <% end %>
-                    </div>
-                <% end %>
-                    -->
                 <div class="condition_label">
                     <%= render "user/shared/small_label", text:"条件"%>
                 </div>

@@ -1,6 +1,5 @@
 class User::TransactionsController < User::Base
   #layout "search_layout", only: :index
-  #layout "transaction_index", only: [:index]
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
   before_action :check_transaction_is_transacted, only:[:show, :like]
   before_action :define_transaction, only:[:show, :update, :deliver, :messages]
@@ -173,14 +172,6 @@ class User::TransactionsController < User::Base
       controller: "transactions",
       id_number: transaction.id
       )
-  end
-
-  def new_image(name)
-    @text = @transaction.description
-    erb = File.read('./app/views/user/images/answer.html.erb')
-    kit = IMGKit.new(ERB.new(erb).result(binding))
-    img = kit.to_img(:jpg)
-    kit.to_file("./app/assets/images/#{name}.png")
   end
 
   def messages

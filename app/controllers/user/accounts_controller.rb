@@ -60,7 +60,7 @@ class User::AccountsController < User::Base
     if @user == current_user
       @tweet_text = "#{@user.name}という名前でコレテクを始めました。"
     else
-      @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
+      @tweet_text = "#{@user.name}さんに相談したい方はこちら。気になる方は以下のリンクへ！"
     end
     if @user.image.url
       @og_image = @user.image.url
