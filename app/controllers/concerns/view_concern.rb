@@ -41,7 +41,7 @@ module ViewConcern
   end
 
   def set_view_value
-    @tweet_text = "コレテクとは質問や相談をし合うスキルシェアサービスです。相談内容は公開され、誰でも閲覧できるのが特徴！登録して悩みを相談しよう！"
+    @tweet_text = "誰でも学べる、答えて稼げる！　質問と回答のマーケットプレイス"
   end
 
   $twitter_title = "コレテク　~稼げるQ&Aサイト~"
@@ -49,7 +49,7 @@ module ViewConcern
   $twitter_creator = "$3UJVrqxCS0V4bin"
   $og_title = "コレテク　~稼げるQ&Aサイト~"
   $og_url = "#{ENV['PROTOCOL']}://#{ENV['HOST']}"
-  $og_description = "コレテクとはQ＆Aサイトとフリマサイトがお融合したサービスです。質問と回答のマーケットプレイス！登録して悩みを相談しよう！"
+  $og_description = "誰でも学べる、答えて稼げる！　質問と回答のマーケットプレイス"
   $og_site_name = "コレテク"
   $og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"
   #$og_image  = "#{ENV['PROTOCOL']}://#{ENV['HOST']}/corretech_large_icon.jpg"

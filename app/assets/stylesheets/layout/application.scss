@@ -302,16 +302,6 @@ body{
         }
     }
 }
-.transaction_index_layout{
-    .main_area{
-        @media(min-width:1000px){
-            margin: 0 0 0 240px;
-            max-width: none;
-            width: calc(100% - 240px);
-            //background-color: #ffffcc;
-        }
-    }
-}
 .home_layout{
     .top{
         @media(max-width:1000px){

@@ -6,9 +6,9 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 include Variables
-development_table_names = %w(user payment relationship message payout)
+development_table_names = %w(user payment payout)
 
-table_names = %w(state user_state category form announce question_answer role media)
+table_names = %w()
 
 table_names.each do |table_name|
     path = Rails.root.join("db", "seeds", "#{table_name}.rb")

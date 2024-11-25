@@ -105,19 +105,3 @@
         </div>
     </div>
 </div>
-<script>
-var pdf_area = document.getElementById("pdf_area");
-
-function isSmartPhone(){
-  if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-if(isSmartPhone()){
-    pdf_area.innerHTML = '<a href="/出品するサービスの指針.pdf">出品するサービスの指針</a>';
-}
-
-</script>
