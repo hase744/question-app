@@ -350,7 +350,7 @@ class User < ApplicationRecord
 
   def get_category_count_pairs(category_names)
     category_names
-      .tally.map { |word, count| { word => count } } #[{"business"=>2}, {"carrier"=>1}]のようにカテゴリー名とその数
+      .tally.map { |word, count| { word => count } } #[{"business"=>2}, {"career"=>1}]のようにカテゴリー名とその数
       .sort_by { |hash| -hash.values.first }
   end
 

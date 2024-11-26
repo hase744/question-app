@@ -1,5 +1,6 @@
 class Country
   include ActiveModel::Model
+  include ModelWrapper
   attr_accessor :id, :name, :japanese_name, :code
 
   def self.all
@@ -11,17 +12,5 @@ class Country
         id:2, japanese_name:"アメリカ", name: "america", code: "1"
       ),
     ]
-  end
-
-  def self.where(criteria)
-    all.select { |country| country.matches_criteria?(criteria) }
-  end
-  
-  def self.find_by(criteria)
-    all.find { |country| country.matches_criteria?(criteria) }
-  end
-
-  def matches_criteria?(criteria)
-    criteria.all? { |key, value| self.send(key) == value }
   end
 end

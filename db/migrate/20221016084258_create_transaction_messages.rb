@@ -8,6 +8,7 @@ class CreateTransactionMessages < ActiveRecord::Migration[6.1]
       t.string :file_tmp
       t.boolean :file_processing, null: false, default: false
       t.text :body
+      t.datetime :published_at
 
       t.timestamps
     end
