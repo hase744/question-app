@@ -232,7 +232,7 @@ class Request < ApplicationRecord
       self.acceptable_duration_in_days=(delivery_days)
     end
 
-    if self.is_inclusive && self.is_published && will_save_change_to_is_published?
+    if self.is_inclusive && self.is_published && will_save_change_to_is_published? && suggestion_acceptable_duration
       self.suggestion_deadline = Time.now + self.suggestion_acceptable_duration
     end
   end

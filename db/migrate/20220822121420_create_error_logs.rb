@@ -1,7 +1,7 @@
 class CreateErrorLogs < ActiveRecord::Migration[6.1]
   def change
     create_table :error_logs do |t|
-      t.references :user, index:true, foreign_key: true
+      t.references :user, index:true, foreign_key: true, null: true
       t.string :error_class
       t.text :error_message
       t.text :error_backtrace

@@ -43,12 +43,11 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   end
 
   create_table "admin_user_roles", force: :cascade do |t|
-    t.bigint "role_id"
+    t.integer "role_name"
     t.bigint "admin_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_admin_user_roles_on_admin_user_id"
-    t.index ["role_id"], name: "index_admin_user_roles_on_role_id"
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -348,13 +347,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["transaction_id"], name: "index_reviews_on_transaction_id"
   end
 
-  create_table "roles", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "service_categories", force: :cascade do |t|
     t.integer "category_name", null: false
     t.bigint "service_id", null: false
@@ -460,6 +452,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.string "file_tmp"
     t.boolean "file_processing", default: false, null: false
     t.text "body"
+    t.datetime "published_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["receiver_id"], name: "index_transaction_messages_on_receiver_id"
@@ -624,7 +617,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
 
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
-  add_foreign_key "admin_user_roles", "roles"
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"

@@ -42,6 +42,10 @@ class TransactionMessage < ApplicationRecord
         self.receiver = @seller
       end
     end
+
+    if new_record?
+      self.published_at = DateTime.now
+    end
   end
 
   def can_send_message

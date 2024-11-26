@@ -9,7 +9,7 @@ class Ability
     if admin_user.roles.exists?(name: 'super_admin')
       #can :read, :all
       can :manage, :all
-    elsif admin_user.roles.exists?(name: 'promoter')
+    elsif admin_user.roles.exists?(name: 'assistant_admin')
       can :read, :all
       can :manage, AdminUser
       can :create, PotentialSeller
