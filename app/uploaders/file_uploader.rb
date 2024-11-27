@@ -17,7 +17,7 @@ class FileUploader < UploaderBase
   end
 
   version :thumb, if: :is_image? do
-    process resize_to_fit: [300, nil]
+    process resize_to_fit: [200, nil]
     process convert: 'jpg'
 
     def full_filename(for_file)

@@ -171,33 +171,6 @@
                 }
             }
         }
-        .trouble_list_flame{
-            text-align: center;
-            background-color: white;
-            background: linear-gradient(to right, #FFFFEE,  white, #FFFFEE);
-            .trouble_list_area{
-                max-width: 600px;
-                @media(min-width: 600px){
-                    margin-left: calc(50% - 300px);
-                }
-                .trouble{
-                    text-align: left;
-                    @media(max-width: 600px){
-                        font-size: calc(100vw / 25)
-                    }
-                }
-            }
-        }
-        .resolve_troubles{
-            margin-top: 10px;
-            margin-bottom: 100px;
-            .message{
-                background: linear-gradient(transparent 60%, orange 60%);
-                @media(max-width: 600px){
-                    font-size: calc(100vw / 15)
-                }
-            }
-        }
     }
 }
 
@@ -339,7 +312,7 @@
         .buyer_image, .seller_image{
             position: absolute;
             width: 250px;
-            top: -70px;
+            top: -80px;
             left: -30px;
         }
         .buyer_image{
@@ -350,7 +323,7 @@
         margin-top: 30px;
         margin-bottom: 10px;
         margin-left: 180px;
-        font-size: 30px;
+        font-size: clamp(15px 100vw/10, 25px);
         color: rgb(30,161,108);
     }
     li{
@@ -367,7 +340,7 @@
     }
 }
 .transaction_flow_zone{
-    background-color: whitesmoke;
+    //background-color: whitesmoke;
     margin-top: 50px;
 }
 .transaction_flow_area{
@@ -384,8 +357,7 @@
     .flow_label{
         text-align: left;
         margin: 0px;
-        color: black;
-        text-decoration: underline;
+        color: $dark_text_yellow;
         margin-left: 10px;
     }
     .transaction_flow_flame{

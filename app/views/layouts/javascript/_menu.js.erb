@@ -49,3 +49,41 @@
   change_search_path();
   set_default_search_detail();
 })();
+
+$(function() {
+  $('.modal_delete').on('click', function(){
+    $('.modal_window').removeClass("open");
+  });
+  $('.modal_background').on('click', function(e){
+    $('.modal_window').removeClass('open');
+  });
+  $('.multiple_category_select_form').each(function() {
+    const $context = $(this);
+    $context.find('.category_select_area').on('click', function() {
+      $context.find('.category_modal').addClass("open");
+    });
+    $context.find('.modal_delete').on('click', function() {
+      $context.find('.modal_window').removeClass("open");
+    });
+    $context.find('.category_button').on('click', function() {
+      var encodedCategoryName = $(this).attr('name');
+      var categoryName = decodeURIComponent(encodedCategoryName);
+      var japanese_name = $(this).text();
+      var $inputField = $context.find('.category_select_area input');
+      var $categoryTags = $context.find('.category_tags');
+      // 既存の値に新しい値をカンマで結合
+      if($inputField.val().includes(categoryName)){
+        window.alert('選択済みです');
+        return;
+      }
+      categories = ($inputField.val() ? $inputField.val() + ',' : '') + categoryName
+      $inputField.val(categories);
+      console.log(categories)
+      var tagHtml = `<span class="name_tag">${japanese_name}</span>`;
+      $categoryTags.append(tagHtml);
+      // モーダルを閉じる
+      $context.find('.modal_window').removeClass("open");
+    });
+  });
+});
+

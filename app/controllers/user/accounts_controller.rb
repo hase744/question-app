@@ -21,13 +21,12 @@ class User::AccountsController < User::Base
     @users = User.all
     @users = @users.is_sellable
     @users = @users.where("users.name LIKE ?", "%#{params[:word]}%") if params[:word].present?
-    @users = @users.filter_categories(params[:categories])
+    @users = @users.filter_categories(params[:category_names])
     @users = @users.solve_n_plus_1
     @users = @users.include_price
-    
-    #if params[:total_sales_numbers].present? && @users.present?
-    #  #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
-    #end
+    if params[:total_sales_numbers].present? && @users.present?
+      @users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
+    end
 
     if params[:signed_in_recently] == "1"
       @users = @users.where("last_login_at > ?", DateTime.now - 1.week)

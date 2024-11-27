@@ -14,8 +14,8 @@
                 //box-shadow: 0 0 2px lightgray;
                 //padding: 5px;
                 border-radius: 5px 5px 0px 0px;
-                color: blue;
-                border-bottom: solid 3px blue;
+                color: $link_text_color;
+                border-bottom: solid 3px $link_text_color;
                 flex-shrink: 0;
     
             }

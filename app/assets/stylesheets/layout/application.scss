@@ -134,7 +134,7 @@ body{
     text-decoration: none;
 }
 .main_area_top_link{
-    color: blue;
+    color: $link_text_color;
     text-decoration: none;
     display: inline-block;
 }
@@ -320,11 +320,11 @@ input{
     font-size: 16px;
 }
 a{
-    color: blue;
+    color: $link_text_color;
     text-decoration: none;
 }
 a:hover{
-    color: blue;
+    color: $medium_text_yellow;
     text-decoration: underline;
 }
 textarea{

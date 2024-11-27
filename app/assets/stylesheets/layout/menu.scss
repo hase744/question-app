@@ -1,4 +1,4 @@
-//@import "_variables.scss";
+@import "_variables.scss";
 $menu_height: 50px;
 $menu_link_height: 30px;
 .search_detail{
@@ -617,7 +617,7 @@ $menu_link_height: 30px;
             height: 25px;
             display: inline-block;
             font-size: 15px;
-            border-radius: 5px 5px 3px 3px;
+            border-radius: 5px;
             color: white;
             background-color: orange;
             box-shadow: 0 0 2px lightgray;
@@ -625,8 +625,7 @@ $menu_link_height: 30px;
         }
         .search_button:hover{
             cursor: pointer;
-            background-color: #FFBF00;
-            background-color: rgb(255, 180, 0);
+            background-color: $button_orange_hover;
         }
     }
 }

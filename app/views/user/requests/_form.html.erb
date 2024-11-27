@@ -13,10 +13,8 @@
   	</div>
 
   	<div class="field_area">
-  	  	<%= f.label :category, class:"field_label" %><br />
-  	  	<%if service.present? %>
-  	  	  	<h3 class="request_content"><%=service.category.japanese_name%></h3>
-  	  	<% else %>
+  	  	<%if service.blank? %>
+  	  		<%= f.label :category, class:"field_label" %><br />
   	  	  	<%= f.fields_for :request_categories do |category_form| %>
   	  	  	    <%if request.request_categories.length > 1%>
   	  	  	      	<%if category_form.object.category_name %>
@@ -30,10 +28,8 @@
   	</div>
 
   	<div class="field_area">
-  	  	<%= f.label :request_form, class:"field_label" %><br />
-  	  	<%if service.present? %>
-  	  	  	<h3 class="request_content"><%=service.request_form.japanese_name%></h3>
-  	  	<% else %>
+  	  	<%if service.blank? %>
+  	  		<%= f.label :request_form, class:"field_label" %><br />
   	  	  	<div class="input_field text_field select_area">
   	  	  	  	<%= f.select :request_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
   	  	  	</div>
@@ -83,10 +79,8 @@
   	</div>
 
   	<div class="field_area">
-  	  	<%= f.label :delivery_form, class:"field_label" %><br />
-  	  	<%if service.present? %>
-  	  	  	<h3 class="request_content"><%=service.delivery_form.japanese_name%></h3>
-  	  	<% else %>
+  	  	<%if service.blank? %>
+  	  		<%= f.label :delivery_form, class:"field_label" %><br />
   	  	  	<div class="input_field text_field select_area">
   	  	  	  	<%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
   	  	  	</div>

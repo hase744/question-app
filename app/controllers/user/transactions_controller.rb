@@ -29,7 +29,7 @@ class User::TransactionsController < User::Base
     @transactions = @transactions.distinct
     @transactions = @transactions.solve_n_plus_1
     @transactions = @transactions.where(is_published:true)
-    @transactions = @transactions.filter_categories(params[:categories])
+    @transactions = @transactions.filter_categories(params[:category_names])
     @transactions = @transactions.where("transactions.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
     @transactions = @transactions.page(params[:page]).per(30)
     @transactions = @transactions.sorted_by(params[:order])

@@ -4,6 +4,7 @@ ja:
       user: ユーザー
       service: 相談室
       request: 質問
+      transaction: 回答
       admin: 管理者
       admin_user: 管理者
       announcement: お知らせ

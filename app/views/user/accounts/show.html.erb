@@ -69,22 +69,7 @@
             <span></span>
             
             <%= render "user/shared/description", text:@user %>
-            <div class="user_profile_menu" id="request_ajax_update">
-                <% @bar_elements.each do |element| %>
-                    <% unless !@user.is_seller && element[:for_seller] %>
-                        <% 
-                        if current_nav_item == element[:item]
-                            additional_class = "blue"  
-                        else
-                            additional_class = "gray"
-                        end
-                        %>
-                        <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
-                            <%= link_to element[:japanese_name], user_account_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
-                        </li>
-                    <% end %>
-                <% end %>
-            </div>
+            <%= render "user/shared/common_navigation_bar", link: ->(element) {user_account_path(params[:id], nav_item:element[:item])} %>
         </div>
     </div>
     
