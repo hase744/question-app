@@ -29,7 +29,7 @@ class User::ServicesController < User::Base
   def index
     @services = Service
       .seeable
-      .filter_categories(params[:categories])
+      .filter_categories(params[:category_names])
     @services = @services.where("services.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?
@@ -44,12 +44,12 @@ class User::ServicesController < User::Base
       @services = @services.where(is_for_sale: true)
     end
     #上限価格が入力されている
-    if params[:max_price] != nil && params[:max_price] != ""
-    @services = @services.where("price <= ?", "#{params[:max_price]}")
+    if params[:max_price].present?
+      @services = @services.where("services.price <= ?", "#{params[:max_price]}")
     end
     #下限価格が入力されている
-    if params[:mini_price] != nil && params[:mini_price] != ""
-      @services = @services.where("? <= price", "#{params[:mini_price]}")
+    if params[:mini_price].present?
+      @services = @services.where("? <= services.price", "#{params[:mini_price]}")
     end
     @services = @services.sorted_by(params[:order])
     @services = @services.page(params[:page]).per(24)

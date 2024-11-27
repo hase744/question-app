@@ -1,0 +1,7 @@
+<div class="common_navigation_bar" id="request_ajax_update">
+	<% @bar_elements.each do |element| %>
+	    <li class="menu_element <%=current_nav_item == element[:item] ? 'selected' : 'not_selected'%>" item="<%=element[:item]%>">
+	        <%= link_to element[:japanese_name], link.call(element), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
+	    </li>
+	<% end %>
+</div>

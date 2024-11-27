@@ -9,7 +9,7 @@
     position: relative;
     .request_link{    
         text-decoration: none;
-        color: blue;
+        color: $link_text_color;
     }
     .request_link:hover{
         text-decoration: underline;

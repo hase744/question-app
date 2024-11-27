@@ -64,52 +64,6 @@
                 }
             }
         }
-        .user_profile_menu{
-            display: flex;
-            white-space: nowrap;
-            //-webkit-overflow-scrolling: touch;
-            overflow-y: hidden;
-            li{
-                margin-bottom: 0px;
-                text-align: center;
-                color: gray;
-                display: inline-block;
-                vertical-align: middle;
-                
-                height: 40px;
-                line-height: 40px;
-                
-                min-width: 100px;
-            }
-            li:hover{
-                cursor: pointer;
-                border-radius: 5px 5px 0px 0px;
-            }
-            .user_content_link{
-                height: 40px;
-                padding: 13px 17px;
-                text-decoration: none;
-                color: gray;
-            }
-            .gray{
-                border-bottom: none;
-                a{
-                    color: gray;
-                }
-            }
-            .blue{
-                border-bottom: 2px solid blue;
-                a{
-                    color: blue;
-                }
-            }
-            .gray:hover .user_content_link{
-                color: darkgray;
-            }
-            .user_content_link:hover{
-                cursor: pointer;
-            }
-        }
     }
     .user_detail{
         height: auto;
@@ -196,9 +150,6 @@
                     }
                 }
                 
-            }
-            .user_profile_menu{
-                display: block;
             }
             .user_edit2{
                 display: none;

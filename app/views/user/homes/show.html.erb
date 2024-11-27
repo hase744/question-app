@@ -48,7 +48,7 @@
             <div class="category_label_area">
                 <div class="category_label_flame">
                     <%= render "user/shared/category_selector", 
-                        link: ->(category) { user_transactions_path(request.query_parameters.merge(categories: category[:name])) } 
+                        link: ->(category) { user_transactions_path(request.query_parameters.merge(category_names: category[:name])) } 
                     %>
                 </div>
             </div>

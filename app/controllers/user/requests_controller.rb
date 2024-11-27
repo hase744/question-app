@@ -30,7 +30,7 @@ class User::RequestsController < User::Base
   def index
     @requests = Request.includes(:user)
       .suggestable
-      .filter_categories(params[:categories])
+      .filter_categories(params[:category_names])
     @requests = @requests.where("requests.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?

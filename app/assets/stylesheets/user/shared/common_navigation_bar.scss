@@ -1,0 +1,51 @@
+@import "_variables";
+.common_navigation_bar{
+  	//display: flex;
+  	overflow-x:scroll;
+  	white-space: nowrap;
+  	//-webkit-overflow-scrolling: touch;
+  	overflow-y: hidden;
+  	li{
+  	    margin-bottom: 0px;
+  	    text-align: center;
+  	    color: gray;
+  	    display: inline-block;
+  	    vertical-align: middle;
+		font-weight: bold;
+  	    //height: 40px;
+  	    //line-height: 30px;
+		//padding-top: 10px;
+  	    min-width: 100px;
+  	}
+  	li:hover{
+  	    cursor: pointer;
+  	}
+  	a{
+		display: inline-block;
+  	    height: 30px;
+  	    //padding: 13px 17px;
+		//padding-bottom: 5px;
+		padding-top: 10px;
+  	    text-decoration: none;
+  	    color: $text_grey;
+  	}
+  	.not_selected{
+  	    border-bottom: none;
+  	    a{
+  	        color: gray;
+  	    }
+  	}
+  	a:hover{
+		color: darkgray;
+  	    cursor: pointer;
+  	}
+  	.selected{
+  	    border-bottom: 2px solid $link_text_color;
+  	    a{
+  	        //color: blue;
+  	    }
+  	}
+  	.gray:hover .user_content_link{
+  	    color: darkgray;
+  	}
+}

@@ -6,6 +6,7 @@
         margin-top: 5px;
         .detail_link{
             //float: right;
+            font-weight: bold;
             position: absolute;
             bottom: 0;
             right: 5px;
@@ -186,10 +187,11 @@
             height: calc(100% - 70px);
             margin: 5px 5px 5px 5px;
             border-radius: 5px;
-            //background-color: white;
             border: 1px solid lightgray;
-            //box-shadow: 0 0 2px lightgray;
-            .link_area{
+            .category_link_area{
+                display: inline-block;
+            }
+            .category_link_area{
                 width: calc(100% - 20px);
                 display: inline-block;
             }
@@ -201,7 +203,6 @@
                 display: inline-block;
                 width: 20px;
                 height: 10px;
-                //background-color: red;
             }
             label{
                 font-size: 17px;
