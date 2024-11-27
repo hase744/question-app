@@ -467,7 +467,7 @@ GEM
     unicorn (6.0.0)
       kgio (~> 2.6)
       raindrops (~> 0.7)
-    uri (0.13.0)
+    uri (0.10.1)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -541,7 +541,7 @@ DEPENDENCIES
   twilio-ruby
   tzinfo-data
   unicorn (= 6.0.0)
-  uri (= 0.13.0)
+  uri (= 0.10.1)
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
