@@ -9,8 +9,8 @@
     <% else %>
         <div class="main_header"><%= link_to "", user_transactions_path, class:"fas fa-home"%> > <%= link_to "質問一覧", user_orders_path, class:"main_area_top_link"%> > <%=@request.category.japanese_name%></div>
     <% end %>
-    <div class="request_area">
-        <div class="request_flame">
+    <div class="request_show_area">
+        <div class="request_show_flame">
             <div class="request_title_area">
                 <h3 class="request_title">
                     <%=@request.title%>

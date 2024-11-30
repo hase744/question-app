@@ -7,7 +7,20 @@
   	//border: 1px solid lightgray;
   	box-shadow: 0 0 2px lightgray;
   	box-shadow: 1px 1px 3px gray;
-  	position: relative;
+	position: relative;
+	.front_transaction_answer_flame{
+		position: absolute;
+		top: 0px;
+		bottom: 0px;
+		width: 100%;
+		z-index: 1;
+	}
+	.front_transaction_answer_flame:hover + .transaction_answer_flame {
+		color: dimgray;
+	}
+	.front_transaction_answer_flame:hover + .transaction_answer_flame .answer_title {
+		text-decoration: underline;
+	}
   	.transaction_answer_flame{
   	  	display: flex;
   	  	align-items: stretch; /* 子要素の高さを合わせる */
@@ -87,6 +100,20 @@
 					}
 				}
 			}
+			.request_flame{
+				position: relative;
+			}
+			.front_request_area{
+				position: absolute;
+				z-index: 2;
+				top: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				bottom: 0px;
+			}
+			.back_request_area{
+			}
   	  	  	.request_area{
   	  	  	  	border-radius: 5px;
   	  	  	  	margin-right: 10px;
@@ -96,7 +123,7 @@
 				box-shadow: 0 0 2px grey;
   	  	  	  	//border: 1.5px solid lightgray;
 				color: $text_grey;
-				display: inline-block;
+				display: block;
 				width: calc(100% - 25px);
 				padding: 5px;
 				.title{
@@ -129,7 +156,7 @@
 					}
 				}
   	  	  	}
-			.request_area:hover{
+			.front_request_area:hover + .request_area {
 				text-decoration: none;
 				color: $text_grey;
 				opacity: 0.7;
