@@ -45,7 +45,7 @@
                     <%= link_to(user_account_path(service.user.id), class:"user_image_name_area") do %>
                         <%=image_tag service.user.thumb_with_default, class:"user_image"%>
                         <div class="user_name_area">
-                            <span class="user_name"><%=service.user.name %></span>
+                            <span class="user_name one_line_text"><%=service.user.name %></span>
                         </div>
                     <% end %>
                     <div class="price_area">

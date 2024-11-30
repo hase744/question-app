@@ -25,9 +25,6 @@
             object-fit: cover;
             border-radius: 10px 0px 0px 10px;
         }
-        .transaction_link{
-            //text-decoration: none;
-        }
         .video_text_area{
             //height: 100px;
             //display: inline-block;
@@ -46,7 +43,6 @@
             .request_title{
                 font-size: 16px;
                 //color: #0064c8;
-                color: $link_text_color;
                 font-weight: bold;
                 cursor: pointer;
                 padding-left: 5px;

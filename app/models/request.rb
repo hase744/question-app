@@ -543,7 +543,7 @@ class Request < ApplicationRecord
 
   def validate_delivery_days
     if self.delivery_days && self.will_save_change_to_suggestion_acceptable_duration?
-      errors.add(:delivery_days, "募集期限は30日以内に設定して下さい") if self.delivery_days > 30
+      errors.add(:delivery_days, "募集期限は30日以内に設定して下さい") if self.delivery_days.to_i > 30
       errors.add(:delivery_days, "募集期限は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
   end

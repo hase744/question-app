@@ -30,13 +30,13 @@
                 <div class="user_name_area">
                     <h2 class="user_name">
                         <%=@user.name%>
-                        <span class="last_login_area last_login2">
+                        <span class="last_login_area">
                             <% if @user.is_seller %>
                                 <span class="last_login_name">最終ログイン</span>
                             <% end %>
                             <span><%= from_now(@user.last_login_at)%></span>
                         </span>
-                    </h2 class="user_name">
+                    </h2>
                 </div>
                 <% if @user.is_seller %>
                     <div class="specifics_area">
