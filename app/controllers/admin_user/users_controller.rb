@@ -14,4 +14,21 @@ class AdminUser::UsersController < AdminUser::Base
   def edit
     @user = User.find(params[:id])
   end
+
+  def update
+    @user = user.find(params[:id])
+    @user.assign_attributes(user_params)
+		if @user.save
+			flash.notice = "修正しました"
+			redirect_to admin_user_user_path(@user.id)
+    else
+      render action: "edit"
+    end
+  end
+
+  def user_params
+    params.require(:user).permit(
+      :state
+    )
+  end
 end

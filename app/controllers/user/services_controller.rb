@@ -281,7 +281,7 @@ class User::ServicesController < User::Base
       notifier_id: current_user.id,
       controller: "services",
       action: "show",
-      title: "あなたの質問に相談室が提案されました",
+      title: "質問に相談室が提案されました",
       description: @transaction.service.title,
       id_number: @service.id,
       parameter: "?transaction_id=#{@transaction.id}"

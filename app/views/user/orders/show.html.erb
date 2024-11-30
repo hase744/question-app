@@ -4,14 +4,19 @@
     <div class="order_show_flame component_area">
         <% if @transaction.is_canceled %>
             <span class="status orange">
-                <i class="fas fa-ban"></i>
+                <i class="fa-regular fa-circle-stop"></i>
                 <%=current_user == @transaction.seller ? "質問がキャンセルされています" : "質問がキャンセル済みです"%>
             </span></br>
         <% elsif @transaction.is_rejected %>
             <span class="status grey">
-                <i class="fa-solid fa-ban"></i>
+                <i class="fa-regular fa-circle-stop"></i>
                 <%=current_user == @transaction.seller ? "質問がお断り済みです" : "質問がお断りされています"%>
             </span></br>
+        <% elsif @transaction.is_violating %>
+            <span class="status green">
+                <i class="fas fa-ban"></i>
+                規約違反のため、取引が無効になりました
+            </span>
         <% elsif @transaction.is_transacted %>
             <span class="status green">
             <i class="fa-solid fa-check"></i>

@@ -1,4 +1,5 @@
 <%= render "/admin_user/shared/show", 
   	model: @announcement,
-  	column_names: ['title', 'body', 'condition_type', 'published_at', 'is_notified']
+		relations: ['recipients', 'items'],
+  	column_names: ['title', 'body', 'description', 'condition_type', 'published_at', 'is_notified']
 %>

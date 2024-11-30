@@ -9,13 +9,18 @@
     show_exist: true,
     delete_exist: false,
     edit_exist: false,
-    links: -> (model){ [{text: "選択", link: new_admin_user_coupon_path(request.query_parameters.merge(coupon: {
-		user_id: model.id,
-		amount: @coupon.amount,
-		discount_rate: @coupon.discount_rate,
-		start_at: @coupon.start_at,
-		end_at: @coupon.end_at,
-		minimum_purchase_amount: @coupon.minimum_purchase_amount,
-		usage_type: @coupon.usage_type
-		}))}]}
+    links: -> (model){[
+			{
+			text: "選択", 
+			link: new_admin_user_coupon_path(
+      			request.query_parameters.merge(
+					coupon: @coupon.slice(
+						:amount, :discount_rate, :start_at, :end_at, :minimum_purchase_amount, :usage_type
+						).merge(
+							user_id: model.id
+						)
+					)
+				)
+			}
+		]}
   	%>

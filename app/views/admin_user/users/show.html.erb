@@ -1,5 +1,6 @@
 <%= render "/admin_user/shared/show", 
   model: @user,
+  relations: ['point_records', 'balance_records', 'coupons'],
   column_names: [
     'name', 
     'description', 

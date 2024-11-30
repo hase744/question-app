@@ -22,8 +22,8 @@ class Notification < ApplicationRecord
   def self.create_announcement(announcement, user)
     self.create(
       user_id: user.id, 
-      title: "運営からのお知らせ",
-      description: announcement.title,
+      title: announcement.title,
+      description: announcement.description,
       published_at: announcement.published_at,
       controller: "announcements",
       action: "show",

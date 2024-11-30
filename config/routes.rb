@@ -154,6 +154,14 @@ namespace :user do
     resources :users, only: [:create, :index, :show, :new, :edit, :update]
     resources :announcement_receipts, only: [:create, :index, :show, :new, :edit, :destroy]
     resources :coupons, only: [:create, :index, :show, :update, :new, :edit, :destroy]
+    resources :transactions, only: [:create, :index, :show, :update, :new, :edit]
+    resources :point_records, only: [:index, :show]
+    resources :balance_records, only: [:index, :show]
+    resources :announcements do
+      member do
+        delete :remove_file, to: 'announcements#remove_file'
+      end
+    end
   end
 
   devise_for :users

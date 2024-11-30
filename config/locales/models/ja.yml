@@ -15,6 +15,8 @@ ja:
       notification: 通知
       announcement_receipt: お知らせの受信
       coupon: クーポン
+      point_record: ポイント履歴
+      balance_record: 収益の残高履歴
     attributes:
       name: ユーザー
       user:
@@ -82,6 +84,7 @@ ja:
         thumbnail: サムネイル
         youtube_id: YouTubeのID
       transaction:
+        id: ID
         title: ひとこと回答
         description: 本文
         category: カテゴリー
@@ -96,13 +99,18 @@ ja:
         is_canceled: キャンセル
         is_rejected: 回答拒否
         reject_reason: お断り理由（質問者に伝えます）
+        is_violating: 違反性
+        violation_recognized_at: 違反認定日時
+        violating_reason: 違反理由
       review:
         body: 感想
         star_rating: 星評価
       announcement:
         id: ID
         title: タイトル
+        description: 説明
         body: 本文
+        items: ファイル
         condition_type: 対象
         published_at: 公開日時
       announcement_receipt:
@@ -143,6 +151,18 @@ ja:
         user_id: ユーザー
         title: タイトル
         description: 本文
+      point_record:
+        user_id: ユーザー
+        id: ID
+        amount: ポイント
+        type_name: 概要
+        created_at: 日時
+      balance_record:
+        user_id: ユーザー
+        id: ID
+        amount: 金額
+        type_name: 概要
+        created_at: 日時
       admin_user:
         id: ID
         name: 名前

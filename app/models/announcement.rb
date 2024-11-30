@@ -1,9 +1,11 @@
 class Announcement < ApplicationRecord
   has_many :receipts, class_name: "AnnouncementReceipt", dependent: :destroy
   has_many :recipients, through: :receipts, source: :user, dependent: :destroy
+  has_many :items, class_name: "AnnouncementItem", dependent: :destroy
   scope :published, -> { where.not(published_at: nil) }
   after_commit :update_notifications
   enum condition_type: [:individual, :all_users, :all_sellers, :all_buyers]
+  accepts_nested_attributes_for :items, allow_destroy: true
 
   scope :for_user, ->(user) {
     published

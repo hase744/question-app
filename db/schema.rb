@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_03_094138) do
+ActiveRecord::Schema.define(version: 2024_11_29_105436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,17 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "announcement_items", force: :cascade do |t|
+    t.bigint "announcement_id", null: false
+    t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["announcement_id"], name: "index_announcement_items_on_announcement_id"
+  end
+
   create_table "announcement_receipts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "announcement_id", null: false
@@ -75,11 +86,11 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   create_table "announcements", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
+    t.text "description", null: false
     t.bigint "admin_user_id"
     t.integer "condition_type", null: false
     t.text "target_condition"
     t.datetime "published_at", null: false
-    t.string "file"
     t.boolean "is_notified", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -168,7 +179,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   create_table "notifications", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "notifier_id"
-    t.text "title"
+    t.string "title"
     t.text "description"
     t.string "image"
     t.boolean "is_notified", default: false
@@ -486,7 +497,8 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.boolean "is_published", default: false
     t.datetime "published_at"
     t.boolean "is_violating", default: false
-    t.boolean "violating_reason"
+    t.datetime "violation_recognized_at"
+    t.text "violating_reason"
     t.boolean "is_reveresed", default: false
     t.datetime "reveresed_at"
     t.boolean "is_contracted", default: false
@@ -525,7 +537,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["title"], name: "index_transactions_on_title"
     t.index ["total_views"], name: "index_transactions_on_total_views"
     t.index ["transacted_at"], name: "index_transactions_on_transacted_at"
-    t.index ["violating_reason"], name: "index_transactions_on_violating_reason"
   end
 
   create_table "user_categories", force: :cascade do |t|
@@ -617,6 +628,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
 
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
+  add_foreign_key "announcement_items", "announcements"
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"
