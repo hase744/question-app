@@ -4,7 +4,7 @@
 
 <h1><%=models.name.pluralize%></h1>
 <div id="models" class="container">
-  	<%if ['users', 'announcements'].include? models_name %>
+  	<%if ['users', 'announcements', 'transactions'].include? models_name %>
   	  	<%= form_with url: "", method: :get, local: true do |form| %>
 			<% request.query_parameters.each do |key, value| %>
 				<%= form.hidden_field key, value: value %>

@@ -3,7 +3,7 @@ class CreateNotifications < ActiveRecord::Migration[6.1]
     create_table :notifications do |t|
       t.references :user, null: false, index:true, foreign_key: true
       t.references :notifier, foreign_key: { to_table: :users }
-      t.text :title
+      t.string :title
       t.text :description
       t.string :image
       t.boolean :is_notified, index:true, default:false

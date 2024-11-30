@@ -4,8 +4,8 @@
 	  	<thead>
 	  	  	<tr>
 				<th></th>
-	  	  	  	<th>概要</th>
-	  	  	  	<th>金額</th>
+	  	  	  	<th><%= PointRecord.human_attribute_name(:type_name) %></th>
+	  	  	  	<th><%= PointRecord.human_attribute_name(:amount) %></th>
 	  	  	  	<th>日時</th>
 	  	  	</tr>
 	  	</thead>
@@ -20,13 +20,13 @@
 	  	  	  	  	<td><%= image_tag record.image_path, class:"image" %></td>
 	  	  	  	  	<td><%= record.type_name_japanese %></td>
 	  	  	  	  	<td class="number">
-						<% if record.amount >= 0 
-							css = "fa-plus"
-						else
-							css = "fa-minus"
-						end %>
-						<span class="amount"><i class="fa-solid <%=css%>"></i><%=  "#{record.amount.abs}" %><span class="unit">p</span>
-						</span>
+							<span class="amount">
+								<i class="fa-solid <%=record.amount >= 0 ? 'fa-plus' : 'fa-minus' %>"></i>
+								<span class="right">
+									<%=  "#{record.amount.abs}" %>
+									<span class="unit">p</span>
+								</span>
+							</span>
 					</td>
 	  	  	  	  	<td><%= l(record.created_at, format: :long) %></td>
 	  	  	  	</tr>

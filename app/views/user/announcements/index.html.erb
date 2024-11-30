@@ -5,7 +5,7 @@
         <% @announcements.each do |announcement| %>
             <div class="announce_cell_area component_area">
             <h3 class="announce_cell_title"><%= link_to announcement.title, user_announcement_path(announcement.id) %></h3>
-            <p class="announce_cell_body"><%=announcement.body%></p>
+            <p class="announce_cell_body three_line_text"><%=raw announcement.body%></p>
             <div><%=  readable_datetime(announcement.published_at)%></div>
             </div>
         <% end %>

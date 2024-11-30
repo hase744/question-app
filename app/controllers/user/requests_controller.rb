@@ -319,7 +319,7 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id: @service.user_id,
       notifier_id: current_user.id,
-      title: "あなたの相談室に相談が依頼されました",
+      title: "相談室に相談が質問が届きました",
       description: @request.title,
       action: "show",
       controller: "orders",

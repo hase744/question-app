@@ -30,7 +30,6 @@
             <label class="field_label">募集期間</label><br/>
                 <%= f.datetime_field :suggestion_deadline, class:"term_field"%>
             -->
-            </br>
             <span class="checkbox_area"><%= f.check_box :can_suggest, checked:params[:can_suggest]=="1", class:"checkbox"%>受付中</span>
             </br>
             
@@ -38,7 +37,6 @@
             <div>
                 <%= render "layouts/form_category", f:f, model: Request.new.class.name%>
             </div>
-            </br>
             <div class="search_button_area">
                 <%= f.submit '検索',class:"search_button", placeholder:"" %>
             </div>

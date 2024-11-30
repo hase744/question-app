@@ -23,7 +23,7 @@ class User::PrePurchaseInquiriesController < User::Base
         message = if current_user == @transaction.seller
           "購入前質問に返信がされました。"
         elsif current_user == @transaction.buyer
-          "購入前質問がされました。"
+          "相談室に購入前質問がされました。"
         end
         EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
         Notification.create(

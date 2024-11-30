@@ -25,10 +25,10 @@
             -->
             <label class="field_label">カテゴリー</label><br/>
             <div>
-            <%= render "layouts/form_category", f:f, model: User.new.class.name%>
+                <%= render "layouts/form_category", f:f, model: User.new.class.name%>
             </div>
             <div class="search_button_area">
-            <%= f.submit '検索',class:"search_button", placeholder:"" %>
+                <%= f.submit '検索',class:"search_button", placeholder:"" %>
             </div>
         <% end %>
         </div>

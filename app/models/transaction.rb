@@ -22,6 +22,8 @@ class Transaction < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
+  validates :violating_reason, presence: true, if: :is_violation?
+  validates :violation_recognized_at, presence: true, if: :is_violation?
   validates :delivery_time, presence: true
   validate :validate_price
   validate :validate_title
@@ -32,8 +34,10 @@ class Transaction < ApplicationRecord
   validate :validate_reject_reason
   validate :validate_is_suggestion
   validate :validate_item_count
+  validate :validate_is_violating
   validate :previous_transaction
   validate :validate_service_renewed
+  validate :validate_violation
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
 
@@ -68,6 +72,10 @@ class Transaction < ApplicationRecord
     ).includes(transaction_messages: [:sender, :receiver])
   }
 
+  scope :valid, -> {
+    where(is_violating: false)
+  }
+
   scope :from_seller, -> (user){
     self.solve_n_plus_1
       .left_joins(:service)
@@ -84,6 +92,14 @@ class Transaction < ApplicationRecord
       .where(
         request: {user: user}, 
         is_published: true
+        )
+  }
+
+  scope :from_coupon, -> (coupon){
+    self.solve_n_plus_1
+      .left_joins(:coupon_usages)
+      .where(
+        coupon_usages: {coupon: coupon},
         )
   }
 
@@ -244,6 +260,7 @@ class Transaction < ApplicationRecord
     self.service_allow_pre_purchase_inquiry = self.service.allow_pre_purchase_inquiry
     self.seller = self.service.user
     self.buyer = self.request.user
+    self.violation_recognized_at = DateTime.now if is_violating
   end
 
   def copy_from_service
@@ -456,7 +473,7 @@ class Transaction < ApplicationRecord
   end
 
   def create_payment_record
-    return if saved_change_to_id? #新規のデータではない
+    return if saved_change_to_id? #新規のデータの時、return
     discounted_price = self.price - self.coupon_usages.sum(:amount)
     if self.saved_change_to_is_canceled? && discounted_price > 0
       self.point_records.create(
@@ -484,11 +501,28 @@ class Transaction < ApplicationRecord
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_transacted && self.profit > 0
+    if self.saved_change_to_is_transacted? && self.profit > 0
       self.balance_records.create(
         user: self.seller,
         amount: self.profit,
         type_name: 'deal',
+        created_at: self.updated_at,
+      )
+    end
+    if self.saved_change_to_is_violating? && discounted_price > 0 && self.balance_records.count == 1
+      self.balance_records.create(
+        user: self.seller,
+        amount: -self.profit,
+        type_name: 'violation',
+        created_at: self.updated_at,
+      )
+    end
+    if self.saved_change_to_is_violating? && self.profit > 0 && self.point_records.count == 1
+      self.point_records.create(
+        user: self.buyer,
+        deal: self,
+        amount: discounted_price,
+        type_name: 'violation',
         created_at: self.updated_at,
       )
     end
@@ -566,6 +600,12 @@ class Transaction < ApplicationRecord
   def validate_service_renewed
     if self.request.is_published && self.request.will_save_change_to_is_published? && self.service_checked_at < self.service.renewed_at
       errors.add(:service, "相談室の内容が変更されました")
+    end
+  end
+
+  def validate_violation
+    if !self.is_violating && is_violating_changed?
+      errors.add(:is_violating, "cannot be changed if is_violation is true")
     end
   end
 
@@ -659,6 +699,10 @@ class Transaction < ApplicationRecord
     delete_folder(public_temp_path)
   end
 
+  def is_violation?
+    is_violating
+  end
+
   def title_max_length
     30
   end
@@ -690,6 +734,16 @@ class Transaction < ApplicationRecord
     return unless self.will_save_change_to_is_published?
     return unless self.is_published
     errors.add(:items, "納品ファイルの数は#{self.max_items_count}個までです")
+  end
+
+  def validate_is_violating
+    return unless self.is_violating
+    if will_save_change_to_is_transacted? ||
+      will_save_change_to_is_published? ||
+      will_save_change_to_title? ||
+      will_save_change_to_description?
+      errors.add(:is_transacted, '規約違反のため修正できません')
+    end
   end
   
   def max_items_count

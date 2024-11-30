@@ -31,8 +31,8 @@
             </div>
 
             </br>
-            <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>受付中</span>
-            </br>
+            <div class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>受付中</div>
+
             <div class="search_button_area">
                 <%= f.submit '検索',class:"search_button", placeholder:"" %>
             </div>

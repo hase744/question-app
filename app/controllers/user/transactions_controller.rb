@@ -24,7 +24,7 @@ class User::TransactionsController < User::Base
   end
 
   def index
-    @transactions = Transaction.all
+    @transactions = Transaction.valid
     @transactions = @transactions.joins(:transaction_categories)
     @transactions = @transactions.distinct
     @transactions = @transactions.solve_n_plus_1
@@ -57,6 +57,7 @@ class User::TransactionsController < User::Base
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
     @transactions = Transaction.solve_n_plus_1
       .left_joins(:transaction_categories)
+      .valid
       .distinct
       .includes(:seller, :service, :request, :items, :transaction_categories)
       .where.not(id: @transaction.id)
@@ -166,7 +167,7 @@ class User::TransactionsController < User::Base
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
-      title: "あなたの依頼した相談に回答が納品されました",
+      title: "依頼した相談に回答が納品されました",
       description: transaction.title,
       action: "show",
       controller: "transactions",

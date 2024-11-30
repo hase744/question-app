@@ -1,0 +1,8 @@
+<%= render "/admin_user/shared/index", 
+  	models: @balance_records, 
+  	column_names: ['id', 'user_id', 'amount', 'type_name', 'created_at'],
+	show_exist: true,
+	delete_exist: false,
+	edit_exist: false,
+	links: -> (model){ []}
+  	%>
