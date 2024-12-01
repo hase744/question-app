@@ -1,9 +1,7 @@
 module ImageGenerator
   extend ActiveSupport::Concern
-  included do
-    HCTI_API_USER_ID = Rails.application.credentials.hcti[:user_id]
-    HCTI_API_KEY = Rails.application.credentials.hcti[:api_key]
-  end
+  HCTI_API_USER_ID = Rails.application.credentials.hcti[:user_id]
+  HCTI_API_KEY = Rails.application.credentials.hcti[:api_key]
 
   #render_to_stringを使用するためControllerからの呼び出しが必要
   def generate_html_css_from_request(request)

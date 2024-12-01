@@ -43,12 +43,7 @@ class Transaction < ApplicationRecord
 
   after_save :create_transaction_category
   after_save :update_total_sales
-  after_save :update_average_star_rating
   after_save :create_payment_record
-  attr_accessor :use_youtube
-  attr_accessor :youtube_id
-  attr_accessor :file
-  attr_accessor :item
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -217,26 +212,12 @@ class Transaction < ApplicationRecord
     self.assign_attributes(is_published:true, published_at:DateTime.now)
   end
 
-  def reset_item
-    self.item = nil
-    self.file = nil
-    self.use_youtube = nil
-    self.youtube_id = nil
-  end
-
   def set_default_values
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
     self.profit ||= (self.price - self.margin)
     self.service_checked_at ||= DateTime.now
-    if (self.file.present? || self.use_youtube) && self.item
-      self.item.assign_attributes(
-        file: self.file,
-        use_youtube: self.use_youtube,
-        youtube_id: self.youtube_id
-      )
-    end
 
     if new_record?
       self.request_form_name = self.service.request_form.name
@@ -459,13 +440,6 @@ class Transaction < ApplicationRecord
     end
   end
   
-  def update_average_star_rating
-    #if self.saved_change_to_star_rating?
-    #  self.service.user.update_average_star_rating
-    #  self.service.update_average_star_rating
-    #end
-  end
-
   def update_request
     self.request.update(
       deal:self

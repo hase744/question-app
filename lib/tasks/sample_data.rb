@@ -100,7 +100,6 @@ class SampleData
             description: transactions[n]['question']['description'],
             max_price: (n+2)*500,
             mini_price: (n+1)*500,
-            use_youtube:false,
             suggestion_deadline: DateTime.now + n + 1,
             request_form_name: Form.find_by(name:"text").name.to_sym,
             delivery_form_name: Form.find_by(name:"text").name.to_sym,
@@ -146,7 +145,6 @@ class SampleData
           description: transactions[n]['question']['description'],
           max_price: (n+2)*500,
           mini_price: (n+1)*500,
-          use_youtube:false,
           suggestion_deadline: DateTime.now + n + 1,
           request_form_name: Form.find_by(name:"text").name.to_sym,
           delivery_form_name: Form.find_by(name:"text").name.to_sym,
@@ -196,8 +194,6 @@ class SampleData
           transacted_at: DateTime.now - n,
           published_at: DateTime.now - n,
           stripe_payment_id:"pi_3LO0pXFsZJRtLc1j0OJU7Mlg",
-          use_youtube:true,
-          youtube_id: nil,
           transaction_message_enabled: service.transaction_message_enabled,
         )
         transaction.create_review(

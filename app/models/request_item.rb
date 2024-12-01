@@ -5,7 +5,6 @@ class RequestItem < ApplicationRecord
   attr_accessor :service
   attr_accessor :file_duration
   attr_accessor :duration
-  attr_accessor :youtube_id_valid
   mount_uploader :file, FileUploader
   store_in_background :file
   after_save :update_item_src

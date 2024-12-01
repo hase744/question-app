@@ -41,11 +41,11 @@
 			
 	    	    <div class="video_field_area" id="video_field_area">
 	    	    <%= f.label :file, class:"field_label" %><br />
-	    	      	<%if @request.use_youtube%>
+								<!--
 	    	            <div id="youtube_area">
-	    	              	<iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	    	              	<iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	    	            </div>
-	    	        <% end %>
+										-->
 	    	        <div class="field_area" id="file_field_area">
 	    	            <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
 	    	              	<% @request.items.each.with_index do |item, index| %>
