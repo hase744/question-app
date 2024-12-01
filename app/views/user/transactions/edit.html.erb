@@ -17,12 +17,6 @@
           	<%= f.text_area :description, maxlength:@transaction.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
         </div>
 
-        <div class="field_area">
-          	<%= f.label :category, class:"field_label" %><br />
-            <h3 class="request_content"><%=@transaction.service.category.japanese_name%></h3>
-            <%= f.hidden_field :category, value: @transaction.service.category %>
-        </div>
-
         <div class="video_field_area" id="video_field_area">
 		<!--
           	<div id="youtube_area">

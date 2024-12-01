@@ -70,8 +70,6 @@ ja:
         delivery_days: 募集期間
         max_price: 予算
         price: 料金
-        use_youtube: アップロード方法
-        youtube_id: YouTube動画のID
         is_accepting: 取り下げ
       request/request_categories:
         category_name: カテゴリー
@@ -88,8 +86,6 @@ ja:
         title: ひとこと回答
         description: 本文
         category: カテゴリー
-        use_youtube: アップロード方法
-        youtube_id: YouTube動画のID
         file: ファイル
         items: 回答ファイル
         request_form: 質問形式

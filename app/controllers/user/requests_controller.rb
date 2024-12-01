@@ -86,7 +86,6 @@ class User::RequestsController < User::Base
   def new
     if params[:request]
       @request = Request.new(request_params)
-      @request.set_item_values
     else
       @request = Request.new(service_id:params[:service_id])
       @request.request_categories.build
@@ -96,13 +95,11 @@ class User::RequestsController < User::Base
 
   def edit
     @request.service = @transaction&.service if @transaction
-    @request.set_item_values
     @request.request_categories.build
     @request.items.build
   end
 
   def preview
-    @request.set_item_values
     set_preview_values
   end
 
@@ -191,7 +188,6 @@ class User::RequestsController < User::Base
         return
       else
         flash.notice = "公開できませんでした。"
-        @request.set_item_values
       end
     end
     detect_models_errors([@transaction, current_user, @request, @service, @request_item])
@@ -278,7 +274,6 @@ class User::RequestsController < User::Base
       @request.service = @transaction.service
       @deficient_point = [@transaction.required_points - current_user.total_points, 0].max
       @payment = Payment.new(point: @deficient_point || 100)
-      @request.set_item_values
     else
       @submit_text = "公開"
     end
@@ -309,7 +304,6 @@ class User::RequestsController < User::Base
       if save_models
         true
       else
-        @request.set_item_values
         false
       end
     end
@@ -469,8 +463,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :max_price,
       :image,
       :file_duration,
@@ -489,8 +481,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :max_price,
       :image,
       :file_duration,
@@ -515,8 +505,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :file,
       :thumbnail,
       :file_duration,
@@ -527,8 +515,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :file,
       :thumbnail,
-      :use_youtube,
-      :youtube_id,
       :file_duration,
     )
   end

@@ -120,7 +120,7 @@
   	        }
 			.component.large{
 			  	font-size: 30px;
-				color: rgb(190, 190, 0);
+				color: rgb(180, 180, 0);
 				@media(max-width:1000px){
 					font-size: clamp(0px, 100vw / 15, 30px);
 				}
@@ -193,6 +193,9 @@
   	    .image{
   	        width: 100%;
   	        object-fit: cover;
+			@media(max-width: 1000px){
+				width: 80%;
+			}
   	    }
   	}
 	.narrow{

@@ -244,30 +244,18 @@
                 <%if @transaction.delivery_form_name != "text" %>
                     </label class="title_label">ファイル</label></br>
                     <% if @transaction.items %>
-                        <%if @transaction.use_youtube%>
-                            <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        <% else %>
-                            <% if @transaction.delivery_form_has_image? %>
-                                <% @transaction.items.each do |item|%>
-                                    <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
-                                <% end %>
-                            <% elsif @transaction.service.delivery_form.name == "video" %>
-                                <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                        <% if @transaction.delivery_form_has_image? %>
+                            <% @transaction.items.each do |item|%>
+                                <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
                             <% end %>
+                        <% elsif @transaction.service.delivery_form.name == "video" %>
+                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                         <% end %>
                     <% end %>
                 <% end %>
                 <% if false %>
                     <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
                     <img id="description_image" class="description_image">
-                <% end %>
-            </div>
-            <div  class="information_component">
-                <% if @transaction.item %>
-                    <%if @transaction.items && @transaction.delivery_form.name == "video"%>
-                        </label class="title_label">サムネイル</label></br>
-                        <%= image_tag @transaction.items, class:"image"%>
-                    <% end %>
                 <% end %>
             </div>
         <% end %>

@@ -20,9 +20,6 @@ class Request < ApplicationRecord
   attr_accessor :delivery_days
   attr_accessor :validate_published
   attr_accessor :category_id
-  attr_accessor :video_second
-  attr_accessor :use_youtube
-  attr_accessor :youtube_id
   attr_accessor :file
   attr_accessor :request_file
   attr_accessor :service_id
@@ -212,21 +209,10 @@ class Request < ApplicationRecord
 
     case self.request_form.name
     when "text" then
-      self.youtube_id = nil
-      self.use_youtube = false
       self.total_files = 0
     when "image" then
-      self.youtube_id = nil
-      self.use_youtube = false
       self.total_files = 0
-    when "video" then
-      if self.use_youtube
-      else
-        self.youtube_id = nil
-      end
-      self.total_files = 1
     end
-
 
     if self.delivery_days
       self.acceptable_duration_in_days=(delivery_days)
@@ -242,14 +228,6 @@ class Request < ApplicationRecord
     self.image.cache!(CarrierWave::SanitizedFile.new(StringIO.new(file_content)))
     self.image.retrieve_from_cache!(self.image.cache_name)
     self.save
-  end
-
-  def has_pure_image
-    self.items.any? { |item| !item.is_text_image } #N+1回避のためwhereを使わない
-  end
-
-  def has_text_image
-    self.items.any? { |item| item.is_text_image } #N+1回避のためwhereを使わない
   end
 
   def published_transactions
@@ -392,23 +370,10 @@ class Request < ApplicationRecord
     end
   end
 
-  def set_item_values
-    if self.items.present?
-      self.request_file = self.items.first
-      self.file = self.request_file.file
-      self.use_youtube = self.request_file.use_youtube
-      self.youtube_id = self.request_file.youtube_id
-    else
-      #self.request_file = self.items.new()
-    end
-  end
-
   def save_length
     if self.request_form.name == "text"
     elsif self.request_form.name == "image"
       self.length = 1
-    elsif self.request_form.name == "video"
-      self.length = video_second
     end
   end
 
@@ -565,6 +530,14 @@ class Request < ApplicationRecord
     else
       false
     end
+  end
+
+  def has_pure_image
+    self.items.any? { |item| !item.is_text_image } #N+1回避のためwhereを使わない
+  end
+
+  def has_text_image
+    self.items.any? { |item| item.is_text_image } #N+1回避のためwhereを使わない
   end
 
   def has_only_text_image?

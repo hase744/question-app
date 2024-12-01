@@ -186,7 +186,7 @@ class User::TransactionsController < User::Base
   end
 
   private def update_total_views
-    @transaction.update(total_views:@transaction.total_views + 1, item:nil)
+    @transaction.update(total_views:@transaction.total_views + 1)
   end
   
   private def can_edit_transaction
@@ -236,16 +236,12 @@ class User::TransactionsController < User::Base
       :description,
       :file,
       :thumbnail,
-      :use_youtube,
-      :youtube_id,
     )
   end
 
   private def transaction_item_params
     params.require(:transaction).permit(
       :file,
-      :use_youtube,
-      :youtube_id,
     )
   end
 
