@@ -17,6 +17,9 @@ ja:
       coupon: クーポン
       point_record: ポイント履歴
       balance_record: 収益の残高履歴
+      inquiry: お問い合わせ
+      access_log: アクセス履歴
+      error_log: エラー履歴
     attributes:
       name: ユーザー
       user:
@@ -30,6 +33,8 @@ ja:
         image: プロフィール画像
         header_image: ヘッダー画像
         is_seller: 回答者設定
+        followers: フォロワー
+        followee: フォロイー
       user/state:
         normal: 通常
         suspended: 凍結
@@ -37,6 +42,8 @@ ja:
         browse: 閲覧のみ
         deleted: 削除
       service:
+        id: ID
+        user_id: ユーザーID
         title: タイトル
         description: "詳細"
         image: "画像"
@@ -53,9 +60,14 @@ ja:
         request_max_minutes: 質問動画の最大時間
         request_max_characters: 質問の最大字数
         allow_pre_purchase_inquiry: 購入前の質問
+        is_disabled: 違反性
+        disabled_at: 違反認定日時
+        disable_reason: 違反理由
       service/service_categories:
         category_name: カテゴリー
       request:
+        id: ID
+        user_id: ユーザーID
         title: タイトル
         description: 本文
         file: 添付ファイル
@@ -71,6 +83,9 @@ ja:
         max_price: 予算
         price: 料金
         is_accepting: 取り下げ
+        is_disabled: 違反性
+        disabled_at: 違反認定日時
+        disable_reason: 違反理由
       request/request_categories:
         category_name: カテゴリー
       request_supplement:
@@ -95,9 +110,9 @@ ja:
         is_canceled: キャンセル
         is_rejected: 回答拒否
         reject_reason: お断り理由（質問者に伝えます）
-        is_violating: 違反性
-        violation_recognized_at: 違反認定日時
-        violating_reason: 違反理由
+        is_disabled: 違反性
+        disabled_at: 違反認定日時
+        disable_reason: 違反理由
       review:
         body: 感想
         star_rating: 星評価
@@ -165,11 +180,34 @@ ja:
         email: メールアドレス
         password: パスワード
         password_confirmation: パスワード（確認用）
+      inquiry:
+        id: ID
+        email: メールアドレス
+        name: 名前
+        body: お問い合わせ内容
+        answer: 返信内容
+        is_replied: 返信済み
       potential_seller:
         admin_user: 管理者
         name: 名前
         email: メールアドレス
         media: メディア
+      access_log:
+        user: ユーザー
+        user_id: ユーザーID
+        method: method
+        controller:  controller
+        action: action
+        id_number: id
+        parameter: parameter
+      error_log:
+        user: ユーザー
+        user_id: ユーザーID
+        method: method
+        controller:  controller
+        action: action
+        id_number: id
+        parameter: parameter
       country:
         japanese_name: 国名
         code: 電話番号コード

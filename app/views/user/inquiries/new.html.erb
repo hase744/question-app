@@ -3,21 +3,14 @@
     <div class="inquiry_area component_area">
     <%= form_with model: @inquiry, url: :user_inquiries do |f| %>
         <div class="field_area">
-            <% if user_signed_in? %>
-                <label class="field_label">お名前</label>：<%= current_user.name %>
-            <% else %>
-                <label class="field_label">お名前</label><br />
-                <%= f.text_field :name, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
-            <% end %>
+            <label class="field_label">お名前</label><br />
+            <%= f.text_field :name, autofocus: true, autocomplete: "name", class:"input_field string_field", value: user_signed_in? ? current_user.name : ''%>
         </div>
         <div class="field_area">
             
-            <% if user_signed_in? %>
-                <label class="field_label">Eメールアドレス</label>：<%= current_user.email %>
-            <% else %>
-                <label class="field_label">Eメールアドレス</label><br />
-                <%= f.text_field :email, autofocus: true, autocomplete: "email", class:"input_field string_field" %>
-            <% end %>
+            
+        <label class="field_label">Eメールアドレス</label><br />
+        <%= f.text_field :email, autofocus: true, autocomplete: "email", class:"input_field string_field", value: user_signed_in? ? current_user.email : '' %>
         </div>
         <div class="field_area">
             <label class="field_label">お問い合わせ内容</label><br />

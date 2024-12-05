@@ -2,6 +2,7 @@ class Service < ApplicationRecord
   has_many :requests
   has_many :files, class_name: "ServiceFile", dependent: :destroy
   has_many :transactions, class_name: "Transaction", dependent: :destroy
+  has_many :ongoing_transactions, class_name: "Transaction", dependent: :destroy
   has_many :reviews, through: :transactions
   has_many :service_categories, class_name: "ServiceCategory", dependent: :destroy
   has_one :service_category
@@ -38,6 +39,7 @@ class Service < ApplicationRecord
 
   scope :buyable, -> {
     solve_n_plus_1
+    .abled
     .where(
       request_id: nil,
       is_published: true,
@@ -48,6 +50,7 @@ class Service < ApplicationRecord
   scope :seeable, -> {
     left_joins(:user, :service_categories)
     .solve_n_plus_1
+    .abled
     .where(
       request_id: nil,
       is_published: true,
@@ -234,17 +237,19 @@ class Service < ApplicationRecord
 
   def get_unbuyable_message(user)
     if !self.is_for_sale
-      "販売停止中です。"
+      "販売停止中です"
     elsif !self.is_published
-      "相談室が非公開です。"
+      "相談室が非公開です"
+    elsif self.is_disabled
+      "規約違反により凍結されています"
     elsif !self.user.is_published
-      "ユーザーが非公開です。"
+      "ユーザーが非公開です"
     elsif self.user.is_deleted
-      "アカウントが存在しません。"
+      "アカウントが存在しません"
     elsif self.user == user
       "自分の相談室に質問できません"
     elsif !self.user.is_normal
-      "回答者のアカウントに問題が発生しました。"
+      "回答者のアカウントに問題が発生しました"
     elsif self.request && self.request.user != user
       "購入できません。"
     else
@@ -253,12 +258,12 @@ class Service < ApplicationRecord
   end
 
   def get_unsuggestable_message(request)
-    if  !self.is_for_sale
-      "販売停止中です。"
+    if !self.is_for_sale
+      "販売停止中です"
     elsif request.user.is_deleted
-      "アカウントが存在しません。"
+      "アカウントが存在しません"
     elsif !request.user.is_stripe_customer_valid?
-      "質問者の決済が承認されていません。"
+      "質問者の決済が承認されていません"
     elsif request.request_form != self.request_form || self.request_form_name != 'free'
       "質問形式が違います"
     elsif self.request_max_characters < request.description.length
@@ -269,6 +274,11 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
+    if self.is_disabled && will_save_change_to_is_disabled?
+      self.disabled_at ||= DateTime.now
+      self.is_for_sale = false
+    end
+
     if self.service_categories.length > 1
       if self.categories.length > 1 #カテゴリの種類がたくさんある
         self.service_categories.first.update(

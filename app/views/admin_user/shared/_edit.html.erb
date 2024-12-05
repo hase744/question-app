@@ -1,5 +1,7 @@
 <h1><%=
-if model.attributes.key?("name")
+if defined? title
+    title
+elsif model.attributes.key?("name")
     model.name
 else
     model.model_name.human 

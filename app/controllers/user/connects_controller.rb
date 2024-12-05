@@ -254,7 +254,7 @@ class User::ConnectsController < User::Base
         render = "user/connects/edit"
       end
     else
-      @error += "エラーID:#{@error_log.id}<br>"
+      @error += "エラーID:#{@error_log.uuid}<br>"
       @error += "<br>以上を運営まで連絡してください"
       flash.notice = "エラーが潰瘍しない場合、更新したい場合はエラーIDとともに運営までご連絡してください。"
       redirect_to edit_user_connects_path(error: @error)

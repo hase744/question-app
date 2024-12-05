@@ -1,24 +1,25 @@
-<p style="color: green"><%= notice %></p>
 <% models_name = models.name.pluralize.underscore.pluralize%>
 <% columns = models.column_names.map{|name| name if column_names.include?(name) }.compact %>
 
-<h1><%=models.name.pluralize%></h1>
+<h1><%= models.klass.new().model_name.human %>一覧</h1>
 <div id="models" class="container">
-  	<%if ['users', 'announcements', 'transactions'].include? models_name %>
-  	  	<%= form_with url: "", method: :get, local: true do |form| %>
-			<% request.query_parameters.each do |key, value| %>
-				<%= form.hidden_field key, value: value %>
-			<% end %>
-  	  	  	<%if models.column_names.include?('name') %>
-  	  	  	  	<%= form.label :name, '検索キーワード' %>
-  	  	  	  	<%= form.text_field :name, value: params[:name] %>
-  	  	  	<% end %>
-  	  	  	<%if models.column_names.include?('title') %>
-  	  	  	  	<%= form.label :title, '検索キーワード' %>
-  	  	  	  	<%= form.text_field :title, value: params[:title] %>
-  	  	  	<% end %>
-  	  	  	</br><%= form.submit "検索" %>
+  	<%= form_with url: "", method: :get, local: true do |form| %>
+		<% request.query_parameters.each do |key, value| %>
+			<%= form.hidden_field key, value: value %>
+		<% end %>
+  	  	<%if models.column_names.include?('name') %>
+  	  	  	<%= form.label :name %>
+  	  	  	<%= form.text_field :name, value: params[:name] %></br></br>
   	  	<% end %>
+  	  	<%if models.column_names.include?('uuid') %>
+  	  	  	<%= form.label :uuid, 'uuid' %>
+  	  	  	<%= form.text_field :uuid, value: params[:uuid] %></br></br>
+  	  	<% end %>
+  	  	<%if models.column_names.include?('title') %>
+  	  	  	<%= form.label :title, '検索キーワード' %>
+  	  	  	<%= form.text_field :title, value: params[:title] %></br></br>
+  	  	<% end %>
+  	  	</br><%= form.submit "検索" %>
   	<% end %>
   	<%= link_to "New #{models_name.gsub('_',' ')}", "#{models_name}/new" %>
   	<%= paginate models %>

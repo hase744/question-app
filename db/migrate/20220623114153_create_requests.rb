@@ -21,6 +21,10 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       t.integer :total_views, default: 0, index:true
       t.integer :total_services, default: 0, index:true
 
+      t.boolean :is_disabled, default:false, index:true
+      t.datetime :disabled_at
+      t.text :disable_reason
+
       t.references :transaction, index:true
       t.boolean :is_published, default: false, index:true
       t.datetime :published_at, index:true

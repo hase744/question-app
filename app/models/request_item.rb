@@ -57,4 +57,8 @@ class RequestItem < ApplicationRecord
       errors.add(:file, "アップロードできるのは画像のみです") unless self.file.is_image?
     end
   end
+
+  def thumb_with_default
+    self.file&.thumb&.url.presence || "/corretech_icon.png"
+  end
 end

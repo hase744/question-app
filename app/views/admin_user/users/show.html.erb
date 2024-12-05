@@ -1,6 +1,14 @@
 <%= render "/admin_user/shared/show", 
   model: @user,
-  relations: ['point_records', 'balance_records', 'coupons'],
+  relations: [
+    'point_records', 
+    'balance_records', 
+    'coupons', 
+    'access_logs', 
+    'sales', 
+    'followers', 
+    'followees'
+  ],
   column_names: [
     'name', 
     'description', 
@@ -12,6 +20,6 @@
     'stripe_account_id',
     'stripe_card_id',
     'stripe_customer_id',
-    'stripe_connected_id'
+    'stripe_connected_id',
   ]
 %>

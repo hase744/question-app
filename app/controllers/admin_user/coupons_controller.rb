@@ -6,7 +6,7 @@ class AdminUser::CouponsController < AdminUser::Base
   def index
     @coupons = Coupon.all
     @coupons = @coupons.where(user_id: params[:user_id]) if params[:user_id]
-    @coupons = @coupons.where(user_id: params[:transaction_id]) if params[:transaction_id]
+    @coupons = @coupons.where(transaction_id: params[:transaction_id]) if params[:transaction_id]
     @coupons = @coupons
       .page(params[:page])
       .per(50)

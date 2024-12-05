@@ -12,7 +12,7 @@
                 <i class="fa-regular fa-circle-stop"></i>
                 <%=current_user == @transaction.seller ? "質問がお断り済みです" : "質問がお断りされています"%>
             </span></br>
-        <% elsif @transaction.is_violating %>
+        <% elsif @transaction.is_disabled %>
             <span class="status green">
                 <i class="fas fa-ban"></i>
                 規約違反のため、取引が無効になりました
