@@ -1,0 +1,12 @@
+<%= render "/admin_user/shared/show", 
+  	model: @inquiry,
+  	column_names: ['id', 'is_replied', 'user', 'body', 'answer']
+%>
+
+
+<%= render "/admin_user/shared/edit", 
+  	model: @inquiry,
+  	column_names: ['answer'], 
+  	path: admin_user_inquiry_path,
+		title: "#{@inquiry.name}への返信"
+%>

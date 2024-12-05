@@ -1,33 +1,6 @@
 <div class="about_index_zone about">
     <div class="about_index_area">
         <%= render "abouts/front_image_area" %>
-        <!--
-        <div class="image_area">
-            <div class="image_frame">
-                <%=image_tag "/QAイメージ質問.png", class:"top_image1"%>
-                <%=image_tag "/QAイメージ回答.png", class:"top_image2"%>
-            </div>
-            <div class="top_image_background"></div>
-            <div class="top_image_text_area">
-                <span>ノウハウを売買</span></br>Q&Aサイト
-                <div class="sign_in_up_area">
-                <%= link_to "登録", new_user_registration_path, class:"sign_up_link sign_link"%>
-                    <%= link_to "ログイン", new_user_session_path, class:"sign_in_link sign_link"%>
-                </div>
-            </div>
-        </div>
-        <div class="image_area">
-            <%=image_tag "https://web-camp.io/magazine/wp-content/uploads/2022/05/shutterstock_1874747554.jpg", class:"top_image"%>
-            <div class="top_image_background"></div>
-            <div class="top_image_text_area">
-                <span>ノウハウを売買</span></br>Q&Aサイト
-                <div class="sign_in_up_area">
-                <%= link_to "登録", new_user_registration_path, class:"sign_up_link sign_link"%>
-                <%= link_to "ログイン", new_user_session_path, class:"sign_in_link sign_link"%>
-                </div>
-            </div>
-        </div>
-        -->
         </br>
         </br>
         </br>
@@ -58,24 +31,6 @@
         <h1>日本初！<h1>
         <h1>Q&Aサイトとフリマサイトの融合<h1>
         </div>
-        -->
-        <!--
-        <div class="trouble_list_flame">
-            <div class="trouble_list_area">
-                <h2 class="trouble">英語を教えて報酬を得たい...</h2>
-                <h2 class="trouble">英語に関する情報を発信してフォロワーを増やしたい...</h2>
-                <h2 class="trouble">ちょっとした悩みや疑問を相談したい...</h2>
-            </div>
-        </div>
-        <div class="trouble_list_flame">
-            <div class="trouble_list_area">
-                <h2 class="trouble">相談に乗って報酬を得たい...</h2>
-                <h2 class="trouble">自分のノウハウを発信してフォロワーを増やしたい...</h2>
-                <h2 class="trouble">ちょっとした悩みや疑問を相談したい...</h2>
-            </div>
-        </div>
-        </br>
-        <h1 class="resolve_troubles"><span class="message">このような悩みに応えます！</span></h1>
         -->
         <!--
         <div>
@@ -132,19 +87,11 @@
             </div>
             </div>
         </div>
-        <!--
-        <div class="animation_area">
-                <h1>使い方</h1>
-                <div class="video_area">
-                    <img class="gif" src="/回答イメージ正方形.gif">
-                </div>
-        </div>
-        -->
         <div class="use_options">
             <div class="buyer_flame">
                 <div class="buyer_area">
                     <%= image_tag "/buyer_image.png", class:"buyer_image" %>
-                    <h2 class="label">質問の流れ</h2>
+                    <h2 class="label">質問のやり方</h2>
                     <ol class="step_area check_step_area">
                         <li>登録してポイントを購入</li>
                         <li>質問を公開して、相談室を募集</br><span class="or">or</span></br>相談室を探して質問を投稿</li>
@@ -154,7 +101,7 @@
             </div>
             <div class="seller_flame">
                 <div class="seller_area">
-                    <h2 class="label">回答の流れ</h2>
+                    <h2 class="label">回答のやり方</h2>
                     <%= image_tag "/seller_image.png", class:"seller_image" %>
                     <ol class="step_area check_step_area">
                         <li>登録してプロフィールを記入</li>
@@ -166,9 +113,9 @@
         </div>
         <div class="transaction_flow_zone">
             <div class="transaction_flow_area">
-                <h1>取引の流れ</h1>
+                <h1>ご利用の流れ</h1>
                 <div class="transaction_flow_flame">
-                    <h2 class="flow_label">質問を作成して相談室を募集する場合</h2>
+                    <h2 class="flow_label">相談室を募集する場合</h2>
                     <div class="flow_group">
                         <%= render "abouts/flow_unit", 
                             title: "①質問者が質問を投稿", 
@@ -187,7 +134,7 @@
                             src: "/flow/transaction_flow-1-4.jpeg", 
                             use_arrow: true %>
                     </div>
-                    <h2 class="flow_label">相談室を出品して質問を募集する場合</h2>
+                    <h2 class="flow_label">回答を募集する場合</h2>
                     <div class="flow_group">
                         <%= render "abouts/flow_unit", 
                             title: "①回答者が相談室を出品", 
@@ -209,13 +156,5 @@
                 </div>
             </div>
         </div>
-        <!--
-        <div class="animation_area">
-                <h1>取引の流れ</h1>
-                <div class="video_area">
-                    <img class="gif" src="/サービススキーム　アニメーション.gif">
-                </div>
-        </div>
-        -->
     </div>
 </div>

@@ -23,6 +23,10 @@ class CreateServices < ActiveRecord::Migration[6.1]
       t.integer :total_reviews, default: 0, index:true
       t.float :average_star_rating, default: nil, index:true
 
+      t.boolean :is_disabled, default:false, index:true
+      t.datetime :disabled_at
+      t.text :disable_reason
+
       t.float :rejection_rate, default: nil, index:true
       t.float :cancellation_rate, default: nil, index:true
       t.timestamps

@@ -71,7 +71,6 @@ namespace :user do
     get 'accounts/reviews/:id', to:"accounts#reviews", as:"account_reviews"
     get 'accounts/requests/:id', to:"accounts#requests", as:"account_requests"
     get 'accounts/users/:id', to:"accounts#users", as:"account_users"
-    get 'accounts/registered_users/:id', to:"accounts#registered_users", as:"registered_users"
     get 'accounts/purchases/:id', to:"accounts#purchases", as:"account_purchases"
     get 'accounts/sales/:id', to:"accounts#sales", as:"account_sales"
     get 'accounts/services/:id', to:"accounts#services", as:"account_services"
@@ -112,7 +111,6 @@ namespace :user do
     resources :accounts, only: [ :index, :show]
     resources :transactions, only: [ :index, :show, :edit, :update]
     resources :notifications, only: [ :index, :show]
-    resources :histories, only: [ :index ,:new, :create]
     resources :request_supplements, only: [:create, :new]
     resources :payments, only: [:index, :show, :create]
     resources :payouts, only: [:index, :show, :create]
@@ -156,6 +154,19 @@ namespace :user do
     resources :users, only: [:create, :index, :show, :new, :edit, :update]
     resources :announcement_receipts, only: [:create, :index, :show, :new, :edit, :destroy]
     resources :coupons, only: [:create, :index, :show, :update, :new, :edit, :destroy]
+    resources :transactions, only: [:create, :index, :show, :update, :new, :edit]
+    resources :point_records, only: [:index, :show]
+    resources :balance_records, only: [:index, :show]
+    resources :inquiries, only: [:index, :show, :edit, :update]
+    resources :access_logs, only: [:index, :show]
+    resources :error_logs, only: [:index, :show]
+    resources :requests, only: [:index, :show, :edit, :update]
+    resources :services, only: [:index, :show, :edit, :update]
+    resources :announcements do
+      member do
+        delete :remove_file, to: 'announcements#remove_file'
+      end
+    end
   end
 
   devise_for :users

@@ -4,48 +4,82 @@
     <div class="order_show_flame component_area">
         <% if @transaction.is_canceled %>
             <span class="status orange">
-                <i class="fas fa-ban"></i>
+                <i class="fa-regular fa-circle-stop"></i>
                 <%=current_user == @transaction.seller ? "質問がキャンセルされています" : "質問がキャンセル済みです"%>
             </span></br>
         <% elsif @transaction.is_rejected %>
             <span class="status grey">
-                <i class="fa-solid fa-ban"></i>
+                <i class="fa-regular fa-circle-stop"></i>
                 <%=current_user == @transaction.seller ? "質問がお断り済みです" : "質問がお断りされています"%>
             </span></br>
+        <% elsif @transaction.is_disabled %>
+            <span class="status green">
+                <i class="fas fa-ban"></i>
+                規約違反のため、取引が無効になりました
+            </span>
         <% elsif @transaction.is_transacted %>
             <span class="status green">
             <i class="fa-solid fa-check"></i>
             取引が完了しています
+            </span>
+        <% else %>
+            <span class="status green">
+            <i class="fas fa-clock"></i>
+            回答待ち
             </span>
         <% end %>
         <% if @transaction.is_rejected %>
             <%= render "user/shared/small_label", text: "お断り理由" %>
             <div><%=@transaction.reject_reason%></div>
         <% end %>
-        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
-        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
-            <div class="image_area">
-                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
-            </div>
-            <div class="text_area">
-                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
-            </div>
-            <div class="arrow_area fa-solid fa-chevron-right">
-            </div>
+        <% if false #!@transaction.is_transacted %>
+        <% elsif current_user == @transaction.seller %>
+            <table class="price_condition_area">
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">売上</span>
+            	    </th>
+            	    <td>
+            	        <span class="common_condition">￥<%=@transaction.price%></span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">利益</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition">￥<%=@transaction.profit%></span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">手数料</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition">￥<%=@transaction.margin%></span>
+            	    </td>
+            	</tr>
+            </table>
+        <% else %>
+            <table class="price_condition_area">
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">消費ポイント</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition"><%=@transaction.price - @transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
+            	    </td>
+            	</tr>
+            	<tr>
+            	    <th class="condition_label">
+            	        <span class="condition_name ">クーポン割引額</span>
+            	    </th>
+            	    <td>
+                    <span class="common_condition"><%=@transaction.coupon_usages.map{|usage| usage.amount}.sum %>p</span>
+            	    </td>
+            	</tr>
+            </table>
         <% end %>
-        <% if @transaction.can_send_message(current_user) %>
-            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
-        <% end %>
-        <% if @transaction.is_ongoing %>
-            <div class="submit_area">
-            <% if current_user == @transaction.seller %>
-                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
-                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
-                <% end %>
-            <% end %>
-            </div>
-        <% end %>
-        </br>
         <%= render "user/shared/small_label", text: "契約内容" %>
         <table class="common_condition_area">
             <tr>
@@ -158,6 +192,30 @@
             </div>
         <% end %>
         </br>
+        <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
+        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
+            <div class="image_area">
+                <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
+            </div>
+            <div class="text_area">
+                <h4 class="margin0px one_line_text title"><%= @transaction.opponent_of(current_user).name %></h4>
+            </div>
+            <div class="arrow_area fa-solid fa-chevron-right">
+            </div>
+        <% end %>
+        <% if @transaction.can_send_message(current_user) %>
+            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+        <% end %>
+        <% if @transaction.is_ongoing %>
+            <div class="submit_area">
+            <% if current_user == @transaction.seller %>
+                <%=link_to(edit_user_order_path(@transaction.id), class:"link_button") do %>
+                    <span class="fas fa-handshake-alt-slash"></span> 理由を作成してお断り
+                <% end %>
+            <% end %>
+            </div>
+        <% end %>
+        </br>
         <% if current_user == @transaction.seller || @transaction.is_transacted%>
         <%= render "user/shared/small_label", text: "回答" %>
             <div class="information_component">
@@ -177,7 +235,7 @@
             <div  class="information_component">
                 </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
                 <% if @transaction.description %>
-                    <h5 class="margin0px break_word"><%=@transaction.description %></h5>
+                    <h5 class="margin0px break_word description_area"><%=@transaction.description %></h5>
                 <% else %>
                     <h5 class="margin0px break_word">未記入</h5>
                 <% end %>
@@ -186,30 +244,18 @@
                 <%if @transaction.delivery_form_name != "text" %>
                     </label class="title_label">ファイル</label></br>
                     <% if @transaction.items %>
-                        <%if @transaction.use_youtube%>
-                            <iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@transaction.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        <% else %>
-                            <% if @transaction.delivery_form_has_image? %>
-                                <% @transaction.items.each do |item|%>
-                                    <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
-                                <% end %>
-                            <% elsif @transaction.service.delivery_form.name == "video" %>
-                                <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                        <% if @transaction.delivery_form_has_image? %>
+                            <% @transaction.items.each do |item|%>
+                                <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
                             <% end %>
+                        <% elsif @transaction.service.delivery_form.name == "video" %>
+                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
                         <% end %>
                     <% end %>
                 <% end %>
                 <% if false %>
                     <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
                     <img id="description_image" class="description_image">
-                <% end %>
-            </div>
-            <div  class="information_component">
-                <% if @transaction.item %>
-                    <%if @transaction.items && @transaction.delivery_form.name == "video"%>
-                        </label class="title_label">サムネイル</label></br>
-                        <%= image_tag @transaction.items, class:"image"%>
-                    <% end %>
                 <% end %>
             </div>
         <% end %>

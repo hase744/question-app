@@ -1,0 +1,22 @@
+<%= render "/admin_user/shared/show", 
+  	model: @service,
+	relations: ['transactions', 'items'],
+  	column_names: [
+		'title', 
+		'user_id',
+  		'description', 
+		'is_published',
+		'price',
+		'deal',
+  		'published_at', 
+		'is_for_sale',
+  		'is_disabled',
+		'disable_reason',
+		'delivery_days',
+		'renewed_at',
+		'transaction_message_enabled',
+		'average_star_rating',
+		'request_form_name',
+		'delivery_form_name',
+	]
+%>

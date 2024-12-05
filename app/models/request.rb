@@ -20,9 +20,6 @@ class Request < ApplicationRecord
   attr_accessor :delivery_days
   attr_accessor :validate_published
   attr_accessor :category_id
-  attr_accessor :video_second
-  attr_accessor :use_youtube
-  attr_accessor :youtube_id
   attr_accessor :file
   attr_accessor :request_file
   attr_accessor :service_id
@@ -45,6 +42,7 @@ class Request < ApplicationRecord
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
+  accepts_nested_attributes_for :item, allow_destroy: true
   accepts_nested_attributes_for :request_categories, allow_destroy: true
 
   scope :solve_n_plus_1, -> {
@@ -54,6 +52,7 @@ class Request < ApplicationRecord
   scope :suggestable, -> {
     solve_n_plus_1
     .left_joins(:request_categories, :user)
+    .abled
     .where(
       is_accepting: true,
       is_published: true, 
@@ -118,6 +117,11 @@ class Request < ApplicationRecord
   }
 
   after_initialize do
+    if self.is_disabled && will_save_change_to_is_disabled?
+      self.disabled_at ||= DateTime.now
+      self.is_accepting = false
+    end
+  
     if self.service_id
       if Service.exists?(id: self.service_id) && !service.present?
         self.service = Service.find(self.service_id)
@@ -211,28 +215,17 @@ class Request < ApplicationRecord
 
     case self.request_form.name
     when "text" then
-      self.youtube_id = nil
-      self.use_youtube = false
       self.total_files = 0
     when "image" then
-      self.youtube_id = nil
-      self.use_youtube = false
       self.total_files = 0
-    when "video" then
-      if self.use_youtube
-      else
-        self.youtube_id = nil
-      end
-      self.total_files = 1
     end
-
 
     if self.delivery_days
       self.acceptable_duration_in_days=(delivery_days)
     end
 
-    if self.is_inclusive && self.is_published
-      #self.suggestion_deadline = DateTime.now + self.delivery_days.to_i
+    if self.is_inclusive && self.is_published && will_save_change_to_is_published? && suggestion_acceptable_duration
+      self.suggestion_deadline = Time.now + self.suggestion_acceptable_duration
     end
   end
 
@@ -241,14 +234,6 @@ class Request < ApplicationRecord
     self.image.cache!(CarrierWave::SanitizedFile.new(StringIO.new(file_content)))
     self.image.retrieve_from_cache!(self.image.cache_name)
     self.save
-  end
-
-  def has_pure_image
-    self.items.any? { |item| !item.is_text_image } #N+1回避のためwhereを使わない
-  end
-
-  def has_text_image
-    self.items.any? { |item| item.is_text_image } #N+1回避のためwhereを使わない
   end
 
   def published_transactions
@@ -293,6 +278,8 @@ class Request < ApplicationRecord
       "期限が過ぎています"
     elsif !self.is_accepting
       "取り下げられました。"
+    elsif self.is_disabled
+      "規約違反のため、凍結されています"
     else
       nil
     end
@@ -343,6 +330,8 @@ class Request < ApplicationRecord
         "期限切れ"
       elsif !self.is_accepting
         "取り下げ"
+      elsif self.is_disabled
+        "無効"
       else
         "受付中"
       end
@@ -369,7 +358,7 @@ class Request < ApplicationRecord
   
   def status_color
     if self.is_inclusive
-      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now || !self.is_accepting
+      if (self.suggestion_deadline && self.suggestion_deadline < DateTime.now) || !self.is_accepting || self.is_disabled
         'grey'
       else
         "green"
@@ -391,23 +380,10 @@ class Request < ApplicationRecord
     end
   end
 
-  def set_item_values
-    if self.items.present?
-      self.request_file = self.items.first
-      self.file = self.request_file.file
-      self.use_youtube = self.request_file.use_youtube
-      self.youtube_id = self.request_file.youtube_id
-    else
-      #self.request_file = self.items.new()
-    end
-  end
-
   def save_length
     if self.request_form.name == "text"
     elsif self.request_form.name == "image"
       self.length = 1
-    elsif self.request_form.name == "video"
-      self.length = video_second
     end
   end
 
@@ -443,24 +419,24 @@ class Request < ApplicationRecord
 
   def validate_request_category
     unless self.request_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
+      errors.add(:request_categories, 'カテゴリーが選択されていません')
       throw(:abort)
     end
 
     if self.request_categories.count > 1
-      errors.add(:base)
+      errors.add(:request_categories)
       throw(:abort)
     end
   end
 
   def validate_max_price
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
-      errors.add(:max_price, "を設定してください") if max_price.nil?
+      errors.add(:max_price, "予算を設定してください") if max_price.nil?
     end
     if self.max_price.present?
-      errors.add(:max_price, "は100円ごとにしか設定できません") if max_price % 100 != 0
-      errors.add(:max_price, "は100円以上に設定して下さい") if max_price < 100
-      errors.add(:max_price, "は10000円以下に設定して下さい") if max_price_upper_limit < max_price
+      errors.add(:max_price, "予算は100円ごとにしか設定できません") if max_price % 100 != 0
+      errors.add(:max_price, "予算は100円以上に設定して下さい") if max_price < 100
+      errors.add(:max_price, "予算は10000円以下に設定して下さい") if max_price_upper_limit < max_price
     end
   end
 
@@ -480,17 +456,17 @@ class Request < ApplicationRecord
 
   def validate_title
     if self.title.present?
-      errors.add(:title, "を入力して下さい") if self.title.length <= 0 #&& self.validate_published
+      errors.add(:title, "タイトルを入力して下さい") if self.title.length <= 0 #&& self.validate_published
     else
-      errors.add(:title, "を入力して下さい") if self.validate_published
+      errors.add(:title, "タイトルを入力して下さい") if self.validate_published
     end
   end
 
   def validate_description
     if self.description.present?
-      errors.add(:description, "を入力して下さい") if self.description.length <= 0 #&& self.validate_published
+      errors.add(:description, "本文を入力して下さい") if self.description.length <= 0 #&& self.validate_published
     else
-      errors.add(:description, "を入力して下さい") if self.validate_published
+      errors.add(:description, "本文を入力して下さい") if self.validate_published
     end
 
     #新規の作成 or 作成後に相談室の最大文字数が変更され、最大文字数がひっかかった場合
@@ -505,19 +481,18 @@ class Request < ApplicationRecord
 
   def validate_request_item
     return unless self.is_published && will_save_change_to_is_published?
+    if need_text_image? && !has_only_text_image?
+      items.destroy_all
+      errors.add(:items, "ファイルが不適切です")
+    end
     case request_form.name
-    when 'text'
-      if need_text_image? && self.items.text_image.count != 1
-        items.destroy_all
-        errors.add(:items, "が不適切です")
-      end
     when 'image'
-      errors.add(:items, "をアップロードしてください") if self.items.not_text_image.count < 1
+      errors.add(:items, "ファイルをアップロードしてください") if self.items.not_text_image.count < 1
     end
     self.items.each do |item|
       unless item.valid?
         item.errors.full_messages.each do |message|
-          errors.add(:items, "が不適切です。 #{message}")
+          errors.add(:items, "ファイルが不適切です。 #{message}")
         end
       end
     end
@@ -531,20 +506,20 @@ class Request < ApplicationRecord
 
   def validate_request_form
     if self.service
-      errors.add(:request_form, "が違います") if self.service.request_form != self.request_form
+      errors.add(:request_form, "質問形式が違います") if self.service.request_form != self.request_form
     end
   end
 
   def validate_delivery_form
     if self.service
-      errors.add(:delivery_form, "が違います") if self.service.delivery_form != self.delivery_form
+      errors.add(:delivery_form, "回答形式が違います") if self.service.delivery_form != self.delivery_form
     end
   end
 
   def validate_delivery_days
     if self.delivery_days && self.will_save_change_to_suggestion_acceptable_duration?
-      errors.add(:delivery_days, "は30日以内に設定して下さい") if self.acceptable_duration_in_days > 30
-      errors.add(:delivery_days, "は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
+      errors.add(:delivery_days, "募集期限は30日以内に設定して下さい") if self.delivery_days.to_i > 30
+      errors.add(:delivery_days, "募集期限は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
   end
 
@@ -565,6 +540,30 @@ class Request < ApplicationRecord
     else
       false
     end
+  end
+
+  def has_pure_image
+    self.items.any? { |item| !item.is_text_image } #N+1回避のためwhereを使わない
+  end
+
+  def has_text_image
+    self.items.any? { |item| item.is_text_image } #N+1回避のためwhereを使わない
+  end
+
+  def has_only_text_image?
+    return false if saving_text_image_item.blank?
+    return false if saving_items.count > 1
+    return self.item.file.present? || self.item.file_tmp.present?
+  end
+
+  def saving_text_image_item
+    return nil unless self.item&.is_text_image
+    return nil if self.item&.marked_for_destruction?
+    self.item
+  end
+
+  def saving_items
+    self.items.reject(&:marked_for_destruction?)
   end
 
   def file_field_display_style

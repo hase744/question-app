@@ -1,3 +1,4 @@
+@import "_variables";
 .home_show_zone{
     .home_label{
         margin-bottom: 0px;
@@ -6,11 +7,16 @@
         margin-top: 5px;
         .detail_link{
             //float: right;
+            font-weight: bold;
             position: absolute;
-            bottom: 0;
+            bottom: 5px;
             right: 5px;
             text-decoration: none;
             font-size: 15px;
+        }
+        .detail_link:hover{
+            text-decoration: underline;
+            color: $link_text_color;
         }
     }
     @media(min-width: 1000px){
@@ -186,10 +192,11 @@
             height: calc(100% - 70px);
             margin: 5px 5px 5px 5px;
             border-radius: 5px;
-            //background-color: white;
             border: 1px solid lightgray;
-            //box-shadow: 0 0 2px lightgray;
-            .link_area{
+            .category_link_area{
+                display: inline-block;
+            }
+            .category_link_area{
                 width: calc(100% - 20px);
                 display: inline-block;
             }
@@ -201,7 +208,6 @@
                 display: inline-block;
                 width: 20px;
                 height: 10px;
-                //background-color: red;
             }
             label{
                 font-size: 17px;

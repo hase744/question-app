@@ -1,4 +1,4 @@
-class FileUploader < CarrierWave::Uploader::Base
+class FileUploader < UploaderBase
   include CarrierWave::MiniMagick
   include ::CarrierWave::Backgrounder::Delay
   # Include RMagick or MiniMagick support:
@@ -17,7 +17,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   version :thumb, if: :is_image? do
-    process resize_to_fit: [300, nil]
+    process resize_to_fit: [250, nil]
     process convert: 'jpg'
 
     def full_filename(for_file)

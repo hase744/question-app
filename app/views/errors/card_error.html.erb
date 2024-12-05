@@ -9,5 +9,5 @@
     <p><%= "Param is: #{@error_log.error.param}" if @error_log.error.param%></p>
     <p><%= "Status is: #{@error_log.http_status}"%></p>
     <p><%= "Message is: #{@error_log.error.message}" if @error_log.error.message%></p>
-    <p>エラーID:<%=@error_log.id%></p>
+    <p>エラーID:<%=@error_log.uuid%></p>
 </div>

@@ -1,21 +1,23 @@
-<div class="category_selector">
-    <span class="category_button">
-        <%= Category.find_by(name: params[:categories])&.japanese_name || "全てのカテゴリー " %>
-        <span class="fa-solid fa-angle-down"></span>
-    </span>
-    <div class="modal_window category_modal">
-        <div class="modal_background"></div>
-        <div class="modal_window_body">
-            <label>カテゴリ一覧</label>
-            <div class="category_link_area">
-                <div class="category_link_flame">
-                    <% Category.hash_tree[:categories].each do |category| %>
-                        <%= render "user/shared/category_link", category:category, link: link %>
-                    <% end %>
+<div class="select_form_area category_selector_area">
+    <div class="category_selector category_selector_area">
+        <span class="category_select_button">
+            <%= Category.find_by(name: params[:category_names])&.japanese_name || "全てのカテゴリー " %>
+            <span class="fa-solid fa-angle-down"></span>
+        </span>
+        <div class="modal_window category_modal">
+            <div class="modal_background"></div>
+            <div class="modal_window_body">
+                <label>カテゴリ一覧</label>
+                <div class="category_link_area">
+                    <div class="category_link_flame">
+                        <% Category.hash_tree[:categories].each do |category| %>
+                            <%= render "user/shared/category_link", category:category, link: link %>
+                        <% end %>
+                    </div>
                 </div>
-            </div>
-            <div class="modal_delete_area">
-                <p class="modal_delete">閉じる</p>
+                <div class="modal_delete_area">
+                    <p class="modal_delete">閉じる</p>
+                </div>
             </div>
         </div>
     </div>
@@ -26,8 +28,8 @@ $(function(){
     //$('a:not([data-method])').on('click', function(event) {
     //    //event.stopPropagation();
     //});
-    $('.category_button').on('click', function(){
-        $('.category_modal').addClass("open");
+    $('.category_select_button').on('click', function(){
+        $(this).next(".category_modal").addClass("open");
     });
     $('.modal_delete').on('click', function(){
         $('.modal_window').removeClass("open");

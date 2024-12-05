@@ -1,7 +1,6 @@
 @import "variables";
 .user_show_zone{
     display: block;
-    
     margin-top: 20px;
     border-radius: 10px;
     .user_profile_area{
@@ -16,10 +15,16 @@
             z-index: 1px;
             width: 100%;
             position: relative;
+            @function header_image_height() {
+                //幅が400pxの時に大きさが150pxになるように調整
+                @return clamp(150px, calc(100vw * (150 / 400)), 200px);
+            }
+            $header_image_height: header_image_height();
             .header_image_area{
                 border-radius: 10px;
                 margin-top: 0px;
                 background-color: $text_yellow;
+                height: $header_image_height;
                 .header_image{
                     width: 100%;
                     height: 100%;
@@ -29,9 +34,20 @@
             .last_login_area{
                color: gray; 
             }
+            @function user_image_height() {
+                //幅が400pxの時に上から1000pxになるように調整
+                @return clamp(70px, calc(100vw * (100 / 400)), 100px);
+            }
+            $user_image_height: user_image_height();
             .user_image_area{
+                position: absolute;
+                top: calc(#{$header_image_height} - (#{$user_image_height} / 2));
+                left: clamp(10px, calc(100vw * (30 / 400)), 30px);
                 .user_image{
                     object-fit: cover;
+                    height: $user_image_height;
+                    width: $user_image_height;
+                    border-radius: $user_image_height;
                 }
             }
             .user_edit_area{
@@ -57,58 +73,6 @@
             border: 1px solid white;
             padding: 0 10px;
             transition: .5s;
-            .youtube_video_area{
-                width: 100%;
-                .youtube_video{
-                    width: 100%;
-                }
-            }
-        }
-        .user_profile_menu{
-            display: flex;
-            white-space: nowrap;
-            //-webkit-overflow-scrolling: touch;
-            overflow-y: hidden;
-            li{
-                margin-bottom: 0px;
-                text-align: center;
-                color: gray;
-                display: inline-block;
-                vertical-align: middle;
-                
-                height: 40px;
-                line-height: 40px;
-                
-                min-width: 100px;
-            }
-            li:hover{
-                cursor: pointer;
-                border-radius: 5px 5px 0px 0px;
-            }
-            .user_content_link{
-                height: 40px;
-                padding: 13px 17px;
-                text-decoration: none;
-                color: gray;
-            }
-            .gray{
-                border-bottom: none;
-                a{
-                    color: gray;
-                }
-            }
-            .blue{
-                border-bottom: 2px solid blue;
-                a{
-                    color: blue;
-                }
-            }
-            .gray:hover .user_content_link{
-                color: darkgray;
-            }
-            .user_content_link:hover{
-                cursor: pointer;
-            }
         }
     }
     .user_detail{
@@ -120,195 +84,71 @@
         display: none;
     }
 }
-@media(max-width: 100000px){
-    .user_show_zone{
-        margin: 0;
-        width: 100%;
-        .user_profile_area{
-            .header_image_area{
-                @media(max-width:400px){
-                    height: 150px;
-                }
-                @media(min-width:400px){
-                    height: 200px;
-                }
-                width: 100%;
+.user_show_zone{
+    margin: 0;
+    width: 100%;
+    .user_profile_area{
+        .header_image_area{
+            width: 100%;
+        }
+        .header_image_area{
+            .header_image{
+                border-radius:10px 10px 0px 0px;
             }
-            .header_image_area{
-                .header_image{
-                    border-radius:10px 10px 0px 0px;
-                }
+        }
+        
+        .last_login_area{
+            font-size: 15px;
+            font-weight: lighter;
+            color: gray;
+            display: inline-block;
+        }
+        .last_login1{
+            display: none;
+        }
+        .user_edit_area{
+            text-align: right;
+            margin-top: 10px;
+            margin-right: 10px;
+            .user_edit:hover{
+                background-color: lightgray;
             }
-            @media(max-width:400px){
-                .user_image_area{
-                    position: absolute;
-                    top:110px;
-                    left: 10px;
-                    .user_image{
-                        height: 70px;
-                        width: 70px;
-                        border-radius: 35px;
-                        object-fit: cover;
-                    }
-                }
+        }
+        .user_edit2{
+            display: none;
+        }
+        .user_name_area{
+            margin-left: 10px;
+            margin-right: 10px;
+            .user_name{
+                margin: 0px;
             }
-            @media(min-width:400px){
-                .user_image_area{
-                    position: absolute;
-                    top:150px;
-                    left: 30px;
-                    .user_image{
-                        height: 100px;
-                        width: 100px;
-                        border-radius: 50px;
-                    }
-                }
+        }
+        .specifics_area{
+            margin: 5px;
+            font-size: 20px;
+            .specific{
+                margin-right: 15px;
             }
-            
-            .last_login_area{
+            .star{
+                font-size: 16px;
+            }
+            .unit{
                 font-size: 15px;
-                font-weight: lighter;
-                color: gray;
-                display: inline-block;
-                .last_login_name{
-                    
-                }
-            }
-            .last_login1{
-                display: none;
-            }
-            .user_edit_area{
-                text-align: right;
-                margin-top: 10px;
-                margin-right: 10px;
-                .user_edit:hover{
-                    background-color: lightgray;
-                }
-            }
-            .user_intro_area{
-                .youtube_video_area{
-                    display: inline-block;
-                    width: 100%;
-                    float: left;
-                    .youtube_video{
-                        width: 100%;
-                        height: 300px;
-                    }
-                }
-                
-            }
-            .user_profile_menu{
-                display: block;
-            }
-            .user_edit2{
-                display: none;
-            }
-            .user_name_area{
-                margin-left: 10px;
-                margin-right: 10px;
-                height: 40px;
-                .user_name{
-                    margin: 0px;
-                }
-            }
-            .specifics_area{
-                margin: 5px;
-                font-size: 20px;
-                .specific{
-                    margin-right: 15px;
-                }
-                .star{
-                    font-size: 16px;
-                }
-                .unit{
-                    font-size: 15px;
-                }
-            }
-            .category_area{
-                margin: 5px 10px;
-            }
-            .user_basic_info{
-                margin-left: 10px;
-                .user_info_table{
-                    @media(max-width:400px){
-                    }
-                    @media(min-width:400px){
-                    }
-                    width: auto;
-                    .user_info{
-                    }
-                }
-            }
-            .description_area{
-                margin: 0px 5px;
-            }
-            
-        }
-    }
-}
-@media(min-width: 100000px){
-    .user_show_zone{
-        .user_profile_area{
-            .user_info_image{
-                height: 220px;
-                .header_image_area{
-                    .header_image{
-                        border-radius:0px 10px 0px 0px;
-                    }
-                }
-                .user_image_area{
-                    display: inline-block;
-                    height: 220px;
-                    width: 120px;
-                    float: left;
-                    .user_image{
-                        margin: 10px;
-                        object-fit: cover;
-                    }
-                }
-                .last_login_area{
-                    display: block;
-                    margin-left: 10px;
-                    width: 100px;
-                    text-align: center;
-                }
-                .last_login2{
-                    display: none;
-                }
-                .user_name_area{
-                    padding-top: 5px;
-                    .user_name{
-                        margin-top: 10px;
-                        margin-bottom: 0px;
-                    }
-                }
-                .user_basic_info{
-                    margin-left: 120px;
-                    .user_info_table{
-                        max-width: 300px;
-                        width: calc(50% - 80px);
-                    }
-                }
-            }
-            .header_image_area{
-                height: 220px;
-                width: 50%;
-                float: right;
-            }
-            .user_edit_area{
-                margin-top: 10px;
-                height: 70px;
-            }
-            .user_intro_area{
-                .youtube_video_area{
-                    display: inline-block;
-                    width: 50%;
-                    .youtube_video{
-                        width: 100%;
-                        height: auto;
-                    }
-                }
             }
         }
+        .category_area{
+            margin: 5px 10px;
+        }
+        .user_basic_info{
+            margin-left: 10px;
+            .user_info_table{
+                width: auto;
+            }
+        }
+        .description_area{
+            margin: 0px 5px;
+        }
+        
     }
 }

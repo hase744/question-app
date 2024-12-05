@@ -3,7 +3,7 @@
 <%= render "user/shared/error_message", model: @transaction %>
 <%= render "user/shared/error_message", model: @service%>
 <%= render "user/shared/error_message", model: current_user%>
-<%if @service_exist %>
+<%if @service %>
   <h3 class="service_new_title"><%=@service.user.name%>へ質問を作成</h3>
   <% if @transaction.is_suggestion %>
     <%= render "user/services/suggestion_cell", service:@service, transaction: @transaction %>
@@ -18,7 +18,7 @@
 <div class="request_preview_zone">
 	<div class="service_new_zone">
 	    <div class="service_new_area input_area">
-	    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
+	    	<%= form_with model: @request, url: user_request_publish_path, method:"post" do |f| %>
 	    	    <div class="field_area">
 	    	      	<%= f.label :title, class:"field_label"%><br/>
 	    	      	<h3 class="request_content"><%=@request.title %></h3>
@@ -41,11 +41,11 @@
 			
 	    	    <div class="video_field_area" id="video_field_area">
 	    	    <%= f.label :file, class:"field_label" %><br />
-	    	      	<%if @request.use_youtube%>
+								<!--
 	    	            <div id="youtube_area">
-	    	              	<iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/<%=@request.youtube_id%>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	    	              	<iframe class="youtube_video 16_to_9" src="https://www.youtube.com/embed/" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 	    	            </div>
-	    	        <% end %>
+										-->
 	    	        <div class="field_area" id="file_field_area">
 	    	            <% if @request.request_form_name == "image" || @request.request_form_name == "free"%>
 	    	              	<% @request.items.each.with_index do |item, index| %>
@@ -77,7 +77,7 @@
 	    	      <%= f.label :delivery_form, class:"field_label" %><br /><h3 class="request_content"><%=@request.delivery_form.japanese_name%></h3>
 	    	    </div>
 							
-	    	    <% if !@service_exist%>
+	    	    <% unless @service%>
 	    	    <div class="field_area">
 	    	        <%= f.label :max_price, class:"field_label"%><br/>
 	    	        <h3 class="request_content"><%=@request.max_price%>円</h3>
@@ -89,7 +89,6 @@
 	    	    </div>
 	    	    <% end %>
 	    	<% end %>
-							
 	    	    <% if @transaction && @transaction&.price > 0 %>
 					<% if current_user.coupons.usable(@transaction&.price).present? %>
 	    	    	<div class="field_area">
@@ -122,6 +121,8 @@
 							<%= render "user/coupons/modal_window", price: @transaction.price %>
 						<% end %>
 	    	    	</div>
+
+                    <%= render "user/payments/price_table" %>
 	    	    <% end %>
 							
 	    	    <div class="submit_area">
@@ -134,70 +135,46 @@
 					<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
 	    		</div></br>
 	    	<% end %>
-	    	<%= form_with model: @request, url: @path, method:"post" do |f| %>
-	    	    <div class="submit_area">
-	    	      	<%= f.hidden_field :transaction_id %>
-	    	      	<%= f.file_field  :file, id:"file_input", class:"display_none" %>
-	    	    	<%= f.hidden_field :service_id, value: @service&.id %>
-	    	      	<%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
-	    	    </div>
-	    	<% end %>
+	    	<div class="submit_area">
+				<%if @deficient_point && @deficient_point > 0 %>
+					<div class="big_submit" id="payment_modal_button"><%= @submit_text %></div>
+					<script>
+					$('#payment_modal_button').on('click',function() {
+					  	$('.payment_modal').addClass('open');
+					});
+					</script>
+				<% else %>
+	    			<%= form_with model: @request, url: user_request_publish_path, method:"post" do |f| %>
+	    		    <%= f.hidden_field :transaction_id %>
+	    		    <%= f.file_field  :file, id:"file_input", class:"display_none" %>
+	    		    <%= f.hidden_field :service_id, value: @service&.id %>
+	    		    <%= f.submit @submit_text, class:"big_submit", id:"submit", data: {confirm: "#{@submit_text}しますか？"} %>
+	    			<% end %>
+				<% end %>
+	    	</div>
 	    </div>
 	</div>
-<div class="text_image_area">
-	<% if @transaction %>
-		<script>
-			<%= render "user/pre_purchase_inquiries/modal.js.erb" %>
-		</script>
-	<% end %>
 	<%if @request.need_text_image? %>
-		<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-		<%= render "/user/images/description.html.erb",title: @request.title, text:@request.description, image_width: 500%>
-		<div id="canvas-container"></div>
-		<script>
-		<%= render 'user/images/description.js.erb',title: @request.title, text: @request.description, image_width: 500, user_name: current_user.name %>
-		</script>
-		<style>
-		<%= render 'user/images/description.css.erb', text: @request.description, image_width: 500, font_size: @request.description_font_size(500) %>
-		</style>
-</div>
-<script>
-try{
-  let isLoaded = false;
-  window.addEventListener('load', (event) => {
-    isLoaded = true;
-    if(<%=@request.need_text_image?%>){
-	  create_description_image();
-    }
-  })
-  // タイムアウトの設定
-  const timeout = setTimeout(() => {
-    if (!isLoaded) {
-      location.reload();
-      console.error("ページのロードがタイムアウトしました");
-      // タイムアウト時の処理をここに追加
-    }
-  }, 5000); // 5秒のタイムアウト
-
-  // タイムアウトをクリアするための処理
-  window.addEventListener('unload', () => {
-    //service/showからrequest/previeに遷移するWindowのロードに失敗する
-    clearTimeout(timeout);
-  });
-  //create_description_imageでイメージが生成されない時の臨時処理としてリロードする処理
-  function reload_description_image(){
-      if($("#desctiption_to_image_text").css("display") == "none"){
-      }else{
-          window.location.reload();
-      }
-  }
-  if("<%=@request.request_form_name%>" == "text"){
-      //window.setTimeout(reload_description_image, 5000);
-  }
-}catch(e){
-  console.log(`エラー：${e}`)
-  window.location.reload();
-}
-</script>
-<% end %>
+		<div class="text_image_area">
+			<%= render "/user/images/description.html.erb", 
+				title: @request.title, text:@request.description, 
+				image_width: 500%>
+			<div id="canvas-container"></div>
+			<script>
+				<%= render "user/shared/javascript/html2canvas.js.erb" %>
+				<%= render 'user/images/description.js.erb', 
+					title: @request.title, text: @request.description, 
+					image_width: 500, user_name: current_user.name %>
+			</script>
+			<style>
+			<%= render 'user/images/description.css.erb', 
+				text: @request.description, image_width: 500, 
+				font_size: @request.description_font_size(500),
+				donwlaod_font: false %>
+			</style>
+		</div>
+	<script>
+		<%= render "user/requests/preview.js.erb" %>
+	</script>
+	<% end %>
 </div>

@@ -16,6 +16,9 @@
   	a{
 		color: blue;
   	}
+  	a:hover{
+		color: blue;
+  	}
 
   	.sidebar {
 		background-color: #333;
@@ -25,6 +28,7 @@
 		padding: 0px 20px;
 		display: flex;
 		flex-direction: column;
+		overflow-x: scroll;
   	}
 
   	.main_area{
@@ -103,6 +107,9 @@
 		border: 1px solid #ccc;
 		border-radius: 4px; /* ここに丸みを追加 */
   	}
+	input[type="file"] {
+		margin-bottom: 10px;
+	}
   	textarea{
 		width: calc(100% - 22px);
 		padding: 10px;
@@ -192,12 +199,6 @@
 		}
 		.common{
 		  padding: 10px;
-		}
-		.container {
-			margin: 10px;
-		  width: calc(100% - 20px);
-		    //margin: 20px;
-		    //width: auto; /* コンテナの幅を自動調整に */
 		}
   	}
 

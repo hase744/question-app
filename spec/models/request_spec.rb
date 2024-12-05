@@ -13,19 +13,19 @@ RSpec.describe Request, type: :model do
       it 'max_priceが設定されていない場合は無効' do
         request.max_price = nil
         expect(request).not_to be_valid
-        expect(request.errors[:max_price]).to include("を設定してください")
+        expect(request.errors[:max_price]).to include("予算を設定してください")
       end
 
       it 'max_priceが最低値を下回る場合は無効' do
         request.max_price = 50
         expect(request).not_to be_valid
-        expect(request.errors[:max_price]).to include("は100円以上に設定して下さい")
+        expect(request.errors[:max_price]).to include("予算は100円以上に設定して下さい")
       end
 
       it 'max_priceが上限を超える場合は無効' do
         request.max_price = 20000
         expect(request).not_to be_valid
-        expect(request.errors[:max_price]).to include("は10000円以下に設定して下さい")
+        expect(request.errors[:max_price]).to include("予算は10000円以下に設定して下さい")
       end
     end
 

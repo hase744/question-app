@@ -15,7 +15,7 @@ class Payment < ApplicationRecord
     self.point ||= self.value
   end
 
-  def self.point_options
+  def point_options
     (100.. Request.new.max_price_upper_limit)
       .step(100)
       .map { |num| ["#{num}p", num] }

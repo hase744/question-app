@@ -19,13 +19,15 @@
                         </div>
                     <% end %>
                     <%= render "user/shared/description_text_image", request: @transaction.request %>
-                    <%if @transaction.request.has_pure_image %>
-                        <% @transaction.request.items.each do |item| %>
-                            <%= link_to(item.file.url, class: 'item_link') do %>
-                                <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
+                    <div class="image_area">
+                        <%if @transaction.request.has_pure_image %>
+                            <% @transaction.request.items.each do |item| %>
+                                <%= link_to(item.file.url, class: 'item_link') do %>
+                                    <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
+                                <% end %>
                             <% end %>
                         <% end %>
-                    <% end %>
+                    </div>
                 </div>
             </div>
         </div>
@@ -72,13 +74,13 @@
                 <h2 class="title transaction_title"><%=@transaction.title%></h2>
                 <hr>
                 <div class="description_area"><%= @transaction.description%></div>
-
-
+                <div class="image_area">
                 <% @transaction.items.each do |item| %>
                     <%= link_to(item.file.url, class: 'item_link') do %>
                         <%= image_tag item.file.url, class:"image" if item.file.is_image? %>
                     <% end %>
                 <% end %>
+                </div>
                 <div class="like_share_area">
                     <div class="like_area">
                         <div class="like_flame">

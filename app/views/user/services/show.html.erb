@@ -44,24 +44,6 @@
                         <% end %>
                     </div>
                 </div>
-                <!--
-                <% if @service.user == current_user%>
-                    <div class="edit_delete_area">
-                        <%if @service.is_inclusive%>
-                            <%= link_to "編集", edit_user_service_path(@service.id), class:"edit" %>
-                        <% else %>
-                            <%= link_to "編集", edit_user_service_path(@service.id, request_id:@service.requests.first.id), class:"edit" %>
-                        <% end %>
-                        <%= link_to "削除", user_service_path(@service.id), method: "delete", class:"delete", data: {confirm: "サービスを削除しますか？。"}  %>
-                    </div>
-                <% else %>
-                    <div class="like_area">
-                        <%= link_to(user_service_likes_path(id: @service.id), class: "like_button liked_button", id:"like_button", method: :post, remote:true) do%>
-                            <span class="far fa-heart" ></span>&nbsp;お気に入り　　<span id="like_count"><%=@service.total_likes%></span>&nbsp;
-                        <% end %>
-                    </div>
-                <% end %>
-                    -->
                 <div class="condition_label">
                     <%= render "user/shared/small_label", text:"条件"%>
                 </div>
@@ -244,6 +226,7 @@
                 <% end %>
                 -->
                 <% if @transaction&.suggestion_buyable(current_user) %>
+                    <%= render "user/payments/price_table" %>
                     <div class="transaction_button_area">
         	            <div class="open_button transaction_button">購入前に質問</div>
                     </div>
@@ -251,21 +234,7 @@
                 <%= render "/user/shared/small_share_buttons"%>
             </div>
             <% if !@service.request.present?%>
-                <div class="service_info_menu" id="request_ajax_update">
-                    <% @bar_elements.each do |element| %>
-                        <% 
-                        if current_nav_item == element[:item]
-                            puts "現在#{current_nav_item}"
-                            additional_class = "blue"  
-                        else
-                            additional_class = "gray"
-                        end
-                        %>
-                        <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
-                            <%= link_to element[:japanese_name], user_service_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
-                        </li>
-                    <% end %>
-                </div>
+                <%= render "user/shared/common_navigation_bar", link: ->(element) {user_service_path(params[:id], nav_item:element[:item])} %>
             <% end %>
         </div>
         <div class="service_hitsory" id="updated_by_ajax">
@@ -286,7 +255,16 @@
 </div>
 <%= render "user/services/bottom_area" do %>
     <% if @transaction&.suggestion_buyable(current_user) %>
-        <%= link_to "購入", user_request_purchase_path(transaction_id: @transaction.id), method: :post, data: { confirm: "購入しますか？" }, class: "bottom_button transaction_button" %>
+	    <%if @deficient_point && @deficient_point > 0 %>
+	    	<div class="bottom_button transaction_button" id="payment_modal_button">購入</div>
+	    	<script>
+	    	$('#payment_modal_button').on('click',function() {
+	    	  	$('.payment_modal').addClass('open');
+	    	});
+	    	</script>
+        <% else %>
+            <%= link_to "購入", user_request_purchase_path(transaction_id: @transaction.id), method: :post, data: { confirm: "購入しますか？" }, class: "bottom_button transaction_button" %>
+        <% end %>
     <% elsif !@transaction&.is_suggestion %>
         <%= link_to new_user_request_path(service_id: @service.id), class: "bottom_button transaction_button" do %>
             質問を作成
@@ -294,7 +272,7 @@
     <% end %>
 <% end %>
 <% if @transaction&.suggestion_buyable(current_user) %>
-<%= render "user/shared/pre_inquery_modal", transaction: @transaction %>
+<%= render "user/pre_purchase_inquiries/modal", transaction: @transaction %>
 <script>
 pre_inquery_modal = $('.pre_inquery_modal');
 modal = $('.modal_window');

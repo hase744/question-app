@@ -1,15 +1,15 @@
 class User::ServicesController < User::Base
   before_action :check_login, only:[:new, :edit, :create, :update, :history]
-  before_action :define_service, only:[:show, :suggest]
+  before_action :define_service, only:[:show, :suggest, :edit, :update]
   before_action :check_published, only:[:show]
   before_action :define_transaction, only:[:show]
   before_action :define_request, except:[:transactions, :requests, :reviews]
   before_action :check_user_published, only:[:show]
-  before_action :check_request_valid, only:[:new, :create, :edit, :update]
+  #before_action :check_request_valid, only:[:new, :create, :edit, :update]
   before_action :check_can_create_service, only:[:new, :create, :edit, :update]
   #before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
-  before_action :check_can_suggest, only:[:new, :create]
-  before_action :check_account_description, only: [:new, :create, :edit, :update]
+  before_action :check_can_suggest, only:[:new, :create, :edit, :update]
+  before_action :check_service_valid, only:[:edit, :update]
   before_action :define_page_count
   after_action :update_total_views, only:[:show]
   layout :choose_layout
@@ -30,7 +30,7 @@ class User::ServicesController < User::Base
   def index
     @services = Service
       .seeable
-      .filter_categories(params[:categories])
+      .filter_categories(params[:category_names])
     @services = @services.where("services.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?
@@ -45,12 +45,12 @@ class User::ServicesController < User::Base
       @services = @services.where(is_for_sale: true)
     end
     #上限価格が入力されている
-    if params[:max_price] != nil && params[:max_price] != ""
-    @services = @services.where("price <= ?", "#{params[:max_price]}")
+    if params[:max_price].present?
+      @services = @services.where("services.price <= ?", "#{params[:max_price]}")
     end
     #下限価格が入力されている
-    if params[:mini_price] != nil && params[:mini_price] != ""
-      @services = @services.where("? <= price", "#{params[:mini_price]}")
+    if params[:mini_price].present?
+      @services = @services.where("? <= services.price", "#{params[:mini_price]}")
     end
     @services = @services.sorted_by(params[:order])
     @services = @services.page(params[:page]).per(24)
@@ -64,6 +64,12 @@ class User::ServicesController < User::Base
       @tweet_text = 
       "「稼げる相談サイト」コレテクの#{@service.user.name}さんの相談室はこちら。 気になる方は以下のリンクへ！"
     end
+
+    if @transaction
+      @deficient_point = [@transaction.required_points - current_user.total_points, 0].max
+      @payment = Payment.new(point: @deficient_point || 100)
+    end
+
     if @service.item&.file&.url
       $og_image = @service.item&.file&.url
     end
@@ -111,9 +117,6 @@ class User::ServicesController < User::Base
   end
 
   def edit
-    @service = Service.find_by(id: params[:id], user:current_user)
-    #@service.service_categories.build
-    #@service.category_id = @service.category.id
     @submit_text = '更新'
   end
 
@@ -123,7 +126,7 @@ class User::ServicesController < User::Base
     @service.total_views = 0
     if params.dig(:item, :file)
       @item = @service.items.new()
-      @item.process_file_upload = true
+      @item.process_file_upload = false
       @item.assign_attributes(file: params.dig(:item, :file)[0])
     end
     if @request
@@ -169,7 +172,6 @@ class User::ServicesController < User::Base
   end
   
   def update
-    @service = Service.find_by(id: params[:id], user:current_user)
     @service.assign_attributes(service_params)
     if params.dig(:item, :file).present?
       @item = @service.item
@@ -276,7 +278,7 @@ class User::ServicesController < User::Base
       notifier_id: current_user.id,
       controller: "services",
       action: "show",
-      title: "あなたの質問に相談室が提案されました",
+      title: "質問に相談室が提案されました",
       description: @transaction.service.title,
       id_number: @service.id,
       parameter: "?transaction_id=#{@transaction.id}"
@@ -315,23 +317,13 @@ class User::ServicesController < User::Base
     end
   end
 
-  private def check_can_sell_service
-    if !current_user.is_seller
-      redirect_to edit_user_configs_path
-      flash.notice = "回答者として登録してください"
-    elsif Service.where(user: current_user, request_id: nil).count > 10
-        redirect_to user_account_path(current_user.id)
-        flash.notice = "出品できるサービス数が上限に達しています。"
-    end
-  end
-
   private def check_can_create_service
     if !current_user.is_seller
-      redirect_to edit_user_configs_path
+      redirect_to edit_user_accounts_path
       flash.notice = "回答者として登録してください"
     elsif Service.where(user: current_user, request_id: nil).count > 10
         redirect_to user_account_path(current_user.id)
-        flash.notice = "出品できるサービス数が上限に達しています。"
+        flash.notice = "出品できる相談室数が上限に達しています。"
     end
   end
 
@@ -342,7 +334,11 @@ class User::ServicesController < User::Base
   end
 
   private def define_service
-    @service = Service.find(params[:id])
+    if ['edit','update'].include?(action_name)
+      @service = Service.find_by(id: params[:id], user: current_user)
+    else
+      @service = Service.find(params[:id])
+    end
   end
 
   private def define_transaction
@@ -364,8 +360,8 @@ class User::ServicesController < User::Base
   end
 
   private def check_request_valid
-    if !@request.present?
-    elsif @request.suggestion_deadline < DateTime.now || !@request.user.is_stripe_customer_valid?
+    return unless @request
+    if @request.suggestion_deadline < DateTime.now || !@request.user.is_stripe_customer_valid?
       flash.notice = "その依頼に対して提案できません。"
       redirect_back(fallback_location: root_path)
     end
@@ -376,6 +372,13 @@ class User::ServicesController < User::Base
     if message
       flash.notice = message
       redirect_to user_request_path(@request.id)
+    end
+  end
+
+  private def check_service_valid
+    if @service.is_disabled
+      flash.notice = "相談室が無効になため修正できません"
+      redirect_back(fallback_location: root_path)
     end
   end
 
@@ -398,13 +401,6 @@ class User::ServicesController < User::Base
     end
   end
 
-  def check_account_description
-    if current_user.description.nil? || current_user.description.length < 100
-      flash.notice = message = "プロフィールの自己紹介を100字以上入力してください"
-      redirect_to edit_user_accounts_path
-    end
-  end
-  
   private def service_params
     params.require(:service).permit(
       :title,

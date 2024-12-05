@@ -1,11 +1,11 @@
 <div id="user_profile" class="user_show_zone">
-<% if @user.is_seller%>
-<div class="main_header">
-    <%= link_to "", user_homes_path, class:"fas fa-home"%>
-     > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%>
-     > <%=@user.name%>
-</div>
-<% end %>
+    <% if @user.is_seller%>
+        <div class="main_header">
+            <%= link_to "", user_homes_path, class:"fas fa-home"%>
+             > <%= link_to "回答者一覧", user_accounts_path, class:"main_area_top_link"%>
+             > <%=@user.name%>
+        </div>
+    <% end %>
     <div class="user_profile_area">
         <div class="user_profile_introduction">
             <div class="user_info_image">
@@ -30,13 +30,13 @@
                 <div class="user_name_area">
                     <h2 class="user_name">
                         <%=@user.name%>
-                        <span class="last_login_area last_login2">
+                        <span class="last_login_area">
                             <% if @user.is_seller %>
                                 <span class="last_login_name">最終ログイン</span>
                             <% end %>
                             <span><%= from_now(@user.last_login_at)%></span>
                         </span>
-                    </h2 class="user_name">
+                    </h2>
                 </div>
                 <% if @user.is_seller %>
                     <div class="specifics_area">
@@ -69,22 +69,7 @@
             <span></span>
             
             <%= render "user/shared/description", text:@user %>
-            <div class="user_profile_menu" id="request_ajax_update">
-                <% @bar_elements.each do |element| %>
-                    <% unless !@user.is_seller && element[:for_seller] %>
-                        <% 
-                        if current_nav_item == element[:item]
-                            additional_class = "blue"  
-                        else
-                            additional_class = "gray"
-                        end
-                        %>
-                        <li class="menu_element <%=additional_class%>" item="<%=element[:item]%>">
-                            <%= link_to element[:japanese_name], user_account_path(params[:id], nav_item:element[:item]), remote: false, class:"user_content_link user_#{element[:item]}_link"%>
-                        </li>
-                    <% end %>
-                <% end %>
-            </div>
+            <%= render "user/shared/common_navigation_bar", link: ->(element) {user_account_path(params[:id], nav_item:element[:item])} %>
         </div>
     </div>
     

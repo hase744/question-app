@@ -61,7 +61,7 @@
                     font-size: 15px;
                     border-radius: 3px 3px 3px 3px;
                     color: white;
-                    background-color: orange;
+                    background-color: darkgrey;
                     box-shadow: 0 0 2px lightgray;
                     padding: 5px 10px;
                     //border-bottom: solid 4px #627295;
@@ -75,7 +75,7 @@
                 }
                 .transaction_button:hover{
                     cursor: pointer;
-                    background-color: #FFC700;
+                    background-color: lightgrey;
                     //border-bottom: solid 4px lightgray;
                 }
                 //.transaction_button:active {
@@ -132,52 +132,6 @@
                 @media (max-width: 1000px) {
                     display: block;
                 }
-            }
-        }
-        .service_info_menu{
-            display: flex;
-            overflow-x:scroll;
-            white-space: nowrap;
-            //-webkit-overflow-scrolling: touch;
-            overflow-y: hidden;
-            li{
-                margin-bottom: 0px;
-                text-align: center;
-                color: gray;
-                display: inline-block;
-                vertical-align: middle;
-                
-                height: 40px;
-                line-height: 40px;
-                
-                min-width: 100px;
-            }
-            li:hover{
-                cursor: pointer;
-            }
-            .gray{
-                border-bottom: none;
-                a{
-                    color: gray;
-                }
-            }
-            .blue{
-                border-bottom: 2px solid blue;
-                a{
-                    color: blue;
-                }
-            }
-            .gray:hover .user_content_link{
-                color: darkgray;
-            }
-            .user_content_link{
-                height: 40px;
-                padding: 13px 17px;
-                text-decoration: none;
-                color: gray;
-            }
-            .user_content_link:hover{
-                cursor: pointer;
             }
         }
     }

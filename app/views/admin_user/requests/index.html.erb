@@ -1,0 +1,8 @@
+<%= render "/admin_user/shared/index", 
+  	models: @requests, 
+  	column_names: ['id', 'user_id', 'title', 'price', 'is_disabled'],
+	show_exist: true,
+	delete_exist: false,
+	edit_exist: true,
+	links: -> (model){ []}
+  	%>

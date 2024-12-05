@@ -1,0 +1,30 @@
+<div class="payment_show_area">
+	<div class="payment_show_flame input_area">
+		<% if @deficient_point && @deficient_point > 0%>
+		<div style='color: darkred;'><%=@deficient_point%>ポイント不足しています</div>
+		<% end %>
+		<h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
+		<h3 class="point_description">１p = １円</h3>
+		<%= form_with model: @payment, url: user_payments_path, method:"POST", id:"form",class:'field_area', onSubmit:"return check()"  do |f|%>
+		    <label>購入するポイント</label></br>
+		    <div class="input_field select_area">
+		        <%=f.select :value, options_for_select(@payment.point_options, selected: @payment.point), id:"payment_value"%>
+		    </div>
+		    <h3 class="point_sum">料金：<span id="value_display"><%=@payment.point %></span>円</h3>
+		    <div class="refund_label">※返金不可</div>
+		    <div class="submit_area">
+		        <%= f.submit "購入", class:"big_submit", onSubmit:"return submitCheck()", data: {confirm: "購入しますか？\n返金はできません"} %>
+		    </div>
+		<% end %>
+	</div>
+</div>
+<script>
+//購入するポイントがが変更された
+$("#payment_value").change(function(){
+    console.log($(this).val())
+    $("#value_display").html(`${$(this).val()}`)
+    $("#payment_point").val(`${$(this).val()}`)
+    console.log($("#payment_point").val(`${$(this).val()}`))
+})
+<%= render "user/shared/javascript/common_table.js.erb" %>
+</script>

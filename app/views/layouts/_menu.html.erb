@@ -66,7 +66,7 @@
                 </span>
 
                 <span id="sales_results_field_area" class="account_search_field">
-                    <p>回答数</p>
+                    <label>回答数</label></br>
                     <div class="select_area">
                         <%= f.select 'total_sales_numbers', options_for_select((0..100).step(1).map { |num| ["#{num}件以上", num] }, selected: 0), include_blank: true,  class:"sales_results" ,required: true %>
                     </div>
@@ -74,19 +74,19 @@
                 </span>
 
                 <span id="price_field_area" class="request_search_field service_search_field">
-                    <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br/>
+                    <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label></br>
                     <%= render "user/shared/form/request_form", f:f%>
                     </br></br>
                 </span>
 
                 <span id="price_field_area" class="request_search_field service_search_field">
-                    <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br/>
+                    <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label></br>
                     <%= render "user/shared/form/delivery_form", f:f%>
                     </br>
                 </span>
 
                 <span id="price_field_area" class="service_search_field">
-                    <br/>
+                    </br>
                     <span class="checkbox_area"><%= f.check_box :is_available, checked:params[:is_available]=="1", class:"checkbox"%>
                         <label class="field_label">受付中</label>
                     </span>
@@ -94,35 +94,32 @@
                 </span>
 
                 <span class="service_search_field sort_search_field">
-                    <br/><label class="field_label">並び替え</label><br/>
+                    </br><label class="field_label">並び替え</label></br>
                     <%= render "user/shared/form/service_sort_form", f:f%>
                     </br>
                 </span>
 
                 <span class="request_search_field sort_search_field">
-                    <br/><label class="field_label">並び替え</label><br/>
+                    </br><label class="field_label">並び替え</label></br>
                     <%= render "user/shared/form/request_sort_form", f:f%>
-                    </br>
+                    </br></br>
                 </span>
 
                 <span class="transaction_search_field sort_search_field">
-                    <br/><label class="field_label">並び替え</label><br/>
+                    </br><label class="field_label">並び替え</label></br>
                     <%= render "user/shared/form/transaction_sort_form", f:f%>
                     </br>
                 </span>
 
                 <span class="account_search_field sort_search_field">
-                    <br/><label class="field_label">並び替え</label><br/>
+                    </br><label class="field_label">並び替え</label></br>
                     <%= render "user/shared/form/account_sort_form", f:f%>
                     </br>
                 </span>
 
-                
                 <span id="category_field_area" class="request_search_field service_search_field account_search_field transaction_search_field">
-                    <p>カテゴリー</p>
-                    <div>
+                    <label>カテゴリー</label></br>
                     <%= render "layouts/form_category", f:f, model: "all"%>
-                    </div>
                     </br>
                 </span>
             </div>

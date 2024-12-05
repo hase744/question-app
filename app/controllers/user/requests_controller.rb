@@ -30,7 +30,7 @@ class User::RequestsController < User::Base
   def index
     @requests = Request.includes(:user)
       .suggestable
-      .filter_categories(params[:categories])
+      .filter_categories(params[:category_names])
     @requests = @requests.where("requests.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
 
     if params[:request_form].present?
@@ -86,7 +86,6 @@ class User::RequestsController < User::Base
   def new
     if params[:request]
       @request = Request.new(request_params)
-      @request.set_item_values
     else
       @request = Request.new(service_id:params[:service_id])
       @request.request_categories.build
@@ -96,16 +95,11 @@ class User::RequestsController < User::Base
 
   def edit
     @request.service = @transaction&.service if @transaction
-    @request.set_item_values
     @request.request_categories.build
     @request.items.build
   end
 
   def preview
-    if @transaction
-      @request.service = @transaction.service
-    end
-    @request.set_item_values
     set_preview_values
   end
 
@@ -167,57 +161,40 @@ class User::RequestsController < User::Base
     end
   end
 
-  def save_request_and_item
-    if @request_item
-      if @request.save && @request_item.save
-        true
-      else
-        false
-      end
-    else
-      if @request.save
-        true
-      else
-        false
-      end
-    end
-  end
-
   def publish
     @request.set_publish
     if @request.need_text_image?
-      @item = @request.items.new()
+      @item = @request.build_item
       @item.process_file_upload = false
-      @item.assign_attributes(file: params[:request][:file], is_text_image: true)
+      if params[:request][:file].present?
+        @item.assign_attributes(file: params[:request][:file], is_text_image: true)
+      else
+        html_content, css_content = generate_html_css_from_request(@request)
+        @item.assign_image_from_content(html_content, css_content)
+      end
     end
     if @transaction #サービスの購入である
       @request.service = @service
-      if save_item && create_contract #validationのため、先に文章画像を保存
+      if create_contract #validationのため、先に文章画像を保存
         redirect_to user_request_path(@request.id, @parameters)
+        return
       else
-        @item&.delete_temp_file
-        @item&.destroy
-        render "user/requests/preview"
+        flash.notice = "購入できませんでした。"
       end
     else #公開依頼のとき
-      @request.suggestion_deadline = Time.now + @request.suggestion_acceptable_duration
-      if save_item && @request.save
+      if save_models_at_once
         flash.notice ="質問を公開しました"
         redirect_to user_request_path(@request.id, @parameters)
+        return
       else
-        detect_models_errors([@transaction, current_user, @request, @service, @request_item])
-        @item&.delete_temp_file
-        @item&.destroy
         flash.notice = "公開できませんでした。"
-        @request.set_item_values
-        set_preview_values
-        render "user/requests/preview"
       end
     end
-  end
-
-  def save_item
-    @item ? @item.save : true
+    detect_models_errors([@transaction, current_user, @request, @service, @request_item])
+    #@item&.delete_temp_file
+    #@item&.destroy
+    set_preview_values
+    render "user/requests/preview"
   end
 
   def purchase
@@ -226,30 +203,6 @@ class User::RequestsController < User::Base
       redirect_to user_request_path(@request.id)
     else
       render  "user/services/show"
-    end
-  end
-
-  def create_contract
-    @transaction.set_contraction
-    @transaction.build_coupon_usages
-    @request.set_service_values
-
-    ActiveRecord::Base.transaction do
-      if save_models
-        EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
-        create_notification
-        flash.notice = "購入しました。"
-        true
-      else
-        puts "失敗 #{@request.items.count}"
-        #flash.notice = "購入できませんでした。" +
-        #[@service.errors.full_messages,
-        # @request.errors.full_messages,
-        # @transaction.errors.full_messages].flatten.join("\n")
-        @request.set_item_values
-        set_preview_values
-        false
-      end
     end
   end
 
@@ -317,24 +270,42 @@ class User::RequestsController < User::Base
   
   def set_preview_values
     if @service
-      if @transaction.is_suggestion
-        @path = user_request_purchase_path(transaction_id: @transaction.id)
-      else
-        @path = user_request_publish_path
-      end
-      
       @submit_text = "購入"
-      @service_exist = true
+      @request.service = @transaction.service
+      @deficient_point = [@transaction.required_points - current_user.total_points, 0].max
+      @payment = Payment.new(point: @deficient_point || 100)
     else
-      @path = user_request_publish_path
       @submit_text = "公開"
-      @service_exist = false
     end
 
-    if !@request.is_inclusive
-      @edit_path = edit_user_request_path(@request.id, transaction_id:@transaction.id)
-    else
+    if @request.is_inclusive
       @edit_path = edit_user_request_path(@request.id)
+    else
+      @edit_path = edit_user_request_path(@request.id, transaction_id:@transaction.id)
+    end
+  end
+
+  private def create_contract
+    @transaction.set_contraction
+    @transaction.build_coupon_usages
+    @request.set_service_values
+    if save_models_at_once
+      EmailJob.perform_later(mode: :purchase, model: @transaction) if @transaction.seller.can_email_transaction
+      create_notification
+      flash.notice = "購入しました。"
+      true
+    else
+      false
+    end
+  end
+
+  private def save_models_at_once
+    ActiveRecord::Base.transaction do
+      if save_models
+        true
+      else
+        false
+      end
     end
   end
 
@@ -342,16 +313,12 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id: @service.user_id,
       notifier_id: current_user.id,
-      title: "あなたの相談室に相談が依頼されました",
+      title: "相談室に相談が質問が届きました",
       description: @request.title,
       action: "show",
       controller: "orders",
       id_number: @transaction.id
       )
-  end
-
-  private def email_mailer(request)
-    NotificationMailer.transaction(request)
   end
 
   private def create_payment
@@ -368,33 +335,12 @@ class User::RequestsController < User::Base
             destination: @service.user.stripe_account_id,
             }
     })
-    #Stripe::Transfer.create(
-    #  amount: @service.price,
-    #  curreny: 'jpy',
-    #  destination: @service.user.stripe_account_id
-    #)
-  end
-  
-  private def create_image_from_text
-    if @request.request_form.name == "text"
-      @text = @request.description
-      name = SecureRandom.hex
-      @request.file = new_image(name)
-      File.delete("./app/assets/images/#{name}.png")
-    end
-  end
-
-  private def new_image(name) #元々使っていたがライブラリの不具合で今は使っていない
-    erb = File.read('./app/views/user/images/answer.html.erb')
-    kit = IMGKit.new(ERB.new(erb).result(binding))
-    img = kit.to_img(:jpg)
-    kit.to_file("./app/assets/images/#{name}.png")
   end
 
   private def check_stripe_customer
-    unless current_user.is_stripe_customer_valid? || @transaction&.required_points == 0
-      redirect_to  user_cards_path
-    end
+    return if current_user.is_stripe_customer_valid? || @transaction&.required_points == 0
+    flash.notice = "クレジットカードを登録してください"
+    redirect_to  new_user_cards_path
   end
 
   private def define_transaction
@@ -410,7 +356,6 @@ class User::RequestsController < User::Base
         service_id: params[:request][:service_id], 
         request_id: params[:id]
         )
-    else
     end
   end
 
@@ -467,7 +412,7 @@ class User::RequestsController < User::Base
     return if @service.nil? 
     return if current_user.total_points >= @transaction.required_points
     @defficiency = @service.price - current_user.total_points
-    flash.notice = "残高が#{@defficiency}ポイント足りません"
+    flash.notice = "残高が#{@defficiency}ポイント不足しています"
     session[:payment_service_id] = @service.id
     session[:payment_transaction_id] = @transaction.id
     redirect_to user_payments_path(point:@defficiency)
@@ -518,8 +463,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :max_price,
       :image,
       :file_duration,
@@ -538,8 +481,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :max_price,
       :image,
       :file_duration,
@@ -564,8 +505,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :title,
       :description,
-      :use_youtube,
-      :youtube_id,
       :file,
       :thumbnail,
       :file_duration,
@@ -576,8 +515,6 @@ class User::RequestsController < User::Base
     params.require(:request).permit(
       :file,
       :thumbnail,
-      :use_youtube,
-      :youtube_id,
       :file_duration,
     )
   end

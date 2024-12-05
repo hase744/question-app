@@ -21,10 +21,7 @@ class User::CardsController < User::Base
   end
 
   def create
-    # トークンが生成されていなかった場合は何もせずリダイレクト
-    if params['stripeToken'].blank?
-      redirect_to user_cards_path
-    else
+    if params['stripeToken'].present?
       # 送金元ユーザのStripeアカウントを生成
       sender = Stripe::Customer.create({
           # nameとemailは必須ではないが分かりやすくするために載せている
@@ -32,25 +29,20 @@ class User::CardsController < User::Base
           email: current_user.email,
           source: params['stripeToken']
         })
-
+      @user = current_user
       if sender
         # Cardテーブルに送金元ユーザのこのアプリでのIDと、StripeアカウントでのIDを保存
-        puts sender
-        @user = current_user
         @user.stripe_card_id = sender.default_source
         @user.stripe_customer_id = sender.id
         if @user.save
-          redirect_to  user_cards_path
           flash.notice = "クレジットカードを登録しました。"
-        else
-          flash.notice = "クレジットカード登録に失敗しました。"
-          redirect_to new_user_cards_path
+          redirect_to user_cards_path
+          return
         end
-      else
-        flash.notice = "クレジットカード登録に失敗しました。"
-        redirect_to new_user_cards_path
       end
     end
+    flash.notice = "クレジットカード登録に失敗しました。"
+    redirect_to new_user_cards_path
   end
 
   def edit

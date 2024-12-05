@@ -5,7 +5,7 @@
             <ol class="step_area">
                 <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
                 <li class="step">②右上からサイドメニューを開く</li>
-                <li class="step">③「<%= link_to "取引中の依頼", user_orders_path%>」を選択</li>
+                <li class="step">③「<%= link_to "取引一覧", user_orders_path%>」を選択</li>
                 <%#= image_tag "/open_orders_index.png", class:"width_100"%>
                 <li class="step">④トップバーから「<%= link_to "納品前", user_orders_path(user: "seller", scope:"ongoing")%>」を選択</li>
                 <li class="step">⑤対応したい取引を選択</li>
@@ -34,7 +34,7 @@
                 <li class="step">⑨取引の詳細ページで納品する内容に間違いがないかを確認</li>
                 <li class="step">⑩間違いがなければ「納品」を選択</li>
                 <li class="step">⑪「取引を完了しますか？」に「OK」を選択</li>
-                <div class="caution">＊一度納品した回答は修正できません。回答を修正したい場合は、追加回答で修正してください。</div>
+                <div class="caution">※一度納品した回答は修正できません。回答を修正したい場合は、追加回答で修正してください。</div>
             </ol>
             <%#= image_tag "/how_to_use/order_show_deliver.png", class:"width_100"%>
         </div>

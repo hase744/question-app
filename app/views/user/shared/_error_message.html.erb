@@ -1,9 +1,9 @@
-<%if model && model&.errors&.full_messages&.any? %>
-    <div class="error_component_area">
-      <% model.errors.full_messages.each do |msg| %>
-        <div class="alert alert-danger">
-        <i class='fas fa-exclamation-triangle'></i> <%= msg %>
-        </div>
-      <% end %>
-    </div>
+<% if model && model.errors.any? %>
+  <div class="error_component_area">
+    <% model.errors.each do |attribute, message| %>
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle"></i> <%= message %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

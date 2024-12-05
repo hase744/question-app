@@ -146,7 +146,6 @@ class User::OrdersController < User::Base
   def check_transaction_is_editable
     @transaction = Transaction.find(params[:id])
     if !can_edit_transaction
-      puts "その取引は編集できません"
       flash.notice = "その取引は編集できません"
       redirect_to user_orders_path
     end

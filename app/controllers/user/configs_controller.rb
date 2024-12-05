@@ -65,7 +65,6 @@ class User::ConfigsController < User::Base
       :can_email_transaction,
       :is_published,
       :use_inactive_coupon,
-      :is_seller
     )
   end
 end

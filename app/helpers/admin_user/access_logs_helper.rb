@@ -1,0 +1,2 @@
+module AdminUser::AccessLogsHelper
+end

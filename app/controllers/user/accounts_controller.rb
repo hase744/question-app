@@ -8,6 +8,8 @@ class User::AccountsController < User::Base
 
   private def choose_layout
     case action_name
+    when 'update'
+      'medium_layout'
     when 'edit'
       'medium_layout'
     when "index"
@@ -19,13 +21,12 @@ class User::AccountsController < User::Base
     @users = User.all
     @users = @users.is_sellable
     @users = @users.where("users.name LIKE ?", "%#{params[:word]}%") if params[:word].present?
-    @users = @users.filter_categories(params[:categories])
+    @users = @users.filter_categories(params[:category_names])
     @users = @users.solve_n_plus_1
     @users = @users.include_price
-    
-    #if params[:total_sales_numbers].present? && @users.present?
-    #  #@users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
-    #end
+    if params[:total_sales_numbers].present? && @users.present?
+      @users = @users.where("total_sales_numbers >= ?", params[:total_sales_numbers])
+    end
 
     if params[:signed_in_recently] == "1"
       @users = @users.where("last_login_at > ?", DateTime.now - 1.week)
@@ -58,7 +59,7 @@ class User::AccountsController < User::Base
     if @user == current_user
       @tweet_text = "#{@user.name}という名前でコレテクを始めました。"
     else
-      @tweet_text = "#{@user.name}さんのコレテクアカウントはこちら。気になる方は以下のリンクへ！"
+      @tweet_text = "#{@user.name}さんに相談したい方はこちら。気になる方は以下のリンクへ！"
     end
     if @user.image.url
       @og_image = @user.image.url
@@ -74,7 +75,7 @@ class User::AccountsController < User::Base
     @user.assign_attributes(user_params)
 
     if @user.save
-        flash.notice = "ユーザー情報を更新しました"
+        flash.notice = "プロフィール情報を更新しました"
         redirect_to user_account_path(@user.id)
     else
         @categories = Category.all
@@ -258,6 +259,7 @@ class User::AccountsController < User::Base
     params.require(:user).permit(
         :name, 
         :description, 
+        :is_seller,
         :image, 
         :header_image
     )

@@ -9,5 +9,18 @@
     show_exist: true,
     delete_exist: false,
     edit_exist: false,
-    links: -> (model){ [{text: "選択", link: edit_admin_user_coupon_path(request.query_parameters.merge(user_id: model.id))}]}
+    links: -> (model){[
+			{
+			text: "選択", 
+			link: edit_admin_user_coupon_path(
+      			request.query_parameters.merge(
+					coupon: @coupon.slice(
+						:amount, :discount_rate, :start_at, :end_at, :minimum_purchase_amount, :usage_type
+						).merge(
+							user_id: model.id
+						)
+					)
+				)
+			}
+		]}
   	%>

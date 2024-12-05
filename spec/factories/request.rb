@@ -10,7 +10,7 @@ FactoryBot.define do
     user { association :user }
     request_form_name { Form.find_by(name: 'text').name_sym }
     delivery_form_name { Form.find_by(name: 'text').name_sym }
-
+  
     after(:build) do |request|
       request.request_categories << build(:request_category, request: request)
     end

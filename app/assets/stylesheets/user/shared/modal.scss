@@ -11,6 +11,7 @@
   	width: 100%; /*ラッパー全体を覆うようにする*/
   	height: 100%;
   	background-color: rgba(0, 0, 0, 0.5); /*半透明の黒*/
+	cursor: pointer;
 }
 .modal_window {
 	display: none;
@@ -118,4 +119,5 @@
 }
 .modal_delete_area{
   	height: 40px;
+		cursor: pointer;
 }

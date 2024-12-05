@@ -1,4 +1,3 @@
-<p style="color: green"><%= notice %></p>
 <% model_name = model.class.name.pluralize.underscore.pluralize%>
 <% columns = model.class.column_names.map{|name| name if column_names.include?(name) }.compact %>
 
@@ -7,23 +6,53 @@
 		<table>
   			<tbody>
   			  	<% columns.each do |name| %>
+  			  	  	<% if name == 'user_id'%>
+  			  	  		<tr>
+  			  	  		  	<th>ユーザー</th>
+  			  	  	  	</td>
+  			  	  	  	<td>
+					  		<div class="table_body">
+							<%= image_tag model.user.thumb_with_default %>
+  			  	  			<span><%= link_to model.user.name, admin_user_user_path(model.user.id)  %></span>
+							</div>
+  			  	  	  	</td>
+					<% end %>
   			  	  	<tr>
-  			  	  	  <th><%= name %></th>
-  			  	  	  <td>
-					  	<div class="table_body">
-  			  	  	  	<%if name == 'image' %>
-					  		<%= image_tag model.thumb_with_default %>
-  			  	  	  	<% elsif name == 'header_image' && model.header_image.url%>
-					  		<%= image_tag model.header_image.thumb.url %>
-  			  	  	  	<% elsif name == 'user_id'%>
-					  		<%= image_tag model.user.thumb_with_default %>
-  			  	  	  		<span><%= model.user.name %></span>
-  			  	  	  	<% end %>
-  			  	  	  	<span><%= model.attributes[name] %></span>
-						</div>
-  			  	  	  </td>
+  			  	  	  	<th><%= name %></th>
+  			  	  	  	<td>
+					  		<div class="table_body">
+  			  	  	  			<%if name == 'image' %>
+					  				<%= image_tag model.thumb_with_default %>
+  			  	  	  			<% elsif name == 'header_image' && model.header_image.url%>
+					  				<%= image_tag model.header_image.thumb.url %>
+  			  	  	  			<% end %>
+  			  	  	  			<span><%= model.attributes[name] %></span>
+							</div>
+  			  	  	  	</td>
   			  	  	</tr>
   			  	<% end %>
+  			  	  	<tr>
+  			  	  	  	<th>関連</th>
+  			  	  	  	<td>
+  			  				<% model.class.reflections.select { |_, reflection| reflection.macro == :has_many }.each do |name, reflection| %>
+								<% next unless relations.include?(name)%>
+							  	<div class="table_body">
+								  	<% related_model_name = reflection.klass.model_name.i18n_key %>
+								  	<% translated_name = t("activerecord.models.#{related_model_name}") %>
+									<% if name == 'items' %>
+										</br>
+      									<% model.items.each do |item| %>
+      									  	<% if item.file.present? %>
+      									    	<%= image_tag item.thumb_with_default, alt: item.file.filename, class: "item-image" %>
+      									  	<% end %>
+      									<% end %>
+									<% else %>
+							  	  		<%= link_to name, "/admin_user/#{reflection.klass.model_name.to_s.underscore}s?#{model.model_name.to_s.downcase}_id=#{model.id}&target=#{name}" %>
+									<% end %>
+							  	</div>
+							<% end %>
+  			  	  	  	</td>
+  			  	  	</tr>
   			</tbody>
 		</table>
   	</div>
