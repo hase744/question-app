@@ -30,8 +30,9 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.boolean :is_published, default: false, index:true #納品されているか
       t.datetime :published_at, index:true
 
-      t.boolean :is_violating, default:false, index:true #規約に違反しているか
-      t.boolean :violating_reason, index:true #規約に違反しているか
+      t.boolean :is_disabled, default:false, index:true #規約に違反しているか
+      t.datetime :disabled_at
+      t.text :disable_reason #規約に違反しているか
 
       t.boolean :is_reveresed, default:false, index:true #規約に違反しているか
       t.datetime :reveresed_at, index:true

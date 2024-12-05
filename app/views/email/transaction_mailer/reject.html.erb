@@ -1,7 +1,7 @@
 <%if @transaction.is_canceled %>
-<p>以下の依頼がお断りされました。</p>
+<p>以下の相談がキャンセルされました。</p>
 <% elsif @transaction.is_rejected%>
-<p>以下の取引が中断されました。</p>
+<p>以下の相談がお断りされました。</p>
 <% end %>
 
 <table>
@@ -10,11 +10,11 @@
     <td>：<%=@transaction.id%></td>
   </tr>
   <tr>
-    <td>依頼</td>
+    <td>質問</td>
     <td>：<%= link_to @transaction.request.title, user_request_url(@transaction.request.id) %></td>
   </tr>
   <tr>
-    <td>サービス</td>
+    <td>相談室</td>
     <td>：<%= link_to @transaction.service.title, user_service_url(@transaction.service.id) %></td>
   </tr>
   <tr>

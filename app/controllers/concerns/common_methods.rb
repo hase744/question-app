@@ -21,8 +21,15 @@ module CommonMethods
 
   def set_current_nav_item
     @current_nav_item = params[:nav_item]
+    @current_nav_item = controller_name if action_name == 'index'
     @current_nav_item ||= action_name
     @current_nav_item = 'posts' if @current_nav_item == 'show'
+    @bar_elements = [
+      {item:'requests', japanese_name: Request.model_name.human, link:user_requests_path(), page: @request_page, for_seller:false},
+      {item:'transactions', japanese_name: Transaction.model_name.human, link:user_transactions_path(), page: @sales_page, for_seller:true},
+      {item:'services', japanese_name: Service.model_name.human, link:user_services_path(), page: @service_page, for_seller:true},
+      {item:'accounts',japanese_name: "回答者", link:user_accounts_path(), page:@review_page, for_seller:true},
+    ]
   end
 
   def set_current_nav_item_for_service

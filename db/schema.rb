@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_03_094138) do
+ActiveRecord::Schema.define(version: 2024_11_29_105436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,12 +43,11 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   end
 
   create_table "admin_user_roles", force: :cascade do |t|
-    t.bigint "role_id"
+    t.integer "role_name"
     t.bigint "admin_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_admin_user_roles_on_admin_user_id"
-    t.index ["role_id"], name: "index_admin_user_roles_on_role_id"
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -64,6 +63,17 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "announcement_items", force: :cascade do |t|
+    t.bigint "announcement_id", null: false
+    t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["announcement_id"], name: "index_announcement_items_on_announcement_id"
+  end
+
   create_table "announcement_receipts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "announcement_id", null: false
@@ -76,11 +86,11 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   create_table "announcements", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
+    t.text "description", null: false
     t.bigint "admin_user_id"
     t.integer "condition_type", null: false
     t.text "target_condition"
     t.datetime "published_at", null: false
-    t.string "file"
     t.boolean "is_notified", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -140,25 +150,28 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
 
   create_table "error_logs", force: :cascade do |t|
     t.bigint "user_id"
+    t.string "uuid", null: false
     t.string "error_class"
     t.text "error_message"
     t.text "error_backtrace"
-    t.string "request_method"
-    t.string "request_controller"
-    t.string "request_action"
-    t.integer "request_id_number"
-    t.text "request_parameter"
+    t.string "method"
+    t.string "controller"
+    t.string "action"
+    t.integer "id_number"
+    t.text "parameter"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_error_logs_on_user_id"
+    t.index ["uuid"], name: "index_error_logs_on_uuid"
   end
 
   create_table "inquiries", force: :cascade do |t|
     t.bigint "user_id"
-    t.string "name"
-    t.string "email"
-    t.text "body"
-    t.text "answer"
+    t.string "name", default: "", null: false
+    t.string "email", default: "", null: false
+    t.text "body", default: "", null: false
+    t.text "answer", default: "", null: false
+    t.boolean "is_replied", default: false, null: false
     t.bigint "admin_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -169,7 +182,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   create_table "notifications", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "notifier_id"
-    t.text "title"
+    t.string "title"
     t.text "description"
     t.string "image"
     t.boolean "is_notified", default: false
@@ -312,6 +325,9 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.integer "total_files", default: 0
     t.integer "total_views", default: 0
     t.integer "total_services", default: 0
+    t.boolean "is_disabled", default: false
+    t.datetime "disabled_at"
+    t.text "disable_reason"
     t.bigint "transaction_id"
     t.boolean "is_published", default: false
     t.datetime "published_at"
@@ -321,6 +337,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["description_total_characters"], name: "index_requests_on_description_total_characters"
     t.index ["file_duration"], name: "index_requests_on_file_duration"
     t.index ["is_accepting"], name: "index_requests_on_is_accepting"
+    t.index ["is_disabled"], name: "index_requests_on_is_disabled"
     t.index ["is_inclusive"], name: "index_requests_on_is_inclusive"
     t.index ["is_published"], name: "index_requests_on_is_published"
     t.index ["max_price"], name: "index_requests_on_max_price"
@@ -348,13 +365,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["transaction_id"], name: "index_reviews_on_transaction_id"
   end
 
-  create_table "roles", force: :cascade do |t|
-    t.string "name"
-    t.string "japanese_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "service_categories", force: :cascade do |t|
     t.integer "category_name", null: false
     t.bigint "service_id", null: false
@@ -367,7 +377,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
   create_table "service_files", force: :cascade do |t|
     t.bigint "service_id", null: false
     t.string "file"
-    t.string "thumbnail"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["service_id"], name: "index_service_files_on_service_id"
@@ -413,6 +422,9 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.integer "total_views", default: 0
     t.integer "total_reviews", default: 0
     t.float "average_star_rating"
+    t.boolean "is_disabled", default: false
+    t.datetime "disabled_at"
+    t.text "disable_reason"
     t.float "rejection_rate"
     t.float "cancellation_rate"
     t.datetime "created_at", precision: 6, null: false
@@ -421,6 +433,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["cancellation_rate"], name: "index_services_on_cancellation_rate"
     t.index ["delivery_days"], name: "index_services_on_delivery_days"
     t.index ["delivery_form_name"], name: "index_services_on_delivery_form_name"
+    t.index ["is_disabled"], name: "index_services_on_is_disabled"
     t.index ["is_for_sale"], name: "index_services_on_is_for_sale"
     t.index ["is_published"], name: "index_services_on_is_published"
     t.index ["rejection_rate"], name: "index_services_on_rejection_rate"
@@ -460,6 +473,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.string "file_tmp"
     t.boolean "file_processing", default: false, null: false
     t.text "body"
+    t.datetime "published_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["receiver_id"], name: "index_transaction_messages_on_receiver_id"
@@ -492,8 +506,9 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.datetime "transacted_at"
     t.boolean "is_published", default: false
     t.datetime "published_at"
-    t.boolean "is_violating", default: false
-    t.boolean "violating_reason"
+    t.boolean "is_disabled", default: false
+    t.datetime "disabled_at"
+    t.text "disable_reason"
     t.boolean "is_reveresed", default: false
     t.datetime "reveresed_at"
     t.boolean "is_contracted", default: false
@@ -513,12 +528,12 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["contracted_at"], name: "index_transactions_on_contracted_at"
     t.index ["delivery_form_name"], name: "index_transactions_on_delivery_form_name"
     t.index ["is_contracted"], name: "index_transactions_on_is_contracted"
+    t.index ["is_disabled"], name: "index_transactions_on_is_disabled"
     t.index ["is_published"], name: "index_transactions_on_is_published"
     t.index ["is_rejected"], name: "index_transactions_on_is_rejected"
     t.index ["is_reveresed"], name: "index_transactions_on_is_reveresed"
     t.index ["is_suggestion"], name: "index_transactions_on_is_suggestion"
     t.index ["is_transacted"], name: "index_transactions_on_is_transacted"
-    t.index ["is_violating"], name: "index_transactions_on_is_violating"
     t.index ["price"], name: "index_transactions_on_price"
     t.index ["profit"], name: "index_transactions_on_profit"
     t.index ["published_at"], name: "index_transactions_on_published_at"
@@ -532,7 +547,6 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
     t.index ["title"], name: "index_transactions_on_title"
     t.index ["total_views"], name: "index_transactions_on_total_views"
     t.index ["transacted_at"], name: "index_transactions_on_transacted_at"
-    t.index ["violating_reason"], name: "index_transactions_on_violating_reason"
   end
 
   create_table "user_categories", force: :cascade do |t|
@@ -624,7 +638,7 @@ ActiveRecord::Schema.define(version: 2024_11_03_094138) do
 
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
-  add_foreign_key "admin_user_roles", "roles"
+  add_foreign_key "announcement_items", "announcements"
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"

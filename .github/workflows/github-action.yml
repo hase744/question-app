@@ -59,7 +59,18 @@ jobs:
           RAILS_ENV: test
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           POSTGRES_HOST: localhost
+          POSTGRES_USER: runner
           POSTGRES_PORT: 5432
         run: |
           bundle exec rails db:create RAILS_ENV=test
           bundle exec rails db:migrate RAILS_ENV=test
+      - name: Create rails master key for build
+        run: |
+          touch $GITHUB_WORKSPACE/config/master.key
+          echo ${{ secrets.RAILS_MASTER_KEY }} > $GITHUB_WORKSPACE/config/master.key
+      - name: Rails tests
+        env:
+          RAILS_ENV: test
+        run: bundle exec rspec
+      #- name: Run RuboCop
+      #  run: bundle exec rubocop

@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   include OperationConfig
   include ErrorHandlers if Rails.env.production?
   include AccessHandlers
+  include ImageGenerator
 
   layout :layout_by_resource
   protect_from_forgery with: :exception
@@ -22,11 +23,11 @@ class ApplicationController < ActionController::Base
       error_class: e.class,
       error_message: e.message,
       error_backtrace: e.backtrace,
-      request_method: request.method,
-      request_controller: controller_name, 
-      request_action: action_name, 
-      request_id_number: params[:id], 
-      request_parameter: params, 
+      method: request.method,
+      controller: controller_name, 
+      action: action_name, 
+      id_number: params[:id], 
+      parameter: params, 
       )
     if user_signed_in?
       @error_log.user = current_user

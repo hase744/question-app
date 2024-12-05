@@ -1,9 +1,8 @@
 class ApplicationRecord < ActiveRecord::Base
+  self.abstract_class = true
   require_relative "country.rb"
   require_relative "form.rb"
   require_relative "category.rb"
-  require_relative "category.rb"
-  self.abstract_class = true
   include CommonMethods
   include FormConfig
   include Variables
@@ -11,7 +10,8 @@ class ApplicationRecord < ActiveRecord::Base
   include TemplateConcern
   include OperationConfig
   include ItemConcern
-
+  include ImageGenerator
+  include CommonScopes
 
   scope :from_latest_order, ->() {
     order(created_at: :desc)
@@ -57,15 +57,11 @@ class ApplicationRecord < ActiveRecord::Base
     self.class.human_attribute_enum_value(attr_name, self[attr_name])
   end
 
-  def last_item
-    items.order(created_at: :asc).last
-  end
-
   def validate_price
     if self.price.nil?
       errors.add(:price)
     elsif self.price % 100 != 0
-      errors.add(:price, "は100円ごとにしか設定できません")
+      errors.add(:price, "価格は100円ごとにしか設定できません")
     elsif self.price < 0
       errors.add(:price)
     end
@@ -109,55 +105,5 @@ class ApplicationRecord < ActiveRecord::Base
     else
       "not_liked_button"
     end
-  end
-
-  def delete_temp_file
-    # Requestなどの親モデルの保存に成功してもrequest_categoryなどの子モデルの保存に失敗すると
-    # 保存が失敗した場合のみファイルを削除
-    relative_path = self.file.url
-    splited_path = relative_path.split('/')
-    path_length = splited_path.length
-    root_temp_path = Rails.root.to_s + "/tmp/" + splited_path[-2]
-    public_temp_path = Rails.root.to_s + "/public/uploads/tmp/" + splited_path[-2]
-    delete_folder(root_temp_path)
-    delete_folder(public_temp_path)
-  end
-
-  def resave
-    original_tmp_path = Rails.root.to_s + "/public/uploads/tmp/" + self.file_tmp
-    original_tmp_path_array = original_tmp_path.split('/')
-    original_tmp_path_array.pop
-    original_tmp_foloder_path = original_tmp_path_array.join('/')
-    file = File.open(original_tmp_path)
-    if File.exist?(original_tmp_path) && File.exist?(original_tmp_foloder_path)
-      self.process_file_upload = true
-      self.file = file
-      self.file_tmp = nil
-      self.file_processing = true
-      self.save
-      delete_folder(original_tmp_foloder_path)
-    end
-  end
-
-  def update_file_src(user: nil, img_mapping: [])
-    FileChannel.broadcast_to(user, {
-      img_mapping: img_mapping
-    })
-  end
-
-  def delete_folder(path)
-    if File.exist?(path) && path.include?('/tmp/')
-      FileUtils.rm_rf(path)
-      Rails.logger.info "Folder #{path} deleted successfully due to save failure"
-    else
-      Rails.logger.warn "File #{path} not found"
-    end
-  end
-
-  def all_items_processed?
-    self.items
-      .where(file_processing: true)
-      .or(self.items.where(file: nil))
-      .empty?
   end
 end

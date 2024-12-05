@@ -29,7 +29,7 @@
   	  	<% when 'text' then %>
   	  	  	<%= form.text_area column.to_sym %>
   	  	<% when 'integer' then %>
-  	  	  	<%if column == 'user_id' %>
+  	  	  	<% if column == 'user_id' %>
   	  	  	  	<%= form.number_field column.to_sym %></br>
 				<% if model.user %>
   				<table>
@@ -47,7 +47,7 @@
 					</tbody>
 				</table>
 				<% end %>
-  	  	  	<%elsif column == 'announcement_id' %>
+  	  	  	<% elsif column == 'announcement_id' %>
   	  	  	  	<%= form.number_field column.to_sym %></br>
 				<% if model.announcement %>
   				<table>
@@ -76,9 +76,22 @@
   	  	  	<% end %>
   	  	<% when 'float' then %>
 			<%= form.select column.to_sym, options_for_select((0.00..1.00).step(0.1).map { |n| [sprintf('%.2f', n), n] }, model.attributes[column]), {} %>
+  	  	<% when 'boolean' then %>
+			<%= form.select column.to_sym, {'true': true, 'false': false}, selected: model.attributes[column], include_blank: false %>
   	  	<% end %>
   	  	</div>
   	<% end %>
+	<% if ['Announcement'].include? model.class.name %>
+		<%= form.label :items, style: "display: block" %>
+  	  	<%= form.fields_for :items do |item_form| %>
+  	  	  	<% if item_form&.object&.id.present? %>
+  	  	  	  	<%= image_tag item_form.object.file.url, class:"image" if item_form.object.file.is_image? %>
+  	  	  	  	<%= link_to "削除", remove_file_admin_user_announcement_path(item_form.object), method: :delete, data: {confirm:"削除しますか？"}%>
+  	  	  	  	</br></br>
+  	  	  	<% end %>
+  	  	<% end %>
+  	  	<%= form.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true, style:"" %>
+	<% end %>
 
   	<div class="form-group" >
   	  <%= form.submit %>

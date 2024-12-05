@@ -1,6 +1,6 @@
-<div class="select_form_area">
+<div class="select_form_area category_selector_area">
 	<div class="select_area category_select_area">
-		<div class="select_display"><%=Category.find_by(name: f.object.category_name)&.japanese_name.presence || "選択"%></div>
+		<div class="select_display"><%=Category.find_by(name: f.object.category_name)&.japanese_name.presence || ""%></div>
 	    <%= f.hidden_field 'category_name', required: true %>
 	</div>
 	<div class="category_selector">
@@ -35,7 +35,7 @@ $(function(){
         $('.modal_window').removeClass("open");
     });
     // カテゴリーリンクがクリックされたときのイベントハンドラ
-    $('.parent_link').on('click', function() {
+    $('.category_button').on('click', function() {
         // クリックされた要素の `name` 属性の値を取得
         var categoryName = $(this).attr('name');
         

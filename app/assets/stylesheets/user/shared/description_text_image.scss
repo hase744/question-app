@@ -16,10 +16,10 @@
   	    background-color: white;
   	    padding: 5px;
   	    border-radius: 10px;
-  	    cursor: pointer;
   	    border: 2px solid lightgray;
   	    text-align: right;
   	    justify-content: space-around;
+  	    cursor: pointer;
   	    .thumbnail{
   	        width: 20px;
   	        height: 20px;
@@ -31,6 +31,7 @@
   	        font-weight: bold;
   	        display: flex;
   	        align-items: center;
+						cursor: pointer;
   	    }
   	}
   	.fa-solid{

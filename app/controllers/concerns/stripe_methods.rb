@@ -138,4 +138,18 @@ module StripeMethods
       stripe_account: user.stripe_account_id,
     })
   end
+
+  def create_payment(payment_params)
+    @payment = Payment.new(payment_params)
+    charge = Stripe::Charge.create({
+      amount: @payment.value,
+      currency: "jpy", # 請求通貨は円で固定していますが変更可能です
+      customer: current_user.stripe_customer_id,
+    })
+    @payment.user = current_user
+    @payment.stripe_payment_id = charge.id #id
+    @payment.status = charge.status #ステータス
+    @payment.executed_at = Time.at(charge.created).to_datetime
+    @payment.save
+  end
 end

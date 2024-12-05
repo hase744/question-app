@@ -1,31 +1,15 @@
 <div class="transaction_answer_area">
+	<%=link_to(user_transaction_path(transaction.id), class:"front_transaction_answer_flame") do %>
+	<% end %>
     <div class="transaction_answer_flame">
 		<div class="user_image_area">
 			<%= image_tag transaction.seller.thumb_with_default, class:"image" %>
 		</div>
 		<div class="text_area">
 			<div class="answer_area">
-				<!--
-				<div class="image_title_area">
-					<%= image_tag transaction.seller.thumb_with_default, class:"image" %>
-					<div class='title_area'>
-						<h4 class="title">
-							<%= link_to(user_transaction_path(transaction.id), class:"title") do %>
-								<span class="mark_a">A.</span>
-								<%= transaction.title%>
-							<% end %>
-							<%= link_to(user_account_path(transaction.seller.id), class:"title") do %>
-								<%= transaction.seller.name%>
-							<% end %>
-						</h4>
-					</div>
-				</div>
-				-->
-				<h4 class="title">
-					<%= link_to(user_transaction_path(transaction.id), class:"title") do %>
+				<h4 class="title answer_title">
 						<span class="mark_a">A.</span>
 						<%= transaction.title%>
-					<% end %>
 				</h4>
 				<div class="description_item_area">
 					<% if transaction.items.present? %>
@@ -40,24 +24,28 @@
 					</div>
 				</div>
 			</div>
-			<%= link_to(user_request_path(transaction.request.id), class:"request_area") do %>
-				<h4 class="title">
-					<span class="mark_q">Q.</span>
-					<%= transaction.request.title %>
-				</h4>
-				<div class="item_description_area">
-					<% if transaction.request.items.present? %>
-						<%unless transaction.request.items.first.is_text_image %>
-							<div class="item_area">
-								<%= image_tag transaction.request.items.first.file.thumb.url %>
-							</div>
+			<div class="request_flame">
+				<%= link_to(user_request_path(transaction.request.id), class:"request_area front_request_area") do %>
+				<% end %>
+				<div class="request_area back_request_area">
+					<h4 class="title">
+						<span class="mark_q">Q.</span>
+						<%= transaction.request.title %>
+					</h4>
+					<div class="item_description_area">
+						<% if transaction.request.items.present? %>
+							<%unless transaction.request.items.first.is_text_image %>
+								<div class="item_area">
+									<%= image_tag transaction.request.items.first.file.thumb.url %>
+								</div>
+							<% end %>
 						<% end %>
-					<% end %>
-					<div class="description_area">
-						<span class="description three_line_text"><%= simple_format(transaction.request.description) %></span>
+						<div class="description_area">
+							<span class="description three_line_text"><%= simple_format(transaction.request.description) %></span>
+						</div>
 					</div>
 				</div>
-			<% end %>
+			</div>
 		</div>
     </div>
 </div>

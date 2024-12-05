@@ -1,3 +1,4 @@
+@import "_variables";
 .user_link{
     color: black;
     //display: inline-block;
@@ -166,7 +167,7 @@
     left: 0;
     overflow: hidden;
     white-space: nowrap;
-    color: #ffcf32; /* イエローカラー 自由に設定化 */
+    color: #ffcf32;
 }
 
 

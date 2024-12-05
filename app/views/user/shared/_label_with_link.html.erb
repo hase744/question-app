@@ -1,3 +1,9 @@
 <div class="common_label_area">
-  <h3 class="common_label"><%= label %></h3><p class="home_label"> <%=link_to "もっと見る", link, class:"detail_link" %></p>
+  <h3 class="common_label"><%= label %></h3>
+  <p class="home_label"> 
+    <%=link_to(link, class:"detail_link") do %>
+      <span>もっと見る</span>
+      <i class="fa-solid fa-chevron-right"></i>&nbsp;
+    <% end %>
+  </p>
 </div>

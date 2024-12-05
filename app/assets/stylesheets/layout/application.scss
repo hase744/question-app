@@ -35,7 +35,7 @@
     top: 0%;
     left: 0;
     right: 0;
-    z-index: 1;
+    z-index: 10;
     width: 100%;
     height: 50px;
 }
@@ -94,6 +94,8 @@
     }
     .check_link{
         font-size: 13px;
+        display: flex;
+        align-items: center;
     }
     .check_link:hover{
         text-decoration: none;
@@ -132,7 +134,7 @@ body{
     text-decoration: none;
 }
 .main_area_top_link{
-    color: blue;
+    color: $link_text_color;
     text-decoration: none;
     display: inline-block;
 }
@@ -300,16 +302,6 @@ body{
         }
     }
 }
-.transaction_index_layout{
-    .main_area{
-        @media(min-width:1000px){
-            margin: 0 0 0 240px;
-            max-width: none;
-            width: calc(100% - 240px);
-            //background-color: #ffffcc;
-        }
-    }
-}
 .home_layout{
     .top{
         @media(max-width:1000px){
@@ -328,11 +320,11 @@ input{
     font-size: 16px;
 }
 a{
-    color: blue;
+    color: $link_text_color;
     text-decoration: none;
 }
 a:hover{
-    color: blue;
+    color: $link_hover_text_color;
     text-decoration: underline;
 }
 textarea{

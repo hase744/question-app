@@ -15,7 +15,7 @@
             		<span class="three_line_text text description_text"><%= request.description%></span>
 				</div>
 			</div>
-			<% unless request.has_text_image %>
+			<% if request.has_pure_image %>
 				<div class='items_area'>
 					<% request.items.each do |item| %>
 						<%= image_tag item.file.thumb.url %>

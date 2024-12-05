@@ -42,6 +42,10 @@ class TransactionMessage < ApplicationRecord
         self.receiver = @seller
       end
     end
+
+    if new_record?
+      self.published_at = DateTime.now
+    end
   end
 
   def can_send_message
@@ -52,7 +56,7 @@ class TransactionMessage < ApplicationRecord
 
   def validate_sender
     if self.sender != @buyer && self.sender != @seller
-      errors.add(:sendr, "が不適切です")
+      errors.add(:sender, "送信者が不適切です")
     end
   end
 

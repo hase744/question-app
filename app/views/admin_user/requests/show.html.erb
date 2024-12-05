@@ -1,0 +1,18 @@
+<%= render "/admin_user/shared/show", 
+  	model: @request,
+	relations: ['transactions', 'items'],
+  	column_names: [
+    	'title', 
+		'user_id',
+    	'description', 
+    	'published_at', 
+    	'is_disabled', 
+		'disable_reason',
+		'is_inclusive', 
+		'suggestion_deadline',
+    	'transaction_message_enabled', 
+    	'allow_pre_purchase_inquiry',
+		'request_form_name',
+		'delivery_form_name',
+	]
+%>

@@ -1,8 +1,6 @@
 <span class="category_checkbox_area <%=model%>">
     <%=f.hidden_field :categories, class:"categories_field" %>
-    <% Category.hash_tree[:categories].each do |category|%>
-        <%= render "layouts/category_checkbox", f:f, category:category %>
-    <% end %>
+    <%= render "layouts/category_multiple_selector", f:f %>
 </span>
 <script>
 <% categories_tree = Category.hash_tree[:categories].to_json %>

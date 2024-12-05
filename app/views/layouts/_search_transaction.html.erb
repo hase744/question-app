@@ -9,12 +9,6 @@
                 <%= f.text_field :word, value:params[:word], class:"text_field", placeholder:"キーワード"%></span>
             </div>
             
-            <label class="field_label"><%=Transaction.human_attribute_name(:request_form) %></label><br />
-            <%= render "user/shared/form/request_form", f:f%>
-
-            <label class="field_label"><%=Transaction.human_attribute_name(:delivery_form) %></label><br />
-            <%= render "user/shared/form/delivery_form", f:f%>
-            
             <label class="field_label">並び替え</label><br/>
             <div>
                 <%= render "user/shared/form/request_sort_form", f:f %>

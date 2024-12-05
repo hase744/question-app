@@ -1,6 +1,5 @@
 class User::TransactionsController < User::Base
   #layout "search_layout", only: :index
-  #layout "transaction_index", only: [:index]
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
   before_action :check_transaction_is_transacted, only:[:show, :like]
   before_action :define_transaction, only:[:show, :update, :deliver, :messages]
@@ -25,12 +24,12 @@ class User::TransactionsController < User::Base
   end
 
   def index
-    @transactions = Transaction.all
+    @transactions = Transaction.valid
     @transactions = @transactions.joins(:transaction_categories)
     @transactions = @transactions.distinct
     @transactions = @transactions.solve_n_plus_1
     @transactions = @transactions.where(is_published:true)
-    @transactions = @transactions.filter_categories(params[:categories])
+    @transactions = @transactions.filter_categories(params[:category_names])
     @transactions = @transactions.where("transactions.title LIKE ?", "%#{params[:word]}%") if params[:word].present?
     @transactions = @transactions.page(params[:page]).per(30)
     @transactions = @transactions.sorted_by(params[:order])
@@ -58,6 +57,7 @@ class User::TransactionsController < User::Base
     #@transactionの前にアップロードされた取引と後にアップロードされた取引の数を比較し多い方をおすすめとして表示
     @transactions = Transaction.solve_n_plus_1
       .left_joins(:transaction_categories)
+      .valid
       .distinct
       .includes(:seller, :service, :request, :items, :transaction_categories)
       .where.not(id: @transaction.id)
@@ -167,20 +167,12 @@ class User::TransactionsController < User::Base
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
-      title: "あなたの依頼した相談に回答が納品されました",
+      title: "依頼した相談に回答が納品されました",
       description: transaction.title,
       action: "show",
       controller: "transactions",
       id_number: transaction.id
       )
-  end
-
-  def new_image(name)
-    @text = @transaction.description
-    erb = File.read('./app/views/user/images/answer.html.erb')
-    kit = IMGKit.new(ERB.new(erb).result(binding))
-    img = kit.to_img(:jpg)
-    kit.to_file("./app/assets/images/#{name}.png")
   end
 
   def messages
@@ -194,7 +186,7 @@ class User::TransactionsController < User::Base
   end
 
   private def update_total_views
-    @transaction.update(total_views:@transaction.total_views + 1, item:nil)
+    @transaction.update(total_views:@transaction.total_views + 1)
   end
   
   private def can_edit_transaction
@@ -244,16 +236,12 @@ class User::TransactionsController < User::Base
       :description,
       :file,
       :thumbnail,
-      :use_youtube,
-      :youtube_id,
     )
   end
 
   private def transaction_item_params
     params.require(:transaction).permit(
       :file,
-      :use_youtube,
-      :youtube_id,
     )
   end
 

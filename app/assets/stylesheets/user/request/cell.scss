@@ -9,7 +9,7 @@
     position: relative;
     .request_link{    
         text-decoration: none;
-        color: blue;
+        color: $link_text_color;
     }
     .request_link:hover{
         text-decoration: underline;
@@ -68,9 +68,6 @@
         .item_area{
             display: inline-block;
             float: left;
-            .youtube_video{
-                width: 100%;
-            }
             .image{
                 width: 100%;
                 object-fit: cover;

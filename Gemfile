@@ -33,6 +33,8 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails'
+  gem 'rubocop'
+  gem 'rubocop-rails'
 end
 
 group :development do
@@ -91,7 +93,7 @@ gem 'cancancan'
 #gem 'nokogiri'
 #gem 'open_uri_redirections'
 gem 'rename'
-gem 'uri', '0.10.1'
+gem 'uri', '0.13.1'
 gem 'htmlcsstoimage-api'
 gem 'parallel'
 gem 'carrierwave_backgrounder'

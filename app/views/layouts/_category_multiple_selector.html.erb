@@ -1,0 +1,29 @@
+<div class="select_form_area multiple_category_select_form category_selector_area">
+	<div class="select_area category_select_area">
+		<div class="select_display">選択</div>
+	    <%= f.hidden_field :category_names, required: true, value: params[:category_names] %>
+	</div>
+	<div class="category_tags">
+		<% params[:category_names]&.split(',')&.each do |category| %>
+			<label class="name_tag"><%= Category.find_by(name: category).japanese_name %></label>
+		<% end %>
+	</div>
+	<div class="category_selector">
+	    <div class="modal_window category_modal">
+	        <div class="modal_background"></div>
+	        <div class="modal_window_body">
+	            <label>カテゴリ一覧</label>
+	            <div class="category_link_area">
+	                <div class="category_link_flame">
+	                    <% Category.hash_tree[:categories].each do |category| %>
+	                        <%= render "user/shared/form/category_button", category:category %>
+	                    <% end %>
+	                </div>
+	            </div>
+	            <div class="modal_delete_area">
+	                <p class="modal_delete">閉じる</p>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</div>

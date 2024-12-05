@@ -22,6 +22,8 @@ class Transaction < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
+  validates :disable_reason, presence: true, if: :is_violation?
+  validates :disabled_at, presence: true, if: :is_violation?
   validates :delivery_time, presence: true
   validate :validate_price
   validate :validate_title
@@ -32,19 +34,16 @@ class Transaction < ApplicationRecord
   validate :validate_reject_reason
   validate :validate_is_suggestion
   validate :validate_item_count
+  validate :validate_is_disabled
   validate :previous_transaction
   validate :validate_service_renewed
+  validate :validate_violation
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
 
   after_save :create_transaction_category
   after_save :update_total_sales
-  after_save :update_average_star_rating
   after_save :create_payment_record
-  attr_accessor :use_youtube
-  attr_accessor :youtube_id
-  attr_accessor :file
-  attr_accessor :item
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -68,6 +67,10 @@ class Transaction < ApplicationRecord
     ).includes(transaction_messages: [:sender, :receiver])
   }
 
+  scope :valid, -> {
+    where(is_disabled: false)
+  }
+
   scope :from_seller, -> (user){
     self.solve_n_plus_1
       .left_joins(:service)
@@ -85,6 +88,20 @@ class Transaction < ApplicationRecord
         request: {user: user}, 
         is_published: true
         )
+  }
+
+  scope :from_coupon, -> (coupon){
+    self.solve_n_plus_1
+      .left_joins(:coupon_usages)
+      .where(
+        coupon_usages: {coupon: coupon},
+        )
+  }
+
+  scope :not_transacted, -> {
+    where(
+      is_transacted: false,
+    )
   }
 
   scope :ongoing, -> {
@@ -201,26 +218,13 @@ class Transaction < ApplicationRecord
     self.assign_attributes(is_published:true, published_at:DateTime.now)
   end
 
-  def reset_item
-    self.item = nil
-    self.file = nil
-    self.use_youtube = nil
-    self.youtube_id = nil
-  end
-
   def set_default_values
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
     self.profit ||= (self.price - self.margin)
     self.service_checked_at ||= DateTime.now
-    if (self.file.present? || self.use_youtube) && self.item
-      self.item.assign_attributes(
-        file: self.file,
-        use_youtube: self.use_youtube,
-        youtube_id: self.youtube_id
-      )
-    end
+    self.disabled_at ||= DateTime.now if self.is_disabled
 
     if new_record?
       self.request_form_name = self.service.request_form.name
@@ -296,15 +300,15 @@ class Transaction < ApplicationRecord
   def validate_is_suggestion
     if self.is_suggestion && self.service.request_id.nil?
       if self.request.user.is_deleted
-        errors.add(:base,  "アカウントが存在しません。")
+        errors.add(:buyer,  "アカウントが存在しません。")
       elsif !self.request.user.is_stripe_customer_valid?
-        errors.add(:base,  "質問者の決済が承認されていません。")
+        errors.add(:buyer,  "質問者の決済が承認されていません。")
       elsif self.request.request_form.name != self.service.request_form.name && self.request_form.name != 'free'
-        errors.add(:base,  "質問形式が違います")
+        errors.add(:request_form,  "質問形式が違います")
       elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
         errors.add(:base,  "カテゴリが違います")
       elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
-        errors.add(:base,  "相談室の文字数が足りません")
+        errors.add(:base,  "相談室の文字数が不足しています")
       else
         nil
       end
@@ -347,7 +351,7 @@ class Transaction < ApplicationRecord
       self.coupon_usages&.destroy_all
       Coupon.where(id: coupon_ids).each(&:save)
     else
-      errors.add(:base, "クーポンに関するエラー")
+      errors.add(:coupon_usages, "クーポンに関するエラー")
     end
     response
   end
@@ -399,21 +403,21 @@ class Transaction < ApplicationRecord
     ).where.not(id: self.id)
     if previous_transaction.present?
       if self.is_suggestion
-        errors.add(:base, "既に提案済みです")
+        errors.add(:is_suggestion, "既に提案済みです")
       else
-        errors.add(:base, "既に質問済みです")
+        errors.add(:is_suggestion, "既に質問済みです")
       end
     end
   end
 
   def validate_transaction_category
     unless self.transaction_categories.present?
-      errors.add(:base, 'カテゴリーが選択されていません')
+      errors.add(:transaction_categories, 'カテゴリーが選択されていません')
       throw(:abort)
     end
 
     if self.transaction_categories.count > 1
-      errors.add(:base)
+      errors.add(:transaction_categories)
       throw(:abort)
     end
   end
@@ -442,13 +446,6 @@ class Transaction < ApplicationRecord
     end
   end
   
-  def update_average_star_rating
-    #if self.saved_change_to_star_rating?
-    #  self.service.user.update_average_star_rating
-    #  self.service.update_average_star_rating
-    #end
-  end
-
   def update_request
     self.request.update(
       deal:self
@@ -456,7 +453,7 @@ class Transaction < ApplicationRecord
   end
 
   def create_payment_record
-    return if saved_change_to_id? #新規のデータではない
+    return if saved_change_to_id? #新規のデータの時、return
     discounted_price = self.price - self.coupon_usages.sum(:amount)
     if self.saved_change_to_is_canceled? && discounted_price > 0
       self.point_records.create(
@@ -484,7 +481,7 @@ class Transaction < ApplicationRecord
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_transacted && self.profit > 0
+    if self.saved_change_to_is_transacted? && self.profit > 0
       self.balance_records.create(
         user: self.seller,
         amount: self.profit,
@@ -492,21 +489,44 @@ class Transaction < ApplicationRecord
         created_at: self.updated_at,
       )
     end
+    if self.saved_change_to_is_disabled? && 
+    self.is_transacted && 
+    discounted_price > 0 && 
+    self.balance_records.count == 1
+      self.balance_records.create(
+        user: self.seller,
+        amount: -self.profit,
+        type_name: 'violation',
+        created_at: self.updated_at,
+      )
+    end
+    if self.saved_change_to_is_disabled? && 
+    self.is_contracted && 
+    self.profit > 0 && 
+    self.point_records.count == 1
+      self.point_records.create(
+        user: self.buyer,
+        deal: self,
+        amount: discounted_price,
+        type_name: 'violation',
+        created_at: self.updated_at,
+      )
+    end
   end
 
   def validate_title
     if self.title.present?
-      errors.add(:title, "を入力して下さい") if self.title.length <= 0 && self.is_published
+      errors.add(:title, "ひとこと回答を入力して下さい") if self.title.length <= 0 && self.is_published
     else
-      errors.add(:title, "を入力して下さい") if self.is_published
+      errors.add(:title, "ひとこと回答を入力して下さい") if self.is_published
     end
   end
 
   def validate_description
     if self.description.present?
-      errors.add(:description, "を入力して下さい") if self.description.length <= 0 && self.is_published
+      errors.add(:description, "本文を入力して下さい") if self.description.length <= 0 && self.is_published
     else
-      errors.add(:description, "を入力して下さい") if self.is_published
+      errors.add(:description, "本文を入力して下さい") if self.is_published
     end
   end
 
@@ -520,7 +540,7 @@ class Transaction < ApplicationRecord
         end
       end
     elsif self.delivery_form.name == "image"
-      errors.add(:base, "画像ファイルを添付してください")
+      errors.add(:items, "画像ファイルを添付してください")
     end
   end
 
@@ -547,25 +567,31 @@ class Transaction < ApplicationRecord
 
   def validate_is_canceled
     return unless self.is_canceled 
-    errors.add(:delivery_time, "を過ぎていません") if DateTime.now < self.delivery_time
-    errors.add(:is_canceled, "はできません") if self.is_rejected || self.is_transacted
+    errors.add(:delivery_time, "納品期限を過ぎていません") if DateTime.now < self.delivery_time
+    errors.add(:is_canceled, "キャンセルはできません") if self.is_rejected || self.is_transacted
   end
   
   def validate_is_rejected
     if (self.is_transacted || self.is_canceled) && self.is_rejected #納品済み または　キャンセル済み
-      errors.add(:is_rejected, "は現在できません")
+      errors.add(:is_rejected, "お断りは現在できません")
     end
   end
 
   def validate_reject_reason
     if (self.is_transacted || self.is_canceled) && self.reject_reason.present? #納品済み または　キャンセル済み
-      errors.add(:reject_reason, "は現在で記入きません")
+      errors.add(:reject_reason, "お断り理由は現在、作成できません")
     end
   end
 
   def validate_service_renewed
     if self.request.is_published && self.request.will_save_change_to_is_published? && self.service_checked_at < self.service.renewed_at
-      errors.add(:base, "相談室の内容が変更されました。")
+      errors.add(:service, "相談室の内容が変更されました")
+    end
+  end
+
+  def validate_violation
+    if !self.is_disabled && is_disabled_changed?
+      errors.add(:is_disabled, "cannot be changed if is_violation is true")
     end
   end
 
@@ -659,6 +685,10 @@ class Transaction < ApplicationRecord
     delete_folder(public_temp_path)
   end
 
+  def is_violation?
+    is_disabled
+  end
+
   def title_max_length
     30
   end
@@ -689,7 +719,17 @@ class Transaction < ApplicationRecord
     return if self.items.count <= self.max_items_count
     return unless self.will_save_change_to_is_published?
     return unless self.is_published
-    errors.add(:items, "の数は#{self.max_items_count}個までです")
+    errors.add(:items, "納品ファイルの数は#{self.max_items_count}個までです")
+  end
+
+  def validate_is_disabled
+    return unless self.is_disabled
+    if will_save_change_to_is_transacted? ||
+      will_save_change_to_is_published? ||
+      will_save_change_to_title? ||
+      will_save_change_to_description?
+      errors.add(:is_transacted, '規約違反のため修正できません')
+    end
   end
   
   def max_items_count

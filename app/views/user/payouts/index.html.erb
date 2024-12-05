@@ -45,7 +45,7 @@
 					<% elsif @amount_to_transfer > 0 %>
 						<%= link_to "銀行口座に入金する", user_payouts_path, class:"submit", method: :post, data:{ confirm: "入金手数料200円が引かれた#{@amount_to_transfer}円を口座へ入金しますか？\n入金完了には1~3営業日がかかります。"} %>
 					<% end %>
-				<div class="caveat">＊入金完了には1~3営業日がかかります。</div>
+				<div class="caveat">※入金完了には1~3営業日がかかります。</div>
 			</div>
 		</div>
 	</div>

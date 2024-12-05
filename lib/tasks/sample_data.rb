@@ -62,7 +62,7 @@ class SampleData
       #10.times do |n|
       Parallel.each(0..9) do |n|
         puts "creating service No.#{n}"
-        service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
+        service_image_path = Rails.root.join('public', 'sample', category.name, "service_image(#{n}).jpg")
         service = Service.create_or_find_by!(
           user: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
           title: services[n]['title'],
@@ -100,7 +100,6 @@ class SampleData
             description: transactions[n]['question']['description'],
             max_price: (n+2)*500,
             mini_price: (n+1)*500,
-            use_youtube:false,
             suggestion_deadline: DateTime.now + n + 1,
             request_form_name: Form.find_by(name:"text").name.to_sym,
             delivery_form_name: Form.find_by(name:"text").name.to_sym,
@@ -135,7 +134,7 @@ class SampleData
       Parallel.each(0..9) do |n|
       #for n in 0..9
         image_path = Rails.root.join('public', 'sample', category.name, "canvas (#{n}).jpg")
-        service_image_path = Rails.root.join('public', 'sample', "service_image(#{n}).png")
+        service_image_path = Rails.root.join('public', 'sample', category.name, "service_image(#{n}).jpg")
         buyers = User.where(is_seller: false)
         sellers = User.where(is_seller: true)
         buyer = buyers[n%buyers.count]
@@ -146,7 +145,6 @@ class SampleData
           description: transactions[n]['question']['description'],
           max_price: (n+2)*500,
           mini_price: (n+1)*500,
-          use_youtube:false,
           suggestion_deadline: DateTime.now + n + 1,
           request_form_name: Form.find_by(name:"text").name.to_sym,
           delivery_form_name: Form.find_by(name:"text").name.to_sym,
@@ -196,8 +194,6 @@ class SampleData
           transacted_at: DateTime.now - n,
           published_at: DateTime.now - n,
           stripe_payment_id:"pi_3LO0pXFsZJRtLc1j0OJU7Mlg",
-          use_youtube:true,
-          youtube_id: nil,
           transaction_message_enabled: service.transaction_message_enabled,
         )
         transaction.create_review(

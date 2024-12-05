@@ -4,12 +4,13 @@
 			<%= link_to "", user_homes_path, class:"fas fa-home"%>
 			 > <%= link_to "#{Request.model_name.human}一覧", user_requests_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
 			 > <%= render "user/shared/category_selector",  
-				link: ->(category) { user_requests_path(request.query_parameters.merge(categories: category[:name])) } 
+				link: ->(category) { user_requests_path(request.query_parameters.merge(category_names: category[:name])) } 
 			%>
 		</div>
 		<div class="second_stage">
 			<%= link_to user_requests_path(request.query_parameters.merge(can_suggest: params[:can_suggest] == '1' ? '0' : '1')), class:"check_link" do %>
-				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>受付中
+				<input class="checkbox" type="checkbox" <%='checked' if params[:can_suggest] == '1'%>>
+				<label class="checkbox_label">受付中</label>
 			<% end %>
 			<%= render "user/shared/sort_selector",
 				link: ->(order) {user_requests_path(request.query_parameters.merge(order: order)) } 

@@ -1,13 +1,13 @@
 class AdminUser::NotificationsController < AdminUser::Base
   def index
     @notifications = Notification
-      .from_latest_order
+    @notifications = @notifications.from_latest_order
       .page(params[:page])
       .per(50)
   end
 
   def new
-    @notification = Notification.new(title: "テスト", description: '中身の説明')
+    @notification = Notification.new()
   end
 
   def edit

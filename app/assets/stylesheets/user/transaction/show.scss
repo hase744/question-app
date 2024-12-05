@@ -82,6 +82,7 @@
                 }
                 .description_area{
                     white-space: pre-line;
+                    line-height: 30px;
                 }
                 .request_title{
                     //color: steelblue;
@@ -104,8 +105,15 @@
                     height: 100%;
                     width: 100%;
                 }
+                .image_area{
+                    text-align: center;
+                }
                 .image{
+                    max-width: 400px;
                     width: 100%;
+                }
+                .text_image{
+                    max-width: 100%;
                 }
                 .item_link{
                     width: 100%;

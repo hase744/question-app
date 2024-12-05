@@ -1,6 +1,6 @@
 .service_new_title{
+    margin: 0px;
     margin-left: 10px;
-    margin-bottom: 0px;
 }
 .caveat_area{
     margin: 5px;
@@ -16,6 +16,9 @@
         border-radius: 0px 5px 5px 5px;
         padding: 5px;
         border: solid red;
+        a{
+            color: blue;
+        }
     }
 }
 .service_new_zone{

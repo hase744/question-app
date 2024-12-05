@@ -5,6 +5,6 @@ FactoryBot.define do
   end
 
   factory :request_category2, class: 'RequestCategory' do
-    category_name { "carrier" }
+    category_name { "career" }
   end
 end

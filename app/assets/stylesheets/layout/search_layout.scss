@@ -1,4 +1,15 @@
 .search_layout{
+	.common_navigation_bar_flame{
+		text-align: center;
+		height: 40px;
+		display: none;
+	}
+	.common_navigation_bar_area{
+		display: inline-block;
+		max-width: 700px;
+		width: 100%;
+		text-align: left;
+	}
 	.top_search_form_area{
 		display: none;
 		text-align: center;
@@ -12,6 +23,9 @@
 	@media (max-width:1000px) {
 		.main_header{
 			margin-top: 0px;
+		}
+		.common_navigation_bar_flame{
+			display: block;
 		}
 	}
 }

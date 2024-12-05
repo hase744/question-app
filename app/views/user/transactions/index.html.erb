@@ -4,7 +4,7 @@
             <%= link_to "", user_homes_path, class:"fas fa-home"%>
              > <%= link_to "回答一覧", user_transactions_path, class:"main_area_top_link", onclick:"event.stopPropagation()"%>
              > <%= render "user/shared/category_selector", 
-                link: ->(category) { user_transactions_path(request.query_parameters.merge(categories: category[:name])) } 
+                link: ->(category) { user_transactions_path(request.query_parameters.merge(category_names: category[:name])) } 
             %>
         </div>
         <%= render "user/shared/sort_selector",

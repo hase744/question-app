@@ -10,6 +10,7 @@
     }
 }
 .zone_title{
+    margin-top: 0px;
     margin-left: 10px;
     margin-bottom: 0px;
 }
@@ -240,6 +241,12 @@
     cursor: pointer;
     display: inline-block;
     //height: 25px;
+    $select_size: 13px;
+    .select_field {
+        font-size: $select_size;
+        padding-top: calc((30px - #{$select_size}) / 2);
+        line-height: $select_size;
+    }
     select {
         width: 100%;
         padding-right: 1em;
@@ -257,8 +264,10 @@
         color: black;
     }
     .select_display{
-        padding: 5px 38px 5px 5px;
-        font-size: 13px;
+        padding-top: 6px;
+        height: $select_size;
+        padding-left: 9px;
+        font-size: $select_size;
     }
 }
 .select_area::before {
@@ -341,7 +350,7 @@
 .bottom_button_area{
     position: fixed;
     bottom: 0px;
-    z-index: 1;
+    z-index: 5;
     background-color: white;
     height: 50px;
     position: fixed;
