@@ -40,14 +40,14 @@
 								  	<% related_model_name = reflection.klass.model_name.i18n_key %>
 								  	<% translated_name = t("activerecord.models.#{related_model_name}") %>
 									<% if name == 'items' %>
-										<%= name %></br>
+										</br>
       									<% model.items.each do |item| %>
       									  	<% if item.file.present? %>
       									    	<%= image_tag item.thumb_with_default, alt: item.file.filename, class: "item-image" %>
       									  	<% end %>
       									<% end %>
 									<% else %>
-							  	  	<%= link_to translated_name, "/admin_user/#{reflection.klass.model_name.to_s.underscore}s?#{model.model_name.singular_route_key}_id=#{model.id}" %>
+							  	  		<%= link_to name, "/admin_user/#{reflection.klass.model_name.to_s.underscore}s?#{model.model_name.to_s.downcase}_id=#{model.id}&target=#{name}" %>
 									<% end %>
 							  	</div>
 							<% end %>

@@ -11,6 +11,7 @@ class ApplicationRecord < ActiveRecord::Base
   include OperationConfig
   include ItemConcern
   include ImageGenerator
+  include CommonScopes
 
   scope :from_latest_order, ->() {
     order(created_at: :desc)

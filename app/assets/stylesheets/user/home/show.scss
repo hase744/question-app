@@ -1,3 +1,4 @@
+@import "_variables";
 .home_show_zone{
     .home_label{
         margin-bottom: 0px;
@@ -8,10 +9,14 @@
             //float: right;
             font-weight: bold;
             position: absolute;
-            bottom: 0;
+            bottom: 5px;
             right: 5px;
             text-decoration: none;
             font-size: 15px;
+        }
+        .detail_link:hover{
+            text-decoration: underline;
+            color: $link_text_color;
         }
     }
     @media(min-width: 1000px){

@@ -22,8 +22,8 @@ class Transaction < ApplicationRecord
   validates :description, length: {maximum: :description_max_length}
   validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
-  validates :violating_reason, presence: true, if: :is_violation?
-  validates :violation_recognized_at, presence: true, if: :is_violation?
+  validates :disable_reason, presence: true, if: :is_violation?
+  validates :disabled_at, presence: true, if: :is_violation?
   validates :delivery_time, presence: true
   validate :validate_price
   validate :validate_title
@@ -34,7 +34,7 @@ class Transaction < ApplicationRecord
   validate :validate_reject_reason
   validate :validate_is_suggestion
   validate :validate_item_count
-  validate :validate_is_violating
+  validate :validate_is_disabled
   validate :previous_transaction
   validate :validate_service_renewed
   validate :validate_violation
@@ -68,7 +68,7 @@ class Transaction < ApplicationRecord
   }
 
   scope :valid, -> {
-    where(is_violating: false)
+    where(is_disabled: false)
   }
 
   scope :from_seller, -> (user){
@@ -96,6 +96,12 @@ class Transaction < ApplicationRecord
       .where(
         coupon_usages: {coupon: coupon},
         )
+  }
+
+  scope :not_transacted, -> {
+    where(
+      is_transacted: false,
+    )
   }
 
   scope :ongoing, -> {
@@ -218,6 +224,7 @@ class Transaction < ApplicationRecord
     self.margin ||= self.service.price*transaction_margin.to_f
     self.profit ||= (self.price - self.margin)
     self.service_checked_at ||= DateTime.now
+    self.disabled_at ||= DateTime.now if self.is_disabled
 
     if new_record?
       self.request_form_name = self.service.request_form.name
@@ -241,7 +248,6 @@ class Transaction < ApplicationRecord
     self.service_allow_pre_purchase_inquiry = self.service.allow_pre_purchase_inquiry
     self.seller = self.service.user
     self.buyer = self.request.user
-    self.violation_recognized_at = DateTime.now if is_violating
   end
 
   def copy_from_service
@@ -483,7 +489,10 @@ class Transaction < ApplicationRecord
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_violating? && discounted_price > 0 && self.balance_records.count == 1
+    if self.saved_change_to_is_disabled? && 
+    self.is_transacted && 
+    discounted_price > 0 && 
+    self.balance_records.count == 1
       self.balance_records.create(
         user: self.seller,
         amount: -self.profit,
@@ -491,7 +500,10 @@ class Transaction < ApplicationRecord
         created_at: self.updated_at,
       )
     end
-    if self.saved_change_to_is_violating? && self.profit > 0 && self.point_records.count == 1
+    if self.saved_change_to_is_disabled? && 
+    self.is_contracted && 
+    self.profit > 0 && 
+    self.point_records.count == 1
       self.point_records.create(
         user: self.buyer,
         deal: self,
@@ -578,8 +590,8 @@ class Transaction < ApplicationRecord
   end
 
   def validate_violation
-    if !self.is_violating && is_violating_changed?
-      errors.add(:is_violating, "cannot be changed if is_violation is true")
+    if !self.is_disabled && is_disabled_changed?
+      errors.add(:is_disabled, "cannot be changed if is_violation is true")
     end
   end
 
@@ -674,7 +686,7 @@ class Transaction < ApplicationRecord
   end
 
   def is_violation?
-    is_violating
+    is_disabled
   end
 
   def title_max_length
@@ -710,8 +722,8 @@ class Transaction < ApplicationRecord
     errors.add(:items, "納品ファイルの数は#{self.max_items_count}個までです")
   end
 
-  def validate_is_violating
-    return unless self.is_violating
+  def validate_is_disabled
+    return unless self.is_disabled
     if will_save_change_to_is_transacted? ||
       will_save_change_to_is_published? ||
       will_save_change_to_title? ||

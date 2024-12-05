@@ -2,7 +2,9 @@ class AdminUser::TransactionsController < AdminUser::Base
   def index
     @transactions = Transaction.from_latest_order
     @transactions = @transactions.where("transactions.title LIKE ?", "%#{params[:title]}%")
-    @transactions = @transactions.where(user_id: params[:user_id]) if params[:user_id]
+    @transactions = @transactions.where(id: User.find(params[:user_id]).sales.pluck(:id)) if params[:target] == 'sales'
+    @transactions = @transactions.where(service_id: params[:service_id]) if params[:service_id]
+    @transactions = @transactions.where(request_id: params[:request_id]) if params[:request_id]
     @transactions = @transactions.from_coupon(Coupon.find(params[:coupon_id])) if params[:coupon_id]
     @transactions = @transactions
       .from_latest_order
@@ -21,12 +23,12 @@ class AdminUser::TransactionsController < AdminUser::Base
   def update
     @transaction = Transaction.find(params[:id])
     @transaction.assign_attributes(transaction_params)
-    if @transaction.is_violating
+    if @transaction.is_disabled
       @announcement = Announcement.new(
         condition_type: 'individual',
         title: "取引無効のお知らせ",
         description: "お客様の取引が規約に違反したため、無効となりました。", 
-        body: "#{@transaction.violating_reason}\r\n取引：<a href='/user/orders/#{@transaction.id}'>#{@transaction.title}</a>",
+        body: "#{@transaction.disable_reason}\r\n取引：<a href='/user/orders/#{@transaction.id}'>#{@transaction.title}</a>",
         published_at: DateTime.now,
       )
       @announcement.receipts.build(user: @transaction.seller)
@@ -48,8 +50,8 @@ class AdminUser::TransactionsController < AdminUser::Base
 
   def transaction_params
     params.require(:transaction).permit(
-      :is_violating,
-      :violating_reason,
+      :is_disabled,
+      :disable_reason,
     )
   end
 end

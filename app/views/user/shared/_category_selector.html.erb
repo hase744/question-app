@@ -29,7 +29,7 @@ $(function(){
     //    //event.stopPropagation();
     //});
     $('.category_select_button').on('click', function(){
-        $('.category_modal').addClass("open");
+        $(this).next(".category_modal").addClass("open");
     });
     $('.modal_delete').on('click', function(){
         $('.modal_window').removeClass("open");

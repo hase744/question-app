@@ -157,6 +157,11 @@ namespace :user do
     resources :transactions, only: [:create, :index, :show, :update, :new, :edit]
     resources :point_records, only: [:index, :show]
     resources :balance_records, only: [:index, :show]
+    resources :inquiries, only: [:index, :show, :edit, :update]
+    resources :access_logs, only: [:index, :show]
+    resources :error_logs, only: [:index, :show]
+    resources :requests, only: [:index, :show, :edit, :update]
+    resources :services, only: [:index, :show, :edit, :update]
     resources :announcements do
       member do
         delete :remove_file, to: 'announcements#remove_file'

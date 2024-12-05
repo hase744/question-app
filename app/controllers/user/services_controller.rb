@@ -1,14 +1,15 @@
 class User::ServicesController < User::Base
   before_action :check_login, only:[:new, :edit, :create, :update, :history]
-  before_action :define_service, only:[:show, :suggest]
+  before_action :define_service, only:[:show, :suggest, :edit, :update]
   before_action :check_published, only:[:show]
   before_action :define_transaction, only:[:show]
   before_action :define_request, except:[:transactions, :requests, :reviews]
   before_action :check_user_published, only:[:show]
-  before_action :check_request_valid, only:[:new, :create, :edit, :update]
+  #before_action :check_request_valid, only:[:new, :create, :edit, :update]
   before_action :check_can_create_service, only:[:new, :create, :edit, :update]
   #before_action :check_can_sell_service, only:[:new, :create, :edit, :update]
-  before_action :check_can_suggest, only:[:new, :create]
+  before_action :check_can_suggest, only:[:new, :create, :edit, :update]
+  before_action :check_service_valid, only:[:edit, :update]
   before_action :define_page_count
   after_action :update_total_views, only:[:show]
   layout :choose_layout
@@ -116,9 +117,6 @@ class User::ServicesController < User::Base
   end
 
   def edit
-    @service = Service.find_by(id: params[:id], user:current_user)
-    #@service.service_categories.build
-    #@service.category_id = @service.category.id
     @submit_text = '更新'
   end
 
@@ -174,7 +172,6 @@ class User::ServicesController < User::Base
   end
   
   def update
-    @service = Service.find_by(id: params[:id], user:current_user)
     @service.assign_attributes(service_params)
     if params.dig(:item, :file).present?
       @item = @service.item
@@ -337,7 +334,11 @@ class User::ServicesController < User::Base
   end
 
   private def define_service
-    @service = Service.find(params[:id])
+    if ['edit','update'].include?(action_name)
+      @service = Service.find_by(id: params[:id], user: current_user)
+    else
+      @service = Service.find(params[:id])
+    end
   end
 
   private def define_transaction
@@ -359,8 +360,8 @@ class User::ServicesController < User::Base
   end
 
   private def check_request_valid
-    if !@request.present?
-    elsif @request.suggestion_deadline < DateTime.now || !@request.user.is_stripe_customer_valid?
+    return unless @request
+    if @request.suggestion_deadline < DateTime.now || !@request.user.is_stripe_customer_valid?
       flash.notice = "その依頼に対して提案できません。"
       redirect_back(fallback_location: root_path)
     end
@@ -371,6 +372,13 @@ class User::ServicesController < User::Base
     if message
       flash.notice = message
       redirect_to user_request_path(@request.id)
+    end
+  end
+
+  private def check_service_valid
+    if @service.is_disabled
+      flash.notice = "相談室が無効になため修正できません"
+      redirect_back(fallback_location: root_path)
     end
   end
 

@@ -145,6 +145,14 @@ class User < ApplicationRecord
     #  .group('users.id')
   }
 
+  scope :get_followees_of, -> (user){
+    user.followees
+  }
+
+  scope :get_followers_of, -> (user){
+    user.followers
+  }
+
   def country
     Country.find_by(name: self.country_id)
   end
@@ -292,7 +300,7 @@ class User < ApplicationRecord
     .where(
       buyer: self,
       is_canceled:false, 
-      is_violating: false,
+      is_disabled: false,
       is_rejected:false, 
       is_contracted:true,
       request:{

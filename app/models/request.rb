@@ -52,6 +52,7 @@ class Request < ApplicationRecord
   scope :suggestable, -> {
     solve_n_plus_1
     .left_joins(:request_categories, :user)
+    .abled
     .where(
       is_accepting: true,
       is_published: true, 
@@ -116,6 +117,11 @@ class Request < ApplicationRecord
   }
 
   after_initialize do
+    if self.is_disabled && will_save_change_to_is_disabled?
+      self.disabled_at ||= DateTime.now
+      self.is_accepting = false
+    end
+  
     if self.service_id
       if Service.exists?(id: self.service_id) && !service.present?
         self.service = Service.find(self.service_id)
@@ -272,6 +278,8 @@ class Request < ApplicationRecord
       "期限が過ぎています"
     elsif !self.is_accepting
       "取り下げられました。"
+    elsif self.is_disabled
+      "規約違反のため、凍結されています"
     else
       nil
     end
@@ -322,6 +330,8 @@ class Request < ApplicationRecord
         "期限切れ"
       elsif !self.is_accepting
         "取り下げ"
+      elsif self.is_disabled
+        "無効"
       else
         "受付中"
       end
@@ -348,7 +358,7 @@ class Request < ApplicationRecord
   
   def status_color
     if self.is_inclusive
-      if  self.suggestion_deadline && self.suggestion_deadline < DateTime.now || !self.is_accepting
+      if (self.suggestion_deadline && self.suggestion_deadline < DateTime.now) || !self.is_accepting || self.is_disabled
         'grey'
       else
         "green"

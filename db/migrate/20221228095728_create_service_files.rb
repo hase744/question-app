@@ -3,7 +3,6 @@ class CreateServiceFiles < ActiveRecord::Migration[6.1]
     create_table :service_files do |t|
       t.references :service, null: false, foreign_key: true
       t.string :file
-      t.string :thumbnail
 
       t.timestamps
     end

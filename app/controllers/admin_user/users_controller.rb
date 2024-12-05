@@ -2,7 +2,9 @@ class AdminUser::UsersController < AdminUser::Base
   def index
     @users = User
       .where("users.name LIKE ?", "%#{params[:name]}%")
-      .from_latest_order
+    @users = @users.get_followees_of(User.find(params[:user_id])) if params[:target] == 'followees'
+    @users = @users.get_followers_of(User.find(params[:user_id])) if params[:target] == 'followers'
+    @users = @users.from_latest_order
       .page(params[:page])
       .per(50)
   end
