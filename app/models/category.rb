@@ -1,6 +1,7 @@
 class Category
   include ActiveModel::Model
   include ModelWrapper
+  include ModelCollection
   attr_accessor :id, :name, :parent_category, :child_categories, :japanese_name, :description, :start_at, :end_at
 
   def self.all
@@ -145,7 +146,7 @@ class Category
       category.parent_category.child_categories.push(category)
     end
 
-    all_categories
+    Collection.new(all_categories)
   end
 
   def valid

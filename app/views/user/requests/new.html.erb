@@ -1,17 +1,17 @@
 <%if @service.present? %>
-  <h3 class="request_new_title">購入するの相談室</h3>
-  <% transaction = Transaction.find_by(request: @request, service: @service) %>
-  <%= render "user/services/suggestion_cell", service:@service, transaction: transaction %>
-  <h3 class="request_new_title">質問・相談内容</h3>
+	<h3 class="request_new_title">購入するの相談室</h3>
+	<% transaction = Transaction.find_by(request: @request, service: @service) %>
+	<%= render "user/services/suggestion_cell", service:@service, transaction: transaction %>
+	<h3 class="request_new_title">質問・相談内容</h3>
 <% else %>
-  <h3 class="request_new_title">質問を新規作成</h3>
+	<h3 class="request_new_title">質問を新規作成</h3>
 <% end %>
 <%= render "user/shared/error_message", model: @request%>
 <%= render "user/shared/error_message", model: @transaction%>
 <%= render "user/shared/error_message", model: @service%>
 <%= render "user/shared/error_message", model: @request_item%>
 <div class="request_new_zone">
-  <div class="request_new_area input_area">
-    <%= render "user/requests/form", request: @request, service: @service, method: 'post', path: user_requests_path, submit_text: "プレビュー"%>
-  </div>
+  	<div class="request_new_area input_area">
+  	  	<%= render "user/requests/form", request: @request, service: @service, method: 'post', path: user_requests_path, submit_text: "プレビュー"%>
+  	</div>
 </div>
