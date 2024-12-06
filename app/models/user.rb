@@ -154,7 +154,7 @@ class User < ApplicationRecord
   }
 
   def country
-    Country.find_by(name: self.country_id)
+    Country.all.find_by(name: self.country_id)
   end
 
   def header_with_default
