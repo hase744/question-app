@@ -36,9 +36,10 @@ class Request < ApplicationRecord
   validate :validate_is_published
   validate :validate_request_category
   validate :validate_max_price
-  validate :validate_request_item #itemのdurationを取得できないため使用中断enum state: CommonConcern.user_states
   validate :validate_can_stop_accepting
   validate :validate_item_count
+  #validate :validate_request_item
+  validate :validate_item_form
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -414,7 +415,7 @@ class Request < ApplicationRecord
     return if self.items.count <= self.max_items_count
     return unless self.will_save_change_to_is_published?
     return unless self.is_published
-    errors.add(:items, "の数は#{self.max_items_count}個までです")
+    errors.add(:items, "添付ファイルの数は#{self.max_items_count}個までです")
   end
 
   def validate_request_category
@@ -498,21 +499,34 @@ class Request < ApplicationRecord
     end
   end
 
+  def validate_item_form
+    return unless self.is_published
+    return unless self.is_inclusive
+    form_names = self.items.map{|item| item.file.form_name}.uniq
+    case self.request_form_name
+    when 'free'
+      errors.add(:request_form, '自由形式にできません')
+    when 'text'
+      if need_text_image
+        #複数種類のファイルがある or 一種類だが文章を画像化されたものではない
+        if form_names > 1 || (form_names == 1 && self.item.is_text_image)
+          errors.add(:request_form, '添付ファイルが不適切です')
+        end
+      else
+        if form_names > 0
+          errors.add(:request_form, '添付ファイルが不適切です')
+        end
+      end
+    when 'image'
+      if form_names.length != 1 || form_names[0] != 'image'
+        errors.add(:request_form, '画像形式の際はファイルを添付してください')
+      end
+    end
+  end
+
   def validate_is_published
     if  self.is_published
       #errors.add(:items, "が処理中です") unless all_items_processed?
-    end
-  end
-
-  def validate_request_form
-    if self.service
-      errors.add(:request_form, "質問形式が違います") if self.service.request_form != self.request_form
-    end
-  end
-
-  def validate_delivery_form
-    if self.service
-      errors.add(:delivery_form, "回答形式が違います") if self.service.delivery_form != self.delivery_form
     end
   end
 

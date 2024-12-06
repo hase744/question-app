@@ -264,9 +264,7 @@ class Service < ApplicationRecord
       "アカウントが存在しません"
     elsif !request.user.is_stripe_customer_valid?
       "質問者の決済が承認されていません"
-    elsif request.request_form != self.request_form || self.request_form_name != 'free'
-      "質問形式が違います"
-    elsif self.request_max_characters < request.description.length
+    elsif self.request_max_characters && self.request_max_characters < request.description.length
       "相談室の文字数が不足しています"
     else
       nil

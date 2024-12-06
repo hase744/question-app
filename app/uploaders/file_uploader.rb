@@ -73,6 +73,11 @@ class FileUploader < UploaderBase
     video_extensions.include?(new_file&.extension&.downcase)
   end
 
+  def form_name
+    return 'image' if is_image?
+    return 'video' if is_video?
+  end
+
   def extension_allowlist
     image_extensions + video_extensions
   end

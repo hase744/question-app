@@ -245,6 +245,11 @@ class User::ServicesController < User::Base
   end
 
   def suggest
+    if message = @service.get_unsuggestable_message(@request)
+      flash.notice = message
+      redirect_back(fallback_location: root_path)
+      return
+    end
     @transaction = Transaction.new(
       service: @service, 
       request: @request, 

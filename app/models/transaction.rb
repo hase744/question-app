@@ -298,21 +298,19 @@ class Transaction < ApplicationRecord
   end
 
   def validate_is_suggestion
-    if self.is_suggestion && self.service.request_id.nil?
-      if self.request.user.is_deleted
-        errors.add(:buyer,  "アカウントが存在しません。")
-      elsif !self.request.user.is_stripe_customer_valid?
-        errors.add(:buyer,  "質問者の決済が承認されていません。")
-      elsif self.request.request_form.name != self.service.request_form.name && self.request_form.name != 'free'
-        errors.add(:request_form,  "質問形式が違います")
-      elsif self.request.category.name != self.service.category.name && self.request.category.parent_category.name != self.service.category.name
-        errors.add(:base,  "カテゴリが違います")
-      elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
-        errors.add(:base,  "相談室の文字数が不足しています")
-      else
-        nil
-      end
+    return unless self.is_suggestion && self.service.request_id.blank?
+    if self.request.user.is_deleted
+      errors.add(:buyer,  "アカウントが存在しません。")
+    elsif !self.request.user.is_stripe_customer_valid?
+      errors.add(:buyer,  "質問者の決済が承認されていません。")
+    elsif self.request.request_form.name != self.service.request_form.name && self.request_form.name != 'free'
+      errors.add(:request_form,  "質問形式が違います")
+    elsif self.request.category.name != self.service.category.name && self.request.category.parent_category&.name != self.service.category.name
+      errors.add(:base,  "カテゴリが違います")
+    elsif self.service.request_max_characters && self.service.request_max_characters < self.request.description.length
+      errors.add(:base,  "相談室の文字数が不足しています")
     else
+      nil
     end
   end
 
@@ -532,28 +530,26 @@ class Transaction < ApplicationRecord
 
   def validate_item
     return unless self.is_published
-    if self.items
-      items.each do |item|
-        next if item.valid?
-        item.errors.full_messages.each do |msg|
-          errors.add(:items, msg)
-        end
+    request_form_names = self.request.items.map{|item| item.file.form_name}.uniq
+    case self.request_form.name
+    when 'image'
+      if request_form_names.length > 0 && request_form_names[0] != 'image'
+        errors.add(:request_form, '画像を添付してください')
       end
-    elsif self.delivery_form.name == "image"
-      errors.add(:items, "画像ファイルを添付してください")
+    when 'text'
+      if self.request.need_text_image?
+        errors.add(:request_form, 'ファイルを削除してください') if !self.request.has_only_text_image?
+      elsif request_form_names.length > 0
+        errors.add(:request_form, 'ファイルを削除してください')
+      end
     end
-  end
 
-  def is_video_extension
-    if self.file.present?
-      file_extension = File.extname(self.file.path).delete(".")
-      if FileUploader.new.extension_allowlist.include?(file_extension) && !ImageUploader.new.extension_allowlist.include?(file_extension)
-        true
-      else
-        false
+    delivery_form_names = self.request.items.map{|item| item.file.form_name}.uniq
+    case self.delivery_form_name
+    when 'image'
+      if delivery_form_names.length > 0 && delivery_form_names[0] != 'image'
+        errors.add(:request_form, '画像を添付してください')
       end
-    else
-      false
     end
   end
 
