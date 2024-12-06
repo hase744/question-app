@@ -31,7 +31,7 @@
   	  	<%if service.blank? %>
   	  		<%= f.label :request_form, class:"field_label" %><br />
   	  	  	<div class="input_field text_field select_area">
-  	  	  	  	<%= f.select :request_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  	  	  	  	<%= f.select :request_form_name, request_forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
   	  	  	</div>
   	  	<% end %>
   	</div>
@@ -82,7 +82,7 @@
   	  	<%if service.blank? %>
   	  		<%= f.label :delivery_form, class:"field_label" %><br />
   	  	  	<div class="input_field text_field select_area">
-  	  	  	  	<%= f.select :delivery_form_name, forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  	  	  	  	<%= f.select :delivery_form_name, request_forms_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
   	  	  	</div>
   	  	<% end %>
   	</div>
