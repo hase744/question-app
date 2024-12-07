@@ -501,19 +501,19 @@ class Request < ApplicationRecord
 
   def validate_item_form
     return unless self.is_published
-    return unless self.is_inclusive
     form_names = self.items.map{|item| item.file.form_name}.uniq
     case self.request_form_name
     when 'free'
-      errors.add(:request_form, '自由形式にできません')
+      if self.is_inclusive
+        errors.add(:request_form, '自由形式にできません') 
+      end
     when 'text'
-      if need_text_image
-        #複数種類のファイルがある or 一種類だが文章を画像化されたものではない
-        if form_names > 1 || (form_names == 1 && self.item.is_text_image)
+      if need_text_image?
+        unless (self.items.count == 1 && self.item.is_text_image)
           errors.add(:request_form, '添付ファイルが不適切です')
         end
       else
-        if form_names > 0
+        if form_names.length > 0
           errors.add(:request_form, '添付ファイルが不適切です')
         end
       end

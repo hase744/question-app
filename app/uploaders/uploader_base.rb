@@ -20,4 +20,9 @@ class UploaderBase < CarrierWave::Uploader::Base
   def extension_allowlist
     image_extensions + video_extensions
   end
+
+  def form_name
+    return 'image' if is_image?
+    return 'video' if is_video?
+  end
 end
