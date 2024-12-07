@@ -71,7 +71,8 @@ RSpec.describe Request, type: :model do
         expect(request).to be_valid
       end
 
-      it '複数のファイルがある場合は無効' do
+      it '複数のtext_imageファイルがある場合は無効' do
+        #request.is_published = true
         request.items << build(:request_text_item, request: request)
         expect(request).not_to be_valid
       end
