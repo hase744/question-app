@@ -669,6 +669,10 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def category_names
+    self.categories.map{|c| c.japanese_name}.join(',')
+  end
+
   def delete_temp_image
     # Requestなどの親モデルの保存に成功してもrequest_categoryなどの子モデルの保存に失敗すると
     # 保存が失敗した場合のみファイルを削除

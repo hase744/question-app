@@ -17,7 +17,7 @@ class Request < ApplicationRecord
   before_validation :set_default_values
   after_save :create_request_category
   
-  attr_accessor :delivery_days
+  attr_accessor :suggestion_acceptable_days
   attr_accessor :validate_published
   attr_accessor :category_id
   attr_accessor :file
@@ -31,7 +31,7 @@ class Request < ApplicationRecord
   #validates :max_price, numericality: {greater_than_or_equal_to: 100}
   validate :validate_title
   validate :validate_description
-  validate :validate_delivery_days
+  validate :validate_suggestion_acceptable_days
   validate :validate_suggestion_deadline
   validate :validate_is_published
   validate :validate_request_category
@@ -134,15 +134,15 @@ class Request < ApplicationRecord
     end
 
     if self.suggestion_acceptable_duration
-      self.delivery_days ||= self.suggestion_acceptable_duration/1.day.to_i
+      self.suggestion_acceptable_days ||= self.suggestion_acceptable_duration/1.day.to_i
     end
 
-    if self.delivery_days
-      self.suggestion_acceptable_duration ||= self.delivery_days*1.day.to_i
+    if self.suggestion_acceptable_days
+      self.suggestion_acceptable_duration ||= self.suggestion_acceptable_days*1.day.to_i
     end
 
     if original_request_exists?
-      self.delivery_days = nil
+      self.suggestion_acceptable_days = nil
     end
 
     self.request_form_name ||= Form.all.first.name
@@ -221,8 +221,8 @@ class Request < ApplicationRecord
       self.total_files = 0
     end
 
-    if self.delivery_days
-      self.acceptable_duration_in_days=(delivery_days)
+    if self.suggestion_acceptable_days
+      self.acceptable_duration_in_days=(suggestion_acceptable_days)
     end
 
     if self.is_inclusive && self.is_published && will_save_change_to_is_published? && suggestion_acceptable_duration
@@ -500,7 +500,8 @@ class Request < ApplicationRecord
   end
 
   def validate_item_form
-    return unless self.is_published
+    #need_text_image?の時build_itemで生成されるため、self.items.countがitemの作成中と作成後に変わる
+    return unless self.is_published && will_save_change_to_is_published?
     form_names = self.items.map{|item| item.file.form_name}.uniq
     case self.request_form_name
     when 'free'
@@ -509,7 +510,8 @@ class Request < ApplicationRecord
       end
     when 'text'
       if need_text_image?
-        unless (self.items.count == 1 && self.item.is_text_image)
+         #need_text_image?の時build_itemで生成されるため、self.items.countがitemの作成中と作成後に変わる
+        unless (self.items.count == 0 && self.item.is_text_image)
           errors.add(:request_form, '添付ファイルが不適切です')
         end
       else
@@ -530,10 +532,10 @@ class Request < ApplicationRecord
     end
   end
 
-  def validate_delivery_days
-    if self.delivery_days && self.will_save_change_to_suggestion_acceptable_duration?
-      errors.add(:delivery_days, "募集期限は30日以内に設定して下さい") if self.delivery_days.to_i > 30
-      errors.add(:delivery_days, "募集期限は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
+  def validate_suggestion_acceptable_days
+    if self.suggestion_acceptable_days && self.will_save_change_to_suggestion_acceptable_duration?
+      errors.add(:suggestion_acceptable_days, "募集期限は30日以内に設定して下さい") if self.suggestion_acceptable_days.to_i > 30
+      errors.add(:suggestion_acceptable_days, "募集期限は1日以上に設定して下さい") if self.acceptable_duration_in_days < 1
     end
   end
 
@@ -631,7 +633,7 @@ class Request < ApplicationRecord
     10000
   end
 
-  def delivery_days_upper_limit
+  def suggestion_acceptable_days_upper_limit
     30
   end
 

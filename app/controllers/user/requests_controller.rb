@@ -261,7 +261,7 @@ class User::RequestsController < User::Base
   def generate_items
     return [] unless params.dig(:items, :file).present?
     params.dig(:items, :file)&.map do |file|
-      item = @request.items.new()
+      item = @request.items.build
       item.process_file_upload = false
       item.file = file
       item 
@@ -472,7 +472,7 @@ class User::RequestsController < User::Base
       :delivery_form_name,
       :service_id,
       :suggestion_deadline,
-      :delivery_days, 
+      :suggestion_acceptable_days, 
       request_categories_attributes: [:category_name],
     )
   end
@@ -490,7 +490,7 @@ class User::RequestsController < User::Base
       :delivery_form_name,
       :service_id,
       :suggestion_deadline,
-      :delivery_days, 
+      :suggestion_acceptable_days, 
       request_categories_attributes: [:category_name],
     )
   end

@@ -3,7 +3,7 @@ FactoryBot.define do
     title { "Sample Request" }
     description { "This is a description for the sample request." }
     max_price { 1000 }
-    delivery_days { 3 }
+    suggestion_acceptable_days { 3 }
     is_published { false }
     is_inclusive { true }
     suggestion_deadline { DateTime.now + 10 }
@@ -42,7 +42,7 @@ FactoryBot.define do
     title { "Sample Request" }
     description { "This is a description for the sample request." }
     max_price { 1000 }
-    delivery_days { 3 }
+    suggestion_acceptable_days { 3 }
     is_published { false }
     user { association :user }
     is_inclusive { false }
