@@ -79,7 +79,7 @@ ja:
         delivery_form: 回答形式
         request_form: 質問形式
         suggestion_deadline: 募集期限
-        delivery_days: 募集期間
+        suggestion_acceptable_days: 募集期間
         max_price: 予算
         price: 料金
         is_accepting: 取り下げ
