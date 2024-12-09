@@ -392,10 +392,9 @@ class User::ServicesController < User::Base
   end
 
   def create_notification(service, text)
-    relationships = Relationship.where(user: current_user)
-    relationships.each do |relationship|
+    current_user.followers.each do |user|
       Notification.create(
-        user: relationship.target_user,
+        user: user,
         notifier_id: current_user.id,
         title: text,
         description: service.title,
