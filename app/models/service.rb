@@ -329,7 +329,7 @@ class Service < ApplicationRecord
   end
 
   def validate_request_max_duration
-    if self.request_form.name == "video"
+    if self.request_form_name == "video"
       if self.request_max_duration.present?
         if self.request_max_duration < 60
             errors.add(:request_max_minutes, "質問動画の最大時間は最低1分です")

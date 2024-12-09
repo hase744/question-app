@@ -1,5 +1,6 @@
 class RequestItem < ApplicationRecord
   belongs_to :request, optional: true
+  delegate :is_published, to: :request
   delegate :user, to: :request
   attr_accessor :use_youtube
   attr_accessor :service
@@ -31,10 +32,6 @@ class RequestItem < ApplicationRecord
 
   def request_form
     self.request.request_form
-  end
-
-  def is_published
-    self.request.is_published
   end
 
   def assign_image_from_content(html_content, css_content)

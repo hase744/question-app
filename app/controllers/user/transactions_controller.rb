@@ -173,6 +173,17 @@ class User::TransactionsController < User::Base
       controller: "transactions",
       id_number: transaction.id
       )
+    current_user.followers.each do |user|
+      Notification.create(
+        user: user,
+        notifier_id: current_user.id,
+        title: '回答がされました',
+        description: transaction.title,
+        action: "show",
+        controller: "transactions",
+        id_number: transaction.id
+        )
+    end
   end
 
   def messages

@@ -511,7 +511,7 @@ class Request < ApplicationRecord
     when 'text'
       if need_text_image?
          #need_text_image?の時build_itemで生成されるため、self.items.countがitemの作成中と作成後に変わる
-        unless (self.items.count == 0 && self.item.is_text_image)
+        unless (self.items.count == 0 && self.item&.is_text_image)
           errors.add(:request_form, '添付ファイルが不適切です')
         end
       else
