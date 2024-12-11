@@ -84,6 +84,9 @@
     .check_link{
         display: inline-block;
         margin-right: auto;
+        label, input{
+            cursor: pointer;
+        }
     }
     .second_stage{
         display: flex;
@@ -96,6 +99,7 @@
         font-size: 13px;
         display: flex;
         align-items: center;
+        cursor: pointer;
     }
     .check_link:hover{
         text-decoration: none;

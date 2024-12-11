@@ -1,18 +1,18 @@
-<div class="how_to_zone center_zone">
+<div class="how_to_zone step_zone center_zone">
     <div class="how_deliver_area center_area">
         <h2 class="zone_title">回答の納品方法</h2>
         <div class="component_area">
             <ol class="step_area">
-                <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
-                <li class="step">②右上からサイドメニューを開く</li>
-                <li class="step">③「<%= link_to "取引一覧", user_orders_path%>」を選択</li>
+                <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
+                <li class="step"><span class='circle_number'>②</span>右上からサイドメニューを開く</li>
+                <li class="step"><span class='circle_number'>③</span>「<%= link_to "取引一覧", user_orders_path%>」を選択</li>
                 <%#= image_tag "/open_orders_index.png", class:"width_100"%>
-                <li class="step">④トップバーから「<%= link_to "納品前", user_orders_path(user: "seller", scope:"ongoing")%>」を選択</li>
-                <li class="step">⑤対応したい取引を選択</li>
-                <li class="step">⑥取引内容ページから「回答を編集」を選択</li>
+                <li class="step"><span class='circle_number'>④</span>トップバーから「<%= link_to "納品前", user_orders_path(user: "seller", scope:"ongoing")%>」を選択</li>
+                <li class="step"><span class='circle_number'>⑤</span>対応したい取引を選択</li>
+                <li class="step"><span class='circle_number'>⑥</span>取引内容ページから「回答を編集」を選択</li>
                 <%#= image_tag "/how_to_use/order_index_select.png", class:"width_100"%>
                 <%#= image_tag "/how_to_use/order_show_edit.png", class:"width_100"%>
-                <li class="step">⑦回答に対して必要項目を入力</li>
+                <li class="step"><span class='circle_number'>⑦</span>回答する内容を入力</li>
                 <%#= image_tag "/transactions_edit.png", class:"width_100"%>
                 <div class="detail_area">
                     <h3 class="title_h3"><%=Transaction.human_attribute_name(:title) %></h3>
@@ -30,10 +30,9 @@
                     -->
                 </div>
                 </br>
-                <li class="step">⑧「保存」を選択</li>
-                <li class="step">⑨取引の詳細ページで納品する内容に間違いがないかを確認</li>
-                <li class="step">⑩間違いがなければ「納品」を選択</li>
-                <li class="step">⑪「取引を完了しますか？」に「OK」を選択</li>
+                <li class="step"><span class='circle_number'>⑧</span>「保存」を選択</li>
+                <li class="step"><span class='circle_number'>⑨</span>取引の詳細ページで回答する内容に間違いがないかを確認</li>
+                <li class="step"><span class='circle_number'>⑩</span>間違いがなければ「納品」を選択し、表示される確認ダイアログで「OK」を選択</li>
                 <div class="caution">※一度納品した回答は修正できません。回答を修正したい場合は、追加回答で修正してください。</div>
             </ol>
             <%#= image_tag "/how_to_use/order_show_deliver.png", class:"width_100"%>

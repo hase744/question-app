@@ -1,13 +1,15 @@
-<div class="how_to_zone center_zone">
+<div class="how_to_zone step_zone center_zone">
     <div class="how_sell_area center_area">
         <h2 class="zone_title">相談室の出品方法</h2>
         <div class="component_area">
             <ol class="step_area">
-                <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
-                <li class="step">②<%= link_to "回答者情報", user_connects_path%>で回答者として登録</li>
-                <li class="step">③右上からサイドメニューを開く</li>
-                <li class="step">④「<%= link_to "相談室を出品", new_user_service_path %>」を選択</li>
-                <li class="step">⑤出品する相談室に必要事項を記入</li>
+                <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
+                <li class="step"><span class='circle_number'>②</span>自分のプロフィール画面から「プロフィールを編集」を選択</li>
+                <div class="caution">※自分のプロフィールは右上ボタンからサイドメニューを開き、「プロフィール」を選択して移動可能</div>
+                <li class="step"><span class='circle_number'>③</span>プロフィールを編集して答者として登録</li>
+                <div class="caution">※回答者として登録するには、100字以上の自己紹介と、プロフィール画像が必要です。</div>
+                <li class="step"><span class='circle_number'>④</span>右上のボタンからサイドメニューを開いて、「<%= link_to "相談室を出品", new_user_service_path %>」を選択</li>
+                <li class="step"><span class='circle_number'>⑤</span>出品する相談室に必要事項を記入</li>
                 <!--
                 <%= image_tag "/how_to_use/service_new_link.png", class:"width_100"%>
                 -->
@@ -21,16 +23,16 @@
                     <h3 class="title_h3"><%=Service.human_attribute_name(:category) %></h3>
                     <span>関連するカテゴリーを選択してください。</span></br>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:request_form) %></h3>
-                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は依頼する内容が文章のみです。画像の場合は質問する際に画像のアップロードが必須となります。</span></br>
+                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は文章のみでの質問が可能です。画像の場合は質問する際に画像の添付が必須となります。</span></br>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_form) %></h3>
-                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は納品する内容が文章のみです。画像の場合は納品する際に画像のアップロードが必須となります。</span></br>
+                    <span><%=Form.japanese_names%>の中から選択できます。文章の場合は文章のみでの回答が可能です。画像の場合は回答する際に画像の添付が必須となります。</span></br>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:transaction_message_enabled) %></h3>
-                    <span>回答を納品後、納品前に質問者が追加で質問が可能になります。追加質問への回答は義務ではありませんが、追加の質問、回答は公開されます。
+                    <span>購入時の質問とは別に追加で質問を可能にする機能です。追加質問への回答は義務ではありませんが、追加の質問、回答は公開されます。
                     </span>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:price) %></h3>
-                    <span>相談室の料金を入力してください。<%= Service.new.price_minimum_number%>円〜<%= Service.new.price_max_number%>円の範囲で100円ごとに設定できます。</span>
+                    <span>相談室の料金は<%= Service.new.price_minimum_number%>円〜<%= Service.new.price_max_number%>円の範囲で100円ごとに設定できます。</span>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:delivery_days) %></h3>
-                    <span>日単位で設定可能です。この日数が経過しても納品がされない場合は依頼人がキャンセルできるようになります。</span>
+                    <span>日単位で設定可能です。この日数が経過しても納品がされない場合は質問者がキャンセルできるようになります。</span>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:allow_pre_purchase_inquiry) %></h3>
                     <span>購入前に100字以内で質問することができる機能です。主な用途として、作成している質問に対して、回答可能かなどの問い合わせの受付を設定できます。</span>
                     <h3 class="title_h3"><%=Service.human_attribute_name(:is_for_sale) %></h3>
@@ -39,8 +41,7 @@
                     <span>販売する場合は「公開」を選択してください。</span>
                 </div>
                 </br>
-                <li class="step">⑥「出品」を選択</li>
-                <li class="step">⑦「出品しますか？」に「OK」を選択</li>
+                <li class="step"><span class='circle_number'>⑥</span>「出品」を選択し、表示される確認ダイアログで「OK」を選択</li>
             </ol>
             <%#= image_tag "/how_to_use/service_new.png", class:"width_100"%>
             <div class="caution">※相談室のヒントを知りたい方は<%= link_to "出品する相談室の指針", abouts_service_guide_path %>をご参照ください。

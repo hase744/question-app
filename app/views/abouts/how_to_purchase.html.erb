@@ -1,34 +1,34 @@
-<div class="how_to_zone center_zone">
+<div class="how_to_zone step_zone center_zone">
     <div class="how_purchase_area center_area">
         <h2 class="zone_title">相談の依頼方法</h2>
         <div class="component_area">
             <ol class="step_area">
-                <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
-                <li class="step">②<%= link_to "ポイントのページ", user_payments_path%>で必要なポイントをチャージ<div class="caution">※詳しくは<%=link_to "ポイントのチャージ方法", abouts_how_to_charge_path %>を参照</div></li>
-                <li class="step">③「<%=link_to "相談室一覧", user_services_path %>」で相談室を探す</li>
-                <li class="step">④購入したい相談室のページで「質問を作成」を選択</li>
-                <li class="step">⑤相談したい内容を記入</li>
+                <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
+                <li class="step"><span class='circle_number'>②</span><%= link_to "ポイントのページ", user_payments_path%>で必要なポイントをチャージ</li>
+                <div class="caution">※詳しくは<%=link_to "ポイントのチャージ方法", abouts_how_to_charge_path %>を参照</div>
+                <li class="step"><span class='circle_number'>③</span>「<%=link_to "相談室一覧", user_services_path %>」で相談室を探す</li>
+                <li class="step"><span class='circle_number'>④</span>購入したい相談室の詳細ページで「質問を作成」から質問を作成するページへ移動</li>
+                <li class="step"><span class='circle_number'>⑤</span>相談を依頼をするにあたって必要な項目を記入</li>
                 <%#= image_tag "/services_show.png", class:"width_100"%>
                     <%#= image_tag "/how_to_use/request_new_purchase.png", class:"width_100"%>
                     <div class="detail_area">
                     <h3 class="title_h3"><%=Request.human_attribute_name(:title) %></h3>
                     <span>20字以内で依頼のタイトルを記入してください。</span></br>
                     <h3 class="title_h3"><%=Request.human_attribute_name(:description) %></h3>
-                    <span>相談したい内容を記入してください。相談室によっては文字数に制限があることがあります。</span></br>
+                    <span>相談したい内容を記入してください。相談室によっては字数に制限があります。</span></br>
                     <!--
                     <h3 class="title_h3"><%=Request.human_attribute_name(:use_youtube) %>（質問形式が動画の場合）</h3>
                     <span>YouTubeにアップロードした動画を使う場合にこれを選択してください。</span></br>
                     <h3 class="title_h3"><%=Request.human_attribute_name(:youtube_id) %>（質問形式が動画の場合）</h3>
                     <span>YouTubeにあらかじめ動画をアップロードしてください。ここにはそのIDを記載してください。</span></br>
                     -->
-                    <h3 class="title_h3"><%=Request.human_attribute_name(:file) %>（質問形式が動画、画像の場合）</h3>
-                    <span>依頼するファイルをアップロードしてください。</span>
+                    <h3 class="title_h3"><%=Request.human_attribute_name(:file) %></h3>
+                    <span><%=Request.human_attribute_name(:request_form) %>が画像の場合にのみ、10ファイルが上限で添付可能です</span>
                 </div>
                 </br>
-                <li class="step">⑥「プレビュー」を選択</li>
-                <li class="step">⑦プレビューで依頼する内容が合っているかを確認</li>
-                <li class="step">⑧間違いがなければ「購入」を選択</li>
-                <li class="step">⑨「購入しますか？」に「OK」を選択</li>
+                <li class="step"><span class='circle_number'>⑥</span>「プレビュー」を選択し、プレビューページへ移動</li>
+                <li class="step"><span class='circle_number'>⑦</span>プレビューページで相談する内容が合っているかを確認</li>
+                <li class="step"><span class='circle_number'>⑧</span>「購入」を選択し、表示される確認ダイアログで「OK」を選択</li>
             </ol>
             <%#= image_tag "/how_to_use/request_preview_purchase.png", class:"width_100"%>
         </div>

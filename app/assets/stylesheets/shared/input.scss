@@ -109,6 +109,9 @@
         .true_price{
             font-size: 30px;
             color: darkred;
+            .unit{
+                font-size: 20px;
+            }
         }
         .discount{
             font-weight: 650;

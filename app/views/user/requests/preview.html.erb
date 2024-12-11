@@ -110,11 +110,11 @@
 						<label>価格</label></br>
 						<% if @transaction.required_points < @transaction.price %>
 	    	    	  		<h3 class="price fake_price"><span><%= @transaction.price %></span>円</h3></br>
-	    	    	  		<h3 class="price true_price"><%= @transaction.required_points %>円	
+	    	    	  		<h3 class="price true_price"><%= @transaction.required_points %><span class="unit">円</span>
 							</h3>
 							<span class="discount"> （ クーポンにより<%= @transaction.price - @transaction.required_points%>円引き）</span>
 						<% else %>
-	    	    	  		<h3 class="price true_price"><%= @transaction.price %>円</h3>
+	    	    	  		<h3 class="price true_price"><%= @transaction.price %><span class="unit">円</span></h3>
 						<% end %>
 						<%if !current_user.use_inactive_coupon && current_user.coupons.usable %>
 							<h4 class="open_button change_coupon">クーポンを選択</h4>
