@@ -95,10 +95,11 @@
             align-items: center;
             //flex-direction: column;
             .price_area{
+                color: darkred;
                 //width: 100%;
                 .price{
                     font-size: 22px;
-                    color: $text_grey;
+                    //color: $text_grey;
                 }
             }
         }

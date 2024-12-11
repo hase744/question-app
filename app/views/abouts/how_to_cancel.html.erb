@@ -1,18 +1,16 @@
-<div class="how_to_zone center_zone">
+<div class="how_to_zone center_zone step_zone">
     <div class="how_cancel_area center_area">
         <h2 class="zone_title">取引のキャンセル方法</h2>
         <div class="component_area">
             <ol class="step_area">
-                <li class="step">①<%= link_to "ログインページ", new_user_session_path%>でログイン</li>
-                <li class="step">②右上からサイドメニューを開く</li>
-                <li class="step">③「<%=link_to "取引一覧", user_orders_path %>」を選択</li>
+                <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
+                <li class="step"><span class='circle_number'>②</span>右上ボタンからサイドメニューを開き、「<%=link_to "取引一覧", user_orders_path %>」を選択</li>
                 <%#= image_tag "/open_orders_index.png", class:"width_100"%>
-                <li class="step">④「<%= link_to "購入中", user_orders_path(user: "buyer", scope:"ongoing")%>」を選択</li>
-                <li class="step">⑤取引の中からキャンセルしたい取引を選択</li>
-                <li class="step">⑥取引内容ページで「取引をキャンセル」を選択</li>
+                <li class="step"><span class='circle_number'>③</span>メニューバーの「<%= link_to "購入中", user_orders_path(user: "buyer", scope:"ongoing")%>」を選択</li>
+                <li class="step"><span class='circle_number'>④</span>キャンセルしたい取引を選択し、取引内容ページに移動</li>
+                <li class="step"><span class='circle_number'>⑤</span>「取引をキャンセル」を選択し、表示される確認ダイアログで「OK」を選択</li>
                 <div class="caution">※取引のキャンセルは納期が過ぎても回答が納品されない場合にしかでません。</div>
-                <li class="step">⑦「依頼をキャンセルしますか？」に「OK」を選択
-                <div class="caution">※取引をキャンセルした場合には、売り手は報酬を受け取れません。また、依頼人の購入時に消費したポイントは戻され購入前に戻ります。</div></li>
+                <div class="caution">※取引をキャンセルした場合には、売り手は報酬を受け取れません。また、質問者の購入時に消費したポイントは戻され購入前に戻ります。</div>
             </ol>
             <%##= image_tag "/how_to_use/order_index_cancel.png", class:"width_100"%>
         </div>

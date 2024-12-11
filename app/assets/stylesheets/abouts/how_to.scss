@@ -1,5 +1,11 @@
 @import "variables";
 .how_to_zone{
+    a{
+        color: $link_blue;
+    }
+    a:hover{
+        color: $link_blue;
+    }
     .step_area{
         margin: 0;
         padding: 0;
@@ -104,4 +110,18 @@
 }
 .pdf{
     height: 100vh;
+}
+.how_to_zone.step_zone{
+    .step_area{
+        position: relative;
+        margin: 0;
+        padding: 0;
+        .step{
+            padding-left:1.25em;
+            .circle_number{
+                position: absolute;
+                left:0;
+            }
+        }
+    }
 }

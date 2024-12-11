@@ -99,6 +99,9 @@
             border-radius: 10px;
             position: relative;
             max-width: calc(100% - 76px);
+            .body{
+                white-space: pre-line;
+            }
         }
         .left_text::before {
           content: '';
@@ -166,7 +169,7 @@
             padding-top: 7px;
             border-radius: 5px;
             width: 40px;
-            height: 41px;
+            height: 40px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             vertical-align: top; /* これがないとiphoneのsafariで上に隙間ができる */

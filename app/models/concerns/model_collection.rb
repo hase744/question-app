@@ -13,6 +13,10 @@ module ModelCollection
     def self.find_by(criteria)
       collection.find_by(criteria)
     end
+    
+    def self.available
+      all.select { |form| form.start_at < DateTime.now }
+    end
   end
 
   class Collection

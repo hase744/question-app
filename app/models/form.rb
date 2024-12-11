@@ -33,12 +33,12 @@ class Form
     ])
   end
 
-  def self.available
-    all.select { |form| form.start_at < DateTime.now }
-  end
-
   def self.for_request
     available.where(name: ['image', 'text'])
+  end
+
+  def self.japanese_names_for_request
+    for_request.map(&:japanese_name).join('、')
   end
 
   def self.japanese_names

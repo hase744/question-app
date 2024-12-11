@@ -22,9 +22,9 @@
 				<%= image_tag  transaction.buyer.thumb_with_default, class: "image #{side}_image" %>
 				<div class="text <%=side%>_text">
 					<h3 class="margin0px">タイトル</h3>
-					<%= transaction.request.title%>
+					<%= transaction.request.title%></br></br>
 					<h3 class="margin0px">本文</h3>
-					<%= transaction.request.description%>
+					<div class="body"><%= transaction.request.description%></div>
 					<% transaction.request.items.each do |item| %>
 						<%= image_tag item.normal_file_with_default, class: "item_image" unless item.is_text_image %>
 					<% end %>
