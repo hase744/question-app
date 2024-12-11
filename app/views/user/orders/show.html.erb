@@ -264,7 +264,7 @@
         <% end %>
         <% if @transaction.is_cancelable_by(current_user) %>
             <div class="submit_area">
-                <%=link_to " 取引をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash", data: {confirm: "依頼をキャンセルしますか？\nポイントやクーポンは元に戻りますが、ポイントの購入は返金されません。"} %>
+                <%=link_to " 購入をキャンセル", user_cancel_order_path(@transaction.id), :method => :put, class:"big_submit fas fa-handshake-alt-slash", data: {confirm: "依頼をキャンセルしますか？\nポイントやクーポンは元に戻りますが、ポイントの購入は返金されません。"} %>
             </div>
         <% end %>
         <% if can_deliver(@transaction) && current_user == @transaction.seller%>
