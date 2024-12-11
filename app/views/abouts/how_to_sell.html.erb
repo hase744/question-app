@@ -5,11 +5,13 @@
             <ol class="step_area">
                 <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
                 <li class="step"><span class='circle_number'>②</span>自分のプロフィール画面から「プロフィールを編集」を選択</li>
-                <div class="caution">※自分のプロフィールは右上ボタンからサイドメニューを開き、「プロフィール」を選択して移動可能</div>
+                <div class="caution">※自分のプロフィールは右上ボタンから開けるサイドメニューにある「プロフィール」を選択して移動可能</div>
                 <li class="step"><span class='circle_number'>③</span>プロフィールを編集して答者として登録</li>
                 <div class="caution">※回答者として登録するには、100字以上の自己紹介と、プロフィール画像が必要です。</div>
                 <li class="step"><span class='circle_number'>④</span>右上のボタンからサイドメニューを開いて、「<%= link_to "相談室を出品", new_user_service_path %>」を選択</li>
-                <li class="step"><span class='circle_number'>⑤</span>出品する相談室に必要事項を記入</li>
+                <li class="step"><span class='circle_number'>⑤</span>出品する相談室に必要項目を記入</li>
+                <div class="caution">※推奨される相談室の内容については<%= link_to "出品する相談室の指針", abouts_service_guide_path %>を参照
+                </div>
                 <!--
                 <%= image_tag "/how_to_use/service_new_link.png", class:"width_100"%>
                 -->
@@ -44,8 +46,6 @@
                 <li class="step"><span class='circle_number'>⑥</span>「出品」を選択し、表示される確認ダイアログで「OK」を選択</li>
             </ol>
             <%#= image_tag "/how_to_use/service_new.png", class:"width_100"%>
-            <div class="caution">※相談室のヒントを知りたい方は<%= link_to "出品する相談室の指針", abouts_service_guide_path %>をご参照ください。
-            </div>
         </div>
     </div>
 </div>

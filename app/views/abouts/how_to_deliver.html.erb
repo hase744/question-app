@@ -7,7 +7,7 @@
                 <li class="step"><span class='circle_number'>②</span>右上からサイドメニューを開く</li>
                 <li class="step"><span class='circle_number'>③</span>「<%= link_to "取引一覧", user_orders_path%>」を選択</li>
                 <%#= image_tag "/open_orders_index.png", class:"width_100"%>
-                <li class="step"><span class='circle_number'>④</span>トップバーから「<%= link_to "納品前", user_orders_path(user: "seller", scope:"ongoing")%>」を選択</li>
+                <li class="step"><span class='circle_number'>④</span>メニューバーにある「<%= link_to "納品前", user_orders_path(user: "seller", scope:"ongoing")%>」を選択</li>
                 <li class="step"><span class='circle_number'>⑤</span>対応したい取引を選択</li>
                 <li class="step"><span class='circle_number'>⑥</span>取引内容ページから「回答を編集」を選択</li>
                 <%#= image_tag "/how_to_use/order_index_select.png", class:"width_100"%>
@@ -18,7 +18,7 @@
                     <h3 class="title_h3"><%=Transaction.human_attribute_name(:title) %></h3>
                     <span><%=Transaction.new.title_max_length%>字以内で回答のタイトルを記入してください。</span></br>
                     <h3 class="title_h3"><%=Transaction.human_attribute_name(:description) %></h3>
-                    <span>内容が相談室の提供する内容に沿っているか注意して、詳しい回答を記入してください。詳しくは<%= link_to "相談室の指針", abouts_service_guide_path %>まで</span></br>
+                    <span>内容が相談室の提供する内容に沿っているか注意して、回答を記入してください。</span></br>
                     <h3 class="title_h3">ファイル（画像の場合）</h3>
                     <span><%=Transaction.new.max_items_count%>個まで添付可能です。</span>
                     <!--
@@ -30,7 +30,7 @@
                     -->
                 </div>
                 </br>
-                <li class="step"><span class='circle_number'>⑧</span>「保存」を選択</li>
+                <li class="step"><span class='circle_number'>⑧</span>「保存」を選択して回答を作成</li>
                 <li class="step"><span class='circle_number'>⑨</span>取引の詳細ページで回答する内容に間違いがないかを確認</li>
                 <li class="step"><span class='circle_number'>⑩</span>間違いがなければ「納品」を選択し、表示される確認ダイアログで「OK」を選択</li>
                 <div class="caution">※一度納品した回答は修正できません。回答を修正したい場合は、追加回答で修正してください。</div>

@@ -6,9 +6,9 @@
                 <li class="step"><span class='circle_number'>①</span><%= link_to "ログインページ", new_user_session_path%>でログイン</li>
                 <li class="step"><span class='circle_number'>②</span>「<%= link_to "クレジットカード情報登録", new_user_cards_path%>」でクレジットカード情報を登録</li>
                 <div class="caution">※JCBは登録いただけません</div>
-                <div class="caution">※クレジットカードに関するページは右上ボタンから開けるサイドメニューの「<%=link_to "マイページ",user_configs_path %>」に移動して選択可能</div>
+                <div class="caution">※クレジットカードに関するページは右上ボタンから開けるサイドメニューにある「<%=link_to "マイページ",user_configs_path %>」に移動して選択可能</div>
                 <li class="step"><span class='circle_number'>③</span>「<%= link_to "ポイント", user_payments_path%>」のページに移動</li>
-                <div class="caution">※ポイントページは右上ボタンから開けるサイドメニューから選択できる「<%=link_to "マイページ",user_configs_path %>」から移動可能</div>
+                <div class="caution">※ポイントページは右上ボタンから開けるサイドメニューにある「<%=link_to "マイページ",user_configs_path %>」から移動可能</div>
                 <%#= image_tag "/how_to_use/payment_new.png", class:"width_100"%>
                 <li class="step"><span class='circle_number'>④</span>購入するポイントを選択</li>
                 <li class="step"><span class='circle_number'>⑤</span>「購入」を選択し、表示される確認ダイアログで「OK」を選択</li>
