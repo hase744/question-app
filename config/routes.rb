@@ -113,6 +113,17 @@ namespace :user do
     resources :notifications, only: [ :index, :show]
     resources :request_supplements, only: [:create, :new]
     resources :payments, only: [:index, :show, :create]
+    resource :payments do
+      member do
+        post :secret, to: 'payments#secret'
+        put :secret, to: 'payments#secret'
+      end
+    end
+    resources :payments do
+      member do
+        post :check, to: 'payments#check'
+      end
+    end
     resources :payouts, only: [:index, :show, :create]
     resources :pre_purchase_inquiries, only: [:index, :create]
     resource :point_records, only: [:show]

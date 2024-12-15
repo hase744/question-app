@@ -1,5 +1,6 @@
 class User::RequestsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish, :stop_accepting ] #ログイン済みである
+  before_action :display_payment_message, only:[:preview]
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
   before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]

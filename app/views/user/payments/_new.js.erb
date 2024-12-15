@@ -1,0 +1,56 @@
+
+$("#payment_value").change(function(){
+  console.log($(this).val())
+  $("#value_display").html(`${$(this).val()}`)
+  $("#payment_point").val(`${$(this).val()}`)
+  console.log($("#payment_point").val(`${$(this).val()}`))
+})
+
+//document.addEventListener("turbo:load", function () {
+$(function(){
+  const form = document.getElementById("form");
+  form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    const formData = new FormData(form);
+    const value = formData.get("payment[value]");
+
+    try {
+      const response = await fetch("<%= secret_user_payments_path %>", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+        },
+        body: JSON.stringify({ payment: { value } })
+      });
+
+      const data = await response.json();
+
+      if (data.client_secret) {
+        console.log("Client Secret:", data.client_secret);
+        // Stripe.jsを使用して決済を続行
+        const stripe = Stripe("<%= Rails.application.config.stripe_publishable_key %>");
+        const result = await stripe.confirmCardPayment(data.client_secret);
+        if (result.error) {
+          console.error("Payment failed:", result.error.message);
+        } else if (result.paymentIntent.status === "succeeded") {
+					const checkResponse = await fetch(`/user/payments/${data.id}/check`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
+            }
+          });
+					if (checkResponse.ok) {
+            location.reload(); // または、別のページにリダイレクト
+          } else {
+            alert("決済確認に失敗しました。");
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    return false;
+  });
+});
