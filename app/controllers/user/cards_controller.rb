@@ -3,6 +3,7 @@ class User::CardsController < User::Base
   before_action :check_login
   before_action :check_card_unregistered, only:[:new, :create]
   before_action :check_card_registered, only:[:edit, :update, :destroy]
+  before_action :display_payment_message, only:[:index]
 
   def show
     @card = nil
@@ -16,7 +17,7 @@ class User::CardsController < User::Base
 
   def new
     # あらかじめ環境変数に入れておいたテスト用公開鍵を、gonの変数にセット
-    key = ENV['STRIPE_PUBLISHABLE_KEY']
+    key = Rails.application.config.stripe_publishable_key
     current_user = User.find_by(id:1)
   end
 

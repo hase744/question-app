@@ -152,4 +152,11 @@ module StripeMethods
     @payment.executed_at = Time.at(charge.created).to_datetime
     @payment.save
   end
+
+  def display_payment_message
+    if session[:message]
+      flash.alert = session[:message] 
+      session[:message] = nil
+    end
+  end
 end

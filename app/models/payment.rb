@@ -4,9 +4,13 @@ class Payment < ApplicationRecord
   before_validation :set_default_values
   after_save :create_record
   enum status: {
-    succeeded: 0,
-    pending: 1,
-    failed: 2
+    canceled: 0,
+    processing: 1,
+    requires_action: 2,
+    requires_capture: 3,
+    requires_confirmation: 4,
+    requires_payment_method: 5,
+    succeeded: 6,
   }
 
   def set_default_values
