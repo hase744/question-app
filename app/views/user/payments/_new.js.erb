@@ -19,10 +19,20 @@ $(function(){
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
           "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
         },
         body: JSON.stringify({ payment: { value } })
       });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // JSONエラー内容を取得
+        if (errorData.redirect_url) {
+          window.location.href = errorData.redirect_url; // 返されたURLに遷移
+        } else {
+          alert(errorData.error || "エラーが発生しました。");
+        }
+      }
 
       const data = await response.json();
 

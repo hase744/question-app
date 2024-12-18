@@ -3,7 +3,7 @@ class User::CardsController < User::Base
   before_action :check_login
   before_action :check_card_unregistered, only:[:new, :create]
   before_action :check_card_registered, only:[:edit, :update, :destroy]
-  before_action :display_payment_message, only:[:index]
+  before_action :display_payment_message, only:[:index, :show]
 
   def show
     @card = nil

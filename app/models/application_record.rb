@@ -12,6 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   include ItemConcern
   include ImageGenerator
   include CommonScopes
+  include Couponable
 
   scope :from_latest_order, ->() {
     order(created_at: :desc)
@@ -58,6 +59,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def validate_price
+    return if is_tip_mode?
     if self.price.nil?
       errors.add(:price)
     elsif self.price % 100 != 0
@@ -74,6 +76,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   def price_max_number#最小値
     10000
+  end
+
+  def is_tip_mode?
+    self.mode == 'tip'
   end
 
   def self.acceptable_image_extensions

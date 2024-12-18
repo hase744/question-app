@@ -1,0 +1,12 @@
+<div class="modal_window new_message_modal">
+    <div class="modal_background"></div>
+    <div class="modal_window_body">
+        <%= render "user/transaction_messages/form", 
+            transaction_message: @transaction_message,
+            transaction: @transaction 
+            %>
+        <div class="modal_delete_area">
+            <p class="modal_delete">閉じる</p>
+        </div>
+    </div>
+</div>

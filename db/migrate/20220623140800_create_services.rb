@@ -29,6 +29,9 @@ class CreateServices < ActiveRecord::Migration[6.1]
 
       t.float :rejection_rate, default: nil, index:true
       t.float :cancellation_rate, default: nil, index:true
+    
+      t.integer :mode, null: false
+
       t.timestamps
     end
   end

@@ -1,0 +1,71 @@
+<%= form_with model: @transaction, url: path, method:"put" do |f| %>
+  	<div class="field_area">
+  	    <%= f.label :title, class:"field_label"%>（<%=@transaction.title_max_length%>字以内）<br />
+  	    <%= f.text_field :title, maxlength:@transaction.title_max_length, autofocus: true, autocomplete: "name", class:"input_field text_field" ,required: true%>
+  	</div>
+
+  	<div class="field_area">
+  	    <%= f.label :description, class:"field_label" %><span class="total_characters" length="<%=@transaction.description_max_length%>"></span><br />
+  	    <%= f.text_area :description, maxlength:@transaction.description_max_length, autocomplete: "new-password", class:"input_field text_area" ,required: true%>
+  	</div>
+
+  	<div class="video_field_area" id="video_field_area">
+<!--
+      <div id="youtube_area">
+          <div class="field_area" id="youtube_check_field_area">
+              <%= f.label :use_youtube, class:"field_label"%><br />
+              <%= f.check_box :use_youtube, class:"input_field check_box", id:"youtube_check_box" %><span>    YouTubeにアップロードした動画を使う</span>
+          </div>
+
+          <div class="field_area" id="youtube_id_field_area">
+              <%= f.label :youtube_id, class:"field_label"%><br />
+              <%= f.text_field :youtube_id, autofocus: true, autocomplete: "name", class:"input_field text_field", id:"youtube_id_field" %>
+              <div>※YouTube動画のIDとは動画のURLの「https://www.youtube.com/watch?v=」の後に続く11字の文字列です。</div>
+          </div>
+      </div>
+-->
+
+    <div class="field_area" id="file_field_area">
+  	<% if @transaction.delivery_form.name != "text" %>
+  	    <%= f.label :file, class:"field_label" %><br />
+  	    <%##= f.file_field :file, autocomplete: "file", class:"input_field",id:"file_input", multiple: true%>
+  	    <%= f.fields_for :items do |item_form| %>
+  	        <% if item_form.object.file.present? || item_form.object.file_tmp.present?%>
+  	            <%= image_tag item_form.object.normal_file_with_default, class:"image" if item_form.object.file_is_image? %>
+  	            <%= link_to "削除", remove_file_user_transaction_path(item_form.object), method: :delete, data: {confirm: "削除しますか？"} %>
+  	            </br></br>
+  	        <% end %>
+  	    <% end %>
+  		<%= f.file_field :file, autocomplete: "file", class:"input_field", id:"file_input", accept: accept_image, name: "items[file][]", multiple: true %>
+  			</br><span class="annotation">※添付ファイルの上限数は<%=Transaction.new.max_items_count%>個です</span>
+  			    <div class="file_discription" id="file_discription"></div>
+  			    <div class="file_alarm" id="file_alarm"></div></br>
+				
+				
+  			    <%if @transaction.delivery_form.name == "video" %>
+  			      <%= f.label :thumbnail, class:"field_label" %>（任意）<br />
+  			      <%= f.file_field :thumbnail, autocomplete: "file", class:"input_field",id:"thumbnail"%>
+  			      <div>フォーマットはjpg,jpeg,pngのみ</div>
+  			    <% end %>
+  			<% end %>
+  	    </div>
+  	</div>
+
+  	<div class="field_area">
+  	    <%= f.label :delivery_form, class:"field_label" %><br />
+  	    <h3 class="request_content"><%=@transaction.service.delivery_form.japanese_name%></h3>
+  	    <%= f.hidden_field :delivery_form, value: @transaction.service.delivery_form%>
+  	</div>
+
+  	<%if @transaction_exist %>
+  	    <%= f.hidden_field :transaction_id, value: @transaction.id%>
+  	<% end %>
+
+  	<div class="submit_area">
+  	    <%= link_to "戻る", @preview_path,class:"big_submit edit_link grey", id:"edit_link"%>
+  	</div></br>
+
+  	<div class="submit_area">
+  	    <%= f.submit "保存", class:"big_submit", id:"submit" %>
+  	</div>
+<% end %>

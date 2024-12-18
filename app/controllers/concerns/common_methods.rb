@@ -90,4 +90,8 @@ module CommonMethods
       item.delete_temp_file
     end
   end
+
+  def mode_japanese_hash
+    [['相談室募集', :proposal], ['直接回答募集', :tip]].to_h
+  end
 end

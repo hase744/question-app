@@ -2,7 +2,7 @@ class User::RequestsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish, :stop_accepting ] #ログイン済みである
   before_action :display_payment_message, only:[:preview]
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
-  before_action :define_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
+  before_action :define_request, only:[:show, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_parameter, except:[:new]
   before_action :check_request_need_transaction, only:[:edit, :preview]
@@ -13,6 +13,7 @@ class User::RequestsController < User::Base
   before_action :check_previous_request, only:[:new, :create] #以前に購入しようとしたことがある
   before_action :check_already_contracted, only:[:new, :create, :publish, :purchase, :preview, :edit]
   before_action :check_budget_sufficient, only:[:publish, :purchase]
+  before_action :check_can_check_request, only:[:show]
   layout :choose_layout
 
   private def choose_layout
@@ -66,22 +67,64 @@ class User::RequestsController < User::Base
   end
 
   def show
-    @request = Request.find(params[:id])
-    if !@request.is_published
-      flash.notice = "質問が非公開です。"
-      redirect_to user_requests_path
-    elsif !@request.user.is_published
-      flash.notice = "アカウントが非公開です。"
-      redirect_to user_requests_path
-    elsif @request.user.is_deleted
-      flash.notice = "アカウントが存在しません。"
-      redirect_to user_requests_path
-    else
-      if user_signed_in?
-        @relationship = Relationship.find_by(user: @request.user, target_user_id: current_user.id)
-      end
-      @request.update(total_views:@request.total_views + 1)
+    @post_page = 10
+    params[:page] = 1
+    @transaction = current_user&.sales&.find_by(request: @request)
+    @transaction_message = @transaction.transaction_messages.new() if @transaction
+    if user_signed_in?
+      @relationship = Relationship.find_by(user: @request.user, target_user_id: current_user.id)
     end
+    @request.update(total_views:@request.total_views + 1)
+    # SQLクエリの定義
+    transaction_sql = <<-SQL
+    SELECT 'Transaction' AS record_type, id, created_at, published_at 
+    FROM transactions
+    WHERE request_id = #{ActiveRecord::Base.connection.quote(@request.id)}
+      AND is_published = true
+    SQL
+
+    if @request.transactions.exists?
+      transaction_message_sql = <<-SQL
+        SELECT 'TransactionMessage' AS record_type, id, created_at, published_at 
+        FROM transaction_messages
+        WHERE transaction_id IN (#{@request.transactions.pluck(:id).join(',')})
+      SQL
+    end
+    
+    # 動的に最終SQLを組み立てる
+    final_sql_parts = []
+    final_sql_parts << "(#{transaction_sql})"
+    final_sql_parts << "(#{transaction_message_sql})" if @request.transactions.exists?
+    
+    # UNION ALLで結合し、ORDER BYとLIMITを追加
+    final_sql = <<-SQL
+      #{final_sql_parts.join(" UNION ALL ")}
+      ORDER BY published_at DESC
+      LIMIT #{@post_page} OFFSET #{(params[:page].to_i - 1) * @post_page}
+    SQL
+
+    # SQL実行
+    records = ActiveRecord::Base.connection.execute(final_sql)
+
+    # IDを分類してN+1解決のfind
+    transaction_ids = records.map { |row| row['id'] if row['record_type'] == 'Transaction' }.compact
+    transaction_message_ids = records.map { |row| row['id'] if row['record_type'] == 'TransactionMessage' }.compact
+
+    transactions = Transaction.solve_n_plus_1.find(transaction_ids).to_a
+    transaction_messages = TransactionMessage.solve_n_plus_1.find(transaction_message_ids).to_a
+
+    # レコードをActiveRecordモデルに変換
+    records = records.to_a.map do |row|
+    case row['record_type']
+    when 'Transaction'
+      transactions.find { |model| model.id == row['id'] }
+    when 'TransactionMessage'
+      transaction_messages.find { |model| model.id == row['id'] }
+    end
+    end
+
+    # 結果をインスタンス変数に格納
+    @models = records
   end
 
   def new
@@ -259,6 +302,46 @@ class User::RequestsController < User::Base
     end
   end
 
+  def create_message
+    @request = Request.find(params[:id])
+    check_transaction(redirect_path: user_request_path(@request, open_message_modal: true))
+  end
+
+  def answer
+    check_transaction(redirect_path: -> { edit_user_transaction_path(@transaction.id) })
+  end
+
+  def check_transaction(redirect_path:)
+    @request = Request.find(params[:id])
+    @transaction = current_user.sales.find_by(request: @request)
+    if @transaction
+      redirect_to redirect_path.is_a?(Proc) ? redirect_path.call : redirect_path
+    else
+      ActiveRecord::Base.transaction do
+        @service = Service.new(
+          user: current_user, 
+          mode: 'tip', 
+          price: 0,
+          request_form_name: @request.request_form_name,
+          delivery_form_name: @request.delivery_form_name
+          )
+        @service.service_categories.build(category_name: @request.category.name)
+        @transaction = Transaction.new(
+          service: @service, 
+          request: @request, 
+          price: 0,
+          mode: 'tip'
+        )
+        if save_models
+          redirect_to redirect_path.is_a?(Proc) ? redirect_path.call : redirect_path
+        else
+          flash.notice = '失敗しました'
+          redirect_back(fallback_location: root_path)
+        end
+      end
+    end
+  end
+
   def generate_items
     return [] unless params.dig(:items, :file).present?
     params.dig(:items, :file)&.map do |file|
@@ -279,10 +362,28 @@ class User::RequestsController < User::Base
       @submit_text = "公開"
     end
 
+    if @request.mode == 'tip'
+      @deficient_point = [@request.required_points - current_user.total_points, 0].max
+      @payment = Payment.new(point: @deficient_point || 100)
+    end
+
     if @request.is_inclusive
       @edit_path = edit_user_request_path(@request.id)
     else
       @edit_path = edit_user_request_path(@request.id, transaction_id:@transaction.id)
+    end
+  end
+
+  private def check_can_check_request
+    if !@request.is_published
+      flash.notice = "質問が非公開です。"
+      redirect_to user_requests_path
+    elsif !@request.user.is_published
+      flash.notice = "アカウントが非公開です。"
+      redirect_to user_requests_path
+    elsif @request.user.is_deleted
+      flash.notice = "アカウントが存在しません。"
+      redirect_to user_requests_path
     end
   end
 
@@ -364,7 +465,11 @@ class User::RequestsController < User::Base
     if @transaction
       @request = @transaction.request
     elsif params[:id]
-      @request = Request.find_by(id:params[:id], user: current_user, is_published:false)
+      if action_name == 'show'
+        @request = Request.find_by(id:params[:id])
+      else
+        @request = Request.find_by(id:params[:id], user: current_user, is_published:false)
+      end
     end
   end
 
@@ -474,6 +579,8 @@ class User::RequestsController < User::Base
       :service_id,
       :suggestion_deadline,
       :suggestion_acceptable_days, 
+      :mode,
+      :reward,
       request_categories_attributes: [:category_name],
     )
   end
@@ -492,6 +599,8 @@ class User::RequestsController < User::Base
       :service_id,
       :suggestion_deadline,
       :suggestion_acceptable_days, 
+      :mode,
+      :reward,
       request_categories_attributes: [:category_name],
     )
   end

@@ -28,8 +28,8 @@
         </div>
         <% if request.has_text_image || request.items.blank? %>
             <div class="request_condition_area">
-                <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
-                <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title"><%=request.price_label%></span>&nbsp;<span class="content"><%=request.price_content%>円</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title"><%=request.response_label%></span>&nbsp;<span class="content"><%=request.response_content%>件</span>　</div>
                 <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
             </div>
         <% end %>
@@ -40,12 +40,12 @@
             <div class="request_condition_area vertical_condition_area">
                 <table>
                     <tr>
-                        <td class="request_condition_block"><span class="request_condition_title">予算</span></td>
-                        <td>&nbsp;<%=request.max_price%>円</td>
+                        <td class="request_condition_block"><span class="request_condition_title"><%=request.price_label%></span></td>
+                        <td>&nbsp;<%=request.price_content%>円</td>
                     </tr>
                     <tr>
-                        <td class="request_condition_block"><span class="request_condition_title">提案数</span></td>
-                        <td>&nbsp;<%=request.total_services%>件</td>
+                        <td class="request_condition_block"><span class="request_condition_title"><%=request.response_label%></span></td>
+                        <td>&nbsp;<%=request.response_content%>件</td>
                     </tr>
                     <tr>
                         <td class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span></td>
@@ -54,8 +54,8 @@
                 </table>
             </div>
             <div class="request_condition_area horizontal_condition_area">
-                <div class="request_condition_block"><span class="request_condition_title">予算</span>&nbsp;<span class="content"><%=request.max_price%>円</span>　</div>
-                <div class="request_condition_block"><span class="request_condition_title">提案数</span>&nbsp;<span class="content"><%=request.total_services%>件</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title"><%=request.price_label%></span>&nbsp;<span class="content"><%=request.price_content%>円</span>　</div>
+                <div class="request_condition_block"><span class="request_condition_title"><%=request.response_label%></span>&nbsp;<span class="content"><%=request.response_content%>件</span>　</div>
                 <div class="request_condition_block"><span class="request_condition_title"><%=Transaction.human_attribute_name(:delivery_form) %></span>&nbsp;<span class="content"><%=forms_japanese_hash.key(request.delivery_form_name)%></span>　</div>
             </div>
         <% end %>

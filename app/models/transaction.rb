@@ -20,12 +20,12 @@ class Transaction < ApplicationRecord
   delegate :user, to: :service
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
-  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
+  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true, if: -> { mode == 'proposal' }
   validates :reject_reason, length: {maximum: :reject_reason_max_length}
   validates :disable_reason, presence: true, if: :is_violation?
   validates :disabled_at, presence: true, if: :is_violation?
   validates :delivery_time, presence: true
-  validate :validate_price
+  validate :validate_price, if: -> { mode == 'proposal' }
   validate :validate_title
   validate :validate_description
   validate :validate_is_canceled
@@ -40,6 +40,7 @@ class Transaction < ApplicationRecord
   validate :validate_violation
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
+  enum mode: { proposal: 0, tip: 1 }
 
   after_save :create_transaction_category
   after_save :update_total_sales
@@ -243,6 +244,10 @@ class Transaction < ApplicationRecord
       self.transaction_message_enabled = self.service.transaction_message_enabled
     end
 
+    if is_tip_mode?
+      self.transaction_message_enabled = true
+    end
+
     self.service_title = self.service.title
     self.service_descriprion = self.service.description
     self.service_allow_pre_purchase_inquiry = self.service.allow_pre_purchase_inquiry
@@ -278,9 +283,13 @@ class Transaction < ApplicationRecord
     self.assign_attributes(
       is_published: true,
       published_at: DateTime.now,
-      is_transacted: true,
-      transacted_at: DateTime.now,
     )
+    unless is_tip_mode?
+      self.assign_attributes(
+        is_transacted: true,
+        transacted_at: DateTime.now,
+      )
+    end
   end
 
   def set_cansel
@@ -630,6 +639,9 @@ class Transaction < ApplicationRecord
   def can_send_message(user)
     #買った人である。かつ、transaction_messageを送る期限内である
     return false unless user == self.buyer || user == self.seller
+    if is_tip_mode?
+      return DateTime.now < self.request.suggestion_deadline
+    end
     if self.is_contracted
       self.transaction_message_enabled || user == self.seller
     else
@@ -640,9 +652,9 @@ class Transaction < ApplicationRecord
   def can_send_pre_purchase_inquiry(user)
     return false unless self.service.allow_pre_purchase_inquiry
     return false if self.is_contracted
-    if user == self.seller
+    if user == self.seller #回答者の時
       messages_sort_by_later.last&.receiver == user
-    elsif user == self.buyer
+    elsif user == self.buyer #質問者の時
       messages_sort_by_later.last&.receiver == user || self.transaction_messages.blank?
     else
       false

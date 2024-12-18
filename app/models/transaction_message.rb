@@ -49,7 +49,8 @@ class TransactionMessage < ApplicationRecord
   end
 
   def can_send_message
-    if !self.deal.can_send_message(self.sender)
+    unless self.deal.can_send_message(self.sender)
+      puts "エラー"
       errors.add(:deadline, "メッセージを送信できません")
     end
   end

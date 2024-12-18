@@ -22,8 +22,19 @@ class User::Base < ApplicationController
 
   def check_stripe_customer
     if !current_user.is_stripe_customer_valid?
-      flash.notice = "クレジットカードを登録してください。"
-      redirect_to user_cards_path
+      respond_to do |format|
+        format.html do
+          flash.notice = "クレジットカードを登録してください。"
+          redirect_to user_cards_path
+        end
+        format.json do
+          session[:message] = "クレジットカードを登録してください。"
+          render json: {
+            error: "クレジットカードを登録してください。",
+            redirect_url: user_cards_path
+          }, status: :unprocessable_entity
+        end
+      end
     end
   end
 

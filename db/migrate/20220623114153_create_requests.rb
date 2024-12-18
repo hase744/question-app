@@ -7,6 +7,7 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       t.string :title, index:true
       t.text :description
 
+      t.integer :reward, index:true
       t.integer :max_price, index:true
       t.integer :mini_price, index:true #予算の下限　※現在は未使用
 
@@ -28,6 +29,8 @@ class CreateRequests < ActiveRecord::Migration[6.1]
       t.references :transaction, index:true
       t.boolean :is_published, default: false, index:true
       t.datetime :published_at, index:true
+
+      t.integer :mode, null: false
 
       t.timestamps
     end

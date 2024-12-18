@@ -1,3 +1,4 @@
+@import "_variables";
 .transaction_message_cell_area{
     display: inline-block;
     width: calc(100% - 10px);
@@ -6,6 +7,16 @@
     //box-shadow: 0px 0px 2px lightgray;
     box-shadow: 1px 1px 3px gray;
     margin: 2.5px 5px;
+    .answer_title{
+        margin: 3px 5px;
+        color: $text_grey;
+        font-size: 20px;
+        //text-decoration: underline;
+        .mark_a{
+            font-size: 22px;
+            color: darkred;
+        }
+    }
     .image_name_area{
         width: 100%;
         height: 40px;

@@ -378,6 +378,11 @@
         border-radius: 3px;
         cursor: pointer;
     }
+    .small_button{
+        display: inline-block;
+        width: calc(50% - 20px);
+        float: left;
+    }
     .label_area{
         display: inline-block;
     }

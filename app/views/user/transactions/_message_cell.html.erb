@@ -1,0 +1,25 @@
+<div class="transaction_message_cell_area">
+	<h4 class="title answer_title">
+		<span class="mark_a">A.</span>
+		<%= transaction.title%>
+	</h4>
+    <div class="image_name_area">
+        <div class="image_area">
+            <%=image_tag transaction.seller.thumb_with_default, class:"user_image"%>
+        </div>
+        <div class="time_name_area">
+            <div class="send_time">
+                <h2 class="user_name one_line_text"><%=link_to transaction.seller.name, user_account_path(transaction.seller.id), class:"user_link" %></h2>
+                <%=readable_datetime(transaction.published_at)%>
+            </div>
+        </div>
+    </div>
+    <div class="message_text_area">
+        <div class="message_text"><%=transaction.description %></div>
+    </div>
+	<% transaction.items.each do |item| %>
+		<%= link_to(item.file.url, class: 'item_link') do %>
+			<%= image_tag item.file.url, class:"image" if item.file.is_image? %>
+		<% end %>
+	<% end %>
+</div>
