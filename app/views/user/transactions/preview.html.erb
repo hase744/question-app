@@ -1,0 +1,54 @@
+<div class="order_show_zone">
+<%= render "user/requests/cell", request:@transaction.request%>
+    <%= render "user/shared/error_message", model: @transaction%>
+    <div class="order_show_flame component_area">
+        <% if current_user == @transaction.seller || @transaction.is_transacted%>
+            <div class="information_component">
+                <label><%= Transaction.human_attribute_name(:title)%></label></br>
+                <h3 class="margin0px">
+                    <% if @transaction.title %>
+                        <% if @transaction.is_published %>
+                            <%= link_to @transaction.title, user_transaction_path(@transaction.id) %>
+                        <% else %>
+                            <%= @transaction.title %>
+                        <% end %>
+                    <% else %>
+                        未記入
+                    <% end %>
+                </h3>
+            </div>
+            <div  class="information_component">
+                </label class="title_label"><%= Transaction.human_attribute_name(:description)%></label></br>
+                <% if @transaction.description %>
+                    <h5 class="margin0px break_word description_area"><%=@transaction.description %></h5>
+                <% else %>
+                    <h5 class="margin0px break_word">未記入</h5>
+                <% end %>
+            </div>
+            <div  class="information_component">
+                <%if @transaction.delivery_form_name != "text" %>
+                    </label class="title_label">ファイル</label></br>
+                    <% if @transaction.items %>
+                        <% if @transaction.delivery_form_has_image? %>
+                            <% @transaction.items.each do |item|%>
+                                <%= image_tag item.normal_file_with_default, class:"image #{item.normal_style_class}" if item.file_is_image? %>
+                            <% end %>
+                        <% elsif @transaction.service.delivery_form.name == "video" %>
+                            <%= video_tag @transaction.file.url, poster:@transaction.thumbnail.url, class:"image", controls: true, autobuffer: true%>
+                        <% end %>
+                    <% end %>
+                <% end %>
+                <% if false %>
+                    <span id="desctiption_to_image_text">文章を画像に変換中。変換が遅い場合はページをリロードしてください。</span>
+                    <img id="description_image" class="description_image">
+                <% end %>
+            </div>
+        <% end %>
+        <% unless @transaction.is_published %>
+            <%=link_to " 回答を編集", edit_user_transaction_path(@transaction.id), class:"link_button fas fa-edit"%>
+        <% end %>
+        <%= form_with model: @transaction, url:user_deliver_transaction_path(@transaction.id), class:"submit_area", method:"put" do |f| %>
+			<%= f.submit "回答を完了", class:"big_submit", id:"submit", data: {confirm: "これ以上編集できなくなります\n完了しますか？"} %>
+		<% end %>
+	</div>
+</div>

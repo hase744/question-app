@@ -86,6 +86,8 @@ ja:
         is_disabled: 違反性
         disabled_at: 違反認定日時
         disable_reason: 違反理由
+        mode: 募集方法
+        reward: 報酬金額
       request/request_categories:
         category_name: カテゴリー
       request_supplement:

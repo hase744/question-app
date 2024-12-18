@@ -108,6 +108,13 @@ namespace :user do
     resources :relationships, only: [ :update]
     resources :services, only: [ :index, :show, :new, :edit, :create, :destroy, :update]
     resources :requests, only: [ :index, :show, :new, :edit, :create, :update, :destroy]
+    resources :requests do
+      member do
+        post :create_message, to: 'requests#create_message'
+        post :answer, to: 'requests#answer'
+        delete :remove_file, to: 'requests#remove_file'
+      end
+    end
     resources :accounts, only: [ :index, :show]
     resources :transactions, only: [ :index, :show, :edit, :update]
     resources :notifications, only: [ :index, :show]
@@ -146,14 +153,10 @@ namespace :user do
         put :activate, to: 'coupons#activate'
       end
     end
-    resources :requests do
-      member do
-        delete :remove_file, to: 'requests#remove_file'
-      end
-    end
     resources :transactions do
       member do
         delete :remove_file, to: 'transactions#remove_file'
+        get :preview, to: 'transactions#preview'
       end
     end
   end

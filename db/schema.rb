@@ -114,10 +114,12 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
   create_table "coupon_usages", force: :cascade do |t|
     t.bigint "coupon_id", null: false
     t.bigint "transaction_id", null: false
+    t.bigint "request_id", null: false
     t.integer "amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["coupon_id"], name: "index_coupon_usages_on_coupon_id"
+    t.index ["request_id"], name: "index_coupon_usages_on_request_id"
     t.index ["transaction_id"], name: "index_coupon_usages_on_transaction_id"
   end
 
@@ -314,6 +316,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.integer "delivery_form_name", null: false
     t.string "title"
     t.text "description"
+    t.integer "reward"
     t.integer "max_price"
     t.integer "mini_price"
     t.boolean "is_inclusive", default: true, null: false
@@ -331,6 +334,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.bigint "transaction_id"
     t.boolean "is_published", default: false
     t.datetime "published_at"
+    t.integer "mode", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["delivery_form_name"], name: "index_requests_on_delivery_form_name"
@@ -344,6 +348,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["mini_price"], name: "index_requests_on_mini_price"
     t.index ["published_at"], name: "index_requests_on_published_at"
     t.index ["request_form_name"], name: "index_requests_on_request_form_name"
+    t.index ["reward"], name: "index_requests_on_reward"
     t.index ["suggestion_acceptable_duration"], name: "index_requests_on_suggestion_acceptable_duration"
     t.index ["suggestion_deadline"], name: "index_requests_on_suggestion_deadline"
     t.index ["title"], name: "index_requests_on_title"
@@ -427,6 +432,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.text "disable_reason"
     t.float "rejection_rate"
     t.float "cancellation_rate"
+    t.integer "mode", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["average_star_rating"], name: "index_services_on_average_star_rating"
@@ -520,6 +526,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.text "reject_reason"
     t.boolean "is_canceled", default: false
     t.datetime "canceled_at"
+    t.integer "mode", null: false
     t.boolean "transaction_message_enabled", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -643,6 +650,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"
   add_foreign_key "coupon_usages", "coupons"
+  add_foreign_key "coupon_usages", "requests"
   add_foreign_key "coupon_usages", "transactions"
   add_foreign_key "coupons", "users"
   add_foreign_key "delivery_items", "transactions"

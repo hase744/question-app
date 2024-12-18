@@ -130,7 +130,6 @@ class User::OrdersController < User::Base
       )
   end
 
-
   def create_rejection_notification
     Notification.create(
       user_id: @transaction.buyer.id,

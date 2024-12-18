@@ -69,10 +69,10 @@
                 <table class="common_condition_area">
                     <tr>
                         <td class="condition_label">
-                            <span class="condition_name "><%= Request.human_attribute_name(:max_price)%></span>
+                            <span class="condition_name "><%= @request.price_label%></span>
                         </td>
                         <td>
-                            <span class="common_condition"><%=@request.max_price%>円</span>
+                            <span class="common_condition"><%= @request.price_content%>円</span>
                         </td>
                     </tr>
                     <tr>
@@ -119,9 +119,21 @@
             <% end %>
         </div>
         <% if @request.suggestion_deadline && @request.suggestion_deadline > DateTime.now %>
-            <%= render 'user/shared/common_label', text: '提案された相談室', language: 'ja' %>
-            <% @request.transactions.where(is_suggestion: true).each do |transaction| %>
-                <%= render "user/services/suggestion_cell", service:transaction.service, transaction: transaction %>
+            <%if @request.is_tip_mode? %>
+                <%= render 'user/shared/common_label', text: '回答・メッセージ', language: 'ja' %>
+                <% @models.each do |model| %>
+                    <%= case model.model_name.to_s
+	                when 'Transaction'
+                        render 'user/transactions/message_cell', transaction: model
+                    when 'TransactionMessage'
+                        render 'user/transaction_messages/cell', content: model
+                    end %>
+                <% end %>
+            <% else %>
+                <%= render 'user/shared/common_label', text: '提案された相談室', language: 'ja' %>
+                <% @request.transactions.where(is_suggestion: true).each do |transaction| %>
+                    <%= render "user/services/suggestion_cell", service:transaction.service, transaction: transaction %>
+                <% end %>
             <% end %>
         <% else %>
             <%= render 'user/shared/common_label', text: '回答', language: 'ja' %>
@@ -134,17 +146,53 @@
     <%= render "user/accounts/profile", user: @request.user, relationship:@relationship %>
     -->
 </div>
-<% if user_signed_in? && @request.is_suggestable?(current_user) %>
+<%if @transaction %>
+<%= render 'user/transaction_messages/new_modal' %>
+<% end %>
+<%if @request.mode == 'tip' %>
 <div class="bottom_button_area">
     <div class="bottom_button_flame button_area">
-        <div class="bottom_button modal_open suggest_button button"">
-        <i class="fa-regular fa-hand"></i> 相談室を提案
-        </div>
+        <% if @transaction %>
+            <div class="bottom_button small_button open_new_message_modal">
+                <i class="fa-regular fa-comments"></i> メッセージ
+            </div>
+        <% else %>
+            <%= link_to(create_message_user_request_path, class:"bottom_button small_button", method: 'POST') do %>
+                <i class="fa-regular fa-comments"></i> メッセージ
+            <% end %>
+        <% end %>
+        <%= link_to(answer_user_request_path, class:"bottom_button small_button", method: 'POST') do %>
+            <i class="fa-regular fa-hand"></i> 回答を作成
+        <% end %>
     </div>
 </div>
 <script>
+<%if params[:open_message_modal] %>
+const new_message_modal = $('.new_message_modal');
+new_message_modal.addClass("open");
+<% end %>
+$(function(){
+  const modal = $('.modal_window');
+  const new_message_modal = $('.new_message_modal');
+  $('.open_new_message_modal').on('click', function(){
+    new_message_modal.addClass("open");
+  });
+});
 $('.main_area').css('padding-bottom','50px');
 </script>
+<% else %>
+    <% if user_signed_in? && @request.is_suggestable?(current_user) %>
+    <div class="bottom_button_area">
+        <div class="bottom_button_flame button_area">
+            <div class="bottom_button modal_open suggest_button button">
+            <i class="fa-regular fa-hand"></i> 相談室を提案
+            </div>
+        </div>
+    </div>
+    <% end %>
+    <script>
+    $('.main_area').css('padding-bottom','50px');
+    </script>
 <% end %>
 <div class="modal_window service_select_modal">
     <div class="modal_background"></div>
@@ -182,8 +230,6 @@ $('.main_area').css('padding-bottom','50px');
     </div>
 </div>
 <script>
-
-
 over_600_slide_count = <%=@request.items.length.clamp(1, 3) %><%%>
 
 var swiper = new Swiper('.swiper-container', {

@@ -2,6 +2,7 @@ class Coupon < ApplicationRecord
   belongs_to :user
   has_many :usages, class_name: "CouponUsage", dependent: :destroy
   has_many :transactions, through: :usages, source: :deal, dependent: :destroy
+  has_many :requests, through: :usages, source: :request, dependent: :destroy
   enum usage_type: { unlimited: 0, one_time: 1 }
   before_validation :inactive_coupons
   before_validation :set_default_values

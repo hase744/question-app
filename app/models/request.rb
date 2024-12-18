@@ -45,6 +45,7 @@ class Request < ApplicationRecord
   accepts_nested_attributes_for :items, allow_destroy: true
   accepts_nested_attributes_for :item, allow_destroy: true
   accepts_nested_attributes_for :request_categories, allow_destroy: true
+  enum mode: { proposal: 0, tip: 1 }
 
   scope :solve_n_plus_1, -> {
     includes(:user, :services, :request_categories, :items, :transactions)
@@ -164,6 +165,14 @@ class Request < ApplicationRecord
 
   def delivery_form
     Form.find_by(name: self.delivery_form_name)
+  end
+
+  def total_price
+    self.reward
+  end
+
+  def coupon_user
+    self.user
   end
 
   def transaction
@@ -381,6 +390,22 @@ class Request < ApplicationRecord
     end
   end
 
+  def price_content
+    self.mode == 'tip' ? self.reward : self.max_price
+  end
+
+  def price_label
+    self.mode == 'tip' ? '報酬金額' : Request.human_attribute_name(:max_price)
+  end
+
+  def response_content
+    self.mode == 'tip' ? self.transactions.select{|t| t.is_published}.length : self.total_services
+  end
+
+  def response_label
+    self.mode == 'tip' ? '回答数' : '提案数'
+  end
+
   def save_length
     if self.request_form.name == "text"
     elsif self.request_form.name == "image"
@@ -431,6 +456,7 @@ class Request < ApplicationRecord
   end
 
   def validate_max_price
+    return if self.mode == 'tip'
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
       errors.add(:max_price, "予算を設定してください") if max_price.nil?
     end

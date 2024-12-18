@@ -21,13 +21,13 @@ class Service < ApplicationRecord
   attr_accessor :request_max_minutes
   attr_accessor :category_id
 
-  validates :title, length: {maximum: :title_max_length}, presence: true
-  validates :description, length: {maximum: :description_max_length}, presence: true
-  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true
-  validates :delivery_days, numericality: {only_integer: true, fgreater_than_or_equal_to: :delivery_days_minimum_number, less_than_or_equal_to: :delivery_days_max_number}, presence: true
-  validate :validate_price
-  validate :validate_request_max_duration
-  validate :validate_service_category
+  validates :title, length: {maximum: :title_max_length}, presence: true, if: -> { mode == 'proposal' }
+  validates :description, length: {maximum: :description_max_length}, presence: true, if: -> { mode == 'proposal' }
+  validates :price, numericality: {only_integer: true, greater_than_or_equal_to: :price_minimum_number, less_than_or_equal_to: :price_max_number}, presence: true, if: -> { mode == 'proposal' }
+  validates :delivery_days, numericality: {only_integer: true, fgreater_than_or_equal_to: :delivery_days_minimum_number, less_than_or_equal_to: :delivery_days_max_number}, presence: true, if: -> { mode == 'proposal' }
+  validate :validate_price, if: -> { mode == 'proposal' }
+  validate :validate_request_max_duration, if: -> { mode == 'proposal' }
+  validate :validate_service_category, if: -> { mode == 'proposal' }
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
@@ -40,6 +40,7 @@ class Service < ApplicationRecord
   scope :buyable, -> {
     solve_n_plus_1
     .abled
+    .not_tip_mode
     .where(
       request_id: nil,
       is_published: true,
@@ -51,6 +52,7 @@ class Service < ApplicationRecord
     left_joins(:user, :service_categories)
     .solve_n_plus_1
     .abled
+    .not_tip_mode
     .where(
       request_id: nil,
       is_published: true,
@@ -272,6 +274,10 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
+    if is_tip_mode?
+      self.allow_pre_purchase_inquiry = true
+    end
+  
     if self.is_disabled && will_save_change_to_is_disabled?
       self.disabled_at ||= DateTime.now
       self.is_for_sale = false

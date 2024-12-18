@@ -1,10 +1,12 @@
 class User::TransactionsController < User::Base
   #layout "search_layout", only: :index
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
-  before_action :check_transaction_is_transacted, only:[:show, :like]
-  before_action :define_transaction, only:[:show, :update, :deliver, :messages]
-  before_action :filter_transaction, only:[:update, :deliver]
+  before_action :define_transaction, only:[:show, :edit, :update, :deliver, :messages, :like]
+  before_action :define_own_transaction, only:[:preview]
+  before_action :filter_transaction, only:[:update, :deliver, :deliver]
   before_action :define_transaction_message, only:[:show, :messages]
+  before_action :check_transaction_published, only:[:show, :like]
+  before_action :check_transaction_not_published, only:[:edit, :public]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
   #before_action :check_can_send_message, only:[:messages]
   after_action :update_total_views, only:[:show]
@@ -36,11 +38,14 @@ class User::TransactionsController < User::Base
   end
 
   def edit
-    @transaction = Transaction.find(params[:id])
     unless can_edit_transaction
       redirect_to user_order_path(params[:id])
     end
+    @preview_path = @transaction.is_tip_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(@transaction.id)
     @transaction.items.build
+  end
+
+  def preview
   end
 
   def show
@@ -91,7 +96,8 @@ class User::TransactionsController < User::Base
     ActiveRecord::Base.transaction do
       if save_models
         flash.notice = "回答を編集しました"
-        redirect_to user_order_path(params[:id])
+        path = @transaction.is_tip_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(params[:id])
+        redirect_to path
       else
         delete_temp_file_items
         detect_models_errors([@transaction.item, @transaction])
@@ -129,7 +135,8 @@ class User::TransactionsController < User::Base
       EmailJob.perform_later(mode: :deliver, model: @transaction) if @transaction.buyer.can_email_transaction
       create_notification(@transaction)
       flash.notice = "回答を納品しました。"
-      redirect_to user_transaction_path(@transaction.id)
+      path = @transaction.request.is_tip_mode? ? user_request_path(@transaction.request.id) : user_transaction_path(@transaction.id)
+      redirect_to path
     else
       detect_models_errors([current_user, @transaction, @delivery_item])
       @transaction.is_transacted = false
@@ -154,12 +161,11 @@ class User::TransactionsController < User::Base
   end
 
   def like
-    transaction = Transaction.find(params[:id])
-    like = transaction.likes.find_by(user: current_user)
+    like = @transaction.likes.find_by(user: current_user)
     if like.present?
       like.destroy
     else
-      transaction.likes.create(user: current_user)
+      @transaction.likes.create(user: current_user)
     end
   end
 
@@ -219,6 +225,10 @@ class User::TransactionsController < User::Base
     @transaction = Transaction.find(params[:id])
   end
 
+  private def define_own_transaction
+    @transaction = Transaction.find_by(id: params[:id], seller: current_user)
+  end
+
   private def filter_transaction
     @transaction = Transaction.left_joins(:service)
     @transaction = @transaction.find_by(
@@ -256,8 +266,14 @@ class User::TransactionsController < User::Base
     )
   end
 
-  private def check_transaction_is_transacted
-    if  !Transaction.exists?(id:params[:id], is_transacted:true)
+  private def check_transaction_published
+    unless @transaction.is_published
+      raise ActiveRecord::RecordNotFound
+    end
+  end
+
+  private def check_transaction_not_published
+    if @transaction.is_published
       raise ActiveRecord::RecordNotFound
     end
   end

@@ -27,6 +27,15 @@
   	  	<% end %>
   	</div>
 
+  	<%if service.blank? %>
+  		<div class="field_area">
+  		  	<%= f.label :mode, class:"field_label" %><br />
+  		  	<div class="input_field text_field select_area">
+  		  	  	<%= f.select :mode, mode_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  		  	</div>
+		</div>
+	<% end %>
+
   	<div class="field_area">
   	  	<%if service.blank? %>
   	  		<%= f.label :request_form, class:"field_label" %><br />
@@ -87,7 +96,16 @@
   	  	<% end %>
   	</div>
 
-  	<div class="field_area">
+  	<div class="field_area reward_field_area">
+  	  	<% unless service.present? %>
+  	  	  	<%= f.label :reward, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
+  	  	  	<div class="input_field text_field select_area">
+  	  	  		<%= f.select 'reward', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.max_price), include_blank: true,  class:"price_field" ,required: true %>
+  	  	  	</div>
+  	  	<% end %>
+  	</div>
+
+  	<div class="field_area max_price_field_area">
   	  	<% unless service.present? %>
   	  	  	<%= f.label :max_price, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
   	  	  	<div class="input_field text_field select_area">
@@ -97,7 +115,7 @@
   	</div>
 
   	<%if !service.present? %>
-  	  	<div class="field_area">
+  	  	<div class="field_area price_field_area">
   	  	  	<%= f.label :suggestion_deadline, class:"field_label"%>（1〜<%= request.suggestion_acceptable_days_upper_limit%>日）<br/>
   	  	  	  	<div class="input_field text_field select_area">
   	  	  	  	  	<%= f.select 'suggestion_acceptable_days', options_for_select((1..30).step(1).map { |num| ["#{num}日", num] }, selected:  request.suggestion_acceptable_days), include_blank: true,  class:"" ,required: true %>
@@ -125,4 +143,22 @@
 <script>
 <%= render 'user/requests/javascript/extension_controller.js.erb' %>
 <%= render 'user/requests/javascript/youtube_form_controller.js.erb' %>
+$(document).ready(function() {
+    $('#request_mode').on('change', function() {
+        const selectedValue = $(this).val();
+		console.log(selectedValue)
+        
+        if (selectedValue === 'tip') {
+            $('.max_price_field_area').hide();
+            $('.reward_field_area').show();
+        } else if (selectedValue === 'proposal') {
+            $('.max_price_field_area').show();
+            $('.reward_field_area').hide();
+        }
+    });
+
+    // 初期状態の設定
+    $('#request_mode').trigger('change');
+});
+
 </script>

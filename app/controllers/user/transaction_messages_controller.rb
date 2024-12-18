@@ -38,18 +38,20 @@ class User::TransactionMessagesController < User::Base
         create_notification(@transaction.seller, "追加質問が届いています。")
         flash.alert = "質問を送信しました。"
       end
-      if @transaction.is_transacted
-        redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      else
-        redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      end
+      #if @transaction.is_transacted
+      #  redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
+      #else
+      #  redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
+      #end
+      redirect_back fallback_location: root_path(transaction_message_order: "DESC")
     else
       flash.notice = "投稿できませんでした。#{@transaction_message.errors.full_messages}"
-      if @transaction.is_transacted
-        redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      else
-        redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      end
+      redirect_back fallback_location: root_path(transaction_message_order: "DESC")
+      #if @transaction.is_transacted
+      #  redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
+      #else
+      #  redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
+      #end
     end
   end
 

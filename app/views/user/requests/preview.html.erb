@@ -78,10 +78,19 @@
 	    	    </div>
 							
 	    	    <% unless @service%>
+				<% case @request.mode %>
+				<% when 'proposal' %>
 	    	    <div class="field_area">
 	    	        <%= f.label :max_price, class:"field_label"%><br/>
 	    	        <h3 class="request_content"><%=@request.max_price%>円</h3>
 	    	    </div>
+
+				<% when 'tip'%>
+	    	    <div class="field_area">
+	    	        <%= f.label :reward, class:"field_label"%><br/>
+	    	        <h3 class="request_content"><%=@request.reward%>円</h3>
+	    	    </div>
+				<% end %>
 							
 	    	    <div class="field_area">
 	    	      	<%= f.label :suggestion_acceptable_days, class:"field_label"%><br/>
@@ -89,8 +98,11 @@
 	    	    </div>
 	    	    <% end %>
 	    	<% end %>
-	    	    <% if @transaction && @transaction&.price > 0 %>
-					<% if current_user.coupons.usable(@transaction&.price).present? %>
+	    	    <% if (@transaction && @price > 0) || @request.mode == 'tip' %>
+				<% @model = @transaction ? @transaction : @request
+				@price = @transaction ? @transaction.price : @request.reward
+				%>
+					<% if current_user.coupons.usable(@price).present? %>
 	    	    	<div class="field_area">
 						<label>クーポンの使用</label>
 						<h3 class="request_content coupon">
@@ -108,21 +120,21 @@
 							
 	    	    	<div class="price_area">
 						<label>価格</label></br>
-						<% if @transaction.required_points < @transaction.price %>
-	    	    	  		<h3 class="price fake_price"><span><%= @transaction.price %></span>円</h3></br>
-	    	    	  		<h3 class="price true_price"><%= @transaction.required_points %><span class="unit">円</span>
+						<% if @model.required_points < @price %>
+	    	    	  		<h3 class="price fake_price"><span><%= @price %></span>円</h3></br>
+	    	    	  		<h3 class="price true_price"><%= @model.required_points %><span class="unit">円</span>
 							</h3>
-							<span class="discount"> （ クーポンにより<%= @transaction.price - @transaction.required_points%>円引き）</span>
+							<span class="discount"> （ クーポンにより<%= @price - @transaction.required_points%>円引き）</span>
 						<% else %>
-	    	    	  		<h3 class="price true_price"><%= @transaction.price %><span class="unit">円</span></h3>
+	    	    	  		<h3 class="price true_price"><%= @price %><span class="unit">円</span></h3>
 						<% end %>
 						<%if !current_user.use_inactive_coupon && current_user.coupons.usable %>
 							<h4 class="open_button change_coupon">クーポンを選択</h4>
-							<%= render "user/coupons/modal_window", price: @transaction.price %>
+							<%= render "user/coupons/modal_window", price: @price %>
 						<% end %>
 	    	    	</div>
 
-                    <%= render "user/payments/price_table" %>
+                    <%= render "user/payments/price_table", price: @price %>
 	    	    <% end %>
 							
 	    	    <div class="submit_area">

@@ -226,7 +226,7 @@
                 <% end %>
                 -->
                 <% if @transaction&.suggestion_buyable(current_user) %>
-                    <%= render "user/payments/price_table" %>
+                    <%= render "user/payments/price_table", price: @transaction.price %>
                     <div class="transaction_button_area">
         	            <div class="open_button transaction_button">購入前に質問</div>
                     </div>
