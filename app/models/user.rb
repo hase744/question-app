@@ -226,6 +226,7 @@ class User < ApplicationRecord
   def set_default_values
     self.name  ||= "user name"
     self.state ||= :normal
+    self.uuid ||= "@#{SecureRandom.alphanumeric(10)}"
   end
 
   def create_user_state_hitrory

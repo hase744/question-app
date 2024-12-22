@@ -59,7 +59,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def validate_price
-    return if is_tip_mode?
+    return if is_reward_mode?
     if self.price.nil?
       errors.add(:price)
     elsif self.price % 100 != 0
@@ -78,8 +78,12 @@ class ApplicationRecord < ActiveRecord::Base
     10000
   end
 
-  def is_tip_mode?
-    self.mode == 'tip'
+  def is_reward_mode?
+    self.mode == 'reward'
+  end
+
+  def is_proposal_mode?
+    self.mode == 'proposal'
   end
 
   def self.acceptable_image_extensions

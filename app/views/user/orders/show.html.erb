@@ -80,6 +80,7 @@
             	</tr>
             </table>
         <% end %>
+        <% unless @transaction.is_reward_mode? %>
         <%= render "user/shared/small_label", text: "契約内容" %>
         <table class="common_condition_area">
             <tr>
@@ -175,6 +176,7 @@
             </div>
         <% end %>
         </br>
+        <% end %>
         <%= render "user/shared/small_label", text: "質問" %>
         <%= link_to(user_request_path(@transaction.request.id), class: "service_request_area") do %>
             <div class="image_area">
@@ -204,7 +206,7 @@
             </div>
         <% end %>
         <% if @transaction.can_send_message(current_user) %>
-            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+            <%=link_to " 追加メッセージ", messages_user_transaction_path(@transaction.id), class:"far fa-envelope grey link_button" %>
         <% end %>
         <% if @transaction.is_ongoing %>
             <div class="submit_area">

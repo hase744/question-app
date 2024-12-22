@@ -118,6 +118,7 @@ ja:
       review:
         body: 感想
         star_rating: 星評価
+        reward: 報酬
       announcement:
         id: ID
         title: タイトル

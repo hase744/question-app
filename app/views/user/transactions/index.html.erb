@@ -7,7 +7,7 @@
                 link: ->(category) { user_transactions_path(request.query_parameters.merge(category_names: category[:name])) } 
             %>
         </div>
-        <%= render "user/shared/sort_selector",
+        <%= render "user/shared/sort_selector", sort_type: 'transactions',
             link: ->(order) {user_transactions_path(request.query_parameters.merge(order: order)) } 
         %>
     </div>

@@ -11,7 +11,7 @@
             <% @question_answer.each do |qa|%>
                 <div class="qa-content">
                     <h3 class="question">・<%=qa.question%><span class="fas fa-angle-down"></span></h3>
-                    <p class="answer"><%=qa.answer.gsub(/\n\r/, '<br>').html_safe%></p>
+                    <p class="answer"><%=qa.answer.gsub(/\r\n/, '<br>').html_safe%></p>
                 </div>
             <% end %>
         </div>

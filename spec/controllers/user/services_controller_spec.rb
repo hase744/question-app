@@ -20,6 +20,7 @@ RSpec.describe User::ServicesController, type: :controller do
           service_categories_attributes: {
             "0" => { category_name: 'business' }
           },
+          mode: 'proposal',
           request_form_name: 'text',
           request_max_characters: '0',
           delivery_form_name: 'text',

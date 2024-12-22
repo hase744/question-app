@@ -19,6 +19,23 @@ module CommonMethods
     @current_nav_item
   end
 
+  private def define_transaction_message
+    params[:transaction_message_order] ||= "ASC"
+    params[:page] ||= 1
+    params[:transaction_id] ||= params[:id]
+    params[:after_published] ||= action_name == 'show'
+    params[:after_published] = params[:after_published].to_s == 'true'
+    @transaction_messages = TransactionMessage.solve_n_plus_1
+    @transaction_messages = @transaction_messages.after_transaction_published if params[:after_published]
+    @transaction_messages = @transaction_messages
+      .after_request_published
+      .by_transaction_id_and_order(
+        transaction_id: params[:transaction_id], 
+        order: params[:transaction_message_order],
+        page: params[:page],
+      )
+  end
+
   def set_current_nav_item
     @current_nav_item = params[:nav_item]
     @current_nav_item = controller_name if action_name == 'index'
@@ -92,6 +109,13 @@ module CommonMethods
   end
 
   def mode_japanese_hash
-    [['相談室募集', :proposal], ['直接回答募集', :tip]].to_h
+    [['相談室を募集', :proposal], ['直接回答を募集', :reward]].to_h
+  end
+
+  def reward_japanese_hash(request)
+    return [["#{request.remaining_reward}円", request.remaining_reward]] if request.transactions.not_transacted.published.count == 1
+    (0..request.remaining_reward).step(100).to_a.map{|value|
+      ["#{value}円", value]
+    }
   end
 end

@@ -12,7 +12,7 @@
                 <input class="checkbox" type="checkbox" <%='checked' if params[:is_available] == '1'%>>
                 <label class="checkbox_label">受付中</label>
             <% end %>
-            <%= render "user/shared/sort_selector",
+            <%= render "user/shared/sort_selector", sort_type: 'services',
                 link: ->(order) {user_services_path(request.query_parameters.merge(order: order)) } 
             %>
         </div>

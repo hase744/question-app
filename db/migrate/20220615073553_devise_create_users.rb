@@ -29,6 +29,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
 
       t.integer :state, null: false, index:true
       t.string :name
+      t.string :uuid, null: false, index:true, unique: true
       t.string :image
       t.string :image_tmp
       t.string :header_image

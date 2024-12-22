@@ -14,6 +14,8 @@ class User::Base < ApplicationController
         id_number: params[:id], 
         parameter: params
         )
+      current_user.last_login_at = DateTime.now
+      current_user.save
       #if AccessLog.count > 100000
       #  AccessLog.where(user: current_user).order(created_at: "DESC").last.destroy
       #end

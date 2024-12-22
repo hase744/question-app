@@ -1,16 +1,62 @@
-
+<% receiver = @request&.user&.presence || @transaction&.opponent_of(current_user)%>
 <div class="transaction_message_form_flame">
-	<%= form_with model:TransactionMessage.new, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %>
-	    <%if transaction.buyer == current_user %>
-	        追加質問<span class="total_characters" length="<%=TransactionMessage.new.body_max_characters%>"></span></br>
-	    <% elsif transaction.seller == current_user %>
-	        追加回答<span class="total_characters" length="<%=TransactionMessage.new.body_max_characters%>"></span></br>
-	    <% end %>
+	<%= form_with model:TransactionMessage.new, url: user_transaction_messages_path, class:"transaction_message_submit_form",method: "post", remote:true, id:"" do |f| %><%=%>
+	    メッセージ<span class="total_characters" length="<%=TransactionMessage.new.body_max_characters%>"></span></br>
+		<label class="message_label" receiver_id="<%=receiver&.id%>"></label>
 	    <%=f.text_area :body, id:"transaction_message_body", class:"text_field text_area", required: true%>
-	    <%=f.hidden_field :transaction_id, value:transaction.id, id:"transaction_id", class:"text_field", required: true%>
+	    <%=f.hidden_field :transaction_id, value:transaction&.id, id:"transaction_id", class:"text_field", required: true%>
+	    <%=f.hidden_field :receiver_id, value: receiver&.id, id:"receiver_id", required: true %>
 	    <%= f.file_field :file %>
 	    <div class="transaction_message_submit_area">
 	        <%= f.submit "送信",class:"transaction_message_submit", placeholder:"" %>
 	    </div>
 	<% end %>
 </div>
+<script>
+$(document).ready(function () {
+    $(document).on('click', '.reply_button', function () {
+		text_area = $('.new_message_modal #transaction_message_body')
+        var old_uuid = $('.message_label').attr('uuid');
+        var uuid = $(this).attr('uuid');
+        var name = $(this).attr('name');
+        var transaction_id = $(this).attr('transaction_id');
+        var receiver_id = $(this).attr('receiver_id');
+		
+        $('.new_message_modal').addClass('open');
+		$('#transaction_id').val(transaction_id);
+		$('#receiver_id').val(receiver_id);
+		$('.message_label').html(`to: ${name}`);
+		$('.message_label').attr('uuid', `${uuid}`);
+		$('.message_label').attr('receiver_id', `${receiver_id}`);
+		$('.message_label').attr('name', `${name}`);
+		$('.message_label').attr('transaction_id', `${transaction_id}`);
+		if(!text_area.val().includes(uuid)){//現在の宛先のuuidがすでにフォームの中にない
+			$('.new_message_modal #transaction_message_body').val(`${uuid}\n`);
+		}
+    });
+
+    // Close the modal when clicking on the close button or background
+    $('.modal_delete, .modal_background').on('click', function () {
+        $('.new_message_modal').removeClass('open');
+    });
+
+    $('#transaction_message_body').on('input', function () {
+		const uuid = $('.message_label').attr('uuid');
+		const name = $('.message_label').attr('name');
+        const transaction_id = $('.message_label').attr('transaction_id');
+        var receiver_id = $('.message_label').attr('receiver_id');
+        const textareaValue = $(this).val();
+		console.log("receiver_id")
+		console.log(receiver_id)
+
+        if (textareaValue.includes(uuid)) {
+			$('#transaction_id').val(transaction_id);
+			$('#receiver_id').val(receiver_id);
+            $('.message_label').html(`to: ${name}`);
+        } else if (<%=!receiver&.present?%><%=%>) {
+            $('.message_label').html("");
+			$('#receiver_id').val(null);
+        }
+    });
+});
+</script>

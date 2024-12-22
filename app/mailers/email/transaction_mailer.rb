@@ -29,7 +29,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def deliver(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "依頼した相談に回答が納品されました"
+        mail to: transaction.seller.email, subject: "相談に最終回答がされました"
     end
 
     def inquire(transaction_message)

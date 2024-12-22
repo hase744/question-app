@@ -59,14 +59,17 @@
         -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
         display: inline-block;
         //height: 30px;
-        width: 200px;
+        width: 100%;
         font-size: 15px;
+        line-height: 15px;
+        padding: 7.5px 0px;
         border-radius: 3px;
         border: 1px solid gray;
         background-color: orange;
         color: white;
         text-decoration: none;
         vertical-align: top;
+        cursor: pointer;
     }
     .big_submit {
         -webkit-appearance: none; //これがないとスマホでborder-radiusが適応されない
@@ -232,20 +235,29 @@
 }
 
 .select_area {
+    $select_height: 30px;
     position: relative;
     border-radius: 4px;
     width: 150px;
-    height: 30px;
+    height: $select_height;
     border-radius: 5px;
     border: 1px solid gray;
     cursor: pointer;
     display: inline-block;
     //height: 25px;
-    $select_size: 13px;
+    $select_size: 15px;
     .select_field {
         font-size: $select_size;
         padding-top: calc((30px - #{$select_size}) / 2);
         line-height: $select_size;
+    }
+    select, .select_display{
+        padding: calc((#{$select_height} - #{$select_size}) / 2);
+        padding-right: 38px;
+        color: $text_grey;
+        line-height: $select_size;
+        font-size: $select_size;
+        font-weight: bold;
     }
     select {
         width: 100%;
@@ -260,14 +272,6 @@
         box-shadow: none;
         -webkit-appearance: none;
         appearance: none;
-        padding: 8px 38px 8px 8px;
-        color: black;
-    }
-    .select_display{
-        padding-top: 6px;
-        height: $select_size;
-        padding-left: 9px;
-        font-size: $select_size;
     }
 }
 .select_area::before {
@@ -359,15 +363,17 @@
     right: 0;
     box-shadow: 0 0 2px lightgray;
     .bottom_button_flame{
-        margin: auto;
+        margin: 0 auto;
         left: 0;
         right: 0;
-        max-width: 320px;
+        max-width: 360px;
         width: 100%;
+        text-align: center;
     }
     .bottom_button{
         background-color: orange;
         max-width: 300px;
+        display: inline-block;
         width: calc(100% - 20px);
         //height: 40px;
         margin: 7.5px 5px;

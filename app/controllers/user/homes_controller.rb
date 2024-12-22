@@ -4,6 +4,7 @@ class User::HomesController < User::Base
   def show
     @services = Service
       .solve_n_plus_1
+      .seeable
       .where(request_id: nil)
       .sort_by_total_sales_numbers
       .sort_by_average_star_rating

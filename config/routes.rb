@@ -43,7 +43,7 @@ Rails.application.routes.draw do
 namespace :user do
   
     get "requests/:id/preview", to: "requests#preview", as: "request_preview"
-    put "requests/:id/stop_accepting", to: "requests#stop_accepting", as: "request_stop_accepting"
+    put "requests/:id/retract", to: "requests#retract", as: "request_retract"
     post "requests/publish/:id", to: "requests#publish", as: "request_publish"
     post "requests/purchase/:id", to: "requests#purchase", as: "request_purchase"
     get "requests/mine", to: "requests#mine", as:"request_mine"
@@ -84,7 +84,6 @@ namespace :user do
     get "transaction_messages/cells", to: "transaction_messages#cells", as:"transaction_messages_cells"
     get "transaction_messages/reset_cells", to: "transaction_messages#reset_cells", as:"transaction_messages_reset_cells"
     patch 'transactions/create_description_image/:id', to:'transactions#create_description_image', as:'create_description_image'
-    get "transctions/messages/:id", to:'transactions#messages', as:'transaction_message_room'
 
     get "services/requests/:id", to: "services#requests", as:"service_requests"
     get "services/reviews/:id", to: "services#reviews", as:"service_reviews"
@@ -157,6 +156,7 @@ namespace :user do
       member do
         delete :remove_file, to: 'transactions#remove_file'
         get :preview, to: 'transactions#preview'
+        get :messages, to:'transactions#messages'
       end
     end
   end

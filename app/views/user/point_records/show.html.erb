@@ -12,9 +12,11 @@
 	  	<tbody>
 	  	  	<% @point_records.each do |record| %>
 				<% if record.transaction_id
-					path = user_order_path(record.deal.id)
+					path = user_order_path(record.transaction_id)
+				elsif record.request_id
+					path = user_request_path(record.request_id)
 				elsif record.payment_id
-					path = user_payment_path(record.payment.id)
+					path = user_payment_path(record.payment_id)
 				end %>
 	  	  	  	<tr href="<%=path%>">
 	  	  	  	  	<td><%= image_tag record.image_path, class:"image" %></td>

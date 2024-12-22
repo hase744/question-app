@@ -1,0 +1,33 @@
+.review_area{
+  	text-align: left;
+  	padding: 0px 20px;
+  	padding-top: 20px;
+	height: 100%;
+  	form{
+		height: calc(100% - 40px);
+  	  	display: flex;
+		flex-direction: column;
+		.field_area{
+			width: 100%;
+		}
+		.submit_area{
+			width: 100%;
+		}
+		.field_area{
+			padding-bottom: 20px;
+		}
+		.text_field_area{
+  	  		display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+			.counter_label_area{
+				display: block;
+			}
+		}
+		textarea{
+			flex-grow: 1;
+			flex-grow: 1;
+			width: calc(100% - 10px);
+		}
+  	}
+}

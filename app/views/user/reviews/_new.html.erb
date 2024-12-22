@@ -1,21 +1,5 @@
 <div class="review_new_zone input_new_zone input_area">
-    <%= form_with model: Review.new(deal: transaction), url: :user_reviews, method: :post, local: false do |f|%>
-        <div class="field_area">
-          	<%= f.label :star_rating, class:"field_label" %><br />
-          	<div class="select_area">
-          	<%= f.select :star_rating, {"5★★★★★": "5","4★★★★☆": "4","3★★★☆☆": "3","2★★☆☆☆": "2","1★☆☆☆☆": "1","0☆☆☆☆☆": "0"}, { include_blank: '選択'}, autocomplete: "select_input" ,required: true%>
-          	</div>
-          	</br>
-        </div>
-        <div class="field_area">
-          	<%= f.label :body, class:"field_label" %><span class="total_characters" length="<%=Review.new.body_max_length%>"></span><br />
-          	<%= f.text_area :body, autocomplete: "new-password", class:"input_text_field text_area input_field",required: true %>
-        </div>
-		<%= f.hidden_field :transaction_id %>
-        <div class="submit_area">
-          	<%= f.submit "投稿", class:"submit", data: {confirm: "レビューを投稿しますか？"} %>
-        </div>
-    <% end %>
+    <%= render "user/reviews/form", transaction: transaction %>
 </div>
 <script>
 $('form').submit(function () {

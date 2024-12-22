@@ -1512,7 +1512,7 @@ index 1557a4c..b033591 100644
 -            </div>
 -        <% end %>
 -        <% if @transaction.can_send_message(current_user) %>
--            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
+-            <%=link_to " 追加メッセージ", messages_user_transaction_path(@transaction.id), class:"far fa-envelope grey link_button" %>
 -        <% end %>
 -        <% if @transaction.is_ongoing %>
 -            <div class="submit_area">
@@ -1590,7 +1590,7 @@ index 1557a4c..b033591 100644
 +            </div>
 +        <% end %>
 +        <% if @transaction.can_send_message(current_user) %>
-+            <%=link_to " 追加メッセージ", user_transaction_message_room_path(@transaction.id), class:"far fa-envelope grey link_button" %>
++            <%=link_to " 追加メッセージ", messages_user_transaction_path(@transaction.id), class:"far fa-envelope grey link_button" %>
 +        <% end %>
 +        <% if @transaction.is_ongoing %>
 +            <div class="submit_area">

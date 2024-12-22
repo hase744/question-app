@@ -85,7 +85,7 @@
 	    	        <h3 class="request_content"><%=@request.max_price%>円</h3>
 	    	    </div>
 
-				<% when 'tip'%>
+				<% when 'reward'%>
 	    	    <div class="field_area">
 	    	        <%= f.label :reward, class:"field_label"%><br/>
 	    	        <h3 class="request_content"><%=@request.reward%>円</h3>
@@ -98,10 +98,11 @@
 	    	    </div>
 	    	    <% end %>
 	    	<% end %>
-	    	    <% if (@transaction && @price > 0) || @request.mode == 'tip' %>
-				<% @model = @transaction ? @transaction : @request
+				<% 
+				@model = @transaction ? @transaction : @request
 				@price = @transaction ? @transaction.price : @request.reward
 				%>
+	    	    <% if (@transaction && @price > 0) || @request.mode == 'reward' %>
 					<% if current_user.coupons.usable(@price).present? %>
 	    	    	<div class="field_area">
 						<label>クーポンの使用</label>

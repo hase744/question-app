@@ -238,7 +238,8 @@
                     display: inline-block;
                     background-color: lightgray;
                 }
-                a{
+                .open_along_messages{
+                    color: $link_blue;
                     cursor: pointer;
                 }
             }
@@ -335,8 +336,14 @@
     margin-left: 10px;
 }
 
-
 .transaction_message_flame{
+    #load_message_button{
+        color: $link_blue;
+        cursor: pointer;
+    }
+    #load_message_button:hover{
+        text-decoration: underline;
+    }
 }
 
 .my_transaction_message_area{

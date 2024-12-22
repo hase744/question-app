@@ -3,7 +3,12 @@ module CommonScopes
   included do
     scope :abled, -> { where(is_disabled: false) }
     scope :disabled, -> { where(is_disabled: true) }
-    scope :tip_mode, -> { where(mode: 'tip')}
-    scope :not_tip_mode, -> { where.not(mode: 'tip')}
+    scope :reward_mode, -> { where(mode: 'reward')}
+    scope :not_reward_mode, -> { where.not(mode: 'reward')}
+    scope :proposal_mode, -> { where(mode: 'proposal')}
+    scope :published, -> {
+      where('published_at <= ?', DateTime.now)
+    }
+  
   end
 end

@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
 
   create_table "coupon_usages", force: :cascade do |t|
     t.bigint "coupon_id", null: false
-    t.bigint "transaction_id", null: false
-    t.bigint "request_id", null: false
+    t.bigint "transaction_id"
+    t.bigint "request_id"
     t.integer "amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -251,12 +251,14 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.bigint "user_id", null: false
     t.bigint "payment_id"
     t.bigint "transaction_id"
+    t.bigint "request_id"
     t.integer "amount", null: false
     t.integer "type_name", null: false
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["payment_id"], name: "index_point_records_on_payment_id"
+    t.index ["request_id"], name: "index_point_records_on_request_id"
     t.index ["transaction_id"], name: "index_point_records_on_transaction_id"
     t.index ["user_id"], name: "index_point_records_on_user_id"
   end
@@ -321,6 +323,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.integer "mini_price"
     t.boolean "is_inclusive", default: true, null: false
     t.boolean "is_accepting", default: true, null: false
+    t.datetime "retracted_at"
     t.integer "suggestion_acceptable_duration"
     t.datetime "suggestion_deadline"
     t.integer "description_total_characters", default: 0
@@ -348,6 +351,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["mini_price"], name: "index_requests_on_mini_price"
     t.index ["published_at"], name: "index_requests_on_published_at"
     t.index ["request_form_name"], name: "index_requests_on_request_form_name"
+    t.index ["retracted_at"], name: "index_requests_on_retracted_at"
     t.index ["reward"], name: "index_requests_on_reward"
     t.index ["suggestion_acceptable_duration"], name: "index_requests_on_suggestion_acceptable_duration"
     t.index ["suggestion_deadline"], name: "index_requests_on_suggestion_deadline"
@@ -362,10 +366,12 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
   create_table "reviews", force: :cascade do |t|
     t.bigint "transaction_id", null: false
     t.integer "star_rating"
+    t.integer "reward"
     t.text "body"
     t.text "reply"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["reward"], name: "index_reviews_on_reward"
     t.index ["star_rating"], name: "index_reviews_on_star_rating"
     t.index ["transaction_id"], name: "index_reviews_on_transaction_id"
   end
@@ -586,6 +592,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.string "unconfirmed_email"
     t.integer "state", null: false
     t.string "name"
+    t.string "uuid", null: false
     t.string "image"
     t.string "image_tmp"
     t.string "header_image"
@@ -641,6 +648,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["total_sales_number"], name: "index_users_on_total_sales_number"
     t.index ["total_sales_numbers"], name: "index_users_on_total_sales_numbers"
     t.index ["total_target_users"], name: "index_users_on_total_target_users"
+    t.index ["uuid"], name: "index_users_on_uuid"
   end
 
   add_foreign_key "access_logs", "users"
@@ -663,6 +671,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
   add_foreign_key "payments", "users"
   add_foreign_key "payouts", "users"
   add_foreign_key "point_records", "payments"
+  add_foreign_key "point_records", "requests"
   add_foreign_key "point_records", "transactions"
   add_foreign_key "point_records", "users"
   add_foreign_key "relationships", "users"

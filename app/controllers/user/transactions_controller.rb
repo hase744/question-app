@@ -3,11 +3,12 @@ class User::TransactionsController < User::Base
   before_action :check_login, only:[:new, :create, :edit, :update, :create_description_image, :like, :messages]
   before_action :define_transaction, only:[:show, :edit, :update, :deliver, :messages, :like]
   before_action :define_own_transaction, only:[:preview]
-  before_action :filter_transaction, only:[:update, :deliver, :deliver]
-  before_action :define_transaction_message, only:[:show, :messages]
+  before_action :filter_transaction, only:[:update, :deliver]
   before_action :check_transaction_published, only:[:show, :like]
   before_action :check_transaction_not_published, only:[:edit, :public]
+  before_action :check_can_publish, only: [:edit, :update, :preview]
   before_action :identify_seller, only:[:edit, :update, :create_description_image]
+  before_action :define_transaction_message, only:[:show, :messages]
   #before_action :check_can_send_message, only:[:messages]
   after_action :update_total_views, only:[:show]
   layout :choose_layout
@@ -41,7 +42,7 @@ class User::TransactionsController < User::Base
     unless can_edit_transaction
       redirect_to user_order_path(params[:id])
     end
-    @preview_path = @transaction.is_tip_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(@transaction.id)
+    @preview_path = @transaction.is_reward_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(@transaction.id)
     @transaction.items.build
   end
 
@@ -50,12 +51,11 @@ class User::TransactionsController < User::Base
 
   def show
     $og_image = @transaction.request.items.first.file.url if @transaction.request.items.select{|item| item.file.is_image?}.present?
-    @transaction_along_messages =  TransactionMessage
-      .joins(:deal)
-      .where(transaction_id:@transaction.id)
-      .where('transaction_messages.created_at < transactions.published_at')
-      .where('transaction_messages.created_at > transactions.contracted_at')
-    @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
+    @transaction_along_messages =  @transaction
+      .transaction_messages
+      .before_transaction_published
+      .after_request_published
+      #.where('transaction_messages.created_at > transactions.contracted_at')
     @tweet_text = @transaction.description
     @transaction_message = TransactionMessage.new()
 
@@ -70,16 +70,13 @@ class User::TransactionsController < User::Base
         is_published:true, 
         transaction_categories:{category_name: @transaction.category.name}
         )
-    @total_message_count = @transaction.total_after_delivered_messages
+    @total_message_count = @transaction.total_after_published_messages
     transactions = @transactions.where(id: ..@transaction.id).order(created_at: "ASC").limit(10)
     @transactions = @transactions.where(id: @transaction.id..).order(created_at: "ASC").limit(10)
     if @transactions.count < transactions.count
       @transactions = transactions
     end
-    transaction_like = TransactionLike.find_by(user:current_user, transaction_id: params[:id])
-    if transaction_like
-      @transaction_like_exist = true
-    end
+    @like = TransactionLike.find_by(user:current_user, transaction_id: params[:id])
   end
 
   def create_description_image
@@ -96,7 +93,7 @@ class User::TransactionsController < User::Base
     ActiveRecord::Base.transaction do
       if save_models
         flash.notice = "回答を編集しました"
-        path = @transaction.is_tip_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(params[:id])
+        path = @transaction.is_reward_mode? ? preview_user_transaction_path(params[:id]) : user_order_path(params[:id])
         redirect_to path
       else
         delete_temp_file_items
@@ -135,7 +132,7 @@ class User::TransactionsController < User::Base
       EmailJob.perform_later(mode: :deliver, model: @transaction) if @transaction.buyer.can_email_transaction
       create_notification(@transaction)
       flash.notice = "回答を納品しました。"
-      path = @transaction.request.is_tip_mode? ? user_request_path(@transaction.request.id) : user_transaction_path(@transaction.id)
+      path = @transaction.request.is_reward_mode? ? user_request_path(@transaction.request.id) : user_transaction_path(@transaction.id)
       redirect_to path
     else
       detect_models_errors([current_user, @transaction, @delivery_item])
@@ -173,7 +170,7 @@ class User::TransactionsController < User::Base
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
-      title: "依頼した相談に回答が納品されました",
+      title: "投稿した相談に回答が届きました",
       description: transaction.title,
       action: "show",
       controller: "transactions",
@@ -193,7 +190,16 @@ class User::TransactionsController < User::Base
   end
 
   def messages
-    @total_message_count = TransactionMessage.where(transaction_id:@transaction.id).count
+    all_messages = @transaction.transaction_messages
+      .after_request_published
+    @total_message_count = all_messages.count
+  end
+
+  private def check_can_publish
+    unless @transaction.can_publish
+      flash.notice = transaction.errors_messages
+      redirect_back(fallback_location: root_path)
+    end
   end
 
   private def check_can_send_message
@@ -237,17 +243,6 @@ class User::TransactionsController < User::Base
       is_canceled: false,
       is_transacted: false,
       is_rejected: false,
-      )
-  end
-
-  private def define_transaction_message
-    params[:transaction_message_order] ||= "ASC"
-    @transaction_messages = TransactionMessage
-      .by_transaction_id_and_order(
-        transaction_id: params[:id], 
-        order: params[:transaction_message_order],
-        page: 1,
-        after_delivered: action_name == "show"
       )
   end
 

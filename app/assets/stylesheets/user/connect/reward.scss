@@ -4,12 +4,15 @@
       //max-width: 230px;
       margin: 0 auto;
     }
-      text-align: center;
-      color: dimgray;
-      .message{
-        text-align: left;
-      }
-      .finance_component{
+    .submit{
+		max-width: 230px;
+	}
+    text-align: center;
+    color: dimgray;
+    .message{
+      	text-align: left;
+    }
+    .finance_component{
         grid-template-columns: auto 1fr;
         margin: 0 auto;
         th{
