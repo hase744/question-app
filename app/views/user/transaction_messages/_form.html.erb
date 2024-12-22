@@ -46,8 +46,6 @@ $(document).ready(function () {
         const transaction_id = $('.message_label').attr('transaction_id');
         var receiver_id = $('.message_label').attr('receiver_id');
         const textareaValue = $(this).val();
-		console.log("receiver_id")
-		console.log(receiver_id)
 
         if (textareaValue.includes(uuid)) {
 			$('#transaction_id').val(transaction_id);

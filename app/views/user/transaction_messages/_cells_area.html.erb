@@ -103,7 +103,6 @@ function order_params(){
 function load_messasges(page){
 	loaded_pages.push(page);
 	param = `&transaction_id=${transaction_id}${order_params()}`
-	console.log(after_published)
 	if(after_published){
 		param += '&after_published=true'
 	}

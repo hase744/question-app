@@ -6,7 +6,7 @@ class Email::TransactionMailer < ApplicationMailer
         if @transaction_message.deal.seller == @transaction_message.sender 
             @subject = "回答が届きました"
         else
-            @subject = "質問が届いています"
+            @subject = "質問が届きました"
         end
 
         mail to: transaction_message.receiver.email, subject: @subject
@@ -19,7 +19,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def reject(transaction)
         @transaction = transaction
-        mail to: @transaction.seller.email, subject: "依頼した相談がお断りされました"
+        mail to: @transaction.seller.email, subject: "相談がお断りされました"
     end
 
     def purchase(transaction)
@@ -29,7 +29,7 @@ class Email::TransactionMailer < ApplicationMailer
 
     def deliver(transaction)
         @transaction = transaction
-        mail to: transaction.seller.email, subject: "相談に最終回答がされました"
+        mail to: transaction.seller.email, subject: "相談に回答が届きました"
     end
 
     def inquire(transaction_message)
