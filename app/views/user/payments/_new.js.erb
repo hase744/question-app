@@ -1,9 +1,7 @@
 
 $("#payment_value").change(function(){
-  console.log($(this).val())
   $("#value_display").html(`${$(this).val()}`)
   $("#payment_point").val(`${$(this).val()}`)
-  console.log($("#payment_point").val(`${$(this).val()}`))
 })
 
 //document.addEventListener("turbo:load", function () {
@@ -37,7 +35,6 @@ $(function(){
       const data = await response.json();
 
       if (data.client_secret) {
-        console.log("Client Secret:", data.client_secret);
         // Stripe.jsを使用して決済を続行
         const stripe = Stripe("<%= Rails.application.config.stripe_publishable_key %>");
         const result = await stripe.confirmCardPayment(data.client_secret);
