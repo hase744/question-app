@@ -14,7 +14,7 @@ class Transaction < ApplicationRecord
   has_many :coupons, through: :coupon_usages, dependent: :destroy
   has_one :transaction_category
   has_one :category, through: :transaction_category
-  has_one :review
+  has_one :review, dependent: :destroy
   has_one :latest_transaction_message, -> { order(created_at: :desc) }, class_name: 'TransactionMessage'
 
   delegate :user, to: :service
@@ -26,6 +26,7 @@ class Transaction < ApplicationRecord
   validates :disabled_at, presence: true, if: :is_violation?
   validates :delivery_time, presence: true
   validate :validate_price, if: -> { mode == 'proposal' }
+  validate :validate_reward, if: -> { mode == 'reward' }
   validate :validate_title
   validate :validate_description
   validate :validate_is_canceled
@@ -38,9 +39,10 @@ class Transaction < ApplicationRecord
   validate :previous_transaction
   validate :validate_service_renewed
   validate :validate_violation
+  validate :validate_is_published
   #validate :validate_transaction_category #なぜか保存前にbuildできないためtransaction保存後にcategoryを保存
   before_validation :set_default_values
-  enum mode: { proposal: 0, tip: 1 }
+  enum mode: { proposal: 0, reward: 1 }
 
   after_save :create_transaction_category
   after_save :update_total_sales
@@ -97,6 +99,12 @@ class Transaction < ApplicationRecord
       .where(
         coupon_usages: {coupon: coupon},
         )
+  }
+
+  scope :transacted, -> {
+    where(
+      is_transacted: true,
+    )
   }
 
   scope :not_transacted, -> {
@@ -208,10 +216,18 @@ class Transaction < ApplicationRecord
     Category.where(name:self.transaction_categories.pluck(:category_name))
   end
 
-  def total_after_delivered_messages
+  def coupon_user
+    self.buyer
+  end
+
+  def total_price
+    self.price
+  end
+
+  def total_after_published_messages
     self.transaction_messages
       .joins(:deal)
-      .where('transaction_messages.created_at > transactions.transacted_at')
+      .where('transaction_messages.created_at > transactions.published_at')
       .count
   end
 
@@ -220,6 +236,7 @@ class Transaction < ApplicationRecord
   end
 
   def set_default_values
+    self.mode ||= 'proposal'
     self.delivery_time ||= DateTime.now + self.service.delivery_days.to_i
     self.price ||= self.service.price
     self.margin ||= self.service.price*transaction_margin.to_f
@@ -232,7 +249,7 @@ class Transaction < ApplicationRecord
       self.delivery_form_name = self.service.delivery_form.name
       if self.is_suggestion
         self.service.category_id = self.request.category_id
-      else
+      elsif !self.request.is_reward_mode?
         self.request.service = self.service
         self.request.set_service_values
         self.request.request_form_name = self.service.request_form_name
@@ -244,7 +261,7 @@ class Transaction < ApplicationRecord
       self.transaction_message_enabled = self.service.transaction_message_enabled
     end
 
-    if is_tip_mode?
+    if is_reward_mode?
       self.transaction_message_enabled = true
     end
 
@@ -256,6 +273,7 @@ class Transaction < ApplicationRecord
   end
 
   def copy_from_service
+    self.mode = self.service.mode
     self.request_form_name = self.service.request_form.name
     self.delivery_form_name = self.service.delivery_form.name
     self.service_title = self.service.title
@@ -284,7 +302,7 @@ class Transaction < ApplicationRecord
       is_published: true,
       published_at: DateTime.now,
     )
-    unless is_tip_mode?
+    unless is_reward_mode?
       self.assign_attributes(
         is_transacted: true,
         transacted_at: DateTime.now,
@@ -321,86 +339,6 @@ class Transaction < ApplicationRecord
     else
       nil
     end
-  end
-
-  def required_points
-    coupon_model = appropriate_coupons
-    return self.price if coupon_model.nil?
-    if coupon_model.is_a?(Coupon) #単体のクーポンの時 == one_timeの時
-      self.price - ([coupon_model.remaining_amount, self.price].min*coupon_model.discount_rate).to_i
-    else #unlimitedの時は必ず、discount_rate= 1.00なので考慮しなくていい
-      self.price - [self.price, coupon_model.to_a.sum(&:remaining_amount)].min
-    end
-  end
-
-  def build_coupon_usages
-    coupon_model = appropriate_coupons
-    return if coupon_model.nil?
-    if coupon_model.is_a?(Coupon) #単体のクーポンの時 == one_timeの時
-      self.coupon_usages.build(amount: [coupon_model.remaining_amount, self.price].min*coupon_model.discount_rate, coupon: coupon_model)
-    else #複数のクーポンの時 = unlimitedの時
-      #unlimitedの時は必ず、discount_rate= 1.00なので割引率は考慮しなくていい
-      discounted_price = self.price
-      coupon_model.each do |coupon|
-        break if discounted_price == 0
-        amount_to_discount = [discounted_price, coupon.remaining_amount].min
-        self.coupon_usages.build(amount: amount_to_discount, coupon: coupon)
-        discounted_price -= amount_to_discount
-      end
-    end
-  end
-
-  def destroy_all_coupons
-    return true if self.coupon_usages.blank?
-    response = self.coupon_usages.respond_to?(:destroy_all)
-    if response
-      coupon_ids = self.coupons.pluck(:id)
-      self.coupon_usages&.destroy_all
-      Coupon.where(id: coupon_ids).each(&:save)
-    else
-      errors.add(:coupon_usages, "クーポンに関するエラー")
-    end
-    response
-  end
-
-  def appropriate_coupons
-    unless self.buyer.use_inactive_coupon
-      active_coupons = self.buyer.coupons
-        .usable(price)
-        .where(is_active: true)
-      return active_coupons.first if active_coupons.count == 1
-      return active_coupons if active_coupons
-    end
-    latest_coupon = get_latest_coupon
-    if latest_coupon&.usage_type == 'one_time'
-      return latest_coupon
-    elsif latest_coupon&.usage_type == 'unlimited'
-      return unlimited_coupons
-    else #クーポンが存在しない
-      return nil
-    end
-  end
-
-  def get_latest_coupon
-    self.buyer.coupons
-      .usable(price)
-      .order(end_at: :asc)
-      .first
-  end
-
-  def unlimited_coupons
-    unlimitd_coupons = self.buyer.coupons
-      .usable(self.price)
-      .where(usage_type: 'unlimited')
-      .order(end_at: :asc)
-    selected_coupon_ids = []
-    sum = 0
-    unlimitd_coupons.each do |coupon|
-      selected_coupon_ids << coupon
-      sum += coupon.remaining_amount
-      break if sum >= self.price
-    end
-    unlimitd_coupons.where(id: selected_coupon_ids)
   end
 
   def previous_transaction
@@ -600,15 +538,35 @@ class Transaction < ApplicationRecord
     end
   end
 
+  def validate_is_published
+    return unless self.will_save_change_to_is_published?
+    return unless self.is_published
+    unless can_publish
+      errors.add(:base, "回答の期限が切れています。")
+    end
+  end
+
+  def validate_reward
+    return unless self.is_transacted
+    if self.request.transactions.delivered.count <= 1 && self.price < self.request.remaining_reward
+      errors.add(:price, '報酬が設定可能な回答が１件しかないため、この回答の報酬は残り全額にしか設定できません')
+    end
+  end
+
+  def can_publish
+    return false if self.request.is_reward_mode? && self.request.is_deadline_over?
+    true
+  end
+
   def total_likes
     self.likes.count
   end
 
-  def messages_sort_by_later
+  def messages_sort_by_later #最新から #sort_byは少ない順 => created_atが少ない順 => 古い順 
     transaction_messages.to_a.sort_by(&:created_at).reverse
   end
 
-  def messages_sort_by_earlier
+  def messages_sort_by_earlier #最古から
     transaction_messages.to_a.sort_by(&:created_at)
   end
 
@@ -637,27 +595,38 @@ class Transaction < ApplicationRecord
   end
 
   def can_send_message(user)
-    #買った人である。かつ、transaction_messageを送る期限内である
-    return false unless user == self.buyer || user == self.seller
-    if is_tip_mode?
-      return DateTime.now < self.request.suggestion_deadline
+    return get_message_not_sendable_reason(user).blank?
+  end
+
+  def get_message_not_sendable_reason(user)
+    return '送信者が不適切です。' unless user == self.buyer || user == self.seller || self.is_reward_mode?
+    if is_reward_mode?
+      if self.request.is_deadline_over?
+        return '回答の期限切れです。' 
+      else
+        return nil
+      end
     end
     if self.is_contracted
-      self.transaction_message_enabled || user == self.seller
+      return '追加で質問はできません。' unless self.transaction_message_enabled || user == self.seller
     else
-      can_send_pre_purchase_inquiry(user)
+      get_pre_purchase_inquiry_not_sendable_reason(user)
     end
   end
 
   def can_send_pre_purchase_inquiry(user)
-    return false unless self.service.allow_pre_purchase_inquiry
-    return false if self.is_contracted
+    return get_pre_purchase_inquiry_not_sendable_reason(user).blank?
+  end
+
+  def get_pre_purchase_inquiry_not_sendable_reason(user)
+    return '購入前に質問できません' unless self.service.allow_pre_purchase_inquiry
+    return '購入後には質問できません' if self.is_contracted
     if user == self.seller #回答者の時
-      messages_sort_by_later.last&.receiver == user
+      return '質問者が返信するまで回答できません' unless messages_sort_by_earlier.last&.receiver == user
     elsif user == self.buyer #質問者の時
-      messages_sort_by_later.last&.receiver == user || self.transaction_messages.blank?
+      return '回答者が返信するまで質問できません' unless messages_sort_by_earlier.last&.receiver == user || self.transaction_messages.blank?
     else
-      false
+      '質問者が不適切です'
     end
   end
 
@@ -699,6 +668,10 @@ class Transaction < ApplicationRecord
 
   def is_violation?
     is_disabled
+  end
+
+  def is_reviewed?
+    self.review.present?
   end
 
   def title_max_length

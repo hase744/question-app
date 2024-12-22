@@ -1,4 +1,4 @@
-<div class="description_text_image">
+<div class="description_text_image text_mode">
 	<div class="request_description_area" id="request_description_area">
 	  <p id="request_description" class="request_description"><%=request.description%></p>
 	</div>
@@ -8,7 +8,7 @@
 	    <%= video_tag request.file.url,poster:request.thumbnail.url, class:"image", controls: true, autobuffer: true%>
 	<% end %>
 	<% if request.items.text_image.present? %>
-	    <%= image_tag request.item.normal_file_with_default, class:"image text_image #{request.item.normal_style_class}" %>
+	    <%= image_tag request.item.normal_file_with_default, class:"image text_image #{request.item.normal_style_class} text_mode" %>
 		<div class="change_button_area">
 		    <div class="change_button" id="change_button">
 		        <%= image_tag request.thumb_with_default, class:"thumbnail #{request.item.image_thumb_style_class}" %>

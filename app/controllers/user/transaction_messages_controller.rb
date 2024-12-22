@@ -1,26 +1,13 @@
 class User::TransactionMessagesController < User::Base
   before_action :check_user, only:[:create]
+  before_action :define_transaction_message, only:[:cells, :reset_cells]
   def cells
     begin
-      @transaction_messages = TransactionMessage
-        .by_transaction_id_and_order(
-          transaction_id: params[:transaction_id], 
-          order: params[:transaction_message_order],
-          page: params[:page],
-          after_delivered: params[:after_delivered] == 'true' || params[:after_delivered] == true
-          )
       render partial: 'user/transaction_messages/cell', collection: @transaction_messages, as: :content
     end
   end
 
   def reset_cells
-    @transaction_messages = TransactionMessage
-      .by_transaction_id_and_order(
-        transaction_id: params[:transaction_id], 
-        order: params[:transaction_message_order],
-        page: 1,
-        after_delivered: params[:after_delivered] == 'true' || params[:after_delivered] == true
-        )
   end
 
   def create
@@ -29,29 +16,23 @@ class User::TransactionMessagesController < User::Base
     @transaction_message.sender = current_user
     @transaction_message.assign_attributes(transaction_message_params)
     @transaction = @transaction_message.deal
+    redirect_url = URI.parse(request.referer || root_path)
+    query_params = Rack::Utils.parse_nested_query(redirect_url.query)
+    query_params.delete("open_message_modal")
+    redirect_url.query = query_params.to_query
+    
     if @transaction_message.save
       EmailJob.perform_later(mode: :message, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
       if @transaction.seller == @transaction_message.sender
-        create_notification(@transaction.buyer, "追加回答が届いています。")
-        flash.alert = "回答を送信しました。"
+        create_notification(@transaction.buyer, "メッセージが届いています。")
       else
-        create_notification(@transaction.seller, "追加質問が届いています。")
-        flash.alert = "質問を送信しました。"
+        create_notification(@transaction.seller, "メッセージが届いています。")
       end
-      #if @transaction.is_transacted
-      #  redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      #else
-      #  redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      #end
-      redirect_back fallback_location: root_path(transaction_message_order: "DESC")
+      flash.alert = "メッセージを送信しました。"
+      redirect_to redirect_url.to_s, fallback_location: root_path(transaction_message_order: "DESC")
     else
-      flash.notice = "投稿できませんでした。#{@transaction_message.errors.full_messages}"
-      redirect_back fallback_location: root_path(transaction_message_order: "DESC")
-      #if @transaction.is_transacted
-      #  redirect_to user_transaction_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      #else
-      #  redirect_to user_transaction_message_room_path(id: params[:transaction_message][:transaction_id], transaction_message_order:"DESC")
-      #end
+      flash.notice = "投稿できませんでした。#{@transaction_message.errors_messages}"
+      redirect_to redirect_url.to_s, fallback_location: root_path(transaction_message_order: "DESC")
     end
   end
 
@@ -89,6 +70,7 @@ class User::TransactionMessagesController < User::Base
   private def transaction_message_params
     params.require(:transaction_message).permit(
       :transaction_id,
+      :receiver_id,
       :body,
       :file
     )

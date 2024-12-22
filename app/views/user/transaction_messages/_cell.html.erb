@@ -5,15 +5,20 @@
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name one_line_text"><%=link_to content.sender.name, user_account_path(content.sender.id), class:"user_link" %></h2>
+                <h2 class="user_name one_line_text"><%=link_to "#{content.sender.name}・#{content.sender.uuid}", user_account_path(content.sender.id), class:"user_link" %></h2>
                 <%=readable_datetime(content.published_at)%>
             </div>
         </div>
     </div>
     <div class="message_text_area">
-        <div class="message_text"><%=content.body %></div>
+        <div class="message_text"><%=content.body_with_link.html_safe %></div>
     </div>
     <%= link_to content.file.url, class:"image_area" do %>
         <%= image_tag content.file.normal_size.url, class:"image" if content.file.normal_size.url%>
+    <% end %>
+    <% if content.deal.request.is_reward_mode? && content.sender != current_user%>
+        <div class="reply_button bottom_button" uuid="<%= content.sender.uuid%>" name="<%= content.sender.name%>" transaction_id="<%= content.deal.id%>" receiver_id="<%=content.sender.id%>">
+            <i class="fa-solid fa-reply"></i> 返信
+        </div>
     <% end %>
 </div>

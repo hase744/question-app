@@ -45,16 +45,15 @@
   	  	//transform: translate(-50%,-50%);
   	  	background-color: #fff;
   	}
-  	.suggest_button_area{
-  	  	//margin-top: calc(50% - 100px);
-  	}
   	.button{
   	  	background-color: orange;
   	  	width: calc(100% - 20px);
   	  	display: inline-block;
-  	  	margin: 10px;
-  	  	height: 50px;
-  	  	font-size: 21px;
+  	  	margin: 10px ;
+  	  	height: 25px;
+  	  	font-size: 15px;
+				line-height: 15px;
+				padding: 5px 0px;
   	  	padding-top: 15px;
   	  	border-radius: 5px;
   	  	color: white;

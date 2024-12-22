@@ -1,12 +1,16 @@
 @import "_variables";
 .transaction_message_cell_area{
     display: inline-block;
-    width: calc(100% - 10px);
+    width: calc(100% - 20px);
     background-color: white;
     border-radius: 2.5px;
     //box-shadow: 0px 0px 2px lightgray;
     box-shadow: 1px 1px 3px gray;
     margin: 2.5px 5px;
+    padding: 5px;
+    .answer_link{
+        text-decoration-color: $text_grey;
+    }
     .answer_title{
         margin: 3px 5px;
         color: $text_grey;
@@ -24,15 +28,14 @@
         display: flex;
         .image_area{
             display: flex;
-            width: 40px;
+            width: 35px;
             height: 40px;
             float: left;
-            margin-right: 5px;
             .user_image{
                 object-fit: cover;
                 height: 30px;
                 width: 30px;
-                margin: 5px;
+                margin-top: 2.5px;
                 border-radius: 25px;
             }
         }
@@ -42,7 +45,6 @@
             width: calc(100% - 70px);
             height: 30px;
             //float: left;
-            margin-top: 2.5px;
         }
         .send_time{
             color: gray;
@@ -61,16 +63,34 @@
     }
     .message_text_area{
         .message_text{
-            padding: 0px 5px;
             font-size: 14px;
             white-space: pre-line;
+            a{
+                color: $link_blue;
+            }
         }
     }
+    .bottom_button{
+        display: inline-block;
+        color: $text_grey;
+        font-size: 15px;
+        line-height: 20px;
+        cursor: pointer;
+        border-radius: 20px;
+        border: 1px solid grey;
+        padding: 0px 10px;
+        font-weight: lighter;
+    }
+    .bottom_button:hover{
+        color: dimgrey;
+    }
     .image_area{
-        //margin: 5px;
+        display: block;
         .image{
+            display: block;
+            max-width: 500px;
             width: calc(100% - 10px);
-            margin: 5px;
+            margin: 0 auto;
             object-fit: cover;
         }
     }

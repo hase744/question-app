@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :transaction do
     title { "Sample Transaction" }
+    mode { 'proposal' }
     description { "This is a description for the sample transaction." }
     request {association :exclusive_request, :with_item}
     service {association :service}

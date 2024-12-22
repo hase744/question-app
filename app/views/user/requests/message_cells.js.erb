@@ -1,0 +1,12 @@
+var message_area = document.querySelector('.message_area')
+message_area.innerHTML =
+`<% @models.each do |model| %>
+  <%= case model.model_name.to_s
+	when 'Transaction'
+    render 'user/transactions/message_cell', transaction: model
+  when 'TransactionMessage'
+    render 'user/transaction_messages/cell', content: model, need_reply: true
+  end %>
+<% end %>`
+$(".loading_animation").css("display","none");
+$("#loaded_messages_number").html(message_area.childElementCount)

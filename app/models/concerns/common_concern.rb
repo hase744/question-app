@@ -26,6 +26,10 @@ module CommonConcern
     end
   end
 
+  def errors_messages
+    errors.map{|attribute, message| message}.join('\r\n')
+  end
+
   def file_html_path
     file_array = self.file.path.split('/')
     file_array = file_array.take(file_array.length - 1)

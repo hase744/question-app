@@ -1,7 +1,9 @@
 <div class="transaction_messages_zone">
   	<div class="transaction_messages_arae">
-	<%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
-  	<%= render "user/requests/cell", request: @transaction.request %>
-		<%= render "user/transaction_messages/cells_area" %>
+		<%= render 'user/shared/common_label', text: '質問', language: 'ja'%>
+  		<%= render "user/requests/cell", request: @transaction.request %>
+        <div class="transaction_message_flame" id="transaction_message_flame">
+			<%= render "user/transaction_messages/cells_area" %>
+		</div>
   	</div>
 </div>

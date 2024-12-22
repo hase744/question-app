@@ -32,6 +32,7 @@ class Service < ApplicationRecord
   enum delivery_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
   accepts_nested_attributes_for :items, allow_destroy: true
   accepts_nested_attributes_for :service_categories, allow_destroy: true
+  enum mode: { proposal: 0, reward: 1 }
 
   scope :solve_n_plus_1, -> {
     includes(:user, :transactions, :reviews, :requests, :service_categories, :service_category, :item)
@@ -40,7 +41,7 @@ class Service < ApplicationRecord
   scope :buyable, -> {
     solve_n_plus_1
     .abled
-    .not_tip_mode
+    .not_reward_mode
     .where(
       request_id: nil,
       is_published: true,
@@ -52,7 +53,7 @@ class Service < ApplicationRecord
     left_joins(:user, :service_categories)
     .solve_n_plus_1
     .abled
-    .not_tip_mode
+    .not_reward_mode
     .where(
       request_id: nil,
       is_published: true,
@@ -78,9 +79,10 @@ class Service < ApplicationRecord
 
   scope :displayable, -> (user=nil){
     if user
-      self
+      not_reward_mode
     else
-      self.where(is_published:true, request_id: nil)
+      not_reward_mode
+      .where(is_published:true, request_id: nil)
     end
   }
 
@@ -274,7 +276,8 @@ class Service < ApplicationRecord
   end
 
   def set_default_values
-    if is_tip_mode?
+    self.mode ||= 'proposal'
+    if is_reward_mode?
       self.allow_pre_purchase_inquiry = true
     end
   

@@ -1,8 +1,10 @@
 <div class="transaction_message_cell_area">
+	<%=link_to(user_transaction_path(transaction.id), class:"answer_link") do %>
 	<h4 class="title answer_title">
 		<span class="mark_a">A.</span>
 		<%= transaction.title%>
 	</h4>
+	<% end %>
     <div class="image_name_area">
         <div class="image_area">
             <%=image_tag transaction.seller.thumb_with_default, class:"user_image"%>
@@ -22,4 +24,14 @@
 			<%= image_tag item.file.url, class:"image" if item.file.is_image? %>
 		<% end %>
 	<% end %>
+    <% if transaction.request.is_reward_mode? && transaction.seller != current_user %>
+        <div class="bottom_button reply_button" uuid="<%= transaction.seller.uuid%>" name="<%= transaction.seller.name%>" transaction_id="<%= transaction.id%>" receiver_id="<%=transaction.seller.id%>">
+            <i class="fa-solid fa-reply"></i> 返信
+        </div>
+    <% end %>
+    <% if transaction.request.is_reward_mode? && transaction.buyer == current_user && !transaction.is_reviewed? %>
+	    <div class="bottom_button review_button" uuid="<%= transaction.seller.uuid%>" name="<%= transaction.seller.name%>" transaction_id="<%= transaction.id%>" receiver_id="<%=transaction.seller.id%>">
+            <i class="fa-regular fa-message"></i> レビューの作成・報酬の設定
+        </div>
+    <% end %>
 </div>

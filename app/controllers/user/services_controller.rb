@@ -1,6 +1,7 @@
 class User::ServicesController < User::Base
   before_action :check_login, only:[:new, :edit, :create, :update, :history]
-  before_action :define_service, only:[:show, :suggest, :edit, :update]
+  before_action :define_service, only:[:show, :suggest]
+  before_action :define_own_service, only:[:edit, :update]
   before_action :check_published, only:[:show]
   before_action :define_transaction, only:[:show]
   before_action :define_request, except:[:transactions, :requests, :reviews]
@@ -326,7 +327,7 @@ class User::ServicesController < User::Base
     if !current_user.is_seller
       redirect_to edit_user_accounts_path
       flash.notice = "回答者として登録してください"
-    elsif Service.where(user: current_user, request_id: nil).count > 10
+    elsif Service.where(user: current_user, request_id: nil).proposal_mode.count > 10
         redirect_to user_account_path(current_user.id)
         flash.notice = "出品できる相談室数が上限に達しています。"
     end
@@ -339,11 +340,11 @@ class User::ServicesController < User::Base
   end
 
   private def define_service
-    if ['edit','update'].include?(action_name)
-      @service = Service.find_by(id: params[:id], user: current_user)
-    else
-      @service = Service.find(params[:id])
-    end
+    @service = Service.proposal_mode.find_by(id: params[:id])
+  end
+
+  private def define_own_service
+    @service = Service.proposal_mode.find_by(id: params[:id], user: current_user)
   end
 
   private def define_transaction

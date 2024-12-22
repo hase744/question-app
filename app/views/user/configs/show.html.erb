@@ -38,7 +38,7 @@
                 </div>
 
             <% else %>
-                <p class="finance_component">回答者情報未登録</p>
+                <p class="finance_component">販売者情報未登録</p>
                 <%=link_to "新規登録", new_user_connects_path%>
             <% end %>
             <h4 class="finance_component week_label">現在の決算</h4>
@@ -73,7 +73,7 @@
     </div>
     <%= render "user/configs/button", path: user_orders_path, icon: "far fa-handshake", label: "取引一覧" %>
     <%= render "user/configs/button", path: user_cards_path, icon: "far fa-credit-card", label: "クレジットカード" %>
-    <%= render "user/configs/button", path: user_connects_path, icon: "far fa-id-card", label: "回答者情報" %>
+    <%= render "user/configs/button", path: user_connects_path, icon: "far fa-id-card", label: "販売者情報" %>
     <%= render "user/configs/button", path: user_pre_purchase_inquiries_path, icon: "fa-solid fa-comments", label: "購入前メッセージ" %>
     <%= render "user/configs/button", path: user_service_mine_path, icon: "fas fa-chalkboard-teacher", label: "自分の相談室" %>
     <%= render "user/configs/button", path: user_request_mine_path, icon: "fa-solid fa-q", label: "自分の質問" %>

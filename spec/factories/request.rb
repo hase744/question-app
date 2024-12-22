@@ -6,6 +6,7 @@ FactoryBot.define do
     suggestion_acceptable_days { 3 }
     is_published { false }
     is_inclusive { true }
+    mode { 'proposal' }
     suggestion_deadline { DateTime.now + 10 }
     user { association :user }
     request_form_name { Form.find_by(name: 'text').name_sym }

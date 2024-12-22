@@ -6,6 +6,7 @@ FactoryBot.define do
     delivery_days { 3 }
     is_published { true }
     is_for_sale { true }
+    mode { 'proposal' }
     allow_pre_purchase_inquiry { true }
     user { association :user2 }
     request_form_name { Form.find_by(name: 'text').name_sym }

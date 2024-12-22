@@ -9,6 +9,9 @@ class Request < ApplicationRecord
   has_many :items, class_name: "RequestItem", dependent: :destroy
   has_many :request_categories, class_name: "RequestCategory", dependent: :destroy
   has_many :supplements, class_name: "RequestSupplement", dependent: :destroy
+  has_many :coupon_usages, dependent: :destroy
+  has_many :coupons, through: :coupon_usages, dependent: :destroy
+  has_many :point_records, dependent: :destroy
   has_one :request_category, dependent: :destroy
   has_one :item, dependent: :destroy, class_name: "RequestItem"
   delegate :category, to: :request_category, allow_nil: true
@@ -16,6 +19,7 @@ class Request < ApplicationRecord
 
   before_validation :set_default_values
   after_save :create_request_category
+  after_save :create_payment_record
   
   attr_accessor :suggestion_acceptable_days
   attr_accessor :validate_published
@@ -28,6 +32,7 @@ class Request < ApplicationRecord
   validates :title, :description, presence: true
   validates :title, length: {maximum: :title_max_length}
   validates :description, length: {maximum: :description_max_length}
+  validates :mode, presence: { message: '募集方法を選択してください' }
   #validates :max_price, numericality: {greater_than_or_equal_to: 100}
   validate :validate_title
   validate :validate_description
@@ -36,7 +41,7 @@ class Request < ApplicationRecord
   validate :validate_is_published
   validate :validate_request_category
   validate :validate_max_price
-  validate :validate_can_stop_accepting
+  validate :validate_can_retract
   validate :validate_item_count
   #validate :validate_request_item
   validate :validate_item_form
@@ -45,7 +50,7 @@ class Request < ApplicationRecord
   accepts_nested_attributes_for :items, allow_destroy: true
   accepts_nested_attributes_for :item, allow_destroy: true
   accepts_nested_attributes_for :request_categories, allow_destroy: true
-  enum mode: { proposal: 0, tip: 1 }
+  enum mode: { proposal: 0, reward: 1 }
 
   scope :solve_n_plus_1, -> {
     includes(:user, :services, :request_categories, :items, :transactions)
@@ -64,6 +69,16 @@ class Request < ApplicationRecord
         state: 'normal'
       }
     )
+  }
+
+  scope :deadline_not_over, -> {
+    solve_n_plus_1
+    .where("suggestion_deadline > ?", DateTime.now)
+  }
+
+  scope :deadline_over, -> {
+    solve_n_plus_1
+    .where("suggestion_deadline < ?", DateTime.now)
   }
 
   scope :from_service, ->(service){
@@ -181,6 +196,10 @@ class Request < ApplicationRecord
     transactions.first
   end
 
+  def message_records
+    MessageRecord.all(request_id: id)
+  end
+
   def total_likes
     self.likes.count
   end
@@ -205,6 +224,14 @@ class Request < ApplicationRecord
       )
   end
 
+  def is_deadline_over?
+    self.suggestion_deadline.blank? || self.suggestion_deadline < DateTime.now
+  end
+
+  def within_the_deadline?
+    self.suggestion_deadline.present? && self.suggestion_deadline > DateTime.now
+  end
+
   def is_suppliable
     if !self.is_published
       false
@@ -220,6 +247,7 @@ class Request < ApplicationRecord
   end
 
   def set_default_values
+    self.mode ||= 'proposal'
     update_category
     copy_from_service if new_record?
 
@@ -237,6 +265,11 @@ class Request < ApplicationRecord
     if self.is_inclusive && self.is_published && will_save_change_to_is_published? && suggestion_acceptable_duration
       self.suggestion_deadline = Time.now + self.suggestion_acceptable_duration
     end
+  end
+
+  def set_retraction
+    self.is_accepting = false
+    self.retracted_at = DateTime.now
   end
 
   def save_file_content(file_content)
@@ -258,14 +291,12 @@ class Request < ApplicationRecord
     end
   end
 
-  def can_stop_accepting?
-    if !self.is_accepting
-      false
-    elsif !self.is_inclusive
-      false
-    else
-      true
-    end
+  def can_retract?
+     #受け入れをしている、公開している
+    return false unless self.is_accepting
+    return false unless self.is_inclusive
+    #return false if has_published_transaction?
+    true
   end
 
   def update_category #カテゴリのアップデートは既存のrequest_categoryのcategory_nameをアップデートして新規のデータは生成しない
@@ -310,6 +341,7 @@ class Request < ApplicationRecord
         self.request_categories.find_by(category_name: name).destroy
       end
     end
+    self.mode = self.service.mode
     self.request_form_name = self.service.request_form_name
     self.delivery_form_name = self.service.delivery_form_name
     self.category_id = self.service.category.id
@@ -391,25 +423,55 @@ class Request < ApplicationRecord
   end
 
   def price_content
-    self.mode == 'tip' ? self.reward : self.max_price
+    self.mode == 'reward' ? self.reward : self.max_price
+  end
+
+  def remaining_reward
+    return nil unless self.is_reward_mode?
+    self.reward - self.transactions.delivered.sum(:price)
   end
 
   def price_label
-    self.mode == 'tip' ? '報酬金額' : Request.human_attribute_name(:max_price)
+    self.mode == 'reward' ? '報酬金額' : Request.human_attribute_name(:max_price)
   end
 
   def response_content
-    self.mode == 'tip' ? self.transactions.select{|t| t.is_published}.length : self.total_services
+    self.mode == 'reward' ? self.transactions.select{|t| t.is_published}.length : self.total_services
   end
 
   def response_label
-    self.mode == 'tip' ? '回答数' : '提案数'
+    self.mode == 'reward' ? '回答数' : '提案数'
   end
 
   def save_length
     if self.request_form.name == "text"
     elsif self.request_form.name == "image"
       self.length = 1
+    end
+  end
+
+  def create_payment_record
+    return if saved_change_to_id? #新規のデータの時、return
+    return if self.is_proposal_mode?
+    discounted_price = self.reward - self.coupon_usages.sum(:amount)
+    if self.saved_change_to_is_accepting? && !self.is_accepting
+      self.point_records.create(
+        user: self.user,
+        request: self,
+        amount: discounted_price,
+        type_name: 'retraction',
+        created_at: self.retracted_at,
+      )
+    end
+
+    if self.saved_change_to_is_published? && self.is_published && self.is_reward_mode?
+      self.point_records.create(
+        user: self.user,
+        request: self,
+        amount: -discounted_price,
+        type_name: 'reward',
+        created_at: self.published_at,
+      )
     end
   end
 
@@ -456,7 +518,7 @@ class Request < ApplicationRecord
   end
 
   def validate_max_price
-    return if self.mode == 'tip'
+    return if self.mode == 'reward'
     if will_save_change_to_max_price? || (self.service.nil? && new_record?)
       errors.add(:max_price, "予算を設定してください") if max_price.nil?
     end
@@ -565,11 +627,11 @@ class Request < ApplicationRecord
     end
   end
 
-  def validate_can_stop_accepting
-    return if self.is_accepting
-    return if self.will_save_change_to_is_accepting?
-    return unless self.is_published
-    errors.add(:base, "取り下げに失敗しました")
+  def validate_can_retract
+    #受け入れを中止する変更でない場合はOK
+    return if self.is_accepting #受付している場合
+    return unless self.will_save_change_to_is_accepting? #受付を変更しない
+    errors.add(:base, "回答のある質問は取り下げできません") if has_published_transaction?
   end
 
   def title_max_length
@@ -582,6 +644,10 @@ class Request < ApplicationRecord
     else
       false
     end
+  end
+
+  def has_published_transaction?
+    self.transactions.published.present?
   end
 
   def has_pure_image

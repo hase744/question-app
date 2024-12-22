@@ -31,7 +31,7 @@
   		<div class="field_area">
   		  	<%= f.label :mode, class:"field_label" %><br />
   		  	<div class="input_field text_field select_area">
-  		  	  	<%= f.select :mode, mode_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field" %>
+  		  	  	<%= f.select :mode, mode_japanese_hash, id:"request_form_field", autocomplete: "select_input", class:"input_field", include_blank: true %>
   		  	</div>
 		</div>
 	<% end %>
@@ -100,7 +100,7 @@
   	  	<% unless service.present? %>
   	  	  	<%= f.label :reward, class:"field_label"%>（100〜<%= request.max_price_upper_limit%>円）<br/>
   	  	  	<div class="input_field text_field select_area">
-  	  	  		<%= f.select 'reward', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.max_price), include_blank: true,  class:"price_field" ,required: true %>
+  	  	  		<%= f.select 'reward', options_for_select((100.. request.max_price_upper_limit).step(100).map { |num| ["#{num}円", num] }, selected:  request.reward), include_blank: true,  class:"price_field" ,required: true %>
   	  	  	</div>
   	  	<% end %>
   	</div>
@@ -148,7 +148,7 @@ $(document).ready(function() {
         const selectedValue = $(this).val();
 		console.log(selectedValue)
         
-        if (selectedValue === 'tip') {
+        if (selectedValue === 'reward') {
             $('.max_price_field_area').hide();
             $('.reward_field_area').show();
         } else if (selectedValue === 'proposal') {

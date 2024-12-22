@@ -13,6 +13,7 @@ class CreateRequests < ActiveRecord::Migration[6.1]
 
       t.boolean :is_inclusive, index:true, null: false, default: true
       t.boolean :is_accepting, index: true, null: false, default: true
+      t.datetime :retracted_at, index:true
       t.integer :suggestion_acceptable_duration, index:true
       t.datetime :suggestion_deadline, index:true
 

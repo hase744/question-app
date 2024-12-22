@@ -11,7 +11,7 @@
   		<span class="fa-solid fa-angle-down"></span>
 	</div>
 	<div class="sort_selector">
-		<% case controller_name %>
+		<% case sort_type %>
 		<% when "accounts" %>
 			<% account_sort_list.each do |order| %>
 				<%= render "user/shared/sort_link",link: link, order: order %>
@@ -22,6 +22,10 @@
 			<% end %>
 		<% when "requests" %>
 			<% request_sort_list.each do |order| %>
+				<%= render "user/shared/sort_link",link: link, order: order %>
+			<% end %>
+		<% when "messages" %>
+			<% message_sort_list.each do |order| %>
 				<%= render "user/shared/sort_link",link: link, order: order %>
 			<% end %>
 		<% when "transactions" %>

@@ -1,8 +1,9 @@
 class User::RequestsController < User::Base
-  before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish, :stop_accepting ] #ログイン済みである
+  before_action :check_login, only:[:new, :create, :edit, :destroy, :update, :preview, :edit, :publish, :retract, :create_message, :answer ] #ログイン済みである
   before_action :display_payment_message, only:[:preview]
   before_action :define_transaction, only:[ :publish, :preview , :update, :publish, :purchase, :edit]
-  before_action :define_request, only:[:show, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
+  before_action :define_own_request, only:[:create, :edit, :destroy, :update, :preview, :publish, :purchase]
+  before_action :define_request, only:[:show, :message_cells]
   before_action :define_service, only:[:new, :create, :edit, :destroy, :update, :preview, :publish, :purchase]
   before_action :define_parameter, except:[:new]
   before_action :check_request_need_transaction, only:[:edit, :preview]
@@ -14,6 +15,9 @@ class User::RequestsController < User::Base
   before_action :check_already_contracted, only:[:new, :create, :publish, :purchase, :preview, :edit]
   before_action :check_budget_sufficient, only:[:publish, :purchase]
   before_action :check_can_check_request, only:[:show]
+  before_action :check_can_create_service, only:[:create_message, :answer]
+  before_action :check_can_answer, only:[:answer, :create_message]
+  before_action :can_create_request, only: [:new, :publish, :purchase]
   layout :choose_layout
 
   private def choose_layout
@@ -67,64 +71,17 @@ class User::RequestsController < User::Base
   end
 
   def show
-    @post_page = 10
-    params[:page] = 1
+    @post_page = 5
     @transaction = current_user&.sales&.find_by(request: @request)
     @transaction_message = @transaction.transaction_messages.new() if @transaction
     if user_signed_in?
       @relationship = Relationship.find_by(user: @request.user, target_user_id: current_user.id)
     end
     @request.update(total_views:@request.total_views + 1)
-    # SQLクエリの定義
-    transaction_sql = <<-SQL
-    SELECT 'Transaction' AS record_type, id, created_at, published_at 
-    FROM transactions
-    WHERE request_id = #{ActiveRecord::Base.connection.quote(@request.id)}
-      AND is_published = true
-    SQL
-
-    if @request.transactions.exists?
-      transaction_message_sql = <<-SQL
-        SELECT 'TransactionMessage' AS record_type, id, created_at, published_at 
-        FROM transaction_messages
-        WHERE transaction_id IN (#{@request.transactions.pluck(:id).join(',')})
-      SQL
-    end
-    
-    # 動的に最終SQLを組み立てる
-    final_sql_parts = []
-    final_sql_parts << "(#{transaction_sql})"
-    final_sql_parts << "(#{transaction_message_sql})" if @request.transactions.exists?
-    
-    # UNION ALLで結合し、ORDER BYとLIMITを追加
-    final_sql = <<-SQL
-      #{final_sql_parts.join(" UNION ALL ")}
-      ORDER BY published_at DESC
-      LIMIT #{@post_page} OFFSET #{(params[:page].to_i - 1) * @post_page}
-    SQL
-
-    # SQL実行
-    records = ActiveRecord::Base.connection.execute(final_sql)
-
-    # IDを分類してN+1解決のfind
-    transaction_ids = records.map { |row| row['id'] if row['record_type'] == 'Transaction' }.compact
-    transaction_message_ids = records.map { |row| row['id'] if row['record_type'] == 'TransactionMessage' }.compact
-
-    transactions = Transaction.solve_n_plus_1.find(transaction_ids).to_a
-    transaction_messages = TransactionMessage.solve_n_plus_1.find(transaction_message_ids).to_a
-
-    # レコードをActiveRecordモデルに変換
-    records = records.to_a.map do |row|
-    case row['record_type']
-    when 'Transaction'
-      transactions.find { |model| model.id == row['id'] }
-    when 'TransactionMessage'
-      transaction_messages.find { |model| model.id == row['id'] }
-    end
-    end
-
-    # 結果をインスタンス変数に格納
-    @models = records
+    params[:page] ||= 1
+    @models = @request.message_records
+      .where(only_answer: params[:only_answer], order: params[:order])
+      .page(params[:page].to_i).per(20)
   end
 
   def new
@@ -147,11 +104,13 @@ class User::RequestsController < User::Base
     set_preview_values
   end
 
-  def stop_accepting
-    if Request.find_by(id: params[:id], user:current_user, is_inclusive: true).update(is_accepting: false)
+  def retract
+    request = Request.find_by(id: params[:id], user:current_user, is_inclusive: true)
+    request.set_retraction
+    if request.save
       flash.notice = "質問を取り下げました"
     else
-      flash.notice = "質問を取り下げできませんでした"
+      flash.notice = "質問を取り下げできませんでした。\r\n#{request.errors_messages}"
     end
     redirect_back(fallback_location: root_path)
   end
@@ -320,7 +279,7 @@ class User::RequestsController < User::Base
       ActiveRecord::Base.transaction do
         @service = Service.new(
           user: current_user, 
-          mode: 'tip', 
+          mode: 'reward', 
           price: 0,
           request_form_name: @request.request_form_name,
           delivery_form_name: @request.delivery_form_name
@@ -330,12 +289,12 @@ class User::RequestsController < User::Base
           service: @service, 
           request: @request, 
           price: 0,
-          mode: 'tip'
+          mode: 'reward'
         )
         if save_models
           redirect_to redirect_path.is_a?(Proc) ? redirect_path.call : redirect_path
         else
-          flash.notice = '失敗しました'
+          flash.notice = "失敗しました。#{@transaction.errors_messages}"
           redirect_back(fallback_location: root_path)
         end
       end
@@ -362,7 +321,7 @@ class User::RequestsController < User::Base
       @submit_text = "公開"
     end
 
-    if @request.mode == 'tip'
+    if @request.mode == 'reward'
       @deficient_point = [@request.required_points - current_user.total_points, 0].max
       @payment = Payment.new(point: @deficient_point || 100)
     end
@@ -384,6 +343,13 @@ class User::RequestsController < User::Base
     elsif @request.user.is_deleted
       flash.notice = "アカウントが存在しません。"
       redirect_to user_requests_path
+    end
+  end
+
+  private def check_can_create_service
+    if !current_user.is_seller
+      redirect_to edit_user_accounts_path
+      flash.notice = "回答者として登録してください"
     end
   end
 
@@ -461,15 +427,17 @@ class User::RequestsController < User::Base
     end
   end
 
-  private def define_request
+  private def define_own_request
     if @transaction
       @request = @transaction.request
     elsif params[:id]
-      if action_name == 'show'
-        @request = Request.find_by(id:params[:id])
-      else
-        @request = Request.find_by(id:params[:id], user: current_user, is_published:false)
-      end
+      @request = Request.find_by(id:params[:id], user: current_user, is_published:false)
+    end
+  end
+
+  private def define_request
+    if params[:id]
+      @request = Request.find_by(id:params[:id])
     end
   end
 
@@ -565,6 +533,13 @@ class User::RequestsController < User::Base
     end
   end
 
+  private def check_can_answer
+    if !current_user.is_seller
+      redirect_to edit_user_accounts_path
+      flash.notice = "回答者として登録してください"
+    end
+  end
+
   private def request_params
     params.require(:request).permit(
       :title,
@@ -627,5 +602,17 @@ class User::RequestsController < User::Base
       :thumbnail,
       :file_duration,
     )
+  end
+
+  private def can_create_request
+    last_reward_request = current_user.requests
+      .published
+      .deadline_over
+      .reward_mode
+      .from_latest_order&.first
+    if last_reward_request&.remaining_reward > 0 && last_reward_request&.is_accepting
+      flash.notice = "報酬の支払いが完了していない、または質問の取り下げが未完了の状態では、新たに質問を作成することはできません。"
+      redirect_to user_request_path(last_reward_request.id)
+    end
   end
 end

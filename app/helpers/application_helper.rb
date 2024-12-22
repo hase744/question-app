@@ -84,6 +84,7 @@ include OperationConfig
       price: {japanese_name: '価格が安い', name: 'price'},
       transactions_count: {japanese_name: '回答が多い', name: 'transactions_count'},
       suggestions_count: {japanese_name: '提案数が少ない', name: 'transactions_count'},
+      reversed_published_at: {japanese_name: '投稿が古い', name: 'reversed_published_at'},
     }
   end
 
@@ -101,6 +102,10 @@ include OperationConfig
 
   def request_sort_list
     [:likes_count, :max_price, :suggestions_count, :published_at, :deadline]
+  end
+
+  def message_sort_list
+    [:reversed_published_at, :published_at]
   end
 
   def sort_options(list)
