@@ -38,6 +38,11 @@ FactoryBot.define do
         request.save
       end
     end
+
+    trait :reward_mode do
+      mode { 'reward' }
+      reward { 1000 }
+    end
   end
 
   factory :published_request do

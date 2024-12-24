@@ -381,7 +381,7 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id: @service.user_id,
       notifier_id: current_user.id,
-      title: "相談室に相談が質問が届きました",
+      title: "相談室に質問が届きました",
       description: @request.title,
       action: "show",
       controller: "orders",
@@ -610,7 +610,7 @@ class User::RequestsController < User::Base
       .deadline_over
       .reward_mode
       .from_latest_order&.first
-    if last_reward_request&.remaining_reward > 0 && last_reward_request&.is_accepting
+    if last_reward_request&.is_accepting && last_reward_request&.remaining_reward > 0
       flash.notice = "報酬の支払いが完了していない、または質問の取り下げが未完了の状態では、新たに質問を作成することはできません。"
       redirect_to user_request_path(last_reward_request.id)
     end

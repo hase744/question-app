@@ -48,6 +48,30 @@ RSpec.describe Request, type: :model do
     end
   end
 
+  describe '報酬モードの回答募集の時' do
+    context 'リクエストが公開された場合' do
+      let(:request) { build(:request, :reward_mode) }
+      let(:request_text_item) { build(:request_text_item) }
+    
+      before do
+        item = request.build_item
+        item.assign_attributes(attributes_for(:request_text_item))
+        request.set_publish
+      end
+
+      it '有効な属性であれば有効' do
+        request.save
+        expect(request).to be_valid
+      end
+
+      it '有効ではない属性であれば無効' do
+        request.reward = 1
+        request.save
+        expect(request).not_to be_valid
+      end
+    end
+  end
+
   describe 'サービス購入時' do
     let(:user) { create(:user) }
     let(:service_user) { create(:user2) }

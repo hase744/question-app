@@ -43,6 +43,7 @@ class Request < ApplicationRecord
   validate :validate_max_price
   validate :validate_can_retract
   validate :validate_item_count
+  validate :validate_reward
   #validate :validate_request_item
   validate :validate_item_form
   enum request_form_name: Form.all.map{|c| c.name.to_sym}, _prefix: true
@@ -632,6 +633,17 @@ class Request < ApplicationRecord
     return if self.is_accepting #受付している場合
     return unless self.will_save_change_to_is_accepting? #受付を変更しない
     errors.add(:base, "回答のある質問は取り下げできません") if has_published_transaction?
+  end
+
+  def validate_reward
+    return if is_proposal_mode?
+    if self.reward.nil?
+      errors.add(:reward)
+    elsif self.reward % 100 != 0
+      errors.add(:reward, "報酬は100円ごとにしか設定できません")
+    elsif self.reward <= 0
+      errors.add(:reward)
+    end
   end
 
   def title_max_length
