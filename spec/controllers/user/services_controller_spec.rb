@@ -26,6 +26,7 @@ RSpec.describe User::ServicesController, type: :controller do
           delivery_form_name: 'text',
           transaction_message_enabled: 'true',
           price: '100',
+          suggestion_acceptable_day: 1,
           delivery_days: '1',
           allow_pre_purchase_inquiry: 'true',
           is_published: 'true',
