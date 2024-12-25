@@ -1,42 +1,38 @@
 .transaction_message_form_flame{
-  flex-grow: 1;
+  	flex-grow: 1;
 }
 .transaction_message_submit_form{
-  text-align: left;
-  padding: 10px;
-  height: 100%;
-  .title{
-    margin: 0px;
-  }
-  .text_field{
-    min-width: calc(100% - 5px);
-    max-width: calc(100% - 5px);
-    height: 100px;
-    height: calc(100% - 120px);
-    border-radius: 5px;
-    box-sizing: border-box;
-  }
-  .transaction_message_submit_area{
-    text-align: center;
-  }
-  .transaction_message_submit{
-    height: 30px;
-    width: 200px;
-    font-size: 15px;
-    border-radius: 3px;
-    border: 1px solid gray;
-    background-color: orange;
-    color: white;
-  }
-  .transaction_message_submit:hover{
-    cursor: pointer;
-  }
+  	text-align: left;
+  	padding: 10px;
+	padding-bottom: 0px;
+  	height: calc(100% - 10px);
+  	display: flex;
+  	flex-direction: column;
+  	.title{
+  	  	margin: 0px;
+  	}
+  	.text_field{
+  	  	min-width: calc(100% - 5px);
+  	  	max-width: calc(100% - 5px);
+  	  	height: 100px;
+  	  	border-radius: 5px;
+  	  	box-sizing: border-box;
+  	  	display: flex;
+  	  	flex-direction: column;
+  	  	flex-grow: 1;
+  	}
+  	.transaction_message_submit:hover{
+  	  	cursor: pointer;
+  	}
+	input[type='file']{
+		margin: 10px;
+	}
 }
 .new_message_modal .modal_window_body{
-  height: 100%;
+  	height: 100%;
 }
 .new_message_modal .modal_delete_area{
-  //position: absolute;
-  width: 100%;
-  bottom: 0px;
+  	//position: absolute;
+  	width: 100%;
+  	bottom: 0px;
 }

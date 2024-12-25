@@ -8,13 +8,18 @@ class User::ReviewsController < User::Base
     ActiveRecord::Base.transaction do
       if review.valid? && review.deal.valid? && review.save
         flash.notice = 'レビューを投稿しました'
+        if review.deal.is_reward_mode? && review.reward > 0
+          message = "回答に#{review.reward}円の報酬とレビューが投稿されました。"
+        else
+          message ='回答にレビューが投稿されました。'
+        end
         Notification.create(
           user: review.deal.seller,
           notifier_id: current_user.id,
           controller: "transactions",
           action: 'show',
           id_number: review.deal.id,
-          title: '回答にレビューがされました。',
+          title: message,
           description: review.body,
           parameter: nil
         )

@@ -271,6 +271,7 @@ class User::ServicesController < User::Base
 
   def mine
     @services = current_user.services
+      .proposal_mode
       .solve_n_plus_1
       .order(created_at: :desc)
       .page(params[:page])

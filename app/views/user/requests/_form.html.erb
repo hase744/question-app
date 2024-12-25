@@ -144,6 +144,8 @@
 <%= render 'user/requests/javascript/extension_controller.js.erb' %>
 <%= render 'user/requests/javascript/youtube_form_controller.js.erb' %>
 $(document).ready(function() {
+	$('.max_price_field_area').hide();
+	$('.reward_field_area').hide();
     $('#request_mode').on('change', function() {
         const selectedValue = $(this).val();
         
