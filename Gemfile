@@ -62,7 +62,6 @@ group :production do
 end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-gem 'net-http', '~> 0.6.0'
 gem 'spring' #元々でdevelopmentの中のみにあったがここに移動
 gem 'wkhtmltoimage-binary', ">= 0.12.5"
 
@@ -100,3 +99,4 @@ gem 'carrierwave_backgrounder'
 gem "whenever"
 gem 'factory_bot_rails'
 gem 'rails-controller-testing'
+gem 'net-http', '~> 0.6.0'
