@@ -543,6 +543,7 @@ DEPENDENCIES
   twilio-ruby
   tzinfo-data
   unicorn (= 6.0.0)
+  uri (= 1.0.2)
   web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
@@ -553,4 +554,4 @@ RUBY VERSION
    ruby 3.0.2p107
 
 BUNDLED WITH
-   2.5.23
+   2.3.9
