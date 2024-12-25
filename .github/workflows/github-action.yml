@@ -26,8 +26,6 @@ jobs:
       - name: Install required apt packages
         run: |
           sudo apt-get -y install libpq-dev
-      - name: Update RubyGems system to the latest version
-        run: gem update --system
       - name: Update Bundler
         run: gem install bundler
       - name: Setup cache key and directory for gems cache
@@ -50,6 +48,10 @@ jobs:
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - name: Clear Bundler cache
+        run: |
+          rm -rf ~/.bundle
+          rm -rf vendor/bundle
       - name: Bundle install
         run: |
           bundle config path vendor/bundle
