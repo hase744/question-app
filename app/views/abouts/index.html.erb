@@ -91,7 +91,7 @@
             <div class="buyer_flame">
                 <div class="buyer_area">
                     <%= image_tag "/buyer_image.png", class:"buyer_image" %>
-                    <h2 class="label">質問のやり方</h2>
+                    <h2 class="label">質問をするには？</h2>
                     <ol class="step_area check_step_area">
                         <li>登録してポイントを購入</li>
                         <li>質問を公開して、相談室を募集</br><span class="or">or</span></br>相談室を探して質問を投稿</li>
@@ -101,7 +101,7 @@
             </div>
             <div class="seller_flame">
                 <div class="seller_area">
-                    <h2 class="label">回答のやり方</h2>
+                    <h2 class="label">回答をするには？</h2>
                     <%= image_tag "/seller_image.png", class:"seller_image" %>
                     <ol class="step_area check_step_area">
                         <li>登録してプロフィールを記入</li>
@@ -134,7 +134,7 @@
                             src: "/flow/transaction_flow-1-4.jpeg", 
                             use_arrow: true %>
                     </div>
-                    <h2 class="flow_label">回答を募集する場合</h2>
+                    <h2 class="flow_label">相談室を募集する場合</h2>
                     <div class="flow_group">
                         <%= render "abouts/flow_unit", 
                             title: "①回答者が相談室を出品", 
@@ -151,6 +151,21 @@
                         <%= render "abouts/flow_unit", 
                             title: "④回答者が回答を納品", 
                             src: "/flow/transaction_flow-2-4.jpeg", 
+                            use_arrow: true %>
+                    </div>
+                    <h2 class="flow_label">直接回答を募集する場合</h2>
+                    <div class="flow_group">
+                        <%= render "abouts/flow_unit", 
+                            title: "①質問者が質問を投稿", 
+                            src: "/flow/transaction_flow-3-1.jpeg", 
+                            use_arrow: false %>
+                        <%= render "abouts/flow_unit", 
+                            title: "②回答者が回答を投稿", 
+                            src: "/flow/transaction_flow-3-2.jpeg", 
+                            use_arrow: true %>
+                        <%= render "abouts/flow_unit", 
+                            title: "③質問者が報酬を設定", 
+                            src: "/flow/transaction_flow-3-3.jpeg", 
                             use_arrow: true %>
                     </div>
                 </div>
