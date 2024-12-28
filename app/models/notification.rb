@@ -2,10 +2,7 @@ class Notification < ApplicationRecord
   belongs_to :user, class_name: "User", foreign_key: :user_id
   belongs_to :notifier, class_name: "User", foreign_key: :notifier_id, optional: true
   before_validation :set_default_values
-
-  scope :published, -> {
-    where('published_at <= ?', DateTime.now)
-  }
+  after_save -> { user.update_unread_notifications }
 
   scope :solve_n_plus_1, -> {
     includes(:user, :notifier)
@@ -13,6 +10,14 @@ class Notification < ApplicationRecord
 
   scope :sort_by_date, -> {
     order(created_at: :ASC)
+  }
+
+  scope :recent, -> (params){
+    solve_n_plus_1
+    .published
+    .order(is_read: :asc, published_at: :desc)
+    .page(params[:page])
+    .per(15)
   }
 
   def set_default_values
@@ -60,7 +65,7 @@ class Notification < ApplicationRecord
         updated_at: DateTime.now,
         )
     end
-
     self.insert_all(notifications) if notifications.present?
+    announcement.update_user_unread_notifications(users: users)
   end
 end

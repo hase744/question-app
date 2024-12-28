@@ -96,11 +96,13 @@
                         </div>
                     </div>
                 </div></br>
+                <% if @transaction.is_proposal_mode?%>
                 <div class="service_link_area">
                     <div>
                         <%= link_to @transaction.service.title, user_service_path(@transaction.service.id), class:"service_link serice_link_component" %>より
                     </div>
                 </div>
+                <% end %>
                 <%= render "/user/shared/share_buttons", text: @transaction.description %>
             </div>
         </div>

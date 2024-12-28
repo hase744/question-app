@@ -21,9 +21,9 @@ class User::PrePurchaseInquiriesController < User::Base
     ActiveRecord::Base.transaction do
       if @transaction_message.save && @transaction.save
         message = if current_user == @transaction.seller
-          "購入前質問に返信がされました。"
+          "購入前質問に返信がされました"
         elsif current_user == @transaction.buyer
-          "相談室に購入前質問がされました。"
+          "相談室に購入前質問がされました"
         end
         EmailJob.perform_later(mode: :inquire, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
         Notification.create(
@@ -31,9 +31,10 @@ class User::PrePurchaseInquiriesController < User::Base
           notifier_id: current_user.id,
           title: message,
           description: @transaction_message.body,
+          published_at: DateTime.now,
           action: "index",
           controller: "pre_purchase_inquiries",
-          parameter: "?transaction_id=#{@transaction.id}",
+          parameter: "?transaction_id=#{@transaction.id}"
           )
         puts "OK"
         render json: { message: "送信しました", status: "success" }, status: :ok

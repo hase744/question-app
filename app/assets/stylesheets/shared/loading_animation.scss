@@ -1,26 +1,29 @@
-.loading_animation{
-    border: 5px solid #fafafa;
-  border-radius: 50%;
-  border-top: 5px solid #000; //バーの色を背景色と同じに
-  width: 30px;
-  height: 30px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-  }
-  
-  @keyframes spin{
-    0%{
-      transform: rotate(0deg);
-      opacity: 1;//透明度を１００％
-    }
-  
-    65%{
-      transform: rotate(180deg);//開始から65%の段階で半回転(180deg)する。さらに透明度を40%に設定
-      opacity: 0.4;
-    }
-  
-    100%{
-      transform: rotate(360deg);
-      opacity: 1;
-    }
-  }
+.loading_animation_area{
+	height: calc(1px * sqrt(35 * 35 * 2));
+	.loading_animation{
+		border: 5px solid #fafafa;
+		  	border-radius: 50%;
+		  	border-top: 5px solid #000; //バーの色を背景色と同じに
+		  	width: 30px;
+		  	height: 30px;
+		  	animation: spin 1s linear infinite;
+		  	margin: 0 auto;
+		  	}
+	  
+	  	@keyframes spin{
+		0%{
+		  	transform: rotate(0deg);
+		  	opacity: 1;//透明度を１００％
+		}
+	  
+		65%{
+		  	transform: rotate(180deg);//開始から65%の段階で半回転(180deg)する。さらに透明度を40%に設定
+		  	opacity: 0.4;
+		}
+	  
+		100%{
+		  	transform: rotate(360deg);
+		  	opacity: 1;
+		}
+	}
+}

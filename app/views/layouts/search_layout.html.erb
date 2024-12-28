@@ -9,7 +9,7 @@
     	<%=render "layouts/top_margin"%>
 		<div class="common_navigation_bar_flame">
 			<div class="common_navigation_bar_area">
-        		<%= render "user/shared/common_navigation_bar", link: ->(element) {element[:link]} %>
+        		<%= render "user/shared/top_navigation_bar", link: ->(element) {element[:link]} %>
 			</div>
 		</div>
 		<%= render "user/shared/top_search_form", path: request.path %>

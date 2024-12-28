@@ -123,7 +123,8 @@ class User::OrdersController < User::Base
     Notification.create!(
       user_id: @transaction.seller.id,
       notifier_id: current_user.id,
-      title: "依頼がキャンセルされました",
+      title: "購入がキャンセルされました",
+      published_at: DateTime.now,
       action: "show",
       controller: "orders",
       id_number: @transaction.id,
@@ -134,8 +135,9 @@ class User::OrdersController < User::Base
     Notification.create(
       user_id: @transaction.buyer.id,
       notifier_id: current_user.id,
-      title: "質問がお断りされました",
+      title: "回答がお断りされました",
       description: @transaction.reject_reason,
+      published_at: DateTime.now,
       action: "show",
       controller: "orders",
       id_number: @transaction.id,

@@ -2,13 +2,23 @@ $(document).off('click', '.detail_button_area').on('click', '.detail_button_area
   var notificationCellArea = $(this).closest('.notification_cell_area');
   var icon = $(this).find('.fa-solid');
   var text = notificationCellArea.find('.text');
-  if (notificationCellArea.hasClass('closing')) {
-    notificationCellArea.removeClass('closing').addClass('opening');
-    icon.removeClass('fa-angle-down').addClass('fa-angle-up');
-    text.removeClass('three_line_text');
-  } else if (notificationCellArea.hasClass('opening')) {
-    notificationCellArea.removeClass('opening').addClass('closing');
-    icon.removeClass('fa-angle-up').addClass('fa-angle-down');
-    text.addClass('three_line_text');
+  description_height = notificationCellArea.find('.description').height();
+  title_height = notificationCellArea.find('.title').height();
+  line_height = parseFloat(notificationCellArea.find('.text').css('line-height'));
+
+  //-webkit-line-clampから直接slideを実行できないため一旦、表示・非表示を挟んでスライド
+  if((description_height + title_height)/line_height < 3){
+  }else if(notificationCellArea.hasClass('closing')){//全体３行制限解除 → 詳細非表示 → 詳細をスライド表示
+    text.toggleClass('three_line_text');
+    notificationCellArea.find('.description').toggle();
+    notificationCellArea.find('.description').slideToggle();
+  }else{//詳細をスライド非表示 → 詳細表示 → 全体非表示３行制限
+    //slideToggleの後に実行する必要があるため
+    notificationCellArea.find('.description').slideToggle(function() {
+      $(this).toggle();
+      text.toggleClass('three_line_text');
+    });
   }
+  icon.toggleClass('fa-angle-down').toggleClass('fa-angle-up');
+  notificationCellArea.toggleClass('opening').toggleClass('closing');
 });

@@ -10,6 +10,6 @@ class User::AnnouncementsController < User::Base
   end
 
   def show
-    @announcement = Announcement.find(params[:id])
+    @announcement = Announcement.for_user(current_user).find(params[:id])
   end
 end

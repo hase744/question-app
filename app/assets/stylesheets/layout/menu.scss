@@ -193,6 +193,9 @@ $menu_link_height: 30px;
         .notification_image:hover{
             background-color: #EEEEEE;
         }
+        .notification_image.button{
+            display: none;
+        }
         .notification_number{
             display: inline-block;
             position: absolute;

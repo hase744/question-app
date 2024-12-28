@@ -49,10 +49,7 @@ namespace :user do
     get "requests/mine", to: "requests#mine", as:"request_mine"
     post "transactions/like/:id", to:"transactions#like", as: "transactions_like"
     put "transactions/deliver/:id",  to:"transactions#deliver", as:"deliver_transaction"
-    get "notifications/notification_bar", to: "notifications#notification_bar"
-    get "notifications/notification_cells", to: "notifications#notification_cells"
     get "notifications/get_data"
-    patch "notifications/all_notified", to: "notifications#all_notified", as:"all_notified"
 
 
     root to: 'transactions#index'
@@ -116,6 +113,13 @@ namespace :user do
     end
     resources :accounts, only: [ :index, :show]
     resources :transactions, only: [ :index, :show, :edit, :update]
+    resource :notifications do
+      member do
+        get :bar, to: 'notifications#bar'
+        get :cells, to: 'notifications#cells'
+        patch :acknowledge_all, to: 'notifications#acknowledge_all'
+      end
+    end
     resources :notifications, only: [ :index, :show]
     resources :request_supplements, only: [:create, :new]
     resources :payments, only: [:index, :show, :create]

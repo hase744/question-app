@@ -1,5 +1,11 @@
 <div class="notification_cell_area closing">
     <%= link_to(user_notification_path(notification.id), class: 'notification_cell') do %>
+        <div class="notification_cell_left_side">
+        <% unless notification.is_read%>
+            ●
+        <% end %>
+        </div>
+        <div class="notification_cell_right_side">
             <div class="image_area">
                 <%if notification.notifier_id %>
                     <%=image_tag notification.notifier.thumb_with_default, class:"image"%>
@@ -8,18 +14,19 @@
                 <% end %>
             </div>
             <div class="text_area">
-            <span class="text three_line_text">
-                <%if !notification.is_notified%>
-                    <span class="new"><%= "NEW" %></span>
-                <% end %><%= notification.title%>
-                </br>
-                <div class="description">
-                「<%= notification.description%>」
-                </div>
-            </span>
-            <span class="datetime">
-                <%=from_now(notification.published_at)%></span>
+                <span class="text three_line_text">
+                    <div class="title">
+                        <%= notification.title%>
+                    </div>
+                    <div class="description">
+                    「<%= notification.description%>」
+                    </div>
+                </span>
+                <span class="datetime">
+                    <%=from_now(notification.published_at)%>
+                </span>
             </div>
+        </div>
     <% end %>
     <div class="detail_button_area">
         <div class="detail_button_background"></div>

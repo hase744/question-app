@@ -8,7 +8,7 @@ class CreateAnnouncements < ActiveRecord::Migration[6.1]
       t.integer :condition_type, null: false
       t.text :target_condition
       t.datetime :published_at, null: false
-      t.boolean :is_notified, null: false, default: false
+      t.boolean :is_read, null: false, default: false
 
       t.timestamps
     end

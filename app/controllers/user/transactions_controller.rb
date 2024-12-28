@@ -170,6 +170,7 @@ class User::TransactionsController < User::Base
     Notification.create(
       user_id: transaction.buyer.id,
       notifier_id: current_user.id,
+      published_at: DateTime.now,
       title: "投稿した相談に回答が届きました",
       description: transaction.title,
       action: "show",
@@ -179,6 +180,7 @@ class User::TransactionsController < User::Base
     current_user.followers.each do |user|
       Notification.create(
         user: user,
+        published_at: DateTime.now,
         notifier_id: current_user.id,
         title: '回答がされました',
         description: transaction.title,
