@@ -47,6 +47,9 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.string :youtube_id
       t.string :video
 
+      t.integer :unread_notifications, default: 0, index:true
+      t.datetime :unread_notifications_next_change_at, default: -> { 'CURRENT_TIMESTAMP' }, index:true
+
       t.boolean :can_email_advert, default: false
       t.boolean :can_email_transaction, default: false
       t.boolean :can_email_notification, default: false
@@ -70,7 +73,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       t.integer :total_sales_numbers, default: 0, index:true
       t.integer :total_sales_amount, default: 0, index:true
       t.integer :total_sales_number, default: 0, index:true
-      t.integer :total_notifications, default: 0, index:true
       t.integer :total_reviews, default: 0, index:true
       t.float :average_star_rating, default: nil, index:true
 

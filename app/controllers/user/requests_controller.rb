@@ -381,6 +381,7 @@ class User::RequestsController < User::Base
     Notification.create(
       user_id: @service.user_id,
       notifier_id: current_user.id,
+      published_at: DateTime.now,
       title: "相談室に質問が届きました",
       description: @request.title,
       action: "show",

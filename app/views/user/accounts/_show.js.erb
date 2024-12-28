@@ -45,7 +45,7 @@ function update_menu_color(element){
 
 //横スクロールメニューの要素が押された時
 menu_elements.forEach(element => element.addEventListener("click", ()=>{
-	$('#loading_animation').css('display','block');
+	$('#loading_animation_area').css('display','block');
   $('#updated_by_ajax').empty();
   update_menu_color(element);
   item = element.getAttribute('item');
@@ -57,7 +57,7 @@ menu_elements.forEach(element => element.addEventListener("click", ()=>{
 
 var insert_elements = function(response, scroll_element){
   scroll_element.insertAdjacentHTML('beforeend', response);
-  $('#loading_animation').css('display','none');
+  $('#loading_animation_area').css('display','none');
   define_request_cell_swiper();
 }
 
@@ -75,7 +75,7 @@ $(window).on('scroll', function(){
     if(check_scroll() && !loaded_pages.includes(page)) {
         loaded_pages.unshift(page)
         scrollTo(0, pageBottom + 10);
-        $('#loading_animation').css('display','block');
+        $('#loading_animation_area').css('display','block');
         xml_request(`${item}/${user_id}`, page, user_detail,  insert_elements, null);
     }
 });

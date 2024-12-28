@@ -1,6 +1,7 @@
 module CommonMethods
   require 'nkf'
   attr_accessor :current_nav_item
+  attr_accessor :top_nav_item
   extend ActiveSupport::Concern
 
   def en_to_em(str)
@@ -17,6 +18,10 @@ module CommonMethods
 
   def current_nav_item
     @current_nav_item
+  end
+
+  def top_nav_item
+    @top_nav_item
   end
 
   private def define_transaction_message
@@ -47,6 +52,8 @@ module CommonMethods
       {item:'services', japanese_name: Service.model_name.human, link:user_services_path(), page: @service_page, for_seller:true},
       {item:'accounts',japanese_name: "回答者", link:user_accounts_path(), page:@review_page, for_seller:true},
     ]
+    @top_nav_item = controller_name
+    @top_bar_elements = @bar_elements
   end
 
   def set_current_nav_item_for_service

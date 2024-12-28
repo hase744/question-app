@@ -6,12 +6,12 @@ class CreateNotifications < ActiveRecord::Migration[6.1]
       t.string :title
       t.text :description
       t.string :image
-      t.boolean :is_notified, index:true, default:false
+      t.boolean :is_read, index:true, default:false
       t.string :controller, index:true
       t.string :action, index:true
       t.integer :id_number, index:true
       t.string :parameter
-      t.datetime :published_at
+      t.datetime :published_at, null: false
 
       t.timestamps
     end

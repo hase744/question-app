@@ -5,12 +5,12 @@ ActiveAdmin.register Notification do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :user_id, :notifier_id, :description, :image, :is_notified, :controller, :action, :id_number, :parameter
+  permit_params :user_id, :notifier_id, :description, :image, :is_read, :controller, :action, :id_number, :parameter
   #
   # or
   #
   #permit_params do
-  #  permitted = [:user_id, :notifier_id, :description, :image, :is_notified, :controller, :action, :id_number, :parameter]
+  #  permitted = [:user_id, :notifier_id, :description, :image, :is_read, :controller, :action, :id_number, :parameter]
   #  permitted << :other if params[:action] == 'create' && admin_user_signed_in?
   #  permitted
   #end
@@ -24,7 +24,7 @@ ActiveAdmin.register Notification do
       f.input :action
       f.input :id_number
       f.input :image, as: :file
-      f.input :is_notified, as: :boolean
+      f.input :is_read, as: :boolean
     end
     f.actions
   end

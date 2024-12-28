@@ -1,29 +1,20 @@
 class User::NotificationsController < User::Base
   before_action :check_login
   before_action :identify_user, only:[:show]
+  after_action :update_unread_notifications, only:[:show, :acknowledge_all]
   def index
   end
 
-  def notification_bar
-    @notifications = Notification.solve_n_plus_1
-      .where(user: current_user)
-      .published
-      .order(is_notified: :asc, id: :desc)
-      .page(params[:page])
-      .per(15)
+  def bar
+    @notifications = current_user.notifications.recent(params)
     render partial: "user/notifications/notification_bar", locals: { contents: @notifications}
   end
 
-  def notification_cells
-    @notifications = Notification.solve_n_plus_1
-      .where(user: current_user)
-      .published
-      .order(is_notified: :asc, id: :desc)
-      .page(params[:page])
-      .per(15)
+  def cells
+    @notifications = current_user.notifications.recent(params)
     render partial: "user/notifications/notification_cells", locals: { contents: @notifications}
   end
-  
+
   def show
     notification = Notification.find(params[:id])
     path = Rails.application.routes.generate_extras({:controller=>"user/#{notification.controller}", :action=>notification.action, :id=>notification.id_number})
@@ -33,17 +24,28 @@ class User::NotificationsController < User::Base
     else
       redirect_to path[0]
     end
-    Notification.published.where(controller: notification.controller, action: notification.action, id_number: notification.id_number).each do |n|
-      n.update(is_notified:true)
-    end
+    same_path_notifications = current_user.notifications
+      .published
+      .where(
+        controller: notification.controller, 
+        action: notification.action, 
+        id_number: notification.id_number
+        )
+    same_path_notifications.update_all(is_read: true)
   end
 
-  def all_notified
-    Notification.all
-      .where(user: current_user, is_notified: false)
-      .published
-      .update_all(is_notified: true)
+  def acknowledge_all
+    notifications = current_user.notifications.published.unnotified
+    if notifications.update_all(is_read: true)
+      flash.notice = '全て既読にしました'
+    else
+      flash.notice = 'エラー'
+    end
     redirect_back(fallback_location: root_path)
+  end
+
+  private def update_unread_notifications
+    current_user.update_unread_notifications
   end
 
   private def identify_user

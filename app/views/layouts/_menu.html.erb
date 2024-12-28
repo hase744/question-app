@@ -9,17 +9,18 @@
                 <%=image_tag current_user.thumb_with_default, class:"open_sidebar_menu_button_image #{current_user.image_thumb_style_class}"%>
             </div>
             <div class="menu_notification">
-                <% if notifications_length > 0 %>
-                <p class="notification_number"><%= notifications_length %></p>
+                <% if current_user.unread_notifications > 0 %>
+                    <p class="notification_number"><%= current_user.unread_notifications %></p>
                 <% end %>
-                <%= link_to "", user_notifications_notification_bar_path(1), remote: true, class:"far fa-bell notification_image", id:"notification_image"%>
+                <%= link_to "", bar_user_notifications_path, remote: true, class:"far fa-bell notification_image link", id:"notification_image"%>
+                <div class="far fa-bell notification_image button", id="notification_image"></div>
             </div>
         <% else %>
             <div class="left_menu_button_area">
                 <div class="left_menu_button open_sidebar_menu_button" id="btn01">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </div>
             <% end %>
@@ -132,6 +133,12 @@
 <% end %>
 <%= render "layouts/sidebar_menu"%>
 
+<div class="top_navigation_bar_flame">
+<div class="top_navigation_bar_area">
+    <%= render "user/shared/top_navigation_bar", link: ->(element) {element[:link]} %>
+</div>
+</div>
+<!--
 <div class="index_link_zone" id="index_link_zone">
     <div class="index_link_area">
         <div class="index_link_container">
@@ -150,6 +157,7 @@
         </div>
     </div>
 </div>
+-->
 <div class="flash_alert_zone flash_zone">
 <%= content_tag(:spin, flash.alert, class:"alert") if flash.alert%>
 </div>

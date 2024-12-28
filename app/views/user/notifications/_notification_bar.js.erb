@@ -1,7 +1,9 @@
-console.log("成功")
-menu_notification_cells_area = document.getElementById("menu_notification_cells_area")
-menu_notification_cells_area.innerHTML = 
+menu_notification_cells_area = document.getElementById("menu_notification_cells_area");
+$('.notification_image.button').css('display', 'inline-block');
+$('.notification_image.link').css('display', 'none');
+menu_notification_cells_area.insertAdjacentHTML('afterbegin', 
 `
-<%= link_to " 全て既読にする", user_all_notified_path, method: :patch, class:"fas fa-check all_notified"%>
+<%= link_to " 全て既読にする", acknowledge_all_user_notifications_path, method: :patch, class:"fas fa-check all_notified"%>
 <%= render partial:  "user/notifications/notification_flame", locals: {contents:contents}%>
-`;
+`);
+$('.side_menu #loading_animation_area').css('display','none');

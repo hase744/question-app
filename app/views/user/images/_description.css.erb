@@ -17,44 +17,44 @@
     padding-right: <%= padding_length %>px;
     padding-left: <%= padding_length %>px;
     /*この要素では幅をせていせず、親要素で幅を設定しないとなぜかうまく表示されない*/
-}
-.title_area{
-display: flex;
-    justify-content: space-between;
-}
-.title{
-    color: white; 
-    text-align: left;
-    margin: 0px;
-    padding: 5px 0px;
-    font-size: <%= image_width*0.03 %>px;
-    text-shadow: 0 0 <%= image_width*0.01 %>px lightgray;
-}
-.answer_area{
-    border-radius: <%= image_width*0.02%>px;
-    min-height: <%= image_width*0.6%>px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: -<%= image_width*0.01%>px;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: <%= image_width*0.01%>px;
-    padding-right: <%= image_width*0.01%>px;
-}
-.message_area{
-    max-width: 100%;
-    margin-top: <%= image_width*0.02%>px;
-    margin-bottom: <%= image_width*0.02%>px;
-    letter-spacing: <%= image_width*0.005%>px;
-    font-size: <%= image_width*0.03 %>px;
-    /*word-wrap: break-word;*/
-    /*overflow-wrap: break-word;*/
-    white-space: pre-line;
-    word-wrap: break-word;
-    font-family: "Azuki";
-    font-weight: light;
-    font-size: <%= font_size %>px;
-    line-height: <%= image_width*0.06%>px;
+    .title_area{
+        display: flex;
+        justify-content: space-between;
+    }
+    .title{
+        color: white; 
+        text-align: left;
+        margin: 0px;
+        padding: 5px 0px;
+        font-size: <%= image_width*0.03 %>px;
+        text-shadow: 0 0 <%= image_width*0.01 %>px lightgray;
+    }
+    .answer_area{
+        border-radius: <%= image_width*0.02%>px;
+        min-height: <%= image_width*0.6%>px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: -<%= image_width*0.01%>px;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-left: <%= image_width*0.01%>px;
+        padding-right: <%= image_width*0.01%>px;
+    }
+    .message_area{
+        max-width: 100%;
+        margin-top: <%= image_width*0.02%>px;
+        margin-bottom: <%= image_width*0.02%>px;
+        letter-spacing: <%= image_width*0.005%>px;
+        font-size: <%= image_width*0.03 %>px;
+        /*word-wrap: break-word;*/
+        /*overflow-wrap: break-word;*/
+        white-space: pre-line;
+        word-wrap: break-word;
+        font-family: "Azuki";
+        font-weight: light;
+        font-size: <%= font_size %>px;
+        line-height: <%= image_width*0.06%>px;
+    }
 }

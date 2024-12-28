@@ -4,7 +4,7 @@ one:
   user: one
   description: MyText
   image: MyString
-  is_notified: false
+  is_read: false
   action: MyString
   controller: MyString
   parameter: 
@@ -13,7 +13,7 @@ two:
   user: two
   description: MyText
   image: MyString
-  is_notified: false
+  is_read: false
   action: MyString
   controller: MyString
   parameter: 

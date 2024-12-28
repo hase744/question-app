@@ -30,6 +30,7 @@
             text-decoration: none;
             font-weight: bold;
             text-align: center;
+            color: $link_blue;
         }
         .all_notified:hover{
             color: #195faa;
@@ -37,61 +38,67 @@
         .menu_notification_cells_flame{
             position: relative;
             width:200px;
-            vertical-align: middle;
-            //overflow: scroll;
+            overflow: scroll;
+            flex-direction: column;
             .notification_cell{
                 display: block;
+                display: flex;
                 min-height: 50px;
                 padding-bottom: 10px;
                 color: $text_grey;
-                .image_area{
-                    display: inline-block;
-                    width: 40px;
-                    float: left;
-                    .image{
-                        height: 30px;
-                        width: 30px;
-                        margin: 5px;
-                        border-radius: 15px;
-                        object-fit: cover;
-                    }
+                text-decoration: none;
+                .notification_cell_left_side{
+                    display: flex;
+                    align-items: center;
+                    color: $ok_green;
                 }
-                .text_area{
-                    display: inline-block;
-                    width: calc(100% - 40px);
-                    .new{
-                        color: white;
-                        font-weight: bold;
-                        background-color: lightgreen;
-                        border-radius: 2px;
-                        padding: 0px 1px;
-                        margin-right: 2px;
-                        border: solid lightgreen 1px;
-                    }
-                    .text{
-                        margin: 0px;
-                        font-size: 12px;
-                    }
-                    .datetime{
+                .notification_cell_right_side{
+                    vertical-align: middle;
+                    display: flex;
+                    flex: 1;
+                    .image_area{
                         display: inline-block;
-                        position: relative;
-                        font-size: 13px;
-                        color: gray;
-                        width: 100%;
+                        width: 40px;
+                        float: left;
+                        .image{
+                            height: 30px;
+                            width: 30px;
+                            margin: 5px;
+                            border-radius: 15px;
+                            object-fit: cover;
+                        }
                     }
-                    .description{
-                        display: none;
+                    .text_area{
+                        display: inline-block;
+                        width: calc(100% - 40px);
+                        font-size: 12px;
+                        line-height: 16px;
+                        .new{
+                            color: white;
+                            font-weight: bold;
+                            background-color: lightgreen;
+                            border-radius: 2px;
+                            padding: 0px 1px;
+                            margin-right: 2px;
+                            border: solid lightgreen 1px;
+                        }
+                        .text{
+                            margin: 0px;
+                        }
+                        .datetime{
+                            display: inline-block;
+                            position: relative;
+                            font-size: 13px;
+                            color: gray;
+                            width: 100%;
+                        }
                     }
                 }
-                
             }
             .notification_cell:hover{
                 background-color: #EEEEEE;
             }
         }
-    }
-    .opening .description{
-        display: block !important;
     }
 }
 .detail_button_area{
@@ -120,8 +127,18 @@
         border-radius: 12px;
         right: 3px;
         bottom: 5px;
-        color: white;
-        background-color: grey;
+        //color: white;
+        //background-color: grey;
+        color: dimgrey;
+        background-color: white;
+    }
+    .fa-solid:hover{
+        color: lightgrey;
+    }
+}
+.detail_button_area:hover{
+    .fa-solid{
+        color: lightgrey;
     }
 }
 .detail_button_area:hover{

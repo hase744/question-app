@@ -27,10 +27,6 @@ include OperationConfig
 		end
   end
 
-  def notifications_length
-    Notification.published.where(user_id: current_user.id, is_notified:false).length
-  end
-
   def can_purchase
     if !user_signed_in?
       true

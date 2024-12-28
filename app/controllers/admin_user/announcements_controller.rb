@@ -1,4 +1,6 @@
 class AdminUser::AnnouncementsController < AdminUser::Base
+  before_action :define_annoucement, only: [:show, :edit, :destroy, :update]
+  before_action :update_notifications, only: [:create, :destroy, :update]
   def index
 		@announcements = Announcement
     	.where("announcements.title LIKE ?", "%#{params[:title]}%")
@@ -8,7 +10,6 @@ class AdminUser::AnnouncementsController < AdminUser::Base
   end
 
   def show
-		@announcement = Announcement.find(params[:id])
   end
 
   def new
@@ -16,11 +17,11 @@ class AdminUser::AnnouncementsController < AdminUser::Base
   end
 
   def edit
-    @announcement = Announcement.find(params[:id])
   end
 
 	def destroy
-    if Announcement.find(params[:id]).destroy
+    @announcement = Announcement.find(params[:id]).destroy
+    if @announcemen.destroy
 			flash.notice = "削除しました"
 			redirect_to admin_user_announcements_path
     else
@@ -51,7 +52,6 @@ class AdminUser::AnnouncementsController < AdminUser::Base
   end
 
 	def update
-    @announcement = Announcement.find(params[:id])
     @announcement.assign_attributes(announcement_params)
     generate_items
     ActiveRecord::Base.transaction do
@@ -63,6 +63,17 @@ class AdminUser::AnnouncementsController < AdminUser::Base
       end
     end
 	end
+
+  def update_notifications
+    @recipients&.each do |recipient|
+      recipient.update_unread_notifications
+    end
+  end
+
+  def define_annoucement
+    @announcement = Announcement.find(params[:id])
+    @recipients = @announcement.recipients
+  end
 
   def announcement_params
     params.require(:announcement).permit(

@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.integer "condition_type", null: false
     t.text "target_condition"
     t.datetime "published_at", null: false
-    t.boolean "is_notified", default: false, null: false
+    t.boolean "is_read", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["admin_user_id"], name: "index_announcements_on_admin_user_id"
@@ -187,18 +187,18 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.string "title"
     t.text "description"
     t.string "image"
-    t.boolean "is_notified", default: false
+    t.boolean "is_read", default: false
     t.string "controller"
     t.string "action"
     t.integer "id_number"
     t.string "parameter"
-    t.datetime "published_at"
+    t.datetime "published_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["action"], name: "index_notifications_on_action"
     t.index ["controller"], name: "index_notifications_on_controller"
     t.index ["id_number"], name: "index_notifications_on_id_number"
-    t.index ["is_notified"], name: "index_notifications_on_is_notified"
+    t.index ["is_read"], name: "index_notifications_on_is_read"
     t.index ["notifier_id"], name: "index_notifications_on_notifier_id"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
@@ -607,6 +607,9 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.text "description"
     t.string "youtube_id"
     t.string "video"
+    t.integer "unread_notifications", default: 0
+    t.datetime "unread_notifications_next_change_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.boolean "unread_notifications_is_updated", default: true
     t.boolean "can_email_advert", default: false
     t.boolean "can_email_transaction", default: false
     t.boolean "can_email_notification", default: false
@@ -626,7 +629,6 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.integer "total_sales_numbers", default: 0
     t.integer "total_sales_amount", default: 0
     t.integer "total_sales_number", default: 0
-    t.integer "total_notifications", default: 0
     t.integer "total_reviews", default: 0
     t.float "average_star_rating"
     t.float "rejection_rate"
@@ -642,12 +644,14 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["rejection_rate"], name: "index_users_on_rejection_rate"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["state"], name: "index_users_on_state"
-    t.index ["total_notifications"], name: "index_users_on_total_notifications"
     t.index ["total_reviews"], name: "index_users_on_total_reviews"
     t.index ["total_sales_amount"], name: "index_users_on_total_sales_amount"
     t.index ["total_sales_number"], name: "index_users_on_total_sales_number"
     t.index ["total_sales_numbers"], name: "index_users_on_total_sales_numbers"
     t.index ["total_target_users"], name: "index_users_on_total_target_users"
+    t.index ["unread_notifications"], name: "index_users_on_unread_notifications"
+    t.index ["unread_notifications_is_updated"], name: "index_users_on_unread_notifications_is_updated"
+    t.index ["unread_notifications_next_change_at"], name: "index_users_on_unread_notifications_next_change_at"
     t.index ["uuid"], name: "index_users_on_uuid"
   end
 

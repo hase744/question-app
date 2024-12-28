@@ -1,5 +1,6 @@
 class User::Base < ApplicationController
   before_action :check_error
+  before_action :check_unread_notifications
   after_action :create_access_log
   after_action :save_current_path
   include RedirectHandlers
@@ -49,6 +50,14 @@ class User::Base < ApplicationController
   private def check_login
     unless user_signed_in? #ログインしていない
       redirect_to new_user_session_path
+    end
+  end
+
+  def check_unread_notifications
+    return unless user_signed_in?
+    return if current_user.unread_notifications_next_change_at.blank?
+    if current_user.unread_notifications_next_change_at < DateTime.now
+      current_user.update_unread_notifications
     end
   end
 

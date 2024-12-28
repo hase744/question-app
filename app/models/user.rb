@@ -18,7 +18,7 @@ class User < ApplicationRecord
   has_many :transaction_messages, class_name: "TransactionMessage", foreign_key: :receiver_id, dependent: :destroy
 
   has_many :notifications, class_name: "Notification", foreign_key: :user_id, dependent: :destroy
-  has_many :notifications, class_name: "Notification", foreign_key: :notifier_id, dependent: :destroy
+  has_many :notifiers, class_name: "Notification", foreign_key: :notifier_id, dependent: :destroy
   has_many :posts, class_name: "Post", foreign_key: :user_id, dependent: :destroy
   has_many :follower_relationships, -> { follow }, class_name: "Relationship", foreign_key: :target_user_id, dependent: :destroy
   has_many :followee_relationships, -> { follow }, class_name: "Relationship", foreign_key: :user_id, dependent: :destroy
@@ -46,6 +46,8 @@ class User < ApplicationRecord
   has_many :purchases, class_name: "Transaction", foreign_key: :buyer_id, dependent: :destroy
   has_many :reviews, through: :sales
   has_many :coupons
+  has_many :announcement_receipts, dependent: :destroy
+  has_many :announcements, through: :announcement_receipts, source: :announcement
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
@@ -153,6 +155,11 @@ class User < ApplicationRecord
     user.followers
   }
 
+  #その時刻より、unread_notifications_next_change_atが遅い
+  scope :unread_notifications_change_later_than, -> (datetime){
+    where('unread_notifications_next_change_at > ? OR unread_notifications_next_change_at IS NULL', datetime)
+  }
+
   def country
     Country.all.find_by(name: self.country_id)
   end
@@ -191,6 +198,18 @@ class User < ApplicationRecord
 
   def header_thumb_style_class
     "header-image-thumb-#{self.id}"
+  end
+
+  def update_unread_notifications
+    self.unread_notifications = self.notifications.published.where(is_read: false).count
+    #公開されていない中で、１番公開が近い通知の公開日時を取得
+    latest_updated_at = self.notifications
+      .not_published
+      .from_latest_updates
+      &.first
+      &.updated_at
+    self.unread_notifications_next_change_at = latest_updated_at
+    self.save
   end
 
   def self.categories

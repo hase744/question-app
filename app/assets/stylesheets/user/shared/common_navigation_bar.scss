@@ -49,3 +49,18 @@
   	    color: darkgray;
   	}
 }
+.top_navigation_bar_flame{
+	background-color: white;
+}
+.top_navigation_bar_flame{
+	@media(max-width: 1000px){
+		display: none;
+	}
+	.top_navigation_bar_area{
+		max-width: 1000px;
+		width: 100%;
+		margin: 0 auto;
+		//display: inline-block;
+	}
+	box-shadow: 0 0 2px lightgray;
+}

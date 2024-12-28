@@ -24,9 +24,9 @@ class User::TransactionMessagesController < User::Base
     if @transaction_message.save
       EmailJob.perform_later(mode: :message, model: @transaction_message) if @transaction_message.receiver.can_email_transaction
       if @transaction.seller == @transaction_message.sender
-        create_notification(@transaction.buyer, "メッセージが届いています。")
+        create_notification(@transaction.buyer, "メッセージが届いています")
       else
-        create_notification(@transaction.seller, "メッセージが届いています。")
+        create_notification(@transaction.seller, "メッセージが届いています")
       end
       flash.alert = "メッセージを送信しました。"
       redirect_to redirect_url.to_s, fallback_location: root_path(transaction_message_order: "DESC")
@@ -43,11 +43,12 @@ class User::TransactionMessagesController < User::Base
       action = "messages"
     end
     Notification.create(
-      user:user,
+      user: user,
       notifier_id: current_user.id,
+      published_at: DateTime.now,
       controller: "transactions",
       action: action,
-      id_number:@transaction.id,
+      id_number: @transaction.id,
       title: title,
       description: @transaction_message.body,
       parameter: "?transaction_message_order=DESC"

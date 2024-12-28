@@ -157,7 +157,7 @@ class User::ServicesController < User::Base
     else
       ActiveRecord::Base.transaction do
         if save_models
-          create_notification(@service, "相談室が出品されました。")
+          create_notification(@service, "相談室が出品されました")
           flash.alert = "相談室を出品しました。"
           service = Service.find_by(user: current_user)
           redirect_to user_service_path(@service.id)
@@ -283,8 +283,10 @@ class User::ServicesController < User::Base
     Notification.create(
       user_id: @transaction.request.user.id,
       notifier_id: current_user.id,
+      published_at: DateTime.now,
       controller: "services",
       action: "show",
+      published_at: DateTime.now,
       title: "質問に相談室が提案されました",
       description: @transaction.service.title,
       id_number: @service.id,
@@ -397,6 +399,7 @@ class User::ServicesController < User::Base
     current_user.followers.each do |user|
       Notification.create(
         user: user,
+        published_at: DateTime.now,
         notifier_id: current_user.id,
         title: text,
         description: service.title,
