@@ -67,7 +67,7 @@ class SampleData
           user: User.find_by(email: "seller#{category.name}#{n}@exmaple.com"),
           title: services[n]['title'],
           description: services[n]['description'],
-          price: (n+1)*100,
+          price: (4 * n + 2) * 100,
           category_id: category.id,
           transaction_message_enabled: true,
           delivery_days: n%14 + 1,
@@ -80,7 +80,12 @@ class SampleData
         item = service.items.new()
         item.process_file_upload = true
         item.assign_attributes(file: File.open(service_image_path))
-        item.save
+        if item.save
+          puts "succeeded : service No.#{n}"
+        else
+          puts "failed : service No.#{n}"
+          puts "reason : #{service.errors.full_messages}"
+        end
         #service.service_categories.create(category_name: category.name)
       end
     end
@@ -94,6 +99,7 @@ class SampleData
       Parallel.each(0..9) do |n|
         image_path = Rails.root.join('public', 'sample', category.name, "canvas (#{n}).jpg")
         if File.exist?(image_path)
+          puts "creating request No.#{n}"
           request = Request.create_or_find_by!(
             user: User.find_by(email: "buyer#{category.name}#{n}@exmaple.com"),
             title: transactions[n]['question']['title'],
@@ -112,11 +118,16 @@ class SampleData
             request_categories_attributes: {"0"=>{"category_name"=>category.name}}
           )
           #request.request_categories.create(category_name: category.name)
-          item = request.items.new()
+          request.set_publish
+          item = request.build_item
           item.process_file_upload = true
           item.assign_attributes(file: File.open(image_path), is_text_image:true)
-          item.save
-          request.update(is_published: true)
+          if request.save && item.save
+            puts "succeeded : request No.#{n}"
+          else
+            puts "failed : request No.#{n}"
+            puts "reason : #{request.errors.full_messages}"
+          end
         else
           # ファイルが存在しない場合の処理
           puts "ファイルが見つかりません: #{file_path}"
@@ -157,22 +168,27 @@ class SampleData
           request_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
         #request.request_categories.create(category_name: category.name)
-        item = request.items.new()
+        request.set_publish
+        item = request.build_item
         item.process_file_upload = true
         item.assign_attributes(file: File.open(image_path), is_text_image:true)
-        item.save
-        request.update(is_published: true)
+        if request.save && item.save
+          puts "succeeded : request No.#{n}"
+        else
+          puts "failed : request No.#{n}"
+          puts "reason : #{request.errors.full_messages}"
+        end
         puts "seller#{n}@exmaple.com"
         service = Service.create_or_find_by!(
           user: seller,
           title: services[n]['title'],
           description: services[n]['description'],
-          price: (n+1)*100,
+          price: (4 * n + 2) * 100,
           transaction_message_enabled: true,
           delivery_days: n%14 + 1,
           request_form_name: Form.find_by(name: 'text').name_sym,
           delivery_form_name: Form.find_by(name: 'text').name_sym,
-          request_max_characters: (n+1)*50,
+          request_max_characters: (n+1)*500,
           request_max_minutes: n,
           service_categories_attributes: {"0"=>{"category_name"=>category.name}}
         )
