@@ -195,7 +195,7 @@
         <% end %>
         </br>
         <%= render "user/shared/small_label", text: @transaction.seller == current_user ? '質問者' : '回答者' %>
-        <%= link_to(user_account_path(@transaction.opponent_of(current_user).id), class: "service_request_area") do %>
+        <%= link_to(user_account_path(@transaction.opponent_of(current_user).uuid), class: "service_request_area") do %>
             <div class="image_area">
                 <%= image_tag @transaction.opponent_of(current_user).thumb_with_default, class:"image" %>
             </div>

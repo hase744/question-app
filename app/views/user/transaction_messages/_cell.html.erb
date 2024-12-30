@@ -5,7 +5,7 @@
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name one_line_text"><%=link_to "#{content.sender.name}・#{content.sender.uuid}", user_account_path(content.sender.id), class:"user_link" %></h2>
+                <h2 class="user_name one_line_text"><%=link_to "#{content.sender.name}・#{content.sender.uuid}", user_account_path(content.sender.uuid), class:"user_link" %></h2>
                 <%=readable_datetime(content.published_at)%>
             </div>
         </div>

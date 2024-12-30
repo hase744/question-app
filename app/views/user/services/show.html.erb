@@ -189,7 +189,7 @@
                 <div class="user_area">
                     <%=image_tag @service.user.thumb_with_default, class:"user_image"%>
                     <div class="right_side">
-                        <%= link_to(user_account_path(@service.user.id), class:"user_name") do %>
+                        <%= link_to(user_account_path(@service.user.uuid), class:"user_name") do %>
                             <%=@service.user.name%>
                         <% end %>
                         <div class="specifics_area">

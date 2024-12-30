@@ -11,7 +11,7 @@
         </div>
         <div class="time_name_area">
             <div class="send_time">
-                <h2 class="user_name one_line_text"><%=link_to transaction.seller.name, user_account_path(transaction.seller.id), class:"user_link" %></h2>
+                <h2 class="user_name one_line_text"><%=link_to transaction.seller.name, user_account_path(transaction.seller.uuid), class:"user_link" %></h2>
                 <%=readable_datetime(transaction.published_at)%>
             </div>
         </div>

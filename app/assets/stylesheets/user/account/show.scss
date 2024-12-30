@@ -96,12 +96,16 @@
                 border-radius:10px 10px 0px 0px;
             }
         }
-        
+        .uuid{
+            display: inline-block;
+            font-size: 15px;
+            font-weight: lighter;
+            color: gray;
+        }
         .last_login_area{
             font-size: 15px;
             font-weight: lighter;
             color: gray;
-            display: inline-block;
         }
         .last_login1{
             display: none;

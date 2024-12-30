@@ -1,6 +1,6 @@
 class User::AccountsController < User::Base
   before_action :check_login, only:[:edit, :update]
-  before_action :check_published, only: [:show]
+  before_action :define_user, only: [:show]
   before_action :define_page_count
   before_action :define_models, only: [:show, :posts, :requests, :sales, :services, :reviews]
   after_action :create_access_log
@@ -42,7 +42,6 @@ class User::AccountsController < User::Base
   end
 
   def show
-    @user = User.find(params[:id])
     @bar_elements = [
       {item:'posts', japanese_name:'Q&A', link:user_account_posts_path(@user.id, nav_item:'posts'), page: @post_page, for_seller:false},
       {item:'requests', japanese_name:'質問', link:user_account_requests_path(@user.id, nav_item:'requests'), page: @request_page, for_seller:false},
@@ -76,7 +75,7 @@ class User::AccountsController < User::Base
 
     if @user.save
         flash.notice = "プロフィール情報を更新しました"
-        redirect_to user_account_path(@user.id)
+        redirect_to user_account_path(@user.uuid)
     else
         @categories = Category.all
         render action: "edit"
@@ -244,8 +243,13 @@ class User::AccountsController < User::Base
     end
   end
 
-  private def check_published
-    @user = User.find(params[:id])
+  private def define_user
+    if params[:id].include?('@')
+      @user = User.find_by(uuid: params[:id])
+      params[:id] = @user.id
+    else
+      @user = User.find(params[:id])
+    end
     if !@user.is_published
       flash.notice = "アカウントはは非公開です"
       redirect_to user_accounts_path
@@ -259,6 +263,7 @@ class User::AccountsController < User::Base
     params.require(:user).permit(
         :name, 
         :description, 
+        :uuid,
         :is_seller,
         :image, 
         :header_image

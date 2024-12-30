@@ -19,7 +19,7 @@
                 <div class="user_edit_area user_edit1">
                     <div class="follow_message_area">
                         <%if user_signed_in?  %>
-                            <%if @user.id == current_user.id%>
+                            <%if @user == current_user%>
                                 <%= link_to "プロフィール編集", edit_user_accounts_path, class: "user_edit"%>
                             <% else %>
                                 <%= render "user/relationships/follow", user: @user %>
@@ -30,12 +30,14 @@
                 <div class="user_name_area">
                     <h2 class="user_name">
                         <%=@user.name%>
-                        <span class="last_login_area">
+                        <div class='uuid'>
+                            <%= @user.uuid%>
+                        </div>
+                        <div class="last_login_area">
                             <% if @user.is_seller %>
-                                <span class="last_login_name">最終ログイン</span>
-                                <span><%= from_now(@user.last_login_at)%></span>
+                            <%= from_now(@user.last_login_at)%>にログイン
                             <% end %>
-                        </span>
+                        </div>
                     </h2>
                 </div>
                 <% if @user.is_seller %>

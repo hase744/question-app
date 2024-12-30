@@ -63,7 +63,7 @@ class TransactionMessage < ApplicationRecord
   end
 
   def body_with_link
-    self.body.gsub(self.receiver.uuid, "<a href='/user/accounts/#{self.receiver.id}'>#{self.receiver.uuid}</a>")
+    self.body.gsub(self.receiver.uuid, "<a href='/user/accounts/#{self.receiver.uuid}'>#{self.receiver.uuid}</a>")
   end
 
   def validate_sender

@@ -19,7 +19,7 @@
                     <%= link_to category.japanese_name, user_requests_path(categories: category.name), class:"big_name_tag" %>
                 <% end %>
                 <div>
-                質問者：<%= link_to @request.user.name, user_account_path(@request.user.id) %>
+                質問者：<%= link_to @request.user.name, user_account_path(@request.user.uuid) %>
                     <% if @request.user == current_user%>
                         <div class="edit_delete_area">
                             <% if @request.can_retract? %>

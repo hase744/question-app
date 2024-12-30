@@ -19,9 +19,9 @@
                 <% else %>
                     <span class="deadline ongoing"><%=from_now(request.suggestion_deadline)%></span>
                 <% end %>
-                &nbsp;by <%= link_to request.user.name, user_account_path(request.user.id) %>
+                &nbsp;by <%= link_to request.user.name, user_account_path(request.user.uuid) %>
                 <!--
-                &nbsp;by <%= link_to request.user.name, user_account_path(request.user.id) %>
+                &nbsp;by <%= link_to request.user.name, user_account_path(request.user.uuid) %>
                 -->
             </span>
             <% end %>

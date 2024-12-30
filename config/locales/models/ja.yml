@@ -24,6 +24,7 @@ ja:
       name: ユーザー
       user:
         id: ID
+        uuid: アカウントID
         first_name: 名
         family_name: 姓
         name: ユーザー名

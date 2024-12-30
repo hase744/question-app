@@ -33,7 +33,7 @@ class User::PostsController < User::Base
   #  @post.assign_attributes(post_params)
   #  if @post.save
   #    flash.notice = "投稿しました。"
-  #    redirect_to user_account_path(current_user.id)
+  #    redirect_to user_account_path(current_user.uuid)
   #  else
   #    flash.notice = "投稿に失敗しました。"
   #    render "user/posts/new"
@@ -45,7 +45,7 @@ class User::PostsController < User::Base
   #  if @post.user == current_user
   #    if @post.destroy
   #      flash.notice = "投稿を削除しました。"
-  #      redirect_to user_account_path(current_user.id)
+  #      redirect_to user_account_path(current_user.uuid)
   #    else
   #      flash.notice = "投稿の削除に失敗しました。"
   #      redirect_to user_post_path(@post.id)

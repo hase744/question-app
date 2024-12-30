@@ -4,7 +4,7 @@
             <%=image_tag @user.normal_image_with_default, class:"user_image #{current_user.image_style_class}"%>
         </div>
         <div class="user_text_area">
-            <h2 class="user_name"><%= link_to @user.name, user_account_path(@user.id), class:"link" %></h2>
+            <h2 class="user_name"><%= link_to @user.name, user_account_path(@user.uuid), class:"link" %></h2>
             <h4 class="total_points_display">
                 <span class="label">保有ポイント</span>
                 <span class="points"><%=current_user.total_points%>p</span>

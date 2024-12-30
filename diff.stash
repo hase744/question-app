@@ -129,7 +129,7 @@ index f3a3dd1..61a58d9 100644
 -      admin_dashboard_path
 -    elsif session[:path_params].present?
 -      if ['notifications'].include?(session[:path_params]['controller'])
--        return redirect_to user_account_path(current_user.id)
+-        return redirect_to user_account_path(current_user.uuid)
 -      end
 -      if session[:path_params]['service_id']
 -        return url_for(
@@ -150,7 +150,7 @@ index f3a3dd1..61a58d9 100644
 -        action: session[:path_params]['action'],
 -      )
 -    else
--      user_account_path(current_user.id) # ログイン後に遷移するpathを設定
+-      user_account_path(current_user.uuid) # ログイン後に遷移するpathを設定
 -    end
 -  end
 -
