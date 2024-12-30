@@ -18,7 +18,7 @@ class AdminUser::Base < ApplicationController
         only_path: true)
       previous_path
     else
-      user_account_path(current_user.id)
+      user_account_path(current_user.uuid)
     end
   end
 

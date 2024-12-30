@@ -42,7 +42,7 @@
             <span><%=@account.external_accounts["data"][0]["account_holder_name"] %></span>
             </br>
             <label class="title_label">広報サイト</label></br>
-            <span><%=request.url.to_s.gsub(/connects/,"accounts/#{current_user.id}").to_s%></span>
+            <span><%=request.url.to_s.gsub(/connects/,"accounts/#{current_user.uuid}").to_s%></span>
             </br>
             <%if !@account.payouts_enabled %>
                 <span><%=link_to "編集", edit_user_connects_path%>

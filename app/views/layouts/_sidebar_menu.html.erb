@@ -7,7 +7,7 @@
             <div class="sidebar_menu_flame">
                 <div class="sidebar_menu_profile sidebar_menu_component">
                     <%if user_signed_in? %>
-                        <%= link_to user_account_path(current_user.id) do %>
+                        <%= link_to user_account_path(current_user.uuid) do %>
                             <%=image_tag current_user.thumb_with_default, class:"menu_profile_image"%>
                             <div class='text_area'>
                                 <span class="text">プロフィール</span>

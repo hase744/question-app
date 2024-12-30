@@ -15,7 +15,7 @@
                 </div>
             <% end %>
             <div class="review_user">
-                <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.id) %>
+                <%= link_to transaction.buyer.name, user_account_path(transaction.buyer.uuid) %>
             </div>
             <div class="review_text">
                 <div class="description_area">

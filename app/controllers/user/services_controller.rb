@@ -331,7 +331,7 @@ class User::ServicesController < User::Base
       redirect_to edit_user_accounts_path
       flash.notice = "回答者として登録してください"
     elsif Service.where(user: current_user, request_id: nil).proposal_mode.count > 10
-        redirect_to user_account_path(current_user.id)
+        redirect_to user_account_path(current_user.uuid)
         flash.notice = "出品できる相談室数が上限に達しています。"
     end
   end

@@ -12,6 +12,11 @@
     	      	<%= f.text_area :description, class:"input_field text_area" %>
     	    </div>
     	    <div class="field_area">
+    	      	<%= f.label :uuid, class:"field_label"%>（<%=@user.max_uuid_length%>字以内）<br />
+    	      	<%= f.text_field :uuid, maxlength:@user.max_uuid_length, autofocus: true, autocomplete: "name", class:"input_field string_field" %>
+				<div class="annotation">※<%= User.human_attribute_name(:uuid)%>は@で始まり、英数字である必要があります。</div>
+    	    </div>
+    	    <div class="field_area">
     	      	<%= f.label :image, class:"field_label" %><br />
     	      	<%= f.file_field :image, autocomplete: "image", class:"input_field" %>
     	    </div>

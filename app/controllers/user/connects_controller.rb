@@ -13,9 +13,7 @@ class User::ConnectsController < User::Base
     @account = nil
     if current_user.stripe_account_id
       @account = Stripe::Account.retrieve(current_user.stripe_account_id)
-      puts @account
     end
-    puts request.url.to_s.gsub(/connects/,"accounts/#{current_user.id}").to_s
   end
 
   def register_as_seller
@@ -42,7 +40,6 @@ class User::ConnectsController < User::Base
         @user.country_id = params[:country_id]
         send_confirmation_token
       else
-        puts "現在認証ができません"
         flash.notice = "#{@user.phone_confirmation_enabled_at.strftime('%Y/%m/%d %H:%M:%S')}まで認証ができません。"
         redirect_to new_user_connects_path
       end
@@ -69,8 +66,6 @@ class User::ConnectsController < User::Base
 
   def create
     @user = current_user
-    puts "裏付け"
-    puts can_phone_confirm
     if can_phone_confirm
       if @user.phone_confirmation_token == params[:phone_confirmation_token]
         @user.phone_confirmed_at = DateTime.now
@@ -130,16 +125,12 @@ class User::ConnectsController < User::Base
       @address_kanji = nil
       @bank_account = nil
       if defined?(@account.individual)
-        puts "個人情報あり"
         @birth_date = @account.individual["dob"]
         @address_kana = @account.individual["address_kana"]
         @address_kanji = @account.individual["address_kanji"]
         @bank_account = @account.external_accounts["data"][0]
       end
-      puts "個人情報"
-      puts @account
     else
-      puts "個人情報なし"
       new_account = Stripe::Account.create(
           country: 'jp',
           type: 'custom',
@@ -219,13 +210,12 @@ class User::ConnectsController < User::Base
     @stripe_file = nil
     if current_user.stripe_account_id
       @stripe_file = create_stripe_file(file)
-      puts @stripe_file
     end
 
     if Rails.env == "development"
       url = "https://twitter.com/hase97531"
     else
-      url = request.url.to_s.gsub(/connects/,"accounts/#{current_user.id}").to_s
+      url = request.url.to_s.gsub(/connects/,"accounts/#{current_user.uuid}").to_s
     end
     @user_params = params[:user]
     @user = current_user
@@ -280,7 +270,7 @@ class User::ConnectsController < User::Base
       support_email: nil,
       support_phone: "+#{current_user.country.code}#{current_user.phone_number}",
       support_url: nil,
-      url: request.url.to_s.gsub(/connects/,"accounts/#{current_user.id}").to_s
+      url: request.url.to_s.gsub(/connects/,"accounts/#{current_user.uuid}").to_s
     }
     else
     {
@@ -441,8 +431,6 @@ class User::ConnectsController < User::Base
         to: "+#{@user.country.code}#{@user.phone_number}",    # Replace with your phone number
         from: "+19897188878"
       )  # Use this Magic Number for creating SMS
-      puts "message.sid"
-      puts message.sid
       redirect_to user_get_certify_phone_path
       rescue Twilio::REST::RestError => e
         flash.notice = "電話番号が見つかりません"
@@ -450,7 +438,6 @@ class User::ConnectsController < User::Base
       end
     else
       define_countryies
-      puts "失敗"
       render "user/connects/new"
     end
   end
@@ -527,7 +514,6 @@ class User::ConnectsController < User::Base
     params[:user] ||= session[:user] if session[:user]
     if params[:user]
       @user.assign_attributes(user_params)
-      puts "@user.birth_date #{@user.birth_date}"
       @user.birth_date = Date.new(@user.birth_date[1].to_i, @user.birth_date[2].to_i, @user.birth_date[3].to_i) #Date.parse(@user.birth_date)
       if params[:user][:certification].is_a?(ActionDispatch::Http::UploadedFile)
         file = params[:user][:certification].tempfile

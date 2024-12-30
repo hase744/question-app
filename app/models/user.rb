@@ -51,6 +51,7 @@ class User < ApplicationRecord
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
+  validates :uuid, length: {maximum: :max_uuid_length}, presence: { message: "#{User.human_attribute_name(:uuid)}を入力してください" }, uniqueness: { message: "#{User.human_attribute_name(:uuid)}はすでに使われています" }, format: { with: /\A@[a-zA-Z0-9]+\z/, message: "#{User.human_attribute_name(:uuid)}は@で始まり、英数字である必要があります。" }
   validate :validate_is_published
   validate :validate_registering_is_seller
   validate :validate_unregistering_is_seller
@@ -487,5 +488,9 @@ class User < ApplicationRecord
 
   def mini_seller_description_length
     100
+  end
+
+  def max_uuid_length
+    11
   end
 end

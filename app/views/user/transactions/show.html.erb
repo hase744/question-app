@@ -12,7 +12,7 @@
                 <div class="request_area">
                     <h2 class="title"><%=link_to @transaction.request.title, user_request_path(@transaction.request.id), class:"request_title"%></h2>
                     <div class="datetime"><%=readable_datetime(@transaction.request.published_at)%></div>
-                    <%= link_to(user_account_path(@transaction.buyer.id), class: 'buyer_area') do %>
+                    <%= link_to(user_account_path(@transaction.buyer.uuid), class: 'buyer_area') do %>
                         <%=image_tag @transaction.buyer.thumb_with_default, class:"buyer_image" %>
                         <div class="buyer_name_area">
                             <p class="buyer_name"><%=@transaction.buyer.name%></p>
@@ -62,7 +62,7 @@
         <div class="transaction_area">
             <div class="transaction_flame" id="transaction_flame">
                 <div class="seller_info">
-                    <%= link_to(user_account_path(@transaction.seller.id), class: 'seller_area') do %>
+                    <%= link_to(user_account_path(@transaction.seller.uuid), class: 'seller_area') do %>
                         <%=image_tag @transaction.seller.thumb_with_default, class:"seller_image"%>
                         <div class="seller_name_area">
                             <p class="seller_name"><%=@transaction.seller.name%></p>

@@ -41,7 +41,7 @@
   	  	  	  	  	  	<% when 'image' then %>
   	  	  	  	  	  	  	<%= image_tag model.thumb_with_default %>
   	  	  	  	  	  	<% when 'name' then %>
-  	  	  	  	  	  	  	<%= link_to model.attributes[name], user_account_path(model.id) %>
+  	  	  	  	  	  	  	<%= link_to model.attributes[name], user_account_path(model.uuid) %>
   	  	  	  	  	  	<% when 'announcement_id' then %>
   	  	  	  	  	  	  	<%= link_to Announcement.find(model.attributes[name]).title, admin_user_announcement_path(model.attributes[name]) %>
   	  	  	  	  	  	<% when 'user_id' then %>

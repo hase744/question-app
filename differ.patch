@@ -168,7 +168,7 @@ index ba2d3cd..f084af3 100644
 -        if request.path_info == "/admin/login" 
 -            admin_dashboard_path
 -        else
--            user_account_path(current_user.id) # ログイン後に遷移するpathを設定
+-            user_account_path(current_user.uuid) # ログイン後に遷移するpathを設定
 -        end
 -    end
 +  def after_sign_in_path_for(resource)
@@ -190,7 +190,7 @@ index ba2d3cd..f084af3 100644
 +          action: session[:path_params]['action'],
 +        )
 +    else
-+      user_account_path(current_user.id) # ログイン後に遷移するpathを設定
++      user_account_path(current_user.uuid) # ログイン後に遷移するpathを設定
 +    end
 +  end
  
