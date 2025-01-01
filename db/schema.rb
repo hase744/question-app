@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_29_105436) do
+ActiveRecord::Schema.define(version: 2024_12_30_120858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,84 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["payout_id"], name: "index_balance_records_on_payout_id"
     t.index ["transaction_id"], name: "index_balance_records_on_transaction_id"
     t.index ["user_id"], name: "index_balance_records_on_user_id"
+  end
+
+  create_table "chat_destinations", force: :cascade do |t|
+    t.bigint "chat_room_id", null: false
+    t.bigint "user_id", null: false
+    t.bigint "target_id", null: false
+    t.boolean "is_unread", default: false
+    t.boolean "is_valid", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_room_id"], name: "index_chat_destinations_on_chat_room_id"
+    t.index ["is_unread"], name: "index_chat_destinations_on_is_unread"
+    t.index ["is_valid"], name: "index_chat_destinations_on_is_valid"
+    t.index ["target_id"], name: "index_chat_destinations_on_target_id"
+    t.index ["user_id"], name: "index_chat_destinations_on_user_id"
+  end
+
+  create_table "chat_messages", force: :cascade do |t|
+    t.bigint "chat_room_id"
+    t.bigint "chat_destination_id"
+    t.bigint "sender_id"
+    t.bigint "receiver_id"
+    t.text "body"
+    t.string "file"
+    t.boolean "is_read", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["body"], name: "index_chat_messages_on_body"
+    t.index ["chat_destination_id"], name: "index_chat_messages_on_chat_destination_id"
+    t.index ["chat_room_id"], name: "index_chat_messages_on_chat_room_id"
+    t.index ["receiver_id"], name: "index_chat_messages_on_receiver_id"
+    t.index ["sender_id"], name: "index_chat_messages_on_sender_id"
+  end
+
+  create_table "chat_rooms", force: :cascade do |t|
+    t.datetime "last_message_at"
+    t.text "last_message_body"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["last_message_at"], name: "index_chat_rooms_on_last_message_at"
+  end
+
+  create_table "chat_services", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "price", null: false
+    t.integer "type"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["price"], name: "index_chat_services_on_price"
+    t.index ["type"], name: "index_chat_services_on_type"
+    t.index ["user_id"], name: "index_chat_services_on_user_id"
+  end
+
+  create_table "chat_transactions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "service_id", null: false
+    t.bigint "chat_message_id", null: false
+    t.integer "state"
+    t.integer "type"
+    t.integer "price"
+    t.integer "profit"
+    t.integer "fee"
+    t.datetime "transacted_at"
+    t.datetime "sended_at"
+    t.datetime "canceled_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["canceled_at"], name: "index_chat_transactions_on_canceled_at"
+    t.index ["chat_message_id"], name: "index_chat_transactions_on_chat_message_id"
+    t.index ["fee"], name: "index_chat_transactions_on_fee"
+    t.index ["price"], name: "index_chat_transactions_on_price"
+    t.index ["profit"], name: "index_chat_transactions_on_profit"
+    t.index ["sended_at"], name: "index_chat_transactions_on_sended_at"
+    t.index ["service_id"], name: "index_chat_transactions_on_service_id"
+    t.index ["state"], name: "index_chat_transactions_on_state"
+    t.index ["transacted_at"], name: "index_chat_transactions_on_transacted_at"
+    t.index ["type"], name: "index_chat_transactions_on_type"
+    t.index ["user_id"], name: "index_chat_transactions_on_user_id"
   end
 
   create_table "coupon_usages", force: :cascade do |t|
@@ -609,7 +687,6 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.string "video"
     t.integer "unread_notifications", default: 0
     t.datetime "unread_notifications_next_change_at", default: -> { "CURRENT_TIMESTAMP" }
-    t.boolean "unread_notifications_is_updated", default: true
     t.boolean "can_email_advert", default: false
     t.boolean "can_email_transaction", default: false
     t.boolean "can_email_notification", default: false
@@ -650,7 +727,6 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
     t.index ["total_sales_numbers"], name: "index_users_on_total_sales_numbers"
     t.index ["total_target_users"], name: "index_users_on_total_target_users"
     t.index ["unread_notifications"], name: "index_users_on_unread_notifications"
-    t.index ["unread_notifications_is_updated"], name: "index_users_on_unread_notifications_is_updated"
     t.index ["unread_notifications_next_change_at"], name: "index_users_on_unread_notifications_next_change_at"
     t.index ["uuid"], name: "index_users_on_uuid"
   end
@@ -661,6 +737,17 @@ ActiveRecord::Schema.define(version: 2024_11_29_105436) do
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"
+  add_foreign_key "chat_destinations", "chat_rooms"
+  add_foreign_key "chat_destinations", "users"
+  add_foreign_key "chat_destinations", "users", column: "target_id"
+  add_foreign_key "chat_messages", "chat_destinations"
+  add_foreign_key "chat_messages", "chat_rooms"
+  add_foreign_key "chat_messages", "users", column: "receiver_id"
+  add_foreign_key "chat_messages", "users", column: "sender_id"
+  add_foreign_key "chat_services", "users"
+  add_foreign_key "chat_transactions", "chat_messages"
+  add_foreign_key "chat_transactions", "services"
+  add_foreign_key "chat_transactions", "users"
   add_foreign_key "coupon_usages", "coupons"
   add_foreign_key "coupon_usages", "requests"
   add_foreign_key "coupon_usages", "transactions"

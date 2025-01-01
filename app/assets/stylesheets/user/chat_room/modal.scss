@@ -1,0 +1,225 @@
+@import '_variables';
+.modal_background{
+  	width: 100%; /*ラッパー全体を覆うようにする*/
+  	height: 100%;
+  	background-color: rgba(0, 0, 0, 0.5); /*半透明の黒*/
+	cursor: pointer;
+}
+.chat_modal_window {
+	display: none;
+  	position: fixed;
+  	width: 100%;
+  	height: 100%;
+  	z-index: 11;
+  	text-align: center;
+  	margin: auto;
+  	top: 0%;
+  	left: 0;
+  	right: 0;
+  	//opacity: 0.5;
+	.top_area{
+		$link_height: 50px;
+		flex-direction: row;
+		display: flex;
+		align-items: center;
+		.arrow_area{
+			display: flex;
+			width: 30px;
+			font-size: 30px;
+			cursor: pointer;
+			.arrow{
+				width: 100%;
+				text-align: center;
+			}
+		}
+		.arrow_area:hover {
+			color: grey;
+		}
+		.user_link{
+			display: flex;
+			height: $link_height;
+			flex-direction: row;
+			img{
+				display: flex;
+				height: $link_height * 0.8;
+				width: $link_height * 0.8;
+				padding: $link_height * 0.1;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+			.right_side{
+				display: flex;
+				flex: 1;
+				align-items: center;
+			}
+		}
+	}
+  	.modal_window_body{
+  	    position: absolute;
+  	    top: 0px;
+  		display: flex;
+  		flex-direction: column;
+  		justify-content: space-between;
+  	    //vertical-align: middle;
+  	    width: 100%;
+  		height: 100%;
+  	    //height: 80%;
+  	    max-width: 500px;
+  	    max-height: 100%;
+  	    margin: auto;
+  	    left: 0;
+  	    right: 0;
+  	    margin-top: 0vh;
+  	    //bottom: 0;
+  	    //transform: translate(-50%,-50%);
+  	    background-color: #fff;
+  	}
+	.text_area{
+	  	display: flex;
+	  	flex-direction: column;
+	  	flex: 1;
+	  	background-color: $text_yellow;
+	  	text-align: left;
+	  	width: 100%;
+	  	//min-height: calc(100vh - 280px - 20vh);
+	  	overflow-x: scroll;
+	  	height: 30vh;
+	  	font-size: 14px;
+		.message_component{
+		  	width: 100%;
+		  	float: left;
+			.image{
+			  	height: 30px;
+			  	width: 30px;
+			  	border-radius: 20px;
+			  	object-fit: cover;
+			  	margin: 10px;
+			}
+			.left_image{
+				margin-right: 0px;
+				float: left;
+			}
+			.right_image{
+				margin-left: 0px;
+				float: right;
+			}
+			.text{
+			  	padding: 3px 8px;
+			  	display: inline-block;
+			  	background-color: white;
+			  	margin: 10px;
+			  	padding-bottom: 5px;
+			  	border-radius: 10px;
+			  	position: relative;
+			  	max-width: calc(100% - 76px);
+				min-height: 20px;
+			  	.body{
+				  	white-space: pre-line;
+			  	}
+			}
+			.left_text::before {
+				content: '';
+				position: absolute;
+				top: 5px; /* 吹き出しの高さを調整 */
+				left: -17px; /* 吹き出しの位置を調整 */
+				border: 10px solid transparent;
+				border-right-color: white; /* 吹き出しの背景色と同じ色を設定 */
+			}
+			.right_text{
+			  	float: right;
+			}
+			.right_text::before {
+			  	content: '';
+			  	position: absolute;
+			  	top: 5px; /* 吹き出しの高さを調整 */
+			  	right: -7px; /* 吹き出しの位置を調整 */
+			  	border: 10px solid transparent;
+			  	border-right: none; /* 右側のボーダーを削除 */
+			  	border-left-color: white; /* 吹き出しの背景色と同じ色を設定 */
+			}
+		}
+	}
+	.chat-form {
+		display: flex;
+		align-items: center;
+		.chat-container {
+			padding: 0px 10px;
+			border-radius: 5px;
+			width: 100%;
+			display: flex;
+			align-items:flex-end;
+			//box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			.chat-input {
+				width: calc(100% - 70px);
+				height: 50px;
+				padding: 10px;
+				border: 1px solid #ddd;
+				border-radius: 5px;
+				outline: none;
+				margin-right: 0px;
+				margin: 5px 0px;
+				display: inline-block;
+				display: flex;
+				flex: 1;
+				transition: height 0.3s ease;
+			}
+			.button_area{
+				position: relative;
+				display: flex;
+				height: 100%;
+				$button_size: 40px;
+				$mark_size: 20px;
+				.chat-send-button {
+					background-color: #007bff;
+					display: inline-block;
+					color: #fff;
+					border: none;
+					bottom: 0px;
+					//padding: 10px 15px;
+					//padding-top: 7px;
+					border-radius: 5px;
+					margin: 5px;
+					width: $button_size;
+					height: $button_size;
+					cursor: pointer;
+					transition: background-color 0.3s ease;
+					vertical-align: top; /* これがないとiphoneのsafariで上に隙間ができる */
+				}
+				.chat-send-button:hover {
+					background-color: #0056b3;
+				}
+				.fa-paper-plane{
+					right: 17px;
+					bottom: calc((#{$button_size} - #{$mark_size}) / 2 + 5px);
+					display: inline-block;
+					position: absolute;
+					font-size: $mark_size;
+					line-height: $mark_size;
+					color: white;
+					pointer-events: none;
+				}
+			}
+		}
+	}
+  	.button{
+  	    background-color: orange;
+  	    width: calc(100% - 20px);
+  	    display: inline-block;
+  	    margin: 10px ;
+  	    height: 25px;
+  	    font-size: 15px;
+  	    line-height: 15px;
+  	    padding: 5px 0px;
+  	    padding-top: 15px;
+  	    border-radius: 5px;
+  	    color: white;
+  	    cursor: pointer;
+  	    text-decoration: none;
+  	}
+  	.button:hover{
+  	    background-color: $button_orange_hover;
+  	}
+}
+.chat_modal_window.openning{
+	display: block;
+}
