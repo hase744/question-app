@@ -146,6 +146,19 @@ namespace :user do
     resource :request_likes, only: [:create, :destroy, :show]
     resource :transaction_likes, only: [:create, :destroy, :show]
     resources :coupons, only: [:index, :show]
+    resources :chat_destinations, only: [:index, :show]
+    resources :chat_messages, only: [:create]
+    resources :chat_messages do
+      member do
+        get :cells, to: 'chat_messages#cells'
+      end
+    end
+    resources :chat_rooms do
+      member do
+        get :cells_modal, to: 'chat_rooms#cells_modal'
+        get :cells_modal, to: 'chat_rooms#cells_modal'
+      end
+    end
     resources :configs do
       member do
         put :change_coupon, to: 'configs#change_coupon'

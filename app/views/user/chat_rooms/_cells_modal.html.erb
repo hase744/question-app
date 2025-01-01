@@ -1,0 +1,33 @@
+<div class="chat_modal_window new_message_modal">
+    <div class="modal_background"></div>
+    <div class="modal_window_body">
+		<div class="top_area">
+			<div class="arrow_area modal_delete">
+				<div class="fa-solid fa-chevron-left arrow"></div>
+			</div>
+			<%= link_to(user_account_path(room.id), class: 'user_link') do %>
+				<% user = room.destinations.where.not(user: current_user).first.user %>
+				<%= image_tag user.thumb_with_default %>
+				<div class="right_side"><%= user.name %></div>
+			<% end %>
+		</div>
+		<div class="text_area">
+			<%= render 'user/shared/loading_animation' %>
+			<div class="messages"></div>
+		</div>
+		<div class="submit_area">
+		<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, local: false, html: { class: "chat-form" } do |f| %>
+			<div class="chat-container">
+				<%= f.text_area :body, placeholder: "メッセージを入力", value:"", class: "chat-input" %>
+				<%= f.hidden_field :chat_room_id, value: room.id %>
+			
+				<div class="button_area">
+				<%= f.submit "", class: "chat-send-button ",maxlength:100 do %>
+				<% end %>
+				<span class="far fa-paper-plane"></span>
+				</div>
+			</div>
+		<% end %>
+		</div>
+    </div>
+</div>

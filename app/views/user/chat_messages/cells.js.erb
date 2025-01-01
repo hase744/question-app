@@ -1,0 +1,27 @@
+// 挿入前の高さを取得
+roomCellSelector = '<%= ".room_#{room.id}_cell" %> .messages';
+roomCell = document.querySelector(roomCellSelector);
+initialHeight = roomCell.offsetHeight;
+
+// 挿入処理
+document.querySelector(`<%= ".room_#{room.id}_cell" %> .messages`).insertAdjacentHTML('afterbegin',
+`<% messages.each do |message|%>
+    <% side = message.sender == current_user ? 'right' : 'left' %>
+    <%= render "user/chat_messages/cell", 
+        image_url: message.sender.thumb_with_default,
+        side: side,
+        body: message.body
+        %>
+<% end %>`);
+$('.loading_animation_area').css({'visibility':'hidden'});
+$(`${roomCellSelector} .link`).hide();
+$(`${roomCellSelector} .button`).show();
+newHeight = roomCell.offsetHeight;
+loadingHeight = $('.loading_animation_area').height()
+heightDifference = newHeight - initialHeight - loadingHeight;
+
+if (heightDifference > 0) {
+	console.log(`<%= ".room_#{room.id}_cell" %> .text_area`)
+		modalBody = document.querySelector(`<%= ".room_#{room.id}_cell" %> .chat_modal_window .text_area`);
+		modalBody.scrollTop = heightDifference;
+}

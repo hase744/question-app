@@ -1,0 +1,63 @@
+$(document).on('click', '.modal_delete', function(){
+  $(this).closest('.chat_modal_window').removeClass("openning");
+});
+$(document).on('click', '.modal_background', function(e){
+  $(this).closest('.chat_modal_window').removeClass("openning");
+});
+$(document).on('click', '.modal_background', function(e){
+  $(this).closest('.chat_modal_window').removeClass("openning");
+});
+$('.chat_destination_cell_area .chat_destination_cell').on('click', function(e){
+	$(this).closest('.chat_destination_cell_area').find('.chat_modal_window').addClass("openning");
+});
+$(document).on('click', '.chat_destination_cell_area .chat_destination_cell', function(e){
+	$(this).closest('.chat_destination_cell_area').find('.chat_modal_window').addClass("openning");
+});
+$(document).on('focus', '.chat_destination_cell_area .chat-input', function(e){
+	$(this).css('height', '40vh');
+});
+$(document).on('blur', '.chat_destination_cell_area .chat-input', function(e){
+	$(this).css('height', '70px');
+});
+$('.text_area').on('scroll', function () {
+    // 現在のスクロール位置を取得
+    var scrollTop = $(this).scrollTop();
+
+    // スクロール位置が上端に到達した場合のみ実行
+    if (scrollTop < 10) {
+        // 親のcellエリアからIDを取得
+				var $roomCell = $(this).closest('.room_1_cell');
+        var roomId = $(this).closest('.room_1_cell').attr('class').match(/room_(\d+)_cell/)[1];
+				var itemCount = $(this).children().length; // text_area内の子要素数
+        var currentPage = Math.ceil(itemCount / 15); // 要素数を5で割って切り上げ
+				var loadingPage = currentPage + 1;
+        var pages = $roomCell.data('pages') || [];
+				
+        console.log(`現在の要素数: ${itemCount}, 現在のページ数: ${loadingPage}`);
+
+        // 現在の送信済みページを取得または初期化
+
+        // すでに送信済みのページの場合は処理を中断
+				$('.loading_animation_area').css({'visibility':'visible'});
+        if (pages.includes(loadingPage)) {
+            console.log(`ページ ${loadingPage} はすでに送信済みです`);
+            return;
+        }
+				pages.push(loadingPage);
+        $roomCell.data('pages', pages);
+
+        // Ajaxリクエストを送信
+        $.ajax({
+            url: `/user/chat_messages/${roomId}/cells`,
+            method: 'GET',
+						data: { page: loadingPage }, 
+            dataType: 'script',
+            success: function (response) {
+                console.log('成功:', response);
+            },
+            error: function (xhr, status, error) {
+                console.error('エラー:', error);
+            }
+        });
+    }
+});

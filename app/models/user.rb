@@ -48,6 +48,9 @@ class User < ApplicationRecord
   has_many :coupons
   has_many :announcement_receipts, dependent: :destroy
   has_many :announcements, through: :announcement_receipts, source: :announcement
+  has_many :chat_destinations
+  has_many :messages
+  has_many :chat_services
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}

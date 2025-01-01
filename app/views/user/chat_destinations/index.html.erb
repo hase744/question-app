@@ -1,0 +1,41 @@
+<div class="list_zone">
+	<h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 宛先</h3>
+	<div class="chat_destination_header">
+		<%= paginate @chat_destinations %>
+	</div>
+	<div class="chat_destination">
+	  	<% @chat_destinations.each do |chat_destination| %>
+			<div class='<%="room_#{chat_destination.room.id}_cell" %><%=%> chat_destination_cell_area'>
+				<%= link_to(cells_user_chat_message_path(chat_destination.room.id), class:"chat_destination_cell link", remote:true) do %>
+					<div class="inner_chat_destination_cell">
+						<%=image_tag chat_destination.target.thumb_with_default, class:"image" %>
+						<div class="text_area">
+							<div class="message one_line_text"><%=chat_destination.room.last_message_body %></div>
+							<div class="datetime">
+								<%=	readable_datetime(chat_destination.room.last_message_at) %>
+							</div>
+						</div>
+					</div>
+				<% end %>
+				<div class="chat_destination_cell button">
+					<div class="inner_chat_destination_cell">
+						<%=image_tag chat_destination.target.thumb_with_default, class:"image" %>
+						<div class="text_area">
+							<div class="message one_line_text"><%=chat_destination.room.last_message_body %></div>
+							<div class="datetime">
+								<%=	readable_datetime(chat_destination.room.last_message_at) %>
+							</div>
+						</div>
+					</div>
+				</div>
+				<%= render 'user/chat_rooms/cells_modal.html.erb', room: chat_destination.room %>
+			</div>
+	  	<% end %>
+	</div>
+	<div class="main_bottom">
+		<%= paginate @chat_destinations %>
+	</div>
+</div>
+<script>
+<%= render "user/chat_destinations/index.js.erb" %>
+</script>

@@ -23,6 +23,7 @@
                                 <%= link_to "プロフィール編集", edit_user_accounts_path, class: "user_edit"%>
                             <% else %>
                                 <%= render "user/relationships/follow", user: @user %>
+                                <%= link_to '', user_chat_destinations_path(uuid: @user.id), class: "user_edit fa-regular fa-envelope" %>
                             <% end %>
                         <% end %>
                     </div>
