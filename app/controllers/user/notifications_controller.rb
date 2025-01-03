@@ -17,13 +17,9 @@ class User::NotificationsController < User::Base
 
   def show
     notification = Notification.find(params[:id])
-    path = Rails.application.routes.generate_extras({:controller=>"user/#{notification.controller}", :action=>notification.action, :id=>notification.id_number})
-    #redirect_to controller: notification.controller.to_sym, action: notification.actionotification.to_sym, id:notification.id_number
-    if notification.parameter.present?
-      redirect_to path[0]+notification.parameter
-    else
-      redirect_to path[0]
-    end
+    redirect_to notification.redirect_path
+    puts "リダイレクト"
+    puts notification.redirect_path
     same_path_notifications = current_user.notifications
       .published
       .where(

@@ -24,6 +24,20 @@ class Notification < ApplicationRecord
     self.published_at ||= DateTime.now
   end
 
+  def redirect_path
+    path = Rails.application.routes.generate_extras({
+      :controller=>"user/#{self.controller}", 
+      :action=>self.action, 
+      :id=>self.id_number
+    })
+    #redirect_to controller: self.controller.to_sym, action: self.actioself.to_sym, id:self.id_number
+    if self.parameter.present?
+      path[0]+self.parameter
+    else
+      path[0]
+    end
+  end
+
   def self.create_announcement(announcement, user)
     self.create(
       user_id: user.id, 

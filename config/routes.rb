@@ -148,6 +148,11 @@ namespace :user do
     resources :coupons, only: [:index, :show]
     resources :chat_destinations, only: [:index, :show]
     resources :chat_messages, only: [:create]
+    resource :chat_messages do
+      member do
+        patch :mark_as_read, to: 'chat_messages#mark_as_read'
+      end
+    end
     resources :chat_messages do
       member do
         get :cells, to: 'chat_messages#cells'

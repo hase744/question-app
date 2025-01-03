@@ -1,4 +1,20 @@
-<div class="message_component">
-	<%= image_tag  image_url, class: "image #{side}_image" %>
-	<div class="text <%=side%>_text"><%= body%></div>
+<div class="message_cell" created_at="<%= created_at %>">
+	<div class='message_component <%= "#{side}_component"%>'>
+		<%#= image_tag  image_url, class: "image #{side}_image" #これを使うとimage_url: ${message.image_url}ができない%>
+		<img src="<%= image_url%><%=%>", class='<%= "image #{side}_image"%>' />
+		<div class="text_area">
+			<div class="text <%=side%>_text"><%= body%></div>
+			<div class="datetime_area">
+				<div class="datetime"><%=is_read%></div>
+				<div class="datetime"><%= created_at_display %></div>
+			</div>
+		</div>
+		<div class="text_rest">
+		</div>
+	</div>
+	<div class="date_area <%= date %>">
+		<div class="date">
+			<%= date %>
+		</div>
+	</div>
 </div>
