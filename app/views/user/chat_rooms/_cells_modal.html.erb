@@ -5,13 +5,13 @@
 			<div class="arrow_area modal_delete">
 				<div class="fa-solid fa-chevron-left arrow"></div>
 			</div>
-			<%= link_to(user_account_path(room.id), class: 'user_link') do %>
-				<% user = room.destinations.where.not(user: current_user).first.user %>
-				<%= image_tag user.thumb_with_default %>
-				<div class="right_side"><%= user.name %></div>
+			<%= link_to(user_account_path(destination.target.id), class: 'user_link') do %>
+				<%= image_tag destination.target.thumb_with_default %>
+				<div class="right_side"><%= destination.target.name %></div>
 			<% end %>
 		</div>
-		<div class="text_area">
+		<div class="alert_area"></div>
+		<div class="message_group">
 			<%= render 'user/shared/loading_animation' %>
 			<div class="messages"></div>
 		</div>
@@ -20,12 +20,16 @@
 			<div class="chat-container">
 				<%= f.text_area :body, placeholder: "メッセージを入力", value:"", class: "chat-input" %>
 				<%= f.hidden_field :chat_room_id, value: room.id %>
-			
 				<div class="button_area">
-				<%= f.submit "", class: "chat-send-button ",maxlength:100 do %>
-				<% end %>
-				<span class="far fa-paper-plane"></span>
-				</div>
+					<label class="file-button square_button">
+						<%= f.file_field :image, autocomplete: "image", class: "file-input" %>
+						<i class="fa-solid fa-image"></i>
+					</label>
+					<div class="chat-send-button square_button">
+						<%= f.submit "", class: "submit_button square_button",maxlength:100 do %><% end %>
+						<label class="far fa-paper-plane "></label>
+					</div>
+				<div>
 			</div>
 		<% end %>
 		</div>

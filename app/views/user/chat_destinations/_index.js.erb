@@ -1,3 +1,8 @@
+<%if @chat_destination %><%=%>
+$room_cell = $(".<%= @chat_destination.room.cell_class_name %>").first();
+openModal($room_cell);
+firstCellOpen($room_cell);
+<% end %><%=%>
 $(document).on('click', '.modal_delete', function(){
   $(this).closest('.chat_modal_window').removeClass("openning");
 });
@@ -8,10 +13,7 @@ $(document).on('click', '.modal_background', function(e){
   $(this).closest('.chat_modal_window').removeClass("openning");
 });
 $('.chat_destination_cell_area .chat_destination_cell').on('click', function(e){
-	$(this).closest('.chat_destination_cell_area').find('.chat_modal_window').addClass("openning");
-});
-$(document).on('click', '.chat_destination_cell_area .chat_destination_cell', function(e){
-	$(this).closest('.chat_destination_cell_area').find('.chat_modal_window').addClass("openning");
+	openModal($(this).closest('.chat_destination_cell_area'));
 });
 $(document).on('focus', '.chat_destination_cell_area .chat-input', function(e){
 	$(this).css('height', '40vh');
@@ -19,45 +21,157 @@ $(document).on('focus', '.chat_destination_cell_area .chat-input', function(e){
 $(document).on('blur', '.chat_destination_cell_area .chat-input', function(e){
 	$(this).css('height', '70px');
 });
-$('.text_area').on('scroll', function () {
-    // 現在のスクロール位置を取得
-    var scrollTop = $(this).scrollTop();
-
-    // スクロール位置が上端に到達した場合のみ実行
-    if (scrollTop < 10) {
-        // 親のcellエリアからIDを取得
-				var $roomCell = $(this).closest('.room_1_cell');
-        var roomId = $(this).closest('.room_1_cell').attr('class').match(/room_(\d+)_cell/)[1];
-				var itemCount = $(this).children().length; // text_area内の子要素数
-        var currentPage = Math.ceil(itemCount / 15); // 要素数を5で割って切り上げ
-				var loadingPage = currentPage + 1;
-        var pages = $roomCell.data('pages') || [];
-				
-        console.log(`現在の要素数: ${itemCount}, 現在のページ数: ${loadingPage}`);
-
-        // 現在の送信済みページを取得または初期化
-
-        // すでに送信済みのページの場合は処理を中断
-				$('.loading_animation_area').css({'visibility':'visible'});
-        if (pages.includes(loadingPage)) {
-            console.log(`ページ ${loadingPage} はすでに送信済みです`);
-            return;
-        }
-				pages.push(loadingPage);
-        $roomCell.data('pages', pages);
-
-        // Ajaxリクエストを送信
-        $.ajax({
-            url: `/user/chat_messages/${roomId}/cells`,
-            method: 'GET',
-						data: { page: loadingPage }, 
-            dataType: 'script',
-            success: function (response) {
-                console.log('成功:', response);
-            },
-            error: function (xhr, status, error) {
-                console.error('エラー:', error);
-            }
-        });
-    }
+$('.chat_destination_cell.button').on('click', function(e) {
+	firstCellOpen($(this).closest('.room_cell'));
 });
+
+$('.message_group').on('scroll', function () {
+	$(this).scrollTop($(this).scrollTop()); //スクロール位置を更新 これがないとfetchChatMessagesでisLoadingだけ更新されて、safariで複数ページ同時に送信されちゃう
+  if ($(this).scrollTop() < 10) {// スクロール位置が上端に到達した場合のみ実行
+		var $roomCell = $(this).closest('.room_cell');
+    var roomId = $roomCell.attr('class').match(/room_(\d+)_cell/)[1];
+		var itemCount = $(this).find('.messages').children().length; // text_area内の子要素数
+    var currentPage = Math.ceil(itemCount / 15); // 要素数を15で割って切り上げ
+		var loadingPage = currentPage + 1;
+    var page = $roomCell.attr('page') || [];
+    var isLoading = JSON.parse($roomCell.attr('isLoading') || 'false')
+
+		$('.loading_animation_area').css('display', 'block');
+
+		if(isLoading){
+			return;
+		}
+    if (page == String(loadingPage)) {//ロード中
+			$modalBody = $(`.room_${roomId}_cell .chat_modal_window .message_group`);
+			$loadingHeight = $('.loading_animation_area').outerHeight();
+      return;
+    } else {//ロード可能
+			$roomCell.attr('page', loadingPage);
+			$roomCell.attr('isLoading', true);
+			$('.loading_animation_area').css({'visibility':'visible'});
+			$('.loading_animation_area').css('display', 'block');
+			fetchChatMessages(`/user/chat_messages/${roomId}/cells?page=${loadingPage}`)
+		}
+  }
+});
+$(".chat-form").on("submit", function (e) {
+	e.preventDefault();
+
+	$form = $(this);
+	$chat_modal_window = $form.closest('.chat_modal_window');
+	$messages = $chat_modal_window.find('.messages');
+	$modalBody = $chat_modal_window.find('.message_group');
+
+	$.ajax({
+		url: $form.attr("action"),
+		method: "POST",
+		data: $form.serialize(),
+		success: function (response) {
+			html = messageComponent(response.message);
+			$messages.append(html);
+			$modalBody.scrollTop($modalBody[0].scrollHeight);
+			$form[0].reset(); // フォームをリセット
+			$chat_modal_window.find('.alert_area')[0].innerHTML = '';
+		},
+		error: function (xhr) {
+			response = xhr.responseText
+			jsonResponse = JSON.parse(response);
+			$chat_modal_window.find('.alert_area')[0].innerHTML = jsonResponse.errors;
+			console.error("Error:", xhr.responseText);
+		}
+	});
+});
+
+function messageComponent(message){
+	var messageHTML = `
+		<%= render "user/chat_messages/cell", 
+			image_url: "${message.image_url}",
+			side: '${message.side}',
+			body: '${message.body}',
+			is_read: "${message.is_read_status}",
+			created_at_display: '${message.created_at_display}',
+			created_at: '${message.created_at}',
+			date: '${message.date}'
+		%>
+	`;
+	return messageHTML;
+}
+
+function mark_as_read(unreadMessageIds){
+	if (unreadMessageIds.length > 0) {
+		const csrfToken = $('meta[name="csrf-token"]').attr('content');
+	  $.ajax({
+	    url: '/user/chat_messages/mark_as_read',
+	    method: 'PATCH',
+	    headers: {
+	      'X-CSRF-Token': csrfToken // CSRFトークンをヘッダーに設定
+	    },
+	    data: JSON.stringify({ message_ids: unreadMessageIds }), // IDの一覧を送信
+	    contentType: 'application/json', // JSON形式で送信
+	    success: function(response) {
+	      console.log('Marked as read successfully:', response);
+	    },
+	    error: function(xhr, status, error) {
+	      console.error('Error marking messages as read:', error);
+	    }
+	  });
+	} else {
+	  console.log('No unread messages to mark as read.');
+	}
+}
+
+// メッセージを取得して表示する関数
+function fetchChatMessages(url) {
+  $.getJSON(url, function (data) {
+    var roomCellSelector = `.room_${data.room_id}_cell`;
+    var $messages = $(`${roomCellSelector} .messages`);
+		var $roomCell = $(`${roomCellSelector}`);
+
+    data.messages.forEach(function (message) {
+			$previous_message = $messages.children().first();
+			$previous_message_created_at = $previous_message.attr('created_at');
+			if ($previous_message_created_at) {
+				var currentDate = message.created_at.split('T')[0];
+				var previousDate = $previous_message_created_at.split('T')[0];
+				if (currentDate !== previousDate) {// 日付が異なる場合にmessage.dateに日付を挿入
+					message.date = currentDate;
+				}
+			}
+			html = messageComponent(message);
+			$messages.prepend(html);
+    });
+		
+		unreadMessageIds = data.messages
+    	.filter(message => message.is_read === false && message.side == 'left')
+    	.map(message => message.id);
+		mark_as_read(unreadMessageIds);
+
+    // 表示調整
+    $('.loading_animation_area').css({ 'visibility': 'hidden' });
+    $(`${roomCellSelector} .link`).hide();
+    $(`${roomCellSelector} .button`).show();
+
+		totalHeight = $(`${roomCellSelector} .message_cell`) // 合計高さを出力
+		  .slice(0, data.messages.length) // 上から指定した個数を取得
+		  .toArray()       // jQuery オブジェクトを配列に変換
+		  .reduce((sum, elem) => sum + $(elem).outerHeight(true), 0); // 各要素の高さを合計
+
+    if (totalHeight > 0) {
+      $modalBody = $(`.room_${data.room_id}_cell .chat_modal_window .message_group`);
+      $modalBody.scrollTop($modalBody.scrollTop() + totalHeight);
+    }
+		$roomCell.attr('isLoading', false);
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    varle.error('Error:', textStatus, errorThrown);
+  })
+}
+function firstCellOpen(room_cell){
+	$messages = room_cell.find('.messages').first();
+  $url = room_cell.attr('url');
+	if($messages.children().length == 0){
+		fetchChatMessages($url);
+	}
+}
+function openModal(room_cell){
+	room_cell.find('.chat_modal_window').addClass("openning");
+}
