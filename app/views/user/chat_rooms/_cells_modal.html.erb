@@ -15,21 +15,22 @@
 			<%= render 'user/shared/loading_animation' %>
 			<div class="messages"></div>
 		</div>
-		<div class="submit_area">
-		<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, local: false, html: { class: "chat-form" } do |f| %>
+		<div class="submit_form_area">
+		<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, html: { class: "chat-form" } do |f| %>
+			<div class="file_label"></div>
 			<div class="chat-container">
 				<%= f.text_area :body, placeholder: "メッセージを入力", value:"", class: "chat-input" %>
 				<%= f.hidden_field :chat_room_id, value: room.id %>
 				<div class="button_area">
 					<label class="file-button square_button">
-						<%= f.file_field :image, autocomplete: "image", class: "file-input" %>
+						<%= f.file_field :image, autocomplete: "image", class: "file-input", accept: accept_image, name: "items[file][]", multiple: true %>
 						<i class="fa-solid fa-image"></i>
 					</label>
 					<div class="chat-send-button square_button">
 						<%= f.submit "", class: "submit_button square_button",maxlength:100 do %><% end %>
 						<label class="far fa-paper-plane "></label>
 					</div>
-				<div>
+				</div>
 			</div>
 		<% end %>
 		</div>

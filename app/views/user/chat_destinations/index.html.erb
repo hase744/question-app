@@ -1,8 +1,5 @@
 <div class="list_zone">
 	<h3 class="list_header"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 宛先</h3>
-	<div class="chat_destination_header">
-		<%= paginate @chat_destinations %>
-	</div>
 	<div class="chat_destination">
 	  	<% @chat_destinations.each do |chat_destination| %>
 			<div class='<%="#{chat_destination.room.cell_class_name} room_cell" %><%=%> chat_destination_cell_area'  url="<%=%><%=cells_user_chat_message_path(chat_destination.room.id, page: 1)%>">

@@ -1,0 +1,14 @@
+<div class='<%="#{chat_destination.room.cell_class_name} room_cell" %><%=%> chat_destination_cell_area'  url="<%=%><%=cells_user_chat_message_path(chat_destination.room.id, page: 1)%>">
+	<div class="chat_destination_cell button">
+	  <div class="inner_chat_destination_cell">
+	    <%=image_tag chat_destination.target.thumb_with_default, class:"image" %>
+	    <div class="text_area">
+	      <div class="message one_line_text"><%=chat_destination.room.last_message_body %></div>
+	      <div class="datetime">
+	        <%=	readable_datetime(chat_destination.room.last_message_at) %>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+<%= render 'user/chat_rooms/cells_modal.html.erb', room: chat_destination.room, destination: chat_destination%>
+</div>

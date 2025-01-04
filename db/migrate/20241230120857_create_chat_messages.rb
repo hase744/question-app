@@ -6,7 +6,6 @@ class CreateChatMessages < ActiveRecord::Migration[6.1]
       t.references :sender, index:true, foreign_key: { to_table: :users }
       t.references :receiver, index:true, foreign_key: { to_table: :users }
       t.text :body, index:true
-      t.string :file
       t.boolean :is_read, default: false
 
       t.timestamps
