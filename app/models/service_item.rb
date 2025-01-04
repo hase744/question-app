@@ -1,5 +1,5 @@
 class ServiceItem < ApplicationRecord
-  belongs_to :service, optional: true
+  belongs_to :service, optional: true #optional: trueじゃないとbuildできない
   delegate :user, to: :service
   mount_uploader :file, FileUploader
   store_in_background :file

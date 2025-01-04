@@ -18,11 +18,18 @@ class User::ChatDestinationsController < User::Base
     end
     @chat_destination = current_user.chat_destinations
       .find_by(target: @target) if @target
-    @chat_destinations = current_user.chat_destinations.solve_n_plus_1
+    @chat_destinations = current_user.chat_destinations
+      .joins(room: :messages) # ChatRoomとMessageを結合
+      .group('chat_destinations.id, chat_rooms.last_message_at') # 重複を避けるためにグループ化
+      .having('COUNT(chat_messages.id) > 0') # メッセージが1件以上ある条件
+      .solve_n_plus_1
     if @chat_destination.present?
       @chat_destinations = @chat_destinations
-        .select("chat_destinations.*, CASE WHEN id = #{ActiveRecord::Base.connection.quote(@chat_destination.id)} THEN 0 ELSE 1 END AS priority")
-        .order("priority ASC")
+        .select("chat_destinations.*, CASE WHEN chat_destinations.id = #{ActiveRecord::Base.connection.quote(@chat_destination.id)} THEN 0 ELSE 1 END AS priority")
+        .order("priority ASC, chat_rooms.last_message_at DESC")
+    else
+      @chat_destinations = @chat_destinations
+        .order("chat_rooms.last_message_at DESC") # last_message_atでソート
     end
     @chat_destinations = @chat_destinations
       .page(params[:page])
@@ -43,7 +50,7 @@ class User::ChatDestinationsController < User::Base
       if @chat_room.save
         @chat_destination = @chat_room.destinations
       end
-      redirect_to user_chat_destinations_path()
+      redirect_to user_chat_destinations_path(uuid: params[:uuid])
     end
   end
 

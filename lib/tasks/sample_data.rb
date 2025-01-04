@@ -146,9 +146,7 @@ class SampleData
       #for n in 0..9
         image_path = Rails.root.join('public', 'sample', category.name, "canvas (#{n}).jpg")
         service_image_path = Rails.root.join('public', 'sample', category.name, "service_image(#{n}).jpg")
-        buyers = User.where(is_seller: false)
-        sellers = User.where(is_seller: true)
-        buyer = buyers[n%buyers.count]
+        buyer = User.find_by(email: "buyer#{category.name}#{n}@exmaple.com")
         seller = User.find_by(email: "seller#{category.name}#{n}@exmaple.com")
         request = Request.create_or_find_by!(
           user: buyer,

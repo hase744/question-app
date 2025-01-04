@@ -1,5 +1,5 @@
 class RequestItem < ApplicationRecord
-  belongs_to :request, optional: true
+  belongs_to :request, optional: true #optional: trueじゃないとbuildできない
   delegate :is_published, to: :request
   delegate :user, to: :request
   attr_accessor :use_youtube

@@ -10,16 +10,7 @@ class User::ChatMessagesController < User::Base
       .per(15)
     render json: {
       messages: messages.map do |message|
-        {
-          id: message.id,
-          image_url: message.sender.thumb_with_default,
-          side: message.sender == current_user ? 'right' : 'left',
-          body: message.body,
-          created_at: message.created_at,
-          created_at_display: message.created_at.strftime("%H:%M"),
-          is_read_status: message.is_read_status(current_user),
-          is_read: message.is_read
-        }
+        message.json(current_user)
       end,
       room_id: room.id
     }
@@ -32,35 +23,38 @@ class User::ChatMessagesController < User::Base
   end
 
   def create
-    return if params[:commit] == ""
-    message = ChatMessage.new(chat_message_params)
-    message.sender = current_user
-    message.receiver = message.room.destinations.find_by(user: current_user).target
-    room = message.room
-    room.last_message_body = message.body
-    room.last_message_at = DateTime.now
-    notification = new_notification(message)
+    @message = ChatMessage.new(chat_message_params)
+    @message.sender = current_user
+    @message.receiver = @message.room.destinations.find_by(user: current_user).target
+    @room = @message.room
+    @room.is_valid = true
+    @room.last_message_body = @message.body
+    @room.last_message_at = DateTime.now
+    @items = generate_items(@message)&.flatten
+    @notification = new_notification(@message)
     ActiveRecord::Base.transaction do
-      if message.save && room.save && notification.save
+      if save_models
+        @message = ChatMessage.find(@message.id)
         render json: {
           success: true,
-          message: {
-            id: message.id,
-            image_url: message.sender.image_url, # 適切に設定
-            side: message.sender == current_user ? 'right' : 'left',
-            body: message.body,
-            created_at: message.created_at,
-            created_at_display: message.created_at.strftime("%H:%M"),
-            is_read_status: message.is_read_status(current_user),
-            is_read: message.is_read
-          }
+          message: @message.json(current_user)
         }
       else
         render json: {
           success: false,
-          errors: message.errors_messages + room.errors_messages
+          errors: @message.errors_messages + @room.errors_messages
         }, status: :unprocessable_entity
       end
+    end
+  end
+
+  def generate_items(message)
+    return [] unless params.dig(:items, :file).present?
+    params.dig(:items, :file)&.map do |file|
+      item = @message.items.build
+      item.process_file_upload = false
+      item.file = file
+      item 
     end
   end
 

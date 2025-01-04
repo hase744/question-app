@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_12_30_120858) do
+ActiveRecord::Schema.define(version: 2025_01_03_185554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,14 +116,25 @@ ActiveRecord::Schema.define(version: 2024_12_30_120858) do
     t.bigint "user_id", null: false
     t.bigint "target_id", null: false
     t.boolean "is_unread", default: false
-    t.boolean "is_valid", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["chat_room_id"], name: "index_chat_destinations_on_chat_room_id"
     t.index ["is_unread"], name: "index_chat_destinations_on_is_unread"
-    t.index ["is_valid"], name: "index_chat_destinations_on_is_valid"
     t.index ["target_id"], name: "index_chat_destinations_on_target_id"
     t.index ["user_id"], name: "index_chat_destinations_on_user_id"
+  end
+
+  create_table "chat_message_items", force: :cascade do |t|
+    t.bigint "chat_message_id", null: false
+    t.string "file"
+    t.string "file_tmp"
+    t.boolean "file_processing", default: false, null: false
+    t.boolean "is_text_image", default: false, null: false
+    t.string "youtube_id"
+    t.text "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_message_id"], name: "index_chat_message_items_on_chat_message_id"
   end
 
   create_table "chat_messages", force: :cascade do |t|
@@ -132,7 +143,6 @@ ActiveRecord::Schema.define(version: 2024_12_30_120858) do
     t.bigint "sender_id"
     t.bigint "receiver_id"
     t.text "body"
-    t.string "file"
     t.boolean "is_read", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -146,8 +156,10 @@ ActiveRecord::Schema.define(version: 2024_12_30_120858) do
   create_table "chat_rooms", force: :cascade do |t|
     t.datetime "last_message_at"
     t.text "last_message_body"
+    t.boolean "is_valid", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["is_valid"], name: "index_chat_rooms_on_is_valid"
     t.index ["last_message_at"], name: "index_chat_rooms_on_last_message_at"
   end
 
@@ -740,6 +752,7 @@ ActiveRecord::Schema.define(version: 2024_12_30_120858) do
   add_foreign_key "chat_destinations", "chat_rooms"
   add_foreign_key "chat_destinations", "users"
   add_foreign_key "chat_destinations", "users", column: "target_id"
+  add_foreign_key "chat_message_items", "chat_messages"
   add_foreign_key "chat_messages", "chat_destinations"
   add_foreign_key "chat_messages", "chat_rooms"
   add_foreign_key "chat_messages", "users", column: "receiver_id"

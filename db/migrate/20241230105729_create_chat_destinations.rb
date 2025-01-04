@@ -5,7 +5,6 @@ class CreateChatDestinations < ActiveRecord::Migration[6.1]
       t.references :user, null: false, index:true, foreign_key: true
       t.references :target, null: false, index:true, foreign_key: { to_table: :users }
       t.boolean :is_unread, index:true, default: false
-      t.boolean :is_valid, index:true, default:false, index:true
 
       t.timestamps
     end

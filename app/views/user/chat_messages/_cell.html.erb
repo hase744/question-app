@@ -3,13 +3,22 @@
 		<%#= image_tag  image_url, class: "image #{side}_image" #これを使うとimage_url: ${message.image_url}ができない%>
 		<img src="<%= image_url%><%=%>", class='<%= "image #{side}_image"%>' />
 		<div class="text_area">
-			<div class="text <%=side%>_text"><%= body%></div>
+			<div class="text <%=side%>_text">
+				<div class="text_body"><%= body%></div>
+			</div>
 			<div class="datetime_area">
 				<div class="datetime"><%=is_read%></div>
 				<div class="datetime"><%= created_at_display %></div>
 			</div>
 		</div>
 		<div class="text_rest">
+		</div>
+	</div>
+	<div class="image_component <%=side%>_image">
+		<div class="item_image_area">
+			<%= images %>
+		</div>
+		<div class="image_rest">
 		</div>
 	</div>
 	<div class="date_area <%= date %>">

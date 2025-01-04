@@ -61,6 +61,14 @@ module CommonMethods
     @current_nav_item ||= 'transactions'
   end
 
+  def readable_datetime(datetime)
+    if datetime
+      datetime.strftime("%Y/%m/%d %H:%M")
+    else
+      "-/-/- -:-"
+    end
+  end
+
   def from_now(datetime)
     if datetime == nil
       "-/-/--:--"
@@ -104,7 +112,7 @@ module CommonMethods
   end
 
   def save_models
-    models_to_save = [@service, @request, @transaction, @item, @items].flatten.compact
+    models_to_save = [@service, @request, @transaction, @message, @room, @notification, @item, @items].flatten.compact
     models_to_save.all?(&:save)
   end
 
