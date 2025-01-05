@@ -4,6 +4,7 @@ openModal($room_cell);
 firstCellOpen($room_cell);
 <% end %><%=%>
 $(document).on('click', '.modal_delete', function(){
+	console.log($(this).closest('.chat_modal_window'));
   $(this).closest('.chat_modal_window').removeClass("openning");
 });
 $(document).on('click', '.modal_background', function(e){
@@ -82,6 +83,7 @@ $(".chat-form").on("submit", function (e) {
 			$form[0].reset(); // フォームをリセット
 			$chat_modal_window.find('.alert_area')[0].innerHTML = '';
 			$form.find(':submit').prop('disabled', false); 
+			adjust_cell_size();
 		},
 		error: function (xhr) {
 			response = xhr.responseText
@@ -98,7 +100,7 @@ function messageComponent(message){
 	<a class='image_area' href='${item.link}' target='_blank'>
 		<img class='item_image ${item.class_name}' src='${item.url}'>
 	</a>
-	` ).join('')
+	` ).join('');
 	var messageHTML = `
 		<%= render "user/chat_messages/cell", 
 			image_url: "${message.image_url}",
@@ -108,7 +110,8 @@ function messageComponent(message){
 			created_at_display: '${message.created_at_display}',
 			created_at: '${message.created_at}',
 			date: '${message.date}',
-			images: '${images}'
+			images: '${images}',
+			image_length: '${images.length}'
 		%>
 	`;
 	return messageHTML;
@@ -143,9 +146,13 @@ function fetchChatMessages(url) {
     var roomCellSelector = `.room_${data.room_id}_cell`;
     var $messages = $(`${roomCellSelector} .messages`);
 		var $roomCell = $(`${roomCellSelector}`);
+		var totalHeight = 0;
 
     data.messages.forEach(function (message) {
 			$previous_message = $messages.children().first();
+			height = $previous_message.outerHeight(true) || 0;
+			totalHeight += height;
+			console.log(message.body)
 			$previous_message_created_at = $previous_message.attr('created_at');
 			if ($previous_message_created_at) {
 				var currentDate = message.created_at.split('T')[0];
@@ -154,10 +161,18 @@ function fetchChatMessages(url) {
 					message.date = currentDate;
 				}
 			}
+			//totalHeight = $(`${roomCellSelector} .message_cell`) // 合計高さを出力
+			//  .slice(0, data.messages.length) // 上から指定した個数を取得
+			//  .toArray()       // jQuery オブジェクトを配列に変換
+			//  .reduce((sum, elem) => sum + $(elem).outerHeight(true), 0);
+			message.previous_message_exists = $previous_message.length == 0
 			html = messageComponent(message);
 			$messages.prepend(html);
+
     });
-		
+		adjust_cell_size();
+		console.log(`totalHeight : ${totalHeight}`);
+
 		unreadMessageIds = data.messages
     	.filter(message => message.is_read === false && message.side == 'left')
     	.map(message => message.id);
@@ -165,13 +180,6 @@ function fetchChatMessages(url) {
 
     // 表示調整
     $('.loading_animation_area').css({ 'visibility': 'hidden' });
-    $(`${roomCellSelector} .link`).hide();
-    $(`${roomCellSelector} .button`).show();
-
-		totalHeight = $(`${roomCellSelector} .message_cell`) // 合計高さを出力
-		  .slice(0, data.messages.length) // 上から指定した個数を取得
-		  .toArray()       // jQuery オブジェクトを配列に変換
-		  .reduce((sum, elem) => sum + $(elem).outerHeight(true), 0); // 各要素の高さを合計
 
     if (totalHeight > 0) {
       $modalBody = $(`.room_${data.room_id}_cell .chat_modal_window .message_group`);
@@ -181,6 +189,30 @@ function fetchChatMessages(url) {
   }).fail(function (jqXHR, textStatus, errorThrown) {
     console.error('Error:', textStatus, errorThrown);
   })
+}
+function adjust_cell_size(){
+	messageCells = document.querySelectorAll(".message_cell");
+	messageCells.forEach((cell, index) => {
+		if (index === 0) { // 最初のセルには前の要素がないのでスキップ
+			cell.classList.add("no-common-class");
+			return;
+		}
+
+		nextCell = messageCells[index - 1];
+		currentClasses = Array.from(cell.classList);
+		nextClasses = Array.from(nextCell.classList);
+		commonClasses = currentClasses.filter(cls => nextClasses.includes(cls));
+		classesToRemove = ["message_cell", "no-common-class", "has-common-class"];
+		commonClasses = commonClasses.filter(cls => !classesToRemove.includes(cls));
+
+		if (commonClasses.length > 0) {// 共通クラスがある場合 == 同じ送信者
+			cell.classList.add("has-common-class");
+			cell.classList.remove("no-common-class");
+		} else {// 共通クラスがない場合 == 違う送信者
+			cell.classList.add("no-common-class");
+			cell.classList.remove("has-common-class");
+		}
+	});
 }
 function firstCellOpen(room_cell){
 	$messages = room_cell.find('.messages').first();

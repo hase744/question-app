@@ -77,7 +77,7 @@
 	  	display: flex;
 	  	flex-direction: column;
 	  	flex: 1;
-	  	background-color: $text_yellow;
+	  	background-color: white;
 	  	text-align: left;
 	  	width: 100%;
 	  	overflow-x: scroll;
@@ -87,11 +87,6 @@
 			display: flex;
 			flex-direction: column;
 		}
-		//.message_cell::after { //これがないとmessage_cellの高さが0になる
-		//	content: "";
-		//	display: block;
-		//	clear: both;
-		//}
 		.left_component{
 			flex-direction: row;
 			.text_area{
@@ -114,6 +109,8 @@
 			  	border-radius: 20px;
 			  	object-fit: cover;
 			  	margin: 10px;
+				margin-bottom: 5px;
+				margin-top: 5px;
 			}
 			.left_image{
 				margin-right: 0px;
@@ -125,11 +122,13 @@
 			}
 			.text_area{
 				display: flex;
-				margin: 10px;
+				margin: 5px 10px;
+				$right_text_color: #007bff;
+				$left_text_color: rgb(230, 230, 230);
 				.text{
 					padding: 3px 8px;
 					display: inline-block;
-					background-color: white;
+					background-color: $left_text_color;
 					padding-bottom: 5px;
 					border-radius: 10px;
 					position: relative;
@@ -138,6 +137,32 @@
 					.text_body{
 					  	white-space: pre-line;
 					}
+				}
+				.left_text{
+					margin-right: 0px;
+				}
+				.left_text::before {
+					content: '';
+					position: absolute;
+					top: 5px; /* 吹き出しの高さを調整 */
+					left: -17px; /* 吹き出しの位置を調整 */
+					border: 10px solid transparent;
+					border-right-color: $left_text_color; /* 吹き出しの背景色と同じ色を設定 */
+				}
+				.right_text{
+					float: right;
+					margin-left: 0px;
+					background-color: $right_text_color;
+					color: white;
+				}
+				.right_text::before {
+					  content: '';
+					  position: absolute;
+					  top: 5px; /* 吹き出しの高さを調整 */
+					  right: -7px; /* 吹き出しの位置を調整 */
+					  border: 10px solid transparent;
+					  border-right: none; /* 右側のボーダーを削除 */
+					  border-left-color: $right_text_color; /* 吹き出しの背景色と同じ色を設定 */
 				}
 				.datetime_area{
 					display: flex;
@@ -156,29 +181,21 @@
 				display: inline-block;
 				flex: 1;
 			}
-			.left_text{
-				margin-right: 0px;
+		}
+		.has-common-class {
+			.right_text::before, .left_text::before {
+				display: none;
 			}
-			.left_text::before {
-				content: '';
-				position: absolute;
-				top: 5px; /* 吹き出しの高さを調整 */
-				left: -17px; /* 吹き出しの位置を調整 */
-				border: 10px solid transparent;
-				border-right-color: white; /* 吹き出しの背景色と同じ色を設定 */
+		}
+		.has-common-class .message_component img {
+			visibility: hidden;
+			.text_area{
+				margin: 5px 10px ;
 			}
-			.right_text{
-			  	float: right;
-				margin-left: 0px;
-			}
-			.right_text::before {
-			  	content: '';
-			  	position: absolute;
-			  	top: 5px; /* 吹き出しの高さを調整 */
-			  	right: -7px; /* 吹き出しの位置を調整 */
-			  	border: 10px solid transparent;
-			  	border-right: none; /* 右側のボーダーを削除 */
-			  	border-left-color: white; /* 吹き出しの背景色と同じ色を設定 */
+		}
+		.no-common-class{
+			.text_area{
+				margin: 10px 10px ;
 			}
 		}
 		.image_component{
@@ -189,7 +206,10 @@
 				flex-direction: column;
 				width: 60%;
 				border-radius: 10px;
-				margin: 10px;
+				margin: 5px 10px;
+			}
+			.image_length_0{
+				margin: 0px;
 			}
 		}
 		.item_image{
@@ -221,7 +241,8 @@
 				border-radius: 10px;
 				padding: 0px 10px;
 				color: white;
-				background-color: $medium_text_yellow;
+				//background-color: $medium_text_yellow;
+				background-color: grey;
 
 			}
 		}

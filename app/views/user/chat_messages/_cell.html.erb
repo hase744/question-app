@@ -1,4 +1,4 @@
-<div class="message_cell" created_at="<%= created_at %>">
+<div class="message_cell message_cell_<%= side%>" side='<%= "#{side}"%>' created_at="<%= created_at %>">
 	<div class='message_component <%= "#{side}_component"%>'>
 		<%#= image_tag  image_url, class: "image #{side}_image" #これを使うとimage_url: ${message.image_url}ができない%>
 		<img src="<%= image_url%><%=%>", class='<%= "image #{side}_image"%>' />
@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	<div class="image_component <%=side%>_image">
-		<div class="item_image_area">
+		<div class="item_image_area image_length_<%= image_length %>">
 			<%= images %>
 		</div>
 		<div class="image_rest">
