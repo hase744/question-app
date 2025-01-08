@@ -35,6 +35,12 @@ class User::ChatMessagesController < User::Base
     ActiveRecord::Base.transaction do
       if save_models
         @message = ChatMessage.find(@message.id)
+        message_json_with_class = @message.json(@message.receiver)
+        message_json_with_class[:class_name] = @message.room.cell_class_name
+        ChatMessagesChannel.broadcast_to(
+          @message.receiver,
+          message: message_json_with_class
+        )
         render json: {
           success: true,
           message: @message.json(current_user)

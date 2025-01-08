@@ -65,8 +65,6 @@ $(".chat-form").on("submit", function (e) {
 	$formData = new FormData($form[0]); // FormData を生成
 	$chat_modal_window = $form.closest('.chat_modal_window');
 	$room_cell = $form.closest('.room_cell');
-	$messages = $chat_modal_window.find('.messages');
-	$modalBody = $chat_modal_window.find('.message_group');
 
 	$.ajax({
 		url: $form.attr("action"),
@@ -75,11 +73,7 @@ $(".chat-form").on("submit", function (e) {
 		processData: false, // ファイル送信のため false に設定
 		contentType: false, // ファイル送信のため false に設定
 		success: function (response) {
-			html = messageComponent(response.message);
-			$messages.append(html);
-			$room_cell.find('.text_area .message')[0].innerHTML = response.message.body;
-			$room_cell.find('.text_area .datetime')[0].innerHTML = response.message.readable_created_at;
-			$modalBody.scrollTop($modalBody[0].scrollHeight);
+			updateMessage({room_cell: $room_cell, message: response.message})
 			$form[0].reset(); // フォームをリセット
 			$chat_modal_window.find('.alert_area')[0].innerHTML = '';
 			$form.find(':submit').prop('disabled', false); 
@@ -94,6 +88,16 @@ $(".chat-form").on("submit", function (e) {
 		}
 	});
 });
+
+function updateMessage({room_cell, message}){
+	$messages = room_cell.find('.messages');
+	$modalBody = room_cell.find('.message_group');
+	html = messageComponent(message);
+	$messages.append(html);
+	room_cell.find('.text_area .message')[0].innerHTML = message.body;
+	room_cell.find('.text_area .datetime')[0].innerHTML = message.readable_created_at;
+	$modalBody.scrollTop($modalBody[0].scrollHeight);
+}
 
 function messageComponent(message){
 	images = message.images.map(item => `
