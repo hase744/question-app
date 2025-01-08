@@ -117,8 +117,9 @@
 				float: left;
 			}
 			.right_image{
-				margin-left: 0px;
-				float: right;
+				//margin-left: 0px;
+				//float: right;
+				display: none;
 			}
 			.text_area{
 				display: flex;
@@ -133,7 +134,7 @@
 					border-radius: 10px;
 					position: relative;
 					min-height: 20px;
-					max-width: 400px;
+					//max-width: 400px;
 					.text_body{
 					  	white-space: pre-line;
 					}
