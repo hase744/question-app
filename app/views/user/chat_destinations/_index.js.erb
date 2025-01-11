@@ -228,3 +228,11 @@ function firstCellOpen(room_cell){
 function openModal(room_cell){
 	room_cell.find('.chat_modal_window').addClass("openning");
 }
+if(<%=@reload%><%=%>){
+	const currentUrl = window.location.href;
+	if (currentUrl.includes('?')) {// パラメーターが既に存在する場合
+	  window.location.href = currentUrl + '&_=' + new Date().getTime();
+	} else {
+	  window.location.href = currentUrl.split('#')[0] + '?_=' + new Date().getTime();
+	}
+}

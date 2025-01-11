@@ -44,6 +44,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.1]
       #t.string :categories
       t.text :track_record
       t.text :description
+      t.text :connectable_channels, default: nil
       t.string :youtube_id
       t.string :video
 

@@ -19,14 +19,14 @@ class User::ChatDestinationsController < User::Base
     @chat_destination = current_user.chat_destinations
       .find_by(target: @target) if @target
     @chat_destinations = current_user.chat_destinations
-      .joins(room: :messages) # ChatRoomとMessageを結合
+      .left_joins(room: :messages) # ChatRoomとMessageを結合
       .group('chat_destinations.id, chat_rooms.last_message_at') # 重複を避けるためにグループ化
-      .having('COUNT(chat_messages.id) > 0') # メッセージが1件以上ある条件
+      .having('COUNT(chat_messages.id) > 0 OR chat_destinations.id = ?', @chat_destination&.id)
       .solve_n_plus_1
     if @chat_destination.present?
       @chat_destinations = @chat_destinations
         .select("chat_destinations.*, CASE WHEN chat_destinations.id = #{ActiveRecord::Base.connection.quote(@chat_destination.id)} THEN 0 ELSE 1 END AS priority")
-        .order("priority ASC, chat_rooms.last_message_at DESC")
+        .order(Arel.sql("priority ASC, chat_rooms.last_message_at IS NULL DESC, chat_rooms.last_message_at DESC"))
     else
       @chat_destinations = @chat_destinations
         .order("chat_rooms.last_message_at DESC") # last_message_atでソート

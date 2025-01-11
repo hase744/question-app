@@ -695,6 +695,7 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
     t.text "admin_description"
     t.text "track_record"
     t.text "description"
+    t.text "connectable_channels"
     t.string "youtube_id"
     t.string "video"
     t.integer "unread_notifications", default: 0

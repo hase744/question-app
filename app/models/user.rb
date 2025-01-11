@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :confirmable
   mount_uploader :image, ImageUploader
   mount_uploader :header_image, ImageUploader
+  serialize :connectable_channels, Array
   store_in_background :image
   store_in_background :header_image
 

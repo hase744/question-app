@@ -4,6 +4,7 @@ class User::Base < ApplicationController
   after_action :create_access_log
   after_action :save_current_path
   include RedirectHandlers
+  include ChannelHandlers
   def create_access_log
     if user_signed_in?
       AccessLog.create(
