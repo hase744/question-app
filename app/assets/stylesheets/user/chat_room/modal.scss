@@ -225,7 +225,6 @@
 		}
 		.right_image{
 			flex-direction: row-reverse;
-			margin-right: 30px;
 			text-align: right;
 		}
 		.image_rest{
@@ -255,6 +254,7 @@
 		}
 	}
 	.submit_form_area{
+		box-shadow: 0 0 2px lightgray;
 		.chat-form{
 			padding: 0px 10px;
 			display: flex;
@@ -278,7 +278,7 @@
 				.chat-input {
 					width: calc(100% - 70px);
 					resize: vertical;
-					height: 65px;
+					height: calc(23px + 40px);// 元々のtextareaが22pxでborderが1px
 					padding: 10px;
 					border: 1px solid #ddd;
 					border-radius: 5px;
@@ -364,6 +364,35 @@
 					}
 	
 				}
+			}
+		}
+	}
+	.creating_state{
+		display: none;
+		$dark_color: dimgrey;
+		.text_body span {
+			color: $dark_color;
+			animation: color-change 0.7s infinite;
+			animation-delay: calc(var(--order) * 0.15s);
+		}
+		.text_body span:nth-child(1) {
+			--order: 0;
+		}
+		.text_body span:nth-child(2) {
+			--order: 1;
+		}
+		.text_body span:nth-child(3) {
+			--order: 2;
+		}
+		@keyframes color-change {
+			0%, 33% {
+			   color: $dark_color;
+			}
+			34%, 66% {
+			   color: lightgrey;
+			}
+			67%, 100% {
+			   color: $dark_color;
 			}
 		}
 	}

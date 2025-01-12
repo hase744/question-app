@@ -1,13 +1,13 @@
-<div class="message_cell message_cell_<%= side%>" side='<%= "#{side}"%>' created_at="<%= created_at %>">
+<div class="message_cell message_cell_<%= side%> message_cell_<%=record_id %>" side='<%= "#{side}"%>' created_at="<%= created_at %>" record_id="<%=record_id %>">
 	<div class='message_component <%= "#{side}_component"%>'>
 		<%#= image_tag  image_url, class: "image #{side}_image" #これを使うとimage_url: ${message.image_url}ができない%>
 		<img src="<%= image_url%><%=%>", class='<%= "image #{side}_image"%>' />
 		<div class="text_area">
 			<div class="text <%=side%>_text">
-				<div class="text_body"><%= body%></div>
+				<div class="text_body"><%= raw body%></div>
 			</div>
 			<div class="datetime_area">
-				<div class="datetime"><%=is_read%></div>
+				<div class="datetime is_read_status"><%=is_read_status%></div>
 				<div class="datetime"><%= created_at_display %></div>
 			</div>
 		</div>

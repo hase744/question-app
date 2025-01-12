@@ -161,7 +161,7 @@ namespace :user do
     resources :chat_rooms do
       member do
         get :cells_modal, to: 'chat_rooms#cells_modal'
-        get :cells_modal, to: 'chat_rooms#cells_modal'
+        put :is_creating, to: 'chat_rooms#is_creating'
       end
     end
     resources :configs do

@@ -13,7 +13,22 @@
 		<div class="alert_area"></div>
 		<div class="message_group">
 			<%= render 'user/shared/loading_animation' %>
-			<div class="messages"></div>
+			<div class="messages">
+			</div>
+			<div class="creating_state">
+			<%= render "user/chat_messages/cell", 
+				image_url: destination.target.thumb_with_default,
+				side: 'left',
+				body: '<span>●</span>&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;<span>●</span>',
+				is_read_status: "",
+				created_at_display: '',
+				created_at: '',
+				date: 'undefined',
+				record_id: '',
+				images: '',
+				image_length: '0'
+			%>
+			</div>
 		</div>
 		<div class="submit_form_area">
 		<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, html: { class: "chat-form" } do |f| %>

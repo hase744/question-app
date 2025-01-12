@@ -18,16 +18,25 @@ $('.chat_destination_cell_area .chat_destination_cell').on('click', function(e){
 });
 $(document).on('focus', '.chat_destination_cell_area .chat-input', function(e){
 	$(this).css('height', '40vh');
+	$messages = $(this).closest('.chat_modal_window').find(`.messages`);
+	roomId = $(this).closest('.room_cell').attr('class').match(/room_(\d+)_cell/)[1];
+	submitCreating(true, roomId)
+	console.log("入力中");
 });
 $(document).on('blur', '.chat_destination_cell_area .chat-input', function(e){
-	$(this).css('height', '70px');
+	$(this).css('height', '63px');
+	$messages = $(this).closest('.chat_modal_window').find(`.messages`);
+	roomId = $(this).closest('.room_cell').attr('class').match(/room_(\d+)_cell/)[1];
+	submitCreating(false, roomId);
+	console.log("入力してない");
 });
 $('.chat_destination_cell.button').on('click', function(e) {
 	firstCellOpen($(this).closest('.room_cell'));
 });
-$(document).on("change", ".file-input", function () {
-    const fileCount = this.files.length;
-		$(this).closest('.room_cell').find('.file_label')[0].innerHTML = `${fileCount}件選択中`
+
+$(document).on("input", ".file-input", function () {
+  const fileCount = this.files.length;
+	$(this).closest('.room_cell').find('.file_label')[0].innerHTML = `${fileCount}件選択中`
 });
 $('.message_group').on('scroll', function () {
 	$(this).scrollTop($(this).scrollTop()); //スクロール位置を更新 これがないとfetchChatMessagesでisLoadingだけ更新されて、safariで複数ページ同時に送信されちゃう
@@ -110,10 +119,11 @@ function messageComponent(message){
 			image_url: "${message.image_url}",
 			side: '${message.side}',
 			body: '${message.body}',
-			is_read: "${message.is_read_status}",
+			is_read_status: "${message.is_read_status}",
 			created_at_display: '${message.created_at_display}',
 			created_at: '${message.created_at}',
 			date: '${message.date}',
+			record_id: '${message.id}',
 			images: '${images}',
 			image_length: '${images.length}'
 		%>
@@ -227,6 +237,25 @@ function firstCellOpen(room_cell){
 }
 function openModal(room_cell){
 	room_cell.find('.chat_modal_window').addClass("openning");
+}
+function submitCreating(state, id) {
+  const url = `/user/chat_rooms/${id}/is_creating`;
+  $.ajax({
+    url: url,
+    type: 'PUT', // HTTPメソッド
+    data: {
+      is_creating: state // 必要に応じてデータを送る
+    },
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') // CSRFトークンを含める
+    },
+    success: function(response) {
+      console.log('Chat room creation updated successfully:', response);
+    },
+    error: function(xhr, status, error) {
+      console.error('Failed to update chat room creation:', error);
+    }
+  });
 }
 if(<%=@reload%><%=%>){
 	const currentUrl = window.location.href;

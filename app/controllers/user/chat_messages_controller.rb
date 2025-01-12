@@ -19,6 +19,10 @@ class User::ChatMessagesController < User::Base
   def mark_as_read
     if messages = ChatMessage.where(receiver: current_user).where(id: params[:message_ids])
       messages.update_all(is_read: true)
+      ChatMessagesChannel.broadcast_to(
+        messages.first.sender,
+        record_ids: params[:message_ids]
+      )
     end
   end
 

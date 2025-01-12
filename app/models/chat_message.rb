@@ -14,6 +14,10 @@ class ChatMessage < ApplicationRecord
     user == self.sender ? (self.is_read ? '既読' : '未読') : ''
   end
 
+  def cell_class_name
+    "message_cell_#{self.id}"
+  end
+
   def json(user)
     {
       id: self.id,
