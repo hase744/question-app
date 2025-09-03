@@ -53,10 +53,9 @@ test:
 production:
   <<: *default
   database: question_app_production
-  username: <%= Rails.application.credentials.postgresql[:username] %>
-  password: <%= Rails.application.credentials.postgresql[:password] %>
-  adapter: postgresql
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  host: <%= ENV["DB_HOST"] %>
+  port: <%= ENV["DB_PORT"] || 5432 %>
   encoding: utf8
-  host: <%= Rails.application.credentials.postgresql[:host] %>
-  port: 5432
   
