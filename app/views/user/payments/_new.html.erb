@@ -6,6 +6,7 @@
 		<h2 class="total_points"><span class="total_point_label">現在の保有ポイント：</span><%=current_user.total_points%>p</h2>
 		<h3 class="point_description">１p = １円</h3>
 		<%= form_with model: @payment, url: secret_user_payments_path, method: :PUT, id:"form", class:'field_area', onsubmit: "return false;" do |f|%>
+				<%= hidden_field_tag :return_to, request.fullpath %>
 		    <label>購入するポイント</label></br>
 		    <div class="input_field select_area">
 		        <%=f.select :value, options_for_select(@payment.point_options, selected: @payment.point), id:"payment_value"%>

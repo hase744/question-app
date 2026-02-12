@@ -1,0 +1,54 @@
+<h3 class="service_new_title">ダイレクトメッセージプラン</h3>
+<div class="service_new_zone">
+    <div class="service_new_area input_area">
+		<div class="field_area length_field_area text_field_area">
+    		<%= form_with model: @chat_service, url: user_chat_services_path, method: :post do |f| %>
+				<div class="field_area">
+					<%= f.label :type_name%><br />
+					<div class="select_area">
+					  	<%= f.select 'type_name', options_for_select(ChatService.selector_hash, selected: @chat_service.type_name),  class:"" %>
+					</div>
+        		</div>
+
+        		<div class="field_area">
+        		  	<%= f.label :price, class:"field_label"%>（<%=@chat_service.price_minimum_number%>〜<%=@chat_service.price_max_number%>円）<br/>
+        		  	<div class="select_area">
+        		  	  	<%= f.select 'price', options_for_select(@chat_service.price_options, selected: @chat_service.price), include_blank: true,  class:"price_field" %>
+        		  	</div>
+        		</div>
+
+				<div class="field_area limit_field_area">
+					<%= f.label :limit%><br />
+					<div class="select_area">
+					  	<%= f.select 'limit', options_for_select(@chat_service.limit_options, selected: @chat_service.limit),  class:"" %>
+					</div>
+        		</div>
+
+				<div class="submit_area">
+					<%= f.submit '保存', class:"big_submit", data: {confirm: "作成しますか？"}  %>
+				</div>
+			<% end %>
+		</div>
+    </div>
+</div>
+<script>
+// 初期状態の設定
+  var $limitFieldArea = $('.limit_field_area');
+  var $selectType = $('#chat_service_type_name');
+
+  function toggleLimitFieldArea() {
+    if ($selectType.val() === 'one_time') {
+      $limitFieldArea.hide(); // 非表示
+    } else {
+      $limitFieldArea.show(); // 表示
+    }
+  }
+
+  // 初期表示を設定
+  toggleLimitFieldArea();
+
+  // select要素の変更時に切り替え
+  $selectType.on('change', function() {
+    toggleLimitFieldArea();
+  });
+</script>

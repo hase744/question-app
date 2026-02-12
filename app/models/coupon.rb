@@ -92,7 +92,7 @@ class Coupon < ApplicationRecord
   def validate_usage_type
     case usage_type
     when "unlimited"
-      errors.add(:discount_rate, "無制限の際は割引率は100%未満に設定できません") if discount_rate < 1
+      errors.add(:discount_rate, "送り放題の際は割引率は100%未満に設定できません") if discount_rate < 1
     when "one_time"
       #errors.add(base, "１度きりの際は割引率は100%に設定できません") if discount_rate >= 1
     end

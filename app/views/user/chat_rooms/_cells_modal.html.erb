@@ -1,53 +1,81 @@
-<div class="chat_modal_window new_message_modal">
-    <div class="modal_background"></div>
-    <div class="modal_window_body">
+<div class="chat_modal_window new_message_modal" should_buy="<%=destination.usable_chat_transactions.blank? && destination.target.chat_services.present? %>" data-turbo="true">
+  <div class="modal_background"></div>
+  <div class="modal_window_body">
 		<div class="top_area">
 			<div class="arrow_area modal_delete">
 				<div class="fa-solid fa-chevron-left arrow"></div>
 			</div>
 			<%= link_to(user_account_path(destination.target.id), class: 'user_link') do %>
 				<%= image_tag destination.target.thumb_with_default %>
-				<div class="right_side"><%= destination.target.name %></div>
+				<div class="right_side one_line_text"><%= destination.target.name %></div>
 			<% end %>
+			<div class='dm_plan_area'>DMプラン</div>
 		</div>
 		<div class="alert_area"></div>
 		<div class="message_group">
 			<%= render 'user/shared/loading_animation' %>
-			<div class="messages">
-			</div>
-			<div class="creating_state">
-			<%= render "user/chat_messages/cell", 
-				image_url: destination.target.thumb_with_default,
-				side: 'left',
-				body: '<span>●</span>&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;<span>●</span>',
-				is_read_status: "",
-				created_at_display: '',
-				created_at: '',
-				date: 'undefined',
-				record_id: '',
-				images: '',
-				image_length: '0'
-			%>
+			<%= turbo_stream_from "destination_#{destination.id}" %>
+			<div class="messages" id="destination_<%= destination.id %>_messages"></div>
+			<div class="creating_state" id="creating_state_<%= destination.id %>">
+				<%= render "user/chat_messages/cell", 
+					image_url: destination.target.thumb_with_default,
+					side: 'left',
+					body: '<span>●</span>&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;<span>●</span>',
+					is_read_status: "",
+					created_at_display: '',
+					created_at: '',
+					date: 'undefined',
+					record_id: '',
+					images: '',
+					image_length: '0'
+				%>
 			</div>
 		</div>
 		<div class="submit_form_area">
-		<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, html: { class: "chat-form" } do |f| %>
-			<div class="file_label"></div>
-			<div class="chat-container">
-				<%= f.text_area :body, placeholder: "メッセージを入力", value:"", class: "chat-input" %>
-				<%= f.hidden_field :chat_room_id, value: room.id %>
-				<div class="button_area">
-					<label class="file-button square_button">
-						<%= f.file_field :image, autocomplete: "image", class: "file-input", accept: accept_image, name: "items[file][]", multiple: true %>
-						<i class="fa-solid fa-image"></i>
-					</label>
-					<div class="chat-send-button square_button">
-						<%= f.submit "", class: "submit_button square_button",maxlength:100 do %><% end %>
-						<label class="far fa-paper-plane "></label>
+			<%= form_with model: ChatMessage.new, url: user_chat_messages_path, method: :POST, html: { class: "chat-form" } do |f| %>
+				<div class="file_label"></div>
+				<div class="chat-container">
+					<%= f.text_area :body, placeholder: "メッセージを入力", value:"", class: "chat-input" %>
+					<%= f.hidden_field :chat_room_id, value: room.id %>
+					<div class="button_area">
+						<label class="file-button square_button">
+							<%= f.file_field :image, autocomplete: "image", class: "file-input", accept: accept_image, name: "items[file][]", multiple: true %>
+							<i class="fa-solid fa-image"></i>
+						</label>
+						<div class="chat-send-button square_button">
+							<%= f.submit "", class: "submit_button square_button",maxlength:100 do %><% end %>
+							<label class="far fa-paper-plane "></label>
+						</div>
 					</div>
 				</div>
-			</div>
-		<% end %>
+			<% end %>
 		</div>
-    </div>
+  </div>
+  <div class="modal_window chat_service_modal">
+	 	<div class="modal_background"></div>
+		<div class="modal_window_body">
+		  <div class="service_area">
+				<div class="chat_services_area">
+					<div>購入可能なDMプラン</div>
+			    <% destination.target.chat_services.each do |cs| %>
+						<%= render 'user/chat_services/cell', chat_service: cs %>
+			    <% end %>
+				</div>
+				<!--
+			  <div><%= '購入済み' if destination.usable_chat_transactions.present? %></div>
+				<div class="chat_transactions_area">
+			  	<% destination.usable_chat_transactions.each do |ct| %>
+					<%= render 'user/chat_transactions/cell', chat_transaction: ct %>
+			  	<% end %>
+				</div>
+				-->
+	    </div>
+	  </div>
+  </div>
 </div>
+<script>
+$('.dm_plan_area').on('click', function(){
+	chat_service_modal = $(this).closest('.chat_modal_window').find('.chat_service_modal');
+	chat_service_modal.addClass("open");
+});
+</script>

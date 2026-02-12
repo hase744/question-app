@@ -38,6 +38,7 @@
 			display: flex;
 			height: $link_height;
 			flex-direction: row;
+			flex: 1;
 			img{
 				display: flex;
 				height: $link_height * 0.8;
@@ -51,6 +52,9 @@
 				flex: 1;
 				align-items: center;
 			}
+		}
+		.dm_plan_area{
+			cursor: pointer;
 		}
 	}
   	.modal_window_body{
@@ -394,6 +398,16 @@
 			67%, 100% {
 			   color: $dark_color;
 			}
+		}
+	}
+	.chat_service_modal{
+		.service_area{
+			display: flex;
+			flex-direction: column;
+		}
+		.chat_transactions_area{
+			flex: 1;
+			overflow-x: scroll;
 		}
 	}
 }

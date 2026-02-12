@@ -20,6 +20,11 @@ ja:
       inquiry: お問い合わせ
       access_log: アクセス履歴
       error_log: エラー履歴
+      chat_room: ループ
+      chat_destination: 宛先
+      chat_service: DMプラン
+      chat_message: メッセージ
+      chat_transaction: DMプラン購入
     attributes:
       name: ユーザー
       user:
@@ -159,7 +164,7 @@ ja:
         end_at: 有効期限
         minimum_purchase_amount: 最低購入金額
       coupon/usage_type:
-        unlimited: 無制限
+        unlimited: 送り放題
         one_time: １回きり
       notification:
         id: ID
@@ -172,12 +177,27 @@ ja:
         amount: ポイント
         type_name: 概要
         created_at: 日時
+      point_record/type_name:
+        charge: チャージ
+        refund: 返金
+        contract: 購入
+        cancel: キャンセル
+        rejection: お断り
+        violation: 取引無効による払い戻し
+        reward: 回答を募集
+        retraction: 質問の取り下げ
+        chat_transaction: DMプランの購入
       balance_record:
         user_id: ユーザー
         id: ID
         amount: 金額
         type_name: 概要
         created_at: 日時
+      balance_record/type_name:
+        deal: 回答報酬
+        payout: 入金
+        violation: 取引無効による収益の返還
+        chat_transaction: DMの購入
       admin_user:
         id: ID
         name: 名前
@@ -215,6 +235,22 @@ ja:
       country:
         japanese_name: 国名
         code: 電話番号コード
+      chat_room:
+      chat_destination:
+      chat_service:
+        price: 料金
+        type_name: タイプ
+        limit: 送信限度
+      chat_service/type_name:
+        one_time: １回
+        one_week: １週間
+        one_month: １ヶ月
+        unlimited: 送り放題
+      chat_message:
+        body: 本文
+      chat_transaction:
+        count: 回数
+        type_name: DMプラン
   views:
       price: '料金'
       pagination:

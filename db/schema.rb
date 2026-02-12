@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_03_185554) do
+ActiveRecord::Schema.define(version: 2025_11_03_094138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,11 +101,13 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
     t.bigint "user_id", null: false
     t.bigint "payout_id"
     t.bigint "transaction_id"
+    t.bigint "chat_transaction_id"
     t.integer "amount", null: false
     t.integer "type_name", null: false
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_transaction_id"], name: "index_balance_records_on_chat_transaction_id"
     t.index ["payout_id"], name: "index_balance_records_on_payout_id"
     t.index ["transaction_id"], name: "index_balance_records_on_transaction_id"
     t.index ["user_id"], name: "index_balance_records_on_user_id"
@@ -140,15 +142,18 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
   create_table "chat_messages", force: :cascade do |t|
     t.bigint "chat_room_id"
     t.bigint "chat_destination_id"
+    t.bigint "chat_transaction_id"
     t.bigint "sender_id"
     t.bigint "receiver_id"
     t.text "body"
+    t.integer "response_time"
     t.boolean "is_read", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["body"], name: "index_chat_messages_on_body"
     t.index ["chat_destination_id"], name: "index_chat_messages_on_chat_destination_id"
     t.index ["chat_room_id"], name: "index_chat_messages_on_chat_room_id"
+    t.index ["chat_transaction_id"], name: "index_chat_messages_on_chat_transaction_id"
     t.index ["receiver_id"], name: "index_chat_messages_on_receiver_id"
     t.index ["sender_id"], name: "index_chat_messages_on_sender_id"
   end
@@ -166,20 +171,34 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
   create_table "chat_services", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "price", null: false
-    t.integer "type"
+    t.integer "type_name"
+    t.integer "limit"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["limit"], name: "index_chat_services_on_limit"
     t.index ["price"], name: "index_chat_services_on_price"
-    t.index ["type"], name: "index_chat_services_on_type"
+    t.index ["type_name"], name: "index_chat_services_on_type_name"
     t.index ["user_id"], name: "index_chat_services_on_user_id"
   end
 
-  create_table "chat_transactions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "service_id", null: false
+  create_table "chat_transaction_messages", force: :cascade do |t|
     t.bigint "chat_message_id", null: false
+    t.bigint "chat_transaction_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_message_id"], name: "index_chat_transaction_messages_on_chat_message_id"
+    t.index ["chat_transaction_id"], name: "index_chat_transaction_messages_on_chat_transaction_id"
+  end
+
+  create_table "chat_transactions", force: :cascade do |t|
+    t.bigint "buyer_id", null: false
+    t.bigint "chat_service_id", null: false
+    t.bigint "chat_destination_id", null: false
     t.integer "state"
-    t.integer "type"
+    t.integer "type_name"
+    t.integer "count"
+    t.integer "remaining_count"
+    t.integer "limit"
     t.integer "price"
     t.integer "profit"
     t.integer "fee"
@@ -188,26 +207,31 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
     t.datetime "canceled_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["buyer_id"], name: "index_chat_transactions_on_buyer_id"
     t.index ["canceled_at"], name: "index_chat_transactions_on_canceled_at"
-    t.index ["chat_message_id"], name: "index_chat_transactions_on_chat_message_id"
+    t.index ["chat_destination_id"], name: "index_chat_transactions_on_chat_destination_id"
+    t.index ["chat_service_id"], name: "index_chat_transactions_on_chat_service_id"
+    t.index ["count"], name: "index_chat_transactions_on_count"
     t.index ["fee"], name: "index_chat_transactions_on_fee"
+    t.index ["limit"], name: "index_chat_transactions_on_limit"
     t.index ["price"], name: "index_chat_transactions_on_price"
     t.index ["profit"], name: "index_chat_transactions_on_profit"
+    t.index ["remaining_count"], name: "index_chat_transactions_on_remaining_count"
     t.index ["sended_at"], name: "index_chat_transactions_on_sended_at"
-    t.index ["service_id"], name: "index_chat_transactions_on_service_id"
     t.index ["state"], name: "index_chat_transactions_on_state"
     t.index ["transacted_at"], name: "index_chat_transactions_on_transacted_at"
-    t.index ["type"], name: "index_chat_transactions_on_type"
-    t.index ["user_id"], name: "index_chat_transactions_on_user_id"
+    t.index ["type_name"], name: "index_chat_transactions_on_type_name"
   end
 
   create_table "coupon_usages", force: :cascade do |t|
     t.bigint "coupon_id", null: false
     t.bigint "transaction_id"
+    t.bigint "chat_transaction_id"
     t.bigint "request_id"
     t.integer "amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_transaction_id"], name: "index_coupon_usages_on_chat_transaction_id"
     t.index ["coupon_id"], name: "index_coupon_usages_on_coupon_id"
     t.index ["request_id"], name: "index_coupon_usages_on_request_id"
     t.index ["transaction_id"], name: "index_coupon_usages_on_transaction_id"
@@ -342,11 +366,13 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
     t.bigint "payment_id"
     t.bigint "transaction_id"
     t.bigint "request_id"
+    t.bigint "chat_transaction_id"
     t.integer "amount", null: false
     t.integer "type_name", null: false
     t.text "description"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_transaction_id"], name: "index_point_records_on_chat_transaction_id"
     t.index ["payment_id"], name: "index_point_records_on_payment_id"
     t.index ["request_id"], name: "index_point_records_on_request_id"
     t.index ["transaction_id"], name: "index_point_records_on_transaction_id"
@@ -747,6 +773,7 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
   add_foreign_key "access_logs", "users"
   add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "announcement_items", "announcements"
+  add_foreign_key "balance_records", "chat_transactions"
   add_foreign_key "balance_records", "payouts"
   add_foreign_key "balance_records", "transactions"
   add_foreign_key "balance_records", "users"
@@ -756,12 +783,16 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
   add_foreign_key "chat_message_items", "chat_messages"
   add_foreign_key "chat_messages", "chat_destinations"
   add_foreign_key "chat_messages", "chat_rooms"
+  add_foreign_key "chat_messages", "chat_transactions"
   add_foreign_key "chat_messages", "users", column: "receiver_id"
   add_foreign_key "chat_messages", "users", column: "sender_id"
   add_foreign_key "chat_services", "users"
-  add_foreign_key "chat_transactions", "chat_messages"
-  add_foreign_key "chat_transactions", "services"
-  add_foreign_key "chat_transactions", "users"
+  add_foreign_key "chat_transaction_messages", "chat_messages"
+  add_foreign_key "chat_transaction_messages", "chat_transactions"
+  add_foreign_key "chat_transactions", "chat_destinations"
+  add_foreign_key "chat_transactions", "chat_services"
+  add_foreign_key "chat_transactions", "users", column: "buyer_id"
+  add_foreign_key "coupon_usages", "chat_transactions"
   add_foreign_key "coupon_usages", "coupons"
   add_foreign_key "coupon_usages", "requests"
   add_foreign_key "coupon_usages", "transactions"
@@ -775,6 +806,7 @@ ActiveRecord::Schema.define(version: 2025_01_03_185554) do
   add_foreign_key "operations", "admin_users"
   add_foreign_key "payments", "users"
   add_foreign_key "payouts", "users"
+  add_foreign_key "point_records", "chat_transactions"
   add_foreign_key "point_records", "payments"
   add_foreign_key "point_records", "requests"
   add_foreign_key "point_records", "transactions"

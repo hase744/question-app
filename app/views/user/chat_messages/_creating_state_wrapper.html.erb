@@ -1,0 +1,16 @@
+<div class="creating_state"
+     id="creating_state_<%= destination.id %>"
+     style="display: <%= show ? 'block' : 'none' %>;">
+  <%= render "user/chat_messages/cell",
+    image_url: destination.target.thumb_with_default,
+    side: 'left',
+    body: '<span>●</span>&nbsp;&nbsp;<span>●</span>&nbsp;&nbsp;<span>●</span>',
+    is_read_status: "",
+    created_at_display: '',
+    created_at: '',
+    date: 'undefined',
+    record_id: '',
+    images: '',
+    image_length: '0'
+  %>
+</div>

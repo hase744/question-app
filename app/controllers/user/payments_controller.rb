@@ -43,7 +43,7 @@ class User::PaymentsController < User::Base
     if @payment.save && intent.status == "succeeded"
       session[:message] = "#{@payment.value}pチャージしました"
       flash.notice = "#{@payment.value}pチャージしました"
-      redirect_back(fallback_location: root_path)
+      redirect_to(params[:return_to])
     else
       flash.notice = "チャージに失敗しました。"
     end
@@ -68,7 +68,7 @@ class User::PaymentsController < User::Base
     else
       flash.notice = "チャージできません"
     end
-    redirect_back(fallback_location: root_path)
+    redirect_to(params[:return_to])
   end
 
   def payment_params

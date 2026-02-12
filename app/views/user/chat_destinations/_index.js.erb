@@ -18,6 +18,11 @@ $('.chat_destination_cell_area .chat_destination_cell').on('click', function(e){
 });
 $(document).on('focus', '.chat_destination_cell_area .chat-input', function(e){
 	$(this).css('height', '40vh');
+	should_buy = $(this).closest('.chat_modal_window').attr('should_buy');
+	console.log(`should_buy : ${should_buy}`)
+	if(should_buy == 'true'){
+		$(this).closest('.chat_modal_window').find('.chat_service_modal').addClass("open");
+	}
 	$messages = $(this).closest('.chat_modal_window').find(`.messages`);
 	roomId = $(this).closest('.room_cell').attr('class').match(/room_(\d+)_cell/)[1];
 	submitCreating(true, roomId)
@@ -110,9 +115,7 @@ function updateMessage({room_cell, message}){
 
 function messageComponent(message){
 	images = message.images.map(item => `
-	<a class='image_area' href='${item.link}' target='_blank'>
-		<img class='item_image ${item.class_name}' src='${item.url}'>
-	</a>
+	<%= render "user/chat_messages/image_template"%>
 	` ).join('');
 	var messageHTML = `
 		<%= render "user/chat_messages/cell", 

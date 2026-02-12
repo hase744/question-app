@@ -1,0 +1,35 @@
+<div class="chat_transaction_show_zone">
+	<div class="component_area">
+		<div class="user_area">
+			<%= image_tag @chat_transaction.seller.image_with_default %>
+			<%= link_to @chat_transaction.seller.name, user_account_path(@chat_transaction.seller.id), class: "name_link" %>
+		</div>
+		<div class="chat_transaction_cell_flame">
+			<div class="price_area">
+				<span class="price_label"><%= @chat_transaction.price %></span><span class="unit">円</span>
+				/<%= @chat_transaction.type_name_japanese%>
+  			</div>
+			<div class="count_area">
+				残り：
+				<% if @chat_transaction.type_name == 'one_time' %>
+					<%= @chat_transaction.count - @chat_transaction.chat_messages.count %>回
+				<% else %>
+					<% first_message_created_at = @chat_transaction.chat_messages&.first&.created_at %>
+					<% if first_message_created_at %>
+    		      		<% remaining_time_in_seconds = (first_message_created_at + @chat_transaction.scope - DateTime.now).to_i %>
+    		      		<% days = remaining_time_in_seconds / (24 * 3600) %>
+    		      		<% hours = (remaining_time_in_seconds % (24 * 3600)) / 3600 %>
+    		      		<% minutes = (remaining_time_in_seconds % 3600) / 60 %>
+						<% if days > 0%>
+    		      			<%= "#{days}日" %>
+						<% else %>
+    		      			<%= "#{hours}:#{minutes}" %>
+						<% end %>
+					<% else %>
+					7日
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

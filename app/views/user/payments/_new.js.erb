@@ -7,10 +7,15 @@ $("#payment_value").change(function(){
 //document.addEventListener("turbo:load", function () {
 $(function(){
   const form = document.getElementById("form");
+  const submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
   form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    submitButton.disabled = true;
+    submitButton.value = "購入中…";
+    console.log("購入中…")
     const formData = new FormData(form);
     const value = formData.get("payment[value]");
+    const returnTo = formData.get("return_to");
 
     try {
       const response = await fetch("<%= secret_user_payments_path %>", {
@@ -20,7 +25,7 @@ $(function(){
           "Accept": "application/json",
           "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
         },
-        body: JSON.stringify({ payment: { value } })
+        body: JSON.stringify({ payment: { value }, return_to: returnTo })
       });
 
       if (!response.ok) {
@@ -46,9 +51,11 @@ $(function(){
             headers: {
               "Content-Type": "application/json",
               "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content
-            }
+            },
+            body: JSON.stringify({ return_to: returnTo })
           });
 					if (checkResponse.ok) {
+            alert("購入しました。");
             location.reload(); // または、別のページにリダイレクト
           } else {
             alert("決済確認に失敗しました。");

@@ -100,3 +100,4 @@ gem "whenever"
 gem 'factory_bot_rails'
 gem 'rails-controller-testing'
 gem 'net-http', '~> 0.6.0'
+gem "turbo-rails"

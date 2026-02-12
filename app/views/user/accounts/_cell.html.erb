@@ -24,6 +24,9 @@
                         <% user.user_categories.each do |c|%>
                             <span class="name_tag"><%=c.japanese_name%></span>
                         <% end %>
+                        <% if user.chat_services.present? %>
+                            <span class="name_tag">DM可能</span>
+                        <% end %>
                     </div>
                 </div>
 
@@ -44,7 +47,7 @@
                         </td>
                     </tr>
                     <tr class="category user_record">
-                        <td><span class="record_name">価格帯</span>　</td>
+                        <td><span class="record_name">料金帯</span>　</td>
                         <td class="record_content">
                             <%= render "user/accounts/price_range", user:user %>
                         </td>

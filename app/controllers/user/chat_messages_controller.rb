@@ -1,7 +1,7 @@
 class User::ChatMessagesController < User::Base
   before_action :check_login
+  before_action :check_can_send_message
   def cells
-    params[:page] = params[:page].to_i
     room = ChatRoom.find_by(id: params[:id])
     messages = room.messages
       .solve_n_plus_1
@@ -10,6 +10,7 @@ class User::ChatMessagesController < User::Base
       .per(15)
     render json: {
       messages: messages.map do |message|
+        puts message.json(current_user)
         message.json(current_user)
       end,
       room_id: room.id
@@ -29,8 +30,34 @@ class User::ChatMessagesController < User::Base
   def create
     @message = ChatMessage.new(chat_message_params)
     @message.sender = current_user
-    @message.receiver = @message.room.destinations.find_by(user: current_user).target
     @room = @message.room
+    @destination = @room.destinations.find_by(user: current_user)
+    @receiver_destination = @room.destinations.find_by(@message.receiver)
+    @message.receiver = @destination.target
+
+    # 前回の相手のメッセージを取得
+    last_message_from_receiver = @room.messages
+      .where(sender: @message.receiver)
+      .order(created_at: :desc)
+      .first
+
+    # response_timeを計算して設定（秒単位）
+    if last_message_from_receiver
+      @message.response_time = (Time.current - last_message_from_receiver.created_at).to_i
+    end
+
+    usable_transaction = @destination.usable_chat_transactions
+    if usable_transaction && usable_transaction.first #送信可能な購入がある
+      @message.chat_transaction = usable_transaction.first
+    elsif current_user.can_send_message_as_seller_to?(@destination.target) #返信できる販売がある
+      @message.chat_transaction = usable_transaction.first
+    elsif @room.destinations.where.not(user: current_user)[0].chat_transactions.blank?
+      render json: {
+        success: false,
+        errors: "DMプランを購入してください"
+      }, status: :unprocessable_entity
+      return
+    end
     @room.is_valid = true
     @room.last_message_body = @message.body
     @room.last_message_at = DateTime.now
@@ -41,10 +68,24 @@ class User::ChatMessagesController < User::Base
         @message = ChatMessage.find(@message.id)
         message_json_with_class = @message.json(@message.receiver)
         message_json_with_class[:class_name] = @message.room.cell_class_name
-        ChatMessagesChannel.broadcast_to(
-          @message.receiver,
-          message: message_json_with_class
+        h = @message.json(@message.receiver)
+        stream = "destination_#{@receiver_destination.id}"
+        target = "destination_#{@receiver_destination.id}_messages"
+
+        h[:images] = @message.items&.map do |item|
+          render_to_string(
+            partial: "user/chat_messages/image_component",
+            locals: { item: item }
+          ).to_s
+        end.join('')
+
+        Turbo::StreamsChannel.broadcast_append_to(
+          stream,
+          target: target,
+          partial: "user/chat_messages/cell",
+          locals: h
         )
+        
         render json: {
           success: true,
           message: @message.json(current_user)
@@ -87,5 +128,12 @@ class User::ChatMessagesController < User::Base
       :body,
       :chat_room_id
     )
+  end
+
+  def chat_message_purchased
+  end
+
+  def check_can_send_message
+
   end
 end

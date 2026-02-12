@@ -1,0 +1,76 @@
+@import '_variables';
+.chat_service_show_zone{
+	.chat_service_show{
+		//display: flex;
+		padding: 5px;
+		cursor: pointer;
+		text-align: center;
+		.user_area{
+			text-align: center;
+			img{
+				width: 100px;
+				height: 100px;
+				border-radius: 50px;
+				object-fit: cover;
+			}
+			.name_link{
+				display: block;
+				font-size: 25px;
+			}
+		}
+		.price_area{
+			margin: 0 auto;
+			text-align: center;
+			font-size: 25px;
+			cursor: pointer;
+			.price_label{
+				font-size: 30px;
+				color: darkred;
+			}
+			.unit{
+				font-size: 20px;
+			}
+		}
+		.price_condition_area{
+			margin: 0 auto;
+			max-width: 350px;
+		}
+		form {
+			margin: 0 auto;
+			max-width: 350px;
+			text-align: left;
+		}
+
+		.change_coupon{
+			margin-top: 0px;
+    	    color: $link_blue;
+    	    text-decoration: underline;
+    	    cursor: pointer;
+		}
+    	.request_content.coupon{
+    	    white-space: normal;
+			margin-top: 0px;
+    	    a{
+    	        color: $text_grey;
+    	    }
+    	    .fa-regular{
+    	        color: $ok_green;
+    	        font-weight: bold;
+    	    }
+    	    input{
+    	        transform: scale(1.5);
+    	        color: $ok_green;
+    	    }
+    	}
+    	.request_content{
+    	    line-height: 30px;
+    	}
+
+		.submit_area{
+			margin-top: 20px;
+			margin-bottom: 20px;
+			margin: 0 auto;
+			max-width: 350px;
+		}
+	}
+}

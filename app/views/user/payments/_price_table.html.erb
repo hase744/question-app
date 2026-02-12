@@ -1,21 +1,21 @@
 <table class="price_condition_area">
 	<tr>
-	    <th class="condition_label">
-	        <span class="condition_name ">必要ポイント</span>
-	    </th>
-	    <td>
-	        <span class="common_condition"><%=price%>p</span>
-	    </td>
+	  <th class="condition_label">
+	    <span class="condition_name ">必要ポイント</span>
+	  </th>
+	  <td>
+	    <span class="common_condition"><%=price%>p</span>
+	  </td>
 	</tr>
 	<tr>
-	    <th class="condition_label">
-	        <span class="condition_name ">不足ポイント</span>
-	    </th>
-	    <td>
-	<% color = (@deficient_point && @deficient_point > 0) ? "red" : 'black'%>
-	        <span class="common_condition "><span class="<%=color%>"><%=@deficient_point%>p</span>
-	<span class="open_button">ポイントを購入</span>
-	<%= render "user/payments/modal" %></span>
-	    </td>
+	  <th class="condition_label">
+	    <span class="condition_name ">不足ポイント</span>
+	  </th>
+	  <td>
+			<% color = (@deficient_point && @deficient_point > 0) ? "red" : 'black'%>
+	  	<span class="common_condition "><span class="<%=color%>"><%=@deficient_point%>p</span>
+			<span class="open_button">ポイントを購入</span>
+			<%= render "user/payments/modal" %></span>
+	  </td>
 	</tr>
 </table>

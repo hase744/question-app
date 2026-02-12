@@ -18,6 +18,10 @@ class ApplicationController < ActionController::Base
   before_action :set_current_nav_item
   Stripe.api_key = Rails.env.production? ? ENV['STRIPE_SECRET_KEY'] : ENV['STRIPE_SECRET_KEY_DEV']
 
+  def rescue404
+    render "errors/not_found", status: 404, layout: "alert"
+  end
+
   def create_error_log(e)
     @error_log = ErrorLog.new(
       error_class: e.class,

@@ -50,8 +50,10 @@ class User < ApplicationRecord
   has_many :announcement_receipts, dependent: :destroy
   has_many :announcements, through: :announcement_receipts, source: :announcement
   has_many :chat_destinations
+  has_many :chat_services
   has_many :messages
   has_many :chat_services
+  has_many :purchased_chat_transactions, class_name: "ChatTransaction", foreign_key: :buyer_id, dependent: :destroy
   
   validates :name, length: {maximum:15, minimum:1}
   validates :description, length: {maximum: :description_max_length}
@@ -447,6 +449,26 @@ class User < ApplicationRecord
     else
         false
     end
+  end
+
+  def can_send_message_as_seller_to?(receiver)
+    return false if receiver.nil?
+    return true if self == receiver
+
+    # seller → buyer（返信側）は常にOK
+    if ChatTransaction.joins(:chat_service)
+                      .where(state: :transacted)
+                      .where(chat_services: { user_id: self.id })
+                      .where(buyer_id: receiver.id)
+                      .exists?
+      return true
+    end
+
+    # buyer → seller は usable な取引が必要
+    ChatTransaction.sendable_as_seller_by(
+      sender: self,
+      receiver: receiver
+    ).exists?
   end
 
   def validate_registering_is_seller

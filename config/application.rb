@@ -19,6 +19,7 @@ module QuestionApp
         request_specs: false     # リクエストスペックを生成しない
     end
     config.stripe_publishable_key = Rails.env.production? ? ENV['STRIPE_PUBLISHABLE_KEY'] : ENV['STRIPE_PUBLISHABLE_KEY_DEV']
+    config.action_view.form_with_generates_remote_forms = false
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

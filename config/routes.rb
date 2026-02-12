@@ -147,6 +147,8 @@ namespace :user do
     resource :transaction_likes, only: [:create, :destroy, :show]
     resources :coupons, only: [:index, :show]
     resources :chat_destinations, only: [:index, :show]
+    resources :chat_services, only: [:new, :create, :edit, :update, :show]
+    resources :chat_transactions, only: [:create, :show, :index]
     resources :chat_messages, only: [:create]
     resource :chat_messages do
       member do

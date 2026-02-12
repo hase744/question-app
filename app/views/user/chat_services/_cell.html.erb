@@ -1,0 +1,17 @@
+<%= link_to(user_chat_service_path(chat_service.id), class:"chat_service_cell") do %>
+	<div class="price_area">
+		<% purchasing = chat_service.limit_display(current_user).present? %>
+		<% if purchasing %>
+		<span class="purchasing">購入中</span>
+		<% end %>
+		<span class="price_text">
+			<span class="price_label"><%= chat_service.price %></span><span class="unit">円</span>
+			/<%= chat_service.type_name_japanese%>
+			<% if purchasing %>
+			<span class="remaining">（<%= chat_service.limit_display(current_user)%>）<span>
+			<% end %>
+		</span>
+  	</div>
+	<div>
+	</div>
+<% end %>

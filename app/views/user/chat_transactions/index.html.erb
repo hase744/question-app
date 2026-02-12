@@ -1,0 +1,26 @@
+<div class="chat_transaction_index_zone">
+	<h3 class="input_new_title"><%= link_to "マイページ", user_configs_path, class:"main_area_top_link" %> > 購入したDMプラン</h3>
+	<table class="common_table">
+	  	<thead>
+	  	  	<tr>
+	  	  	  	<th><%= ChatTransaction.human_attribute_name(:type_name) %></th>
+	  	  	  	<th><%= ChatTransaction.human_attribute_name(:count) %></th>
+	  	  	  	<th>日時</th>
+	  	  	</tr>
+	  	</thead>
+	  	<tbody>
+	  	  	<% @chat_transactions.each do |ct| %>
+	  	  	  	<tr href="<%=user_chat_transaction_path(ct.id)%>">
+	  	  	  	  	<td><%= ct.price %>円/<%= ct.type_name_japanese %></td>
+	  	  	  	  	<td class="number">
+					<%= ct.count %>
+					</td>
+	  	  	  	<td><%= l(ct.created_at, format: :long) %></td>
+	  	  	  	</tr>
+	  	  	<% end %>
+	  	</tbody>
+	</table>
+</div>
+<script>
+<%= render "user/shared/javascript/common_table.js.erb" %>
+</script>

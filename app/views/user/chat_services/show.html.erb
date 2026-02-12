@@ -1,0 +1,70 @@
+<div class="chat_service_show_zone">
+	<div class="chat_service_show component_area">
+		<div class="user_area">
+			<%= image_tag @chat_service.user.image_with_default %>
+			<%= link_to @chat_service.user.name, user_account_path(@chat_service.user.id), class: "name_link" %>
+		</div>
+		<label>ダイレクトメッセージプラン</label>
+	  	<div class="price_area">
+		  	<span class="price_label"><%= @chat_service.price %></span><span class="unit">円</span>
+		  	/<%= @chat_service.type_name_japanese%>
+		</div>
+		<%= render "user/payments/price_table", price: @chat_service.price * (params[:count].presence.to_i || 1) %>
+		</br>
+	  <%= form_with model: @chat_transaction, url: user_chat_transactions_path, method:"post" do |f| %>
+			<%= hidden_field_tag :return_to, request.fullpath %>
+			<% if current_user.coupons.usable(@chat_service.price).present? %>
+				<div class="field_area">
+					<label>クーポンの使用</label>
+					<h3 class="request_content coupon">
+						<%= link_to(change_coupon_user_config_path, method: :put) do %>
+							<%if current_user.use_inactive_coupon %>
+								<input type="checkbox" checked="checked"></input>
+							<% else %>
+								<input type="checkbox"></input>
+							<% end %>
+							期限が近いクーポンから利用する
+						<% end %>
+					</h3>
+				</div>
+			<% end %>
+	  	<%= f.hidden_field :chat_service_id, value: @chat_service.id %>
+				<% 
+				case @chat_service.type_name 
+				when 'one_time'
+					unit = '回'
+				when 'one_week'
+					unit = '週間'
+				when 'one_month'
+					unit = 'ヶ月'
+				end
+				%>
+				<div class="field_area">
+					<%= f.label :count, class:"field_label"%><br/>
+					<div class="select_area">
+						<%= f.select 'count', options_for_select((1..100).map { |i| ["#{i}#{unit}", i] }, selected: @chat_transaction.count), include_blank: true,  class:"count_field" %>
+					</div>
+					</br></br>
+				</div>
+	  		<div class="submit_area">
+	  			<%= f.submit '購入', class:"big_submit", id:"submit", data: {confirm: "購入しますか？"} %>
+				</div>
+	  <% end %>
+	</div>
+</div>
+<script>
+$('#chat_transaction_count').change(function() {
+    // 選択された値を取得
+    const countValue = $(this).val();
+    // 現在のURLを取得
+    const currentUrl = new URL(window.location.href);
+    // 'count' パラメーターを更新
+    if (countValue) {
+        currentUrl.searchParams.set('count', countValue);
+    } else {
+        currentUrl.searchParams.delete('count'); // 値が空の場合は削除
+    }
+    // 新しいURLにリダイレクト
+    window.location.href = currentUrl.toString();
+});
+</script>

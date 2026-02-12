@@ -3,7 +3,8 @@ class CreateChatServices < ActiveRecord::Migration[6.1]
     create_table :chat_services do |t|
       t.references :user, null: false, index:true, foreign_key: true
       t.integer :price, null: false, index:true
-      t.integer :type, index:true
+      t.integer :type_name, index:true
+      t.integer :limit, index:true
 
       t.timestamps
     end

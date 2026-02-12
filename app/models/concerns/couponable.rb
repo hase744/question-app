@@ -7,6 +7,7 @@ module Couponable
 
   def required_points
     coupon_model = appropriate_coupons
+    puts "トータル #{total_price}"
     return total_price if coupon_model.nil?
     if coupon_model.is_a?(Coupon) # 単体クーポンの場合
       total_price - ([coupon_model.remaining_amount, total_price].min * coupon_model.discount_rate).to_i

@@ -1,0 +1,16 @@
+.chat_transaction_index_zone{
+  	.chat_transaction_cell_flame:nth-of-type(even) {
+  	  	background-color: #f3f3f3;
+		background-color: red;
+  	}
+	.chat_transaction_area{
+		//background-color: white;
+	}
+	.chat_transaction_cell{
+		background-color: white;
+		box-shadow: 0 0 2px lightgray;
+		border-radius: 10px;
+		padding: 10px;
+		margin: 5px;
+	}
+}
